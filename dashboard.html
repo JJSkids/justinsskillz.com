@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justin's Skillz | Student Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-wrapper">
+        
+        <aside class="sidebar">
+            <div class="sidebar-brand">Justin's Workspace</div>
+            <nav class="sidebar-links">
+                <a href="#" class="active">🏠 Overview</a>
+                <a href="../PAGES/math.html">📐 Math Tracker</a>
+                <a href="../PAGES/coding.html">💻 Code Compiler</a>
+                <a href="../PAGES/french.html">🇫🇷 French Hub</a>
+            </nav>
+            <button id="dashboardSignOutBtn" class="btn-signout">🚪 Log Out</button>
+        </aside>
+
+        <main class="workspace-content">
+            <header class="workspace-header">
+                <h2>Welcome Back, <span id="userGreeting">Developer</span>!</h2>
+                <p>Track your technical learning paths, configurations, and progress analytics from square one.</p>
+            </header>
+
+            <section class="stats-grid">
+                <div class="stat-box">
+                    <h4>Current Tier</h4>
+                    <p class="stat-number">Level 1</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Active Folders</h4>
+                    <p class="stat-number">6 paths</p>
+                </div>
+                <div class="stat-box">
+                    <h4>Server State</h4>
+                    <p class="stat-number secure-status">● Secure Connection</p>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

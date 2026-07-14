@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Justin's Skillz | Interactive Tech Platform</title>
+    <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals.">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+    <header class="nav-header">
+        <div class="nav-left">
+            <span class="brand-name">Justin's Skillz</span>
+        </div>
+        <nav class="nav-center">
+            <a href="#about">Learn More</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-right">
+            <button id="themeButton" class="btn-text">🌙</button>
+            <button id="signInBtn" class="btn-primary">Sign In</button>
+            <button id="dashboardBtn" class="btn-secondary hidden">Go to Dashboard</button>
+            <button id="signOutBtn" class="btn-text hidden">Sign Out</button>
+        </div>
+    </header>
+
+    <section id="about" class="hero-section">
+        <div class="hero-content">
+            <span class="badge">Next-Generation Learning</span>
+            <h1>Master Code, Math, and Logic from Scratch</h1>
+            <p>An interactive development ecosystem designed to break down programming blocks, complex algebraic structures, and technical skills with zero filler.</p>
+            <div class="hero-buttons">
+                <a href="#curriculum" class="btn-primary-large">Explore What We Teach</a>
+                <a href="#contact" class="btn-secondary-large">Get in Touch</a>
+            </div>
+        </div>
+    </section>
+
+    <main id="curriculum" class="dashboard-grid">
+        <a href="PAGES/math.html" class="card"><h3>📐 Mathematics</h3><p>Algebraic proofs & matrix logic.</p></a>
+        <a href="PAGES/coding.html" class="card"><h3>💻 Coding Stuff</h3><p>HTML5, modern CSS layouts, and JS.</p></a>
+        <a href="PAGES/music.html" class="card"><h3>🎹 Music</h3><p>Composition rules and intervals.</p></a>
+        <a href="PAGES/french.html" class="card"><h3>🇫🇷 French</h3><p>Grammar and conjugation engines.</p></a>
+        <a href="PAGES/chess.html" class="card"><h3>♟️ Chess</h3><p>Positional tracking & tactics.</p></a>
+        <a href="PAGES/robotics.html" class="card"><h3>🤖 Robotics</h3><p>Hardware logic circuits & firmware.</p></a>
+    </main>
+
+    <div id="authModal" class="modal hidden">
+        <div class="modal-content">
+            <button id="closeModal" class="close-btn">&times;</button>
+            <h2>Welcome to the Platform</h2>
+            <p>Sign in securely to unlock your private developer dashboard tracking portal.</p>
+            <button id="githubAuthBtn" class="btn-auth github">Continue with GitHub</button>
+            <button id="googleAuthBtn" class="btn-auth google">Continue with Google</button>
+        </div>
+    </div>
+
+    <footer id="contact" class="main-footer">
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>Justin's Skillz</h3>
+                <p>Building high-performance software and learning workflows from the ground up.</p>
+            </div>
+            <div class="footer-contact">
+                <h4>Connect</h4>
+                <p>Email: contact@justinsskillz.com</p>
+                <p>GitHub: <a href="https://github.com/JJSkids" target="_blank">@JJSkids</a></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Justin's Skillz. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="main.js"></script>
+</body>
+</html>

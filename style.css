@@ -1,0 +1,229 @@
+:root {
+    --bg-main: #f8fafc;
+    --bg-surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --primary: #4f46e5;       /* Modern Indigo accent */
+    --primary-hover: #4338ca;
+    --border: #e2e8f0;
+    --overlay: rgba(15, 23, 42, 0.6);
+}
+
+[data-theme="dark"] {
+    --bg-main: #0b0f19;
+    --bg-surface: #131c2e;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --border: #1e293b;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* Utilities */
+.hidden { display: none !important; }
+
+/* 1. Header Navigation */
+.nav-header {
+    background-color: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+.brand-name { font-weight: 800; font-size: 1.25rem; color: var(--primary); }
+.nav-center a { margin: 0 1rem; text-decoration: none; color: var(--text-muted); font-weight: 500; }
+.nav-center a:hover { color: var(--primary); }
+.nav-right { display: flex; gap: 0.75rem; align-items: center; }
+
+/* Buttons */
+button { font-family: inherit; font-size: 0.9rem; font-weight: 600; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; border: none; }
+.btn-primary { background-color: var(--primary); color: white; }
+.btn-primary:hover { background-color: var(--primary-hover); }
+.btn-secondary { background-color: transparent; border: 1px solid var(--border); color: var(--text-main); }
+.btn-text { background: none; color: var(--text-muted); font-size: 1.1rem; }
+
+/* 2. Hero Section */
+.hero-section {
+    padding: 6rem 2rem;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-main) 100%);
+}
+.hero-content { max-width: 800px; margin: 0 auto; }
+.badge { background-color: rgba(79, 70, 229, 0.1); color: var(--primary); padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.85rem; font-weight: bold; }
+.hero-content h1 { font-size: 3rem; letter-spacing: -0.05em; margin: 1.5rem 0 1rem 0; line-height: 1.1; }
+.hero-content p { font-size: 1.25rem; color: var(--text-muted); margin-bottom: 2rem; }
+.hero-buttons { display: flex; gap: 1rem; justify-content: center; }
+
+/* 3. Grid Curriculum Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+}
+.card {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    padding: 2.5rem 1.5rem;
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text-main);
+    transition: transform 0.2s;
+}
+.card:hover { transform: translateY(-4px); border-color: var(--primary); }
+
+/* 4. Login Modal Overlay */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: var(--overlay);
+    backdrop-filter: blur(4px);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 100;
+}
+.modal-content {
+    background-color: var(--bg-surface);
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    max-width: 400px; width: 100%;
+    text-align: center; position: relative;
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);
+}
+.close-btn { position: absolute; top: 1rem; right: 1rem; background: none; font-size: 1.5rem; color: var(--text-muted); }
+.btn-auth { display: block; width: 100%; padding: 0.75rem; margin-top: 1rem; border-radius: 6px; font-weight: bold; }
+.github { background-color: #24292e; color: white; }
+.google { background-color: #df4a32; color: white; }
+
+/* 5. Footer Layout */
+.main-footer {
+    background-color: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    padding: 4rem 2rem 2rem 2rem;
+    margin-top: 6rem;
+}
+.footer-container { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2rem; }
+.footer-bottom { text-align: center; margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.85rem; color: var(--text-muted); }
+
+/* --- 6. VISUAL DASHBOARD WORKSPACE LAYOUT --- */
+.dashboard-body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.dashboard-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Sidebar Styling */
+.sidebar {
+    width: 260px;
+    background-color: var(--bg-surface);
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.sidebar-brand {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--primary);
+    margin-bottom: 2rem;
+}
+
+.sidebar-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-grow: 1;
+}
+
+.sidebar-links a {
+    text-decoration: none;
+    color: var(--text-muted);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.sidebar-links a:hover, .sidebar-links a.active {
+    background-color: rgba(79, 70, 229, 0.08);
+    color: var(--primary);
+}
+
+.btn-signout {
+    background-color: #ef4444;
+    color: white;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Main Workspace Content Area */
+.workspace-content {
+    flex-grow: 1;
+    background-color: var(--bg-main);
+    padding: 3rem;
+}
+
+.workspace-header h2 {
+    font-size: 2rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.workspace-header p {
+    color: var(--text-muted);
+    margin: 0 0 2.5rem 0;
+}
+
+/* Interior Analytics Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-box {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    border-radius: 12px;
+}
+
+.stat-box h4 {
+    margin: 0 0 0.5rem 0;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.secure-status {
+    color: #10b981;
+    font-size: 1.2rem;
+}

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Justin's Skillz | Student Dashboard</title>
+    <title>Justin's Skillz | Student Workspace</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -14,34 +14,67 @@
         <aside class="sidebar">
             <div class="sidebar-brand">Justin's Workspace</div>
             <nav class="sidebar-links">
-                <a href="#" class="active">🏠 Overview</a>
-                <a href="../PAGES/math.html">📐 Math Tracker</a>
-                <a href="../PAGES/coding.html">💻 Code Compiler</a>
-                <a href="../PAGES/french.html">🇫🇷 French Hub</a>
+                <a href="#" class="active">💻 Workspace</a>
+                <a href="index.html">🏠 Home</a>
+                <a href="admin.html" id="adminPortalLink" class="hidden admin-only-btn">🔑 Admin Portal</a>
             </nav>
             <button id="dashboardSignOutBtn" class="btn-signout">🚪 Log Out</button>
         </aside>
 
         <main class="workspace-content">
             <header class="workspace-header">
-                <h2>Welcome Back, <span id="userGreeting">Developer</span>!</h2>
-                <p>Track your technical learning paths, configurations, and progress analytics from square one.</p>
+                <h2>Welcome back, <span id="userGreeting">Developer</span>!</h2>
+                <p>Compile code, watch live sessions, and master logic structures.</p>
             </header>
 
-            <section class="stats-grid">
-                <div class="stat-box">
-                    <h4>Current Tier</h4>
-                    <p class="stat-number">Level 1</p>
+            <div class="workspace-grid">
+                
+                <div class="left-workspace-col">
+                    
+                    <div class="panel live-stream-panel">
+                        <div class="panel-header">
+                            <span class="live-indicator-dot" id="liveDot"></span>
+                            <h3>Live Classroom Feed</h3>
+                        </div>
+                        <div class="video-container" id="videoContainer">
+                            <div class="stream-offline" id="streamOffline">
+                                🎬 Class is currently offline. Check the events panel!
+                            </div>
+                            <iframe id="liveFrame" class="hidden" src="" allow="camera; microphone; fullscreen"></iframe>
+                        </div>
+                    </div>
+
+                    <div class="panel ide-panel">
+                        <div class="panel-header">
+                            <h3>⚡ Live HTML/CSS Compiler</h3>
+                            <button id="runCodeBtn" class="btn-primary">Run Code</button>
+                        </div>
+                        <div class="ide-container">
+                            <div class="ide-editor">
+                                <label>HTML/CSS Sandbox Input</label>
+                                <textarea id="codeEditor" placeholder="<h1>Hello World</h1>&#10;<style>&#10;  h1 { color: #4f46e5; text-align: center; }&#10;</style>"></textarea>
+                            </div>
+                            <div class="ide-preview">
+                                <label>Live Output Render</label>
+                                <iframe id="ideOutput"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
-                <div class="stat-box">
-                    <h4>Active Folders</h4>
-                    <p class="stat-number">6 paths</p>
-                </div>
-                <div class="stat-box">
-                    <h4>Server State</h4>
-                    <p class="stat-number secure-status">● Secure Connection</p>
-                </div>
-            </section>
+
+                <aside class="right-notification-sidebar">
+                    <div class="panel notification-panel">
+                        <div class="panel-header">
+                            <h3>🔔 Live Feed & Events</h3>
+                        </div>
+                        <div class="notifications-list" id="notificationsList">
+                            <div class="loading-spinner">Syncing feeds...</div>
+                        </div>
+                    </div>
+                </aside>
+
+            </div>
         </main>
 
     </div>

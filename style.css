@@ -227,3 +227,227 @@ button { font-family: inherit; font-size: 0.9rem; font-weight: 600; padding: 0.5
     color: #10b981;
     font-size: 1.2rem;
 }
+
+/* ==========================================
+   LMS WORKSPACE SYSTEM DESIGN
+   ========================================== */
+
+/* Workspace Layout Adjustments */
+.workspace-grid {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.left-workspace-col {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.panel {
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+}
+
+.panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.75rem;
+}
+
+.panel-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+/* Streaming Video Frame */
+.video-container {
+    background-color: #000;
+    width: 100%;
+    aspect-ratio: 16/9;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.stream-offline {
+    color: #94a3b8;
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Interactive Coding Editor IDE */
+.ide-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    height: 350px;
+}
+
+.ide-editor, .ide-preview {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ide-editor label, .ide-preview label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+#codeEditor {
+    width: 100%;
+    height: 100%;
+    background-color: #1e293b;
+    color: #f8fafc;
+    border: none;
+    border-radius: 8px;
+    padding: 1rem;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.95rem;
+    resize: none;
+    box-sizing: border-box;
+}
+
+#ideOutput {
+    background-color: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+/* Real-Time Live Notification Side Deck */
+.right-notification-sidebar {
+    position: sticky;
+    top: 2rem;
+    height: max-content;
+}
+
+.notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.notification-card {
+    border-left: 4px solid #cbd5e1;
+    background-color: var(--bg-main);
+    padding: 1rem;
+    border-radius: 0 8px 8px 0;
+}
+
+.notification-card.live { border-left-color: #ef4444; background-color: rgba(239, 68, 68, 0.03); }
+.notification-card.upcoming { border-left-color: #3b82f6; background-color: rgba(59, 130, 246, 0.03); }
+.notification-card.ended { border-left-color: #64748b; opacity: 0.6; }
+
+.card-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+.badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge.red-live { background-color: #ef4444; color: white; }
+.badge.blue-upcoming { background-color: #3b82f6; color: white; }
+.badge.gray-ended { background-color: #64748b; color: white; }
+
+.event-time {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.join-live-btn {
+    display: inline-block;
+    background-color: #ef4444;
+    color: white !important;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: bold;
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+    margin-top: 0.5rem;
+}
+
+/* Admin Specific UI Panels */
+.admin-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-group input, .form-group select {
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-main);
+}
+
+.admin-log-feed {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.admin-log-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+}
+
+.btn-tiny {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.live-btn { background: #10b981; color: white; }
+.end-btn { background: #64748b; color: white; }
+.delete-btn { background: #ef4444; color: white; }

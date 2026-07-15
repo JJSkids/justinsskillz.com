@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justin's Skillz | Admin Workspace Control Panel</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-wrapper">
+        
+        <aside class="sidebar">
+            <div class="sidebar-brand">🔧 System Admin</div>
+            <nav class="sidebar-links">
+                <a href="dashboard.html">💻 Workspace</a>
+                <a href="#" class="active">🔑 Controls</a>
+                <a href="index.html">🏠 Home</a>
+            </nav>
+            <button id="dashboardSignOutBtn" class="btn-signout">🚪 Log Out</button>
+        </aside>
+
+        <main class="workspace-content">
+            <header class="workspace-header">
+                <h2>System Administrator Command Center</h2>
+                <p>Broadcast live events, spawn classrooms, and configure security roles globally.</p>
+            </header>
+
+            <div class="admin-grid">
+                
+                <div class="panel admin-panel">
+                    <h3>🚀 Broadcast & Schedule Live Event</h3>
+                    <form id="eventForm" class="admin-form">
+                        <div class="form-group">
+                            <label>Event Name / Title</label>
+                            <input type="text" id="eventTitle" placeholder="e.g. Intro to Advanced Algebra" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Schedule / Time Frame</label>
+                            <input type="text" id="eventTime" placeholder="Today @ 4:00 PM" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Zoom/Vimeo Embed URL</label>
+                            <input type="url" id="eventUrl" placeholder="https://zoom.us/wc/.../join" />
+                        </div>
+                        <div class="form-group">
+                            <label>Starting Status State</label>
+                            <select id="eventStatus">
+                                <option value="upcoming">Upcoming</option>
+                                <option value="live">🔴 Live Now</option>
+                                <option value="ended">Ended</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-primary-large">Activate Broadcast</button>
+                    </form>
+                </div>
+
+                <div class="panel admin-panel">
+                    <h3>📃 System Notifications History</h3>
+                    <div class="admin-log-feed" id="adminLogList">
+                        </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>

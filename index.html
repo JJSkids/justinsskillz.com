@@ -7,7 +7,67 @@
     <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals.">
     <link rel="stylesheet" href="style.css">
     
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Put this right before </body> in index.html -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
+
+  let supabase;
+  if (window.supabase) {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+
+  // 1. Session Checker for Landing Page
+  async function checkHomeSession() {
+      if (!supabase) return;
+
+      const { data: { user } } = await supabase.auth.getUser();
+
+      const authModalBtn = document.getElementById('authModalBtn'); // Your Sign In button
+      
+      if (user && authModalBtn) {
+          // If already signed in, point them straight to the workspace
+          authModalBtn.innerText = "💻 Open Workspace";
+          authModalBtn.onclick = (e) => {
+              e.preventDefault();
+              window.location.href = "dashboard.html";
+          };
+      }
+  }
+
+  // 2. OAuth Logins
+  document.addEventListener('DOMContentLoaded', () => {
+      checkHomeSession();
+
+      const googleBtn = document.getElementById('googleSignInBtn');
+      const githubBtn = document.getElementById('githubSignInBtn');
+
+      if (googleBtn) {
+          googleBtn.addEventListener('click', async (e) => {
+              e.preventDefault();
+              await supabase.auth.signInWithOAuth({
+                  provider: 'google',
+                  options: {
+                      redirectTo: 'https://jjskids.github.io/justinsskillz.com/dashboard.html'
+                  }
+              });
+          });
+      }
+
+      if (githubBtn) {
+          githubBtn.addEventListener('click', async (e) => {
+              e.preventDefault();
+              await supabase.auth.signInWithOAuth({
+                  provider: 'github',
+                  options: {
+                      redirectTo: 'https://jjskids.github.io/justinsskillz.com/dashboard.html'
+                  }
+              });
+          });
+      }
+  });
+</script>
 </head>
 <body>
 

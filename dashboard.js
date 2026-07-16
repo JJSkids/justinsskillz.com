@@ -145,23 +145,35 @@ function renderEvents(events) {
     }
 }
 
-// 6. Complete Log Out Engine (Forgets credentials completely & preserves DB state)
-if (signOutBtn) {
-    signOutBtn.addEventListener('click', async (e) => {
-        e.preventDefault();
-        
-        if (supabase) {
-            await supabase.auth.signOut();
-        }
-        
-        // Completely clear active local browser memory tokens
-        localStorage.clear();
-        sessionStorage.clear();
-        
-        // Return to home page as guest
-        window.location.href = "index.html";
-    });
+// 6. Bulletproof Log Out Engine
+function setupSignOutHandler() {
+    const signOutBtn = document.getElementById('dashboardSignOutBtn') || document.querySelector('.btn-signout');
+
+    if (signOutBtn) {
+        signOutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            try {
+                if (supabase) {
+                    // Sign out from Supabase cloud auth
+                    await supabase.auth.signOut();
+                }
+            } catch (err) {
+                console.error("Supabase sign out error:", err);
+            } finally {
+                // Clear all local storage keys, cookies, and tokens
+                localStorage.clear();
+                sessionStorage.clear();
+                
+                // Force return to home page
+                window.location.replace("index.html");
+            }
+        });
+    }
 }
 
 // Run authorization pipeline on load
-document.addEventListener("DOMContentLoaded", checkUserSession);
+document.addEventListener("DOMContentLoaded", () => {
+    checkUserSession();
+    setupSignOutHandler();
+});

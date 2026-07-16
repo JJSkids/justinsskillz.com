@@ -7,70 +7,94 @@
     <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals.">
     <link rel="stylesheet" href="style.css">
     
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
-  let supabase;
-  if (window.supabase) {
-      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  }
+      let supabase;
+      if (window.supabase) {
+          supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
 
-  // 1. Session Checker for Landing Page
-  async function checkHomeSession() {
-      if (!supabase) return;
+      // 1. Session Handler & Redirect Catch
+      async function handleHomeSession() {
+          if (!supabase) return;
 
-      const { data: { user } } = await supabase.auth.getUser();
+          const { data: { user } } = await supabase.auth.getUser();
 
-      // Look for the sign in button in the navbar (tries multiple standard IDs)
-      const navAuthBtn = document.getElementById('authModalBtn') || document.querySelector('.btn-signin') || document.querySelector('nav .btn-primary');
-      
-      if (user && navAuthBtn) {
-          const username = user.email ? user.email.split('@')[0] : 'Developer';
+          const signInBtn = document.getElementById('signInBtn');
           
-          // Replace the Sign In button with workspace button & greeting
-          navAuthBtn.outerHTML = `
-            <div class="nav-user-badge" style="display: flex; align-items: center; gap: 1rem;">
-              <span style="font-weight: 600; color: #4f46e5;">👋 ${username}</span>
-              <a href="dashboard.html" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem; background: #4f46e5; color: white; border-radius: 6px; font-weight: bold;">💻 Workspace</a>
-            </div>
-          `;
+          if (user) {
+              // If returning from Google/GitHub OAuth, send straight to dashboard
+              if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
+                  window.location.href = "dashboard.html";
+                  return;
+              }
+
+              // Swap the Sign In button for Username + Workspace link
+              if (signInBtn) {
+                  const username = user.email ? user.email.split('@')[0] : 'Developer';
+                  signInBtn.outerHTML = `
+                    <div class="nav-user-badge" style="display: flex; align-items: center; gap: 0.75rem;">
+                      <span style="font-weight: 600; color: #4f46e5;">👋 ${username}</span>
+                      <a href="dashboard.html" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem; background: #4f46e5; color: white; border-radius: 6px; font-weight: bold;">💻 Workspace</a>
+                    </div>
+                  `;
+              }
+          }
       }
-  }
 
-  // 2. OAuth Logins
-  document.addEventListener('DOMContentLoaded', () => {
-      checkHomeSession();
+      // 2. DOM Ready Listeners
+      document.addEventListener('DOMContentLoaded', () => {
+          handleHomeSession();
 
-      const googleBtn = document.getElementById('googleSignInBtn');
-      const githubBtn = document.getElementById('githubSignInBtn');
+          // Modal & Trigger Elements
+          const signInBtn = document.getElementById('signInBtn');
+          const authModal = document.getElementById('authModal');
+          const closeModal = document.getElementById('closeModal');
 
-      if (googleBtn) {
-          googleBtn.addEventListener('click', async (e) => {
-              e.preventDefault();
-              await supabase.auth.signInWithOAuth({
-                  provider: 'google',
-                  options: {
-                      redirectTo: 'https://jjskids.github.io/justinsskillz.com/dashboard.html'
-                  }
+          const googleBtn = document.getElementById('googleAuthBtn');
+          const githubBtn = document.getElementById('githubAuthBtn');
+
+          // Open Auth Modal
+          if (signInBtn && authModal) {
+              signInBtn.addEventListener('click', () => {
+                  authModal.classList.remove('hidden');
               });
-          });
-      }
+          }
 
-      if (githubBtn) {
-          githubBtn.addEventListener('click', async (e) => {
-              e.preventDefault();
-              await supabase.auth.signInWithOAuth({
-                  provider: 'github',
-                  options: {
-                      redirectTo: 'https://jjskids.github.io/justinsskillz.com/dashboard.html'
-                  }
+          // Close Auth Modal
+          if (closeModal && authModal) {
+              closeModal.addEventListener('click', () => {
+                  authModal.classList.add('hidden');
               });
-          });
-      }
-  });
-</script>
+          }
+
+          // Use root path for OAuth redirects to protect GitHub Pages from 404s
+          const redirectUri = window.location.origin + window.location.pathname;
+
+          if (googleBtn) {
+              googleBtn.addEventListener('click', async (e) => {
+                  e.preventDefault();
+                  await supabase.auth.signInWithOAuth({
+                      provider: 'google',
+                      options: { redirectTo: redirectUri }
+                  });
+              });
+          }
+
+          if (githubBtn) {
+              githubBtn.addEventListener('click', async (e) => {
+                  e.preventDefault();
+                  await supabase.auth.signInWithOAuth({
+                      provider: 'github',
+                      options: { redirectTo: redirectUri }
+                  });
+              });
+          }
+      });
+    </script>
 </head>
 <body>
 

@@ -25,13 +25,34 @@
 
       const signInBtn = document.getElementById('signInBtn');
       
-      if (user) {
-          // If returning from Google/GitHub OAuth login, redirect cleanly to dashboard
-          if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
-              window.location.href = "dashboard.html" + window.location.hash;
-              return;
-          }
+      // 1. Session Handler & Token Interceptor
+async function handleHomeSession() {
+    if (!supabase) return;
 
+    const { data: { user } } = await supabase.auth.getUser();
+
+    const signInBtn = document.getElementById('signInBtn');
+    
+    if (user) {
+        // If returning from Google/GitHub OAuth login, redirect cleanly to dashboard
+        if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
+            // ✅ FIX: Redirect cleanly using origin + pathname or explicit relative URL
+            window.location.href = "https://jjskids.github.io/justinsskillz.com/dashboard.html" + window.location.hash;
+            return;
+        }
+
+        // Swap Sign In button for Username + Workspace link
+        if (signInBtn) {
+            const username = user.email ? user.email.split('@')[0] : 'Developer';
+            signInBtn.outerHTML = `
+              <div class="nav-user-badge" style="display: flex; align-items: center; gap: 0.75rem;">
+                <span style="font-weight: 600; color: #4f46e5;">👋 ${username}</span>
+                <a href="dashboard.html" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem; background: #4f46e5; color: white; border-radius: 6px; font-weight: bold;">💻 Workspace</a>
+              </div>
+            `;
+        }
+    }
+}
           // Swap Sign In button for Username + Workspace link
           if (signInBtn) {
               const username = user.email ? user.email.split('@')[0] : 'Developer';

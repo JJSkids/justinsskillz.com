@@ -23,26 +23,22 @@
       async function handleHomeSession() {
           if (!supabase) return;
 
-          // Check active session or retrieve session from token in URL
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
 
           const signInBtn = document.getElementById('signInBtn');
           
           if (user) {
-              // If returning from Google/GitHub OAuth login with access tokens or code
               if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
                   window.location.href = "dashboard.html" + window.location.hash;
                   return;
               }
 
-              // Extract user display name
               const fullName = user.user_metadata?.full_name || user.user_metadata?.name;
               const firstName = fullName ? fullName.split(' ')[0] : null;
               const emailName = user.email ? user.email.split('@')[0] : 'Developer';
               const displayName = firstName || fullName || emailName;
 
-              // Swap Sign In button for Username + Workspace link
               if (signInBtn) {
                   signInBtn.outerHTML = `
                     <div class="nav-user-badge" style="display: flex; align-items: center; gap: 0.75rem;">
@@ -73,7 +69,6 @@
               closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
           }
 
-          // Root Redirect Target
           const cleanRedirectUrl = "https://jjskids.github.io/justinsskillz.com/";
 
           if (googleBtn) {
@@ -103,7 +98,9 @@
 <body>
 
     <header class="nav-header">
-        <div class="nav-left">
+        <div class="nav-left" style="display: flex; align-items: center; gap: 0.75rem;">
+            <!-- Brand Logo -->
+            <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" style="width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;">
             <span class="brand-name">Justin's Skillz</span>
         </div>
         <nav class="nav-center">

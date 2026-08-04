@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace | Developer Platform</title>
+    <title>Workspace | Justin's Skillz</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -13,19 +13,26 @@
         
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <div class="sidebar-brand" id="sidebarBrand">Workspace</div>
+            <div class="sidebar-brand-container">
+                <!-- Platform Logo -->
+                <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="sidebar-logo" id="brandLogo">
+                <div class="sidebar-brand" id="sidebarBrand">Justin's Workspace</div>
+            </div>
+
             <nav class="sidebar-links">
                 <a href="#" class="active">💻 Workspace</a>
                 <a href="index.html">🏠 Home</a>
-                <a href="admin.html" id="adminPortalLink" class="hidden admin-only-btn">🔑 Admin Portal</a>
+                <a href="admin.html" id="adminPortalLink" class="admin-only-btn" style="display: none;">🔑 Admin Portal</a>
             </nav>
-            <button id="dashboardSignOutBtn" class="btn-signout">🚪 Log Out</button>
+
+            <!-- Logout Button with Inline Fallback -->
+            <button id="dashboardSignOutBtn" onclick="forceSignOut()" class="btn-signout">🚪 Log Out</button>
         </aside>
 
         <!-- Main Workspace Area -->
         <main class="workspace-content">
             <header class="workspace-header">
-                <h2>Welcome back, <span id="userGreeting">Developer</span>!</h2>
+                <h2>Welcome back, <span id="userGreeting">Justin</span>!</h2>
                 <p>Compile code, watch live sessions, and master logic structures.</p>
             </header>
 
@@ -57,7 +64,7 @@
                         <div class="ide-container">
                             <div class="ide-editor">
                                 <label>HTML/CSS Sandbox Input</label>
-                                <textarea id="codeEditor" placeholder="<h1>Hello World</h1>&#10;<style>&#10;  h1 { color: #4f46e5; text-align: center; }&#10;</style>"></textarea>
+                                <textarea id="codeEditor" placeholder="<h1>Hello World</h1>&#10;<style>&#10;  h1 { color: #f59e0b; text-align: center; }&#10;</style>"></textarea>
                             </div>
                             <div class="ide-preview">
                                 <label>Live Output Render</label>
@@ -75,7 +82,7 @@
                             <h3>🔔 Live Feed & Events</h3>
                         </div>
                         <div class="notifications-list" id="notificationsList">
-                            <div class="loading-spinner">Syncing feeds...</div>
+                            <p style="font-size:0.85rem; color:#94a3b8; padding: 0.5rem;">No active events scheduled.</p>
                         </div>
                     </div>
                 </aside>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Justin's Skillz | Student Workspace</title>
+    <title>Workspace | Developer Platform</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
@@ -11,8 +11,9 @@
 
     <div class="dashboard-wrapper">
         
+        <!-- Sidebar Navigation -->
         <aside class="sidebar">
-            <div class="sidebar-brand">Justin's Workspace</div>
+            <div class="sidebar-brand" id="sidebarBrand">Workspace</div>
             <nav class="sidebar-links">
                 <a href="#" class="active">💻 Workspace</a>
                 <a href="index.html">🏠 Home</a>
@@ -21,6 +22,7 @@
             <button id="dashboardSignOutBtn" class="btn-signout">🚪 Log Out</button>
         </aside>
 
+        <!-- Main Workspace Area -->
         <main class="workspace-content">
             <header class="workspace-header">
                 <h2>Welcome back, <span id="userGreeting">Developer</span>!</h2>
@@ -29,8 +31,10 @@
 
             <div class="workspace-grid">
                 
+                <!-- Left Column: Video Feed & Code Compiler -->
                 <div class="left-workspace-col">
                     
+                    <!-- Live Classroom Stream -->
                     <div class="panel live-stream-panel">
                         <div class="panel-header">
                             <span class="live-indicator-dot" id="liveDot"></span>
@@ -44,6 +48,7 @@
                         </div>
                     </div>
 
+                    <!-- Interactive Code Compiler -->
                     <div class="panel ide-panel">
                         <div class="panel-header">
                             <h3>⚡ Live HTML/CSS Compiler</h3>
@@ -63,6 +68,7 @@
 
                 </div>
 
+                <!-- Right Column: Live Feed & Notifications -->
                 <aside class="right-notification-sidebar">
                     <div class="panel notification-panel">
                         <div class="panel-header">

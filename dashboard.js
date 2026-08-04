@@ -14,7 +14,7 @@ const ideOutput = document.getElementById('ideOutput');
 
 // Dashboard UI Elements
 const userGreeting = document.getElementById('userGreeting');
-const signOutBtn = document.getElementById('dashboardSignOutBtn');
+const sidebarBrand = document.getElementById('sidebarBrand');
 const adminPortalLink = document.getElementById('adminPortalLink');
 const notificationsList = document.getElementById('notificationsList');
 const liveFrame = document.getElementById('liveFrame');
@@ -33,14 +33,25 @@ async function checkUserSession() {
         // No valid login session found - kick back to landing page
         window.location.replace("index.html");
     } else {
-        // Clean URL hash if tokens are present so address bar remains clean
+        // Clean URL hash if tokens are present so address bar stays clean
         if (window.location.hash.includes('access_token')) {
             window.history.replaceState(null, null, window.location.pathname);
         }
 
+        // Extract user's actual display name (Google/GitHub full name -> email prefix -> fallback)
+        const fullName = user.user_metadata?.full_name || user.user_metadata?.name;
+        const firstName = fullName ? fullName.split(' ')[0] : null;
+        const emailName = user.email ? user.email.split('@')[0] : 'Developer';
+        const displayName = firstName || fullName || emailName;
+
         // Display personalized user greeting
         if (userGreeting) {
-            userGreeting.innerText = user.email ? user.email.split('@')[0] : 'Developer';
+            userGreeting.innerText = displayName;
+        }
+
+        // Display personalized sidebar brand
+        if (sidebarBrand) {
+            sidebarBrand.innerText = `${displayName}'s Workspace`;
         }
         
         // Verify if user has System Admin rights
@@ -55,7 +66,7 @@ async function checkUserSession() {
 async function checkAdminPrivileges(userId) {
     if (!supabase || !adminPortalLink) return;
 
-    const { data, error } = await supabase
+    const { data } = await supabase
         .from('user_roles')
         .select('is_admin')
         .eq('id', userId)
@@ -177,6 +188,6 @@ function setupSignOutHandler() {
 
 // Run authorization pipeline on load
 document.addEventListener("DOMContentLoaded", () => {
-    checkUserSession(); // ✅ FIXED: Added () execution parentheses
+    checkUserSession();
     setupSignOutHandler();
 });

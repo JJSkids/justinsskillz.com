@@ -7,7 +7,7 @@ if (window.supabase) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// Your Primary Admin Email
+// Authorized Admin Emails
 const ADMIN_EMAILS = ["hellojjskids@gmail.com", "winifredemuekhare@gmail.com"];
 
 // DOM Elements
@@ -27,11 +27,13 @@ function applyUserIdentity(user) {
     if (!user) return;
 
     const metadata = user.user_metadata || {};
-    const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
+    
+    // Check full name, then username, then raw email
+    const rawName = metadata.full_name || metadata.name || metadata.preferred_username || metadata.user_name;
     
     let displayName = "Developer";
     if (rawName) {
-        displayName = rawName.split(' ')[0];
+        displayName = rawName.split(' ')[0]; // Gets "Justin"
     } else if (user.email) {
         const parts = user.email.split('@')[0];
         displayName = parts.charAt(0).toUpperCase() + parts.slice(1);
@@ -43,27 +45,16 @@ function applyUserIdentity(user) {
 
 // 3. Admin Unlock Engine
 function verifyAdminAccess(user) {
-    if (!adminPortalLink || !user) return;
+    if (!user) return;
 
     const userEmail = (user.email || "").toLowerCase();
 
-    // Direct check against admin email list
+    // Force show admin portal link if email matches
     if (ADMIN_EMAILS.map(e => e.toLowerCase()).includes(userEmail)) {
-        adminPortalLink.style.display = 'block';
-        adminPortalLink.classList.remove('hidden');
-        return;
-    }
-
-    // Database fallback
-    if (supabase) {
-        supabase.from('user_roles').select('is_admin').eq('id', user.id).single()
-            .then(({ data }) => {
-                if (data && data.is_admin) {
-                    adminPortalLink.style.display = 'block';
-                    adminPortalLink.classList.remove('hidden');
-                }
-            })
-            .catch(() => {});
+        if (adminPortalLink) {
+            adminPortalLink.style.display = 'block';
+            adminPortalLink.classList.remove('hidden');
+        }
     }
 }
 
@@ -74,27 +65,13 @@ async function initDashboard() {
         return;
     }
 
-    // Direct Session Check
-    const { data: { session } } = await supabase.auth.getSession();
-    
-    if (session?.user) {
-        applyUserIdentity(session.user);
-        verifyAdminAccess(session.user);
-    } else {
-        // If no user session exists at all, bounce back to login page
-        if (!window.location.hash.includes('access_token')) {
-            window.location.replace("index.html");
-            return;
-        }
-    }
-
-    // Auth State Event Listener
+    // A. Listen for auth changes (captures OAuth redirect tokens automatically)
     supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
             applyUserIdentity(session.user);
             verifyAdminAccess(session.user);
 
-            // Clean OAuth Hash from URL
+            // Clean OAuth Hash from URL after reading session
             if (window.location.hash.includes('access_token')) {
                 window.history.replaceState(null, null, window.location.pathname);
             }
@@ -103,27 +80,46 @@ async function initDashboard() {
         }
     });
 
+    // B. Direct Session Check (for returning visitors)
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session?.user) {
+        applyUserIdentity(session.user);
+        verifyAdminAccess(session.user);
+    } else {
+        // Only redirect if there is NO token in the URL hash being processed
+        if (!window.location.hash.includes('access_token') && !window.location.search.includes('code')) {
+            window.location.replace("index.html");
+            return;
+        }
+    }
+
     syncLiveEvents();
 }
 
-// 5. Hard Log Out Function (Assigned to onclick)
+// 5. Hard Log Out Function
 async function forceSignOut() {
-    // 1. Clear local browser storage immediately
     localStorage.clear();
     sessionStorage.clear();
 
-    // 2. Clear Supabase auth cookies/tokens
     try {
         if (supabase) {
             await supabase.auth.signOut();
         }
     } catch (err) {
-        console.warn("Signout error ignored:", err);
+        console.warn("Signout warning:", err);
     }
 
-    // 3. Force redirect to main page without query parameters
-    window.location.href = "https://jjskids.github.io/justinsskillz.com/index.html";
+    window.location.href = "index.html";
 }
+
+// Attach logout listener to sign-out button if present
+document.addEventListener('DOMContentLoaded', () => {
+    const signOutBtn = document.getElementById('signOutBtn');
+    if (signOutBtn) {
+        signOutBtn.addEventListener('click', forceSignOut);
+    }
+});
 
 // 6. Live Feed Sync
 async function syncLiveEvents() {
@@ -202,7 +198,5 @@ if (runCodeBtn && codeEditor && ideOutput) {
     });
 }
 
-// Initialize on DOM load
-document.addEventListener("DOMContentLoaded", () => {
-    initDashboard();
-});
+// Run initializer
+initDashboard();

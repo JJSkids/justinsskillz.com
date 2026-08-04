@@ -7,6 +7,9 @@ if (window.supabase) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
+// System Admin Email (Auto-detected for direct admin access)
+const PRIMARY_ADMIN_EMAIL = "hellojjskids@gmail.com";
+
 // UI Elements
 const userGreeting = document.getElementById('userGreeting');
 const sidebarBrand = document.getElementById('sidebarBrand');
@@ -23,7 +26,6 @@ const ideOutput = document.getElementById('ideOutput');
 function applyUserIdentity(user) {
     if (!user) return;
 
-    // Check Google / GitHub metadata first, fallback to email prefix, then Developer
     const metadata = user.user_metadata || {};
     const fullName = metadata.full_name || metadata.name || metadata.preferred_username;
     
@@ -36,7 +38,6 @@ function applyUserIdentity(user) {
         firstName = "Developer";
     }
 
-    // Capitalize first letter
     const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
 
     if (userGreeting) {
@@ -47,51 +48,55 @@ function applyUserIdentity(user) {
     }
 }
 
-// 3. Robust Session Listener
+// 3. Robust Session Listener & Admin Auto-Detector
 function initAuthListener() {
     if (!supabase) return;
 
-    // Listen for OAuth token parsing completion
     supabase.auth.onAuthStateChange(async (event, session) => {
         const user = session?.user;
 
         if (!user) {
-            // No session active - send back to landing page
             window.location.replace("index.html");
         } else {
-            // Apply name to greeting and sidebar
             applyUserIdentity(user);
             
-            // Check admin status
-            checkAdminPrivileges(user.id);
+            // Check Admin Privileges (Checks Email match or Database table)
+            checkAdminPrivileges(user);
 
-            // Clean OAuth hash tokens from browser bar
             if (window.location.hash.includes('access_token')) {
                 window.history.replaceState(null, null, window.location.pathname);
             }
         }
     });
 
-    // Also run initial database sync
     syncLiveEvents();
 }
 
-// 4. Admin Privilege Checker
-async function checkAdminPrivileges(userId) {
-    if (!supabase || !adminPortalLink) return;
+// 4. Admin Privilege Verification Engine
+async function checkAdminPrivileges(user) {
+    if (!adminPortalLink || !user) return;
 
+    // Direct Email Detection for Super Admin
+    if (user.email && user.email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase()) {
+        adminPortalLink.classList.remove('hidden');
+        adminPortalLink.style.display = 'block';
+        return;
+    }
+
+    // Database Role Fallback Check
     try {
         const { data } = await supabase
             .from('user_roles')
             .select('is_admin')
-            .eq('id', userId)
+            .eq('id', user.id)
             .single();
             
         if (data && data.is_admin) {
             adminPortalLink.classList.remove('hidden');
+            adminPortalLink.style.display = 'block';
         }
     } catch (e) {
-        console.warn("Could not fetch user privileges:", e.message);
+        console.warn("User role query response:", e.message);
     }
 }
 

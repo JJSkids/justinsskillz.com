@@ -7,8 +7,8 @@ if (window.supabase) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// Authorized Admin Emails
-const ADMIN_EMAILS = ["hellojjskids@gmail.com", "winifredemuekhare@gmail.com"];
+// Strictly Only Single Admin Email
+const ADMIN_EMAILS = ["hellojjskids@gmail.com"];
 
 // DOM Elements
 const userGreeting = document.getElementById('userGreeting');
@@ -49,11 +49,17 @@ function verifyAdminAccess(user) {
 
     const userEmail = (user.email || "").toLowerCase();
 
-    // Force show admin portal link if email matches
-    if (ADMIN_EMAILS.map(e => e.toLowerCase()).includes(userEmail)) {
+    // Check if user is strictly the single admin
+    if (ADMIN_EMAILS.includes(userEmail)) {
         if (adminPortalLink) {
             adminPortalLink.style.display = 'block';
             adminPortalLink.classList.remove('hidden');
+        }
+    } else {
+        // Non-admins hide portal link
+        if (adminPortalLink) {
+            adminPortalLink.style.display = 'none';
+            adminPortalLink.classList.add('hidden');
         }
     }
 }
@@ -65,13 +71,13 @@ async function initDashboard() {
         return;
     }
 
-    // A. Listen for auth changes (captures OAuth redirect tokens automatically)
+    // A. Auth listener catches incoming OAuth tokens from hash
     supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
             applyUserIdentity(session.user);
             verifyAdminAccess(session.user);
 
-            // Clean OAuth Hash from URL after reading session
+            // Clean OAuth Hash from URL clean path
             if (window.location.hash.includes('access_token')) {
                 window.history.replaceState(null, null, window.location.pathname);
             }
@@ -80,14 +86,14 @@ async function initDashboard() {
         }
     });
 
-    // B. Direct Session Check (for returning visitors)
+    // B. Direct Session Check
     const { data: { session } } = await supabase.auth.getSession();
     
     if (session?.user) {
         applyUserIdentity(session.user);
         verifyAdminAccess(session.user);
     } else {
-        // Only redirect if there is NO token in the URL hash being processed
+        // Only redirect if there is NO token in the URL
         if (!window.location.hash.includes('access_token') && !window.location.search.includes('code')) {
             window.location.replace("index.html");
             return;
@@ -113,7 +119,7 @@ async function forceSignOut() {
     window.location.href = "index.html";
 }
 
-// Attach logout listener to sign-out button if present
+// Attach logout listener to sign-out button
 document.addEventListener('DOMContentLoaded', () => {
     const signOutBtn = document.getElementById('signOutBtn');
     if (signOutBtn) {

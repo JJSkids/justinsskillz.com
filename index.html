@@ -3,6 +3,10 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Google Search Console Verification Tag -->
+    <meta name="google-site-verification" content="-G-q80QQ0dQaOWtbVUCFJTeXUYTpr5iWsDHCQaGpNic" />
+
     <title>Justin's Skillz | Interactive Tech Platform</title>
     <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals.">
     <link rel="stylesheet" href="style.css">
@@ -23,7 +27,7 @@
       async function handleHomeSession() {
           if (!supabase) return;
 
-          // If token landed on index.html by mistake, route cleanly to dashboard.html
+          // Safely route OAuth tokens landing on index.html directly to dashboard.html
           if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
               window.location.replace("https://jjskids.github.io/justinsskillz.com/dashboard.html" + window.location.hash);
               return;
@@ -73,7 +77,7 @@
           window.location.href = "index.html";
       }
 
-      // 2. DOM Listeners & OAuth
+      // 2. DOM Listeners & OAuth Initialization
       document.addEventListener('DOMContentLoaded', () => {
           handleHomeSession();
 
@@ -97,7 +101,7 @@
               closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
           }
 
-          // Strict Clean Target URL
+          // Direct Clean OAuth Callback Target
           const cleanRedirectUrl = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
 
           if (googleBtn) {
@@ -176,13 +180,23 @@
         <a href="PAGES/robotics.html" class="card"><h3>🤖 Robotics</h3><p>Hardware logic circuits & firmware.</p></a>
     </main>
 
+    <!-- Authentication Modal -->
     <div id="authModal" class="modal hidden">
         <div class="modal-content">
             <button id="closeModal" class="close-btn">&times;</button>
             <h2>Welcome to the Platform</h2>
             <p>Sign in securely to unlock your private developer dashboard tracking portal.</p>
+            
             <button id="githubAuthBtn" class="btn-auth github">Continue with GitHub</button>
             <button id="googleAuthBtn" class="btn-auth google">Continue with Google</button>
+
+            <!-- Terms & Privacy Links -->
+            <p class="auth-legal-terms" style="font-size: 0.75rem; color: #94a3b8; margin-top: 1.25rem; text-align: center;">
+                By logging in, you agree to our 
+                <a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank" style="color: #f59e0b; text-decoration: underline;">Terms of Service</a> 
+                and 
+                <a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="color: #f59e0b; text-decoration: underline;">Privacy Policy</a>.
+            </p>
         </div>
     </div>
 

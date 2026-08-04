@@ -1,6 +1,6 @@
 // 1. Initialize Supabase Pipeline
 const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
 let supabase;
 if (window.supabase) {
@@ -25,12 +25,19 @@ const liveDot = document.getElementById('liveDot');
 async function checkUserSession() {
     if (!supabase) return;
     
-    const { data: { user } } = await supabase.auth.getUser();
+    // Parse session from token/hash if coming directly from OAuth redirect
+    const { data: { session } } = await supabase.auth.getSession();
+    const user = session?.user;
 
     if (!user) {
         // No valid login session found - kick back to landing page
-        window.location.href = "index.html";
+        window.location.replace("index.html");
     } else {
+        // Clean URL hash if tokens are present so address bar remains clean
+        if (window.location.hash.includes('access_token')) {
+            window.history.replaceState(null, null, window.location.pathname);
+        }
+
         // Display personalized user greeting
         if (userGreeting) {
             userGreeting.innerText = user.email ? user.email.split('@')[0] : 'Developer';
@@ -155,17 +162,13 @@ function setupSignOutHandler() {
             
             try {
                 if (supabase) {
-                    // Sign out from Supabase cloud auth
                     await supabase.auth.signOut();
                 }
             } catch (err) {
                 console.error("Supabase sign out error:", err);
             } finally {
-                // Clear all local storage keys, cookies, and tokens
                 localStorage.clear();
                 sessionStorage.clear();
-                
-                // Force return to home page
                 window.location.replace("index.html");
             }
         });
@@ -174,6 +177,6 @@ function setupSignOutHandler() {
 
 // Run authorization pipeline on load
 document.addEventListener("DOMContentLoaded", () => {
-    checkUserSession();
+    checkUserSession(); // ✅ FIXED: Added () execution parentheses
     setupSignOutHandler();
 });

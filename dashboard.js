@@ -7,12 +7,7 @@ if (window.supabase) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-// Interactive IDE Elements
-const codeEditor = document.getElementById('codeEditor');
-const runCodeBtn = document.getElementById('runCodeBtn');
-const ideOutput = document.getElementById('ideOutput');
-
-// Dashboard UI Elements
+// UI Elements
 const userGreeting = document.getElementById('userGreeting');
 const sidebarBrand = document.getElementById('sidebarBrand');
 const adminPortalLink = document.getElementById('adminPortalLink');
@@ -20,64 +15,87 @@ const notificationsList = document.getElementById('notificationsList');
 const liveFrame = document.getElementById('liveFrame');
 const streamOffline = document.getElementById('streamOffline');
 const liveDot = document.getElementById('liveDot');
+const codeEditor = document.getElementById('codeEditor');
+const runCodeBtn = document.getElementById('runCodeBtn');
+const ideOutput = document.getElementById('ideOutput');
 
-// 2. Security Gate & Session Check
-async function checkUserSession() {
-    if (!supabase) return;
+// 2. Extract User Name & Update UI
+function applyUserIdentity(user) {
+    if (!user) return;
+
+    // Check Google / GitHub metadata first, fallback to email prefix, then Developer
+    const metadata = user.user_metadata || {};
+    const fullName = metadata.full_name || metadata.name || metadata.preferred_username;
     
-    // Parse session from token/hash if coming directly from OAuth redirect
-    const { data: { session } } = await supabase.auth.getSession();
-    const user = session?.user;
-
-    if (!user) {
-        // No valid login session found - kick back to landing page
-        window.location.replace("index.html");
+    let firstName = "";
+    if (fullName) {
+        firstName = fullName.split(' ')[0];
+    } else if (user.email) {
+        firstName = user.email.split('@')[0];
     } else {
-        // Clean URL hash if tokens are present so address bar stays clean
-        if (window.location.hash.includes('access_token')) {
-            window.history.replaceState(null, null, window.location.pathname);
-        }
+        firstName = "Developer";
+    }
 
-        // Extract user's actual display name (Google/GitHub full name -> email prefix -> fallback)
-        const fullName = user.user_metadata?.full_name || user.user_metadata?.name;
-        const firstName = fullName ? fullName.split(' ')[0] : null;
-        const emailName = user.email ? user.email.split('@')[0] : 'Developer';
-        const displayName = firstName || fullName || emailName;
+    // Capitalize first letter
+    const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
 
-        // Display personalized user greeting
-        if (userGreeting) {
-            userGreeting.innerText = displayName;
-        }
-
-        // Display personalized sidebar brand
-        if (sidebarBrand) {
-            sidebarBrand.innerText = `${displayName}'s Workspace`;
-        }
-        
-        // Verify if user has System Admin rights
-        checkAdminPrivileges(user.id);
-        
-        // Synchronize live events feed and video streams
-        syncLiveEvents();
+    if (userGreeting) {
+        userGreeting.innerText = displayName;
+    }
+    if (sidebarBrand) {
+        sidebarBrand.innerText = `${displayName}'s Workspace`;
     }
 }
 
-// 3. Admin Authorization Check
+// 3. Robust Session Listener
+function initAuthListener() {
+    if (!supabase) return;
+
+    // Listen for OAuth token parsing completion
+    supabase.auth.onAuthStateChange(async (event, session) => {
+        const user = session?.user;
+
+        if (!user) {
+            // No session active - send back to landing page
+            window.location.replace("index.html");
+        } else {
+            // Apply name to greeting and sidebar
+            applyUserIdentity(user);
+            
+            // Check admin status
+            checkAdminPrivileges(user.id);
+
+            // Clean OAuth hash tokens from browser bar
+            if (window.location.hash.includes('access_token')) {
+                window.history.replaceState(null, null, window.location.pathname);
+            }
+        }
+    });
+
+    // Also run initial database sync
+    syncLiveEvents();
+}
+
+// 4. Admin Privilege Checker
 async function checkAdminPrivileges(userId) {
     if (!supabase || !adminPortalLink) return;
 
-    const { data } = await supabase
-        .from('user_roles')
-        .select('is_admin')
-        .eq('id', userId)
-        .single();
-        
-    if (data && data.is_admin) {
-        adminPortalLink.classList.remove('hidden');
+    try {
+        const { data } = await supabase
+            .from('user_roles')
+            .select('is_admin')
+            .eq('id', userId)
+            .single();
+            
+        if (data && data.is_admin) {
+            adminPortalLink.classList.remove('hidden');
+        }
+    } catch (e) {
+        console.warn("Could not fetch user privileges:", e.message);
     }
 }
 
-// 4. Interactive Sandbox Engine (HTML/CSS Compiler)
+// 5. Interactive Compiler Engine
 if (runCodeBtn && codeEditor && ideOutput) {
     runCodeBtn.addEventListener('click', () => {
         const userCode = codeEditor.value;
@@ -88,32 +106,36 @@ if (runCodeBtn && codeEditor && ideOutput) {
     });
 }
 
-// 5. Real-Time Events Sync & Live Stream Controller
+// 6. Database Live Feed & Events Sync
 async function syncLiveEvents() {
     if (!supabase) return;
 
-    // Initial load of broadcasted events
-    const { data: events } = await supabase
-        .from('live_events')
-        .select('*')
-        .order('id', { ascending: false });
+    try {
+        const { data: events, error } = await supabase
+            .from('live_events')
+            .select('*')
+            .order('id', { ascending: false });
 
-    renderEvents(events || []);
+        if (error) {
+            if (notificationsList) {
+                notificationsList.innerHTML = '<p style="font-size:0.85rem; color:#94a3b8; padding: 0.5rem;">No active events listed.</p>';
+            }
+            return;
+        }
 
-    // Subscribe to live database updates
-    supabase
-        .channel('live_events_channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'live_events' }, () => {
-            syncLiveEvents();
-        })
-        .subscribe();
+        renderEvents(events || []);
+    } catch (err) {
+        if (notificationsList) {
+            notificationsList.innerHTML = '<p style="font-size:0.85rem; color:#94a3b8; padding: 0.5rem;">No active events listed.</p>';
+        }
+    }
 }
 
 function renderEvents(events) {
     if (!notificationsList) return;
     
     if (events.length === 0) {
-        notificationsList.innerHTML = '<p class="empty-feed" style="font-size:0.85rem; color:#64748b;">No active event listings scheduled.</p>';
+        notificationsList.innerHTML = '<p class="empty-feed" style="font-size:0.85rem; color:#94a3b8; padding: 0.5rem;">No active event listings scheduled.</p>';
         return;
     }
 
@@ -152,7 +174,6 @@ function renderEvents(events) {
         notificationsList.appendChild(card);
     });
 
-    // Reset video player container if no active live stream
     if (!streamActive) {
         if (liveFrame) {
             liveFrame.src = '';
@@ -163,20 +184,19 @@ function renderEvents(events) {
     }
 }
 
-// 6. Bulletproof Log Out Engine
+// 7. Sign Out Handler
 function setupSignOutHandler() {
-    const signOutBtn = document.getElementById('dashboardSignOutBtn') || document.querySelector('.btn-signout');
+    const signOutBtn = document.getElementById('dashboardSignOutBtn');
 
     if (signOutBtn) {
         signOutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-            
             try {
                 if (supabase) {
                     await supabase.auth.signOut();
                 }
             } catch (err) {
-                console.error("Supabase sign out error:", err);
+                console.error("Sign out issue:", err);
             } finally {
                 localStorage.clear();
                 sessionStorage.clear();
@@ -186,8 +206,8 @@ function setupSignOutHandler() {
     }
 }
 
-// Run authorization pipeline on load
+// Initialize on page load
 document.addEventListener("DOMContentLoaded", () => {
-    checkUserSession();
+    initAuthListener();
     setupSignOutHandler();
 });

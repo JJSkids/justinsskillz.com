@@ -7,7 +7,8 @@ if (window.supabase) {
     supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 }
 
-const PRIMARY_ADMIN_EMAIL = "hellojjskids@gmail.com";
+// Your Primary Admin Email
+const ADMIN_EMAILS = ["hellojjskids@gmail.com", "winifredemuekhare@gmail.com"];
 
 // DOM Elements
 const userGreeting = document.getElementById('userGreeting');
@@ -21,14 +22,14 @@ const codeEditor = document.getElementById('codeEditor');
 const runCodeBtn = document.getElementById('runCodeBtn');
 const ideOutput = document.getElementById('ideOutput');
 
-// 2. User Display Name Logic
+// 2. User Identity Engine
 function applyUserIdentity(user) {
     if (!user) return;
 
     const metadata = user.user_metadata || {};
     const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
     
-    let displayName = "Justin"; // Default brand name fallback
+    let displayName = "Developer";
     if (rawName) {
         displayName = rawName.split(' ')[0];
     } else if (user.email) {
@@ -40,73 +41,91 @@ function applyUserIdentity(user) {
     if (sidebarBrand) sidebarBrand.innerText = `${displayName}'s Workspace`;
 }
 
-// 3. Admin Authorization Engine
+// 3. Admin Unlock Engine
 function verifyAdminAccess(user) {
     if (!adminPortalLink || !user) return;
 
-    // Direct Email Match for Admin
-    if (user.email && user.email.toLowerCase() === PRIMARY_ADMIN_EMAIL.toLowerCase()) {
+    const userEmail = (user.email || "").toLowerCase();
+
+    // Direct check against admin email list
+    if (ADMIN_EMAILS.map(e => e.toLowerCase()).includes(userEmail)) {
         adminPortalLink.style.display = 'block';
+        adminPortalLink.classList.remove('hidden');
         return;
     }
 
-    // Database Fallback
+    // Database fallback
     if (supabase) {
         supabase.from('user_roles').select('is_admin').eq('id', user.id).single()
             .then(({ data }) => {
                 if (data && data.is_admin) {
                     adminPortalLink.style.display = 'block';
+                    adminPortalLink.classList.remove('hidden');
                 }
             })
             .catch(() => {});
     }
 }
 
-// 4. Session Listener
-function initDashboard() {
+// 4. Session & Auth Pipeline
+async function initDashboard() {
     if (!supabase) {
         syncLiveEvents();
         return;
     }
 
-    // Fetch active session or listen for OAuth hash return
-    supabase.auth.getSession().then(({ data: { session } }) => {
-        if (session?.user) {
-            applyUserIdentity(session.user);
-            verifyAdminAccess(session.user);
+    // Direct Session Check
+    const { data: { session } } = await supabase.auth.getSession();
+    
+    if (session?.user) {
+        applyUserIdentity(session.user);
+        verifyAdminAccess(session.user);
+    } else {
+        // If no user session exists at all, bounce back to login page
+        if (!window.location.hash.includes('access_token')) {
+            window.location.replace("index.html");
+            return;
         }
-    });
+    }
 
+    // Auth State Event Listener
     supabase.auth.onAuthStateChange((event, session) => {
         if (session?.user) {
             applyUserIdentity(session.user);
             verifyAdminAccess(session.user);
 
+            // Clean OAuth Hash from URL
             if (window.location.hash.includes('access_token')) {
                 window.history.replaceState(null, null, window.location.pathname);
             }
+        } else if (event === 'SIGNED_OUT') {
+            window.location.replace("index.html");
         }
     });
 
     syncLiveEvents();
 }
 
-// 5. Fail-Safe Log Out Engine
+// 5. Hard Log Out Function (Assigned to onclick)
 async function forceSignOut() {
+    // 1. Clear local browser storage immediately
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // 2. Clear Supabase auth cookies/tokens
     try {
         if (supabase) {
             await supabase.auth.signOut();
         }
-    } catch (e) {
-        console.warn("Signout warning:", e);
-    } finally {
-        localStorage.clear();
-        sessionStorage.clear();
-        window.location.replace("index.html");
+    } catch (err) {
+        console.warn("Signout error ignored:", err);
     }
+
+    // 3. Force redirect to main page without query parameters
+    window.location.href = "https://jjskids.github.io/justinsskillz.com/index.html";
 }
 
-// 6. Live Feed & Database Sync
+// 6. Live Feed Sync
 async function syncLiveEvents() {
     if (!notificationsList) return;
 
@@ -172,7 +191,7 @@ function renderEvents(events) {
     }
 }
 
-// 7. HTML/CSS Compiler Sandbox
+// 7. Compiler Engine
 if (runCodeBtn && codeEditor && ideOutput) {
     runCodeBtn.addEventListener('click', () => {
         const userCode = codeEditor.value;
@@ -183,7 +202,7 @@ if (runCodeBtn && codeEditor && ideOutput) {
     });
 }
 
-// Initialize on load
+// Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
     initDashboard();
 });

@@ -23,7 +23,7 @@
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      // 1. Safe Session Handler (Preserves Login Session)
+      // Safe Session Handler with Automatic URL Cleaning
       async function handleHomeSession() {
           if (!supabase) return;
 
@@ -33,7 +33,7 @@
               return;
           }
 
-          // Check for existing session in localStorage
+          // Read session from localStorage
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
 
@@ -41,6 +41,11 @@
           const signOutBtn = document.getElementById('signOutBtn');
           
           if (user) {
+              // Silently clear extra token characters from the address bar
+              if (window.location.hash) {
+                  window.history.replaceState(null, document.title, window.location.pathname);
+              }
+
               const metadata = user.user_metadata || {};
               const rawName = metadata.full_name || metadata.name || metadata.preferred_username || metadata.user_name;
               
@@ -68,7 +73,7 @@
           }
       }
 
-      // Explicit User-Driven Sign Out Only
+      // Explicit Sign Out Handler
       async function forceHomeSignOut(e) {
           if (e) e.preventDefault();
           
@@ -81,7 +86,7 @@
           window.location.href = "index.html";
       }
 
-      // 2. DOM Listeners & OAuth Initialization
+      // DOM Listeners & OAuth Initialization
       document.addEventListener('DOMContentLoaded', () => {
           handleHomeSession();
 
@@ -105,7 +110,6 @@
               closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
           }
 
-          // Direct Clean OAuth Callback Target
           const cleanRedirectUrl = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
 
           if (googleBtn) {
@@ -223,7 +227,7 @@
             <button id="githubAuthBtn" class="btn-auth github">Continue with GitHub</button>
             <button id="googleAuthBtn" class="btn-auth google">Continue with Google</button>
 
-            <!-- Matching Consent Screen Privacy & Terms Links -->
+            <!-- Legal Links -->
             <p class="auth-legal-terms" style="font-size: 0.75rem; color: #94a3b8; margin-top: 1.25rem; text-align: center;">
                 By logging in, you agree to our 
                 <a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank" style="color: #f59e0b; text-decoration: underline;">Terms of Service</a> 

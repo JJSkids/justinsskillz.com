@@ -3,89 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess AI Bot | Justin's Skillz</title>
+    <title>Chess AI Engine | Justin's Skillz</title>
     <link rel="stylesheet" href="../style.css">
     <style>
+        .board-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem auto;
+        }
         .chess-board {
             display: grid;
-            grid-template-columns: repeat(8, 45px);
-            grid-template-rows: repeat(8, 45px);
-            border: 3px solid #334155;
-            border-radius: 6px;
-            margin: 1.5rem auto;
-            width: 360px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            grid-template-columns: repeat(8, 50px);
+            grid-template-rows: repeat(8, 50px);
+            border: 4px solid #334155;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            user-select: none;
         }
         .square {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 26px;
+            font-size: 32px;
             cursor: pointer;
-            user-select: none;
+            transition: background-color 0.15s ease;
         }
-        .light { background-color: #cbd5e1; color: #0f172a; }
+        .light { background-color: #e2e8f0; color: #0f172a; }
         .dark { background-color: #475569; color: #f8fafc; }
         .selected { background-color: #f59e0b !important; }
-        .highlight { background-color: #34d399 !important; }
+        .valid-move { background-color: #34d399 !important; opacity: 0.85; }
+        .last-move { background-color: rgba(56, 189, 248, 0.4) !important; }
     </style>
 </head>
 <body>
     <header class="nav-header">
         <a href="../dashboard.html" class="btn btn-primary">← Workspace Dashboard</a>
-        <h2 style="margin: 0; font-size: 1.2rem; color: var(--accent-purple);">♟️ Custom AI Chess Bot</h2>
+        <h2 style="margin: 0; font-size: 1.2rem; color: var(--accent-purple);">♟️ Smart Chess AI Engine</h2>
     </header>
 
     <main class="container">
         <div class="card" style="text-align: center;">
-            <h1 style="margin-top: 0;">Play vs. Custom Logic Bot</h1>
-            <p style="color: var(--text-muted);">Select a piece (White) and click a square to move. The custom AI bot will evaluate the board state and respond automatically!</p>
+            <h1 style="margin-top: 0;">Play vs Smart Minimax Bot</h1>
+            <p style="color: var(--text-muted);">You play as <strong>White</strong> (bottom). Click a piece to view valid legal moves.</p>
 
             <div style="display: flex; justify-content: center; gap: 1rem; align-items: center; margin-bottom: 1rem;">
-                <label for="botDifficulty" style="font-weight: bold; color: #fff;">Bot Level:</label>
-                <select id="botDifficulty" class="input-field" style="background: var(--bg-card); width: auto;">
-                    <option value="1">Level 1: Tactical Greedy</option>
-                    <option value="2">Level 2: Material & Positional</option>
+                <label style="font-weight: bold; color: #fff;">Difficulty:</label>
+                <select id="botDepth" class="input-field" style="background: var(--bg-card); width: auto;">
+                    <option value="1">Easy (1-Ply Search)</option>
+                    <option value="2" selected>Medium (Tactical Minimax)</option>
+                    <option value="3">Hard (Deep Minimax + Positional)</option>
                 </select>
-                <button onclick="resetGame()" class="btn btn-purple">New Game</button>
+                <button onclick="resetGame()" class="btn btn-purple">Reset Game</button>
             </div>
 
-            <!-- Chess Board -->
-            <div id="board" class="chess-board"></div>
+            <div class="board-container">
+                <div id="board" class="chess-board"></div>
+            </div>
 
             <div id="statusBox" class="result-box" style="color: var(--accent-purple);">
-                Your move! Select a White piece to begin.
+                Your move! Click a White piece.
             </div>
         </div>
     </main>
 
     <script>
-      // Unicode Pieces Map
-      const SYMBOLS = {
+      const UNICODE_PIECES = {
         'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔',
-        'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', '': ''
+        'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚'
       };
 
-      // Material Values
-      const VALUES = { 'p': 10, 'n': 30, 'b': 30, 'r': 50, 'q': 90, 'k': 900,
-                       'P': 10, 'N': 30, 'B': 30, 'R': 50, 'Q': 90, 'K': 900 };
+      const PIECE_VALUES = {
+        'p': 100, 'n': 320, 'b': 330, 'r': 500, 'q': 900, 'k': 20000,
+        'P': 100, 'N': 320, 'B': 330, 'R': 500, 'Q': 900, 'K': 20000
+      };
 
-      // Initial Board Matrix
-      let boardState = [
+      // Positional Heatmaps to encourage smart piece placement
+      const PAWN_TABLE = [
+        [0,  0,  0,  0,  0,  0,  0,  0],
+        [50, 50, 50, 50, 50, 50, 50, 50],
+        [10, 10, 20, 30, 30, 20, 10, 10],
+        [ 5,  5, 10, 27, 27, 10,  5,  5],
+        [ 0,  0,  0, 20, 20,  0,  0,  0],
+        [ 5, -5,-10,  0,  0,-10, -5,  5],
+        [ 5, 10, 10,-20,-20, 10, 10,  5],
+        [ 0,  0,  0,  0,  0,  0,  0,  0]
+      ];
+
+      const KNIGHT_TABLE = [
+        [-50,-40,-30,-30,-30,-30,-40,-50],
+        [-40,-20,  0,  0,  0,  0,-20,-40],
+        [-30,  0, 10, 15, 15, 10,  0,-30],
+        [-30,  5, 15, 20, 20, 15,  5,-30],
+        [-30,  0, 15, 20, 20, 15,  0,-30],
+        [-30,  5, 10, 15, 15, 10,  5,-30],
+        [-40,-20,  0,  5,  5,  0,-20,-40],
+        [-50,-40,-30,-30,-30,-30,-40,-50]
+      ];
+
+      let board = [
         ['r','n','b','q','k','b','n','r'],
         ['p','p','p','p','p','p','p','p'],
-        ['','','','','','','',''],
-        ['','','','','','','',''],
-        ['','','','','','','',''],
-        ['','','','','','','',''],
+        [null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null],
+        [null,null,null,null,null,null,null,null],
         ['P','P','P','P','P','P','P','P'],
         ['R','N','B','Q','K','B','N','R']
       ];
 
-      let selectedSquare = null;
-      let turn = 'w'; // 'w' = Player, 'b' = Bot
+      let selected = null;
+      let validMoves = [];
+      let lastMove = null;
+      let isPlayerTurn = true;
 
       function renderBoard() {
         const boardElem = document.getElementById('board');
@@ -96,136 +129,241 @@
             const square = document.createElement('div');
             const isDark = (r + c) % 2 === 1;
             square.className = `square ${isDark ? 'dark' : 'light'}`;
-            square.dataset.row = r;
-            square.dataset.col = c;
             
-            const piece = boardState[r][c];
-            square.textContent = SYMBOLS[piece] || '';
-
-            if (selectedSquare && selectedSquare.r === r && selectedSquare.c === c) {
+            if (selected && selected.r === r && selected.c === c) {
               square.classList.add('selected');
+            } else if (validMoves.some(m => m.toR === r && m.toC === c)) {
+              square.classList.add('valid-move');
+            } else if (lastMove && ((lastMove.fromR === r && lastMove.fromC === c) || (lastMove.toR === r && lastMove.toC === c))) {
+              square.classList.add('last-move');
             }
 
-            square.addEventListener('click', () => handleSquareClick(r, c));
+            const piece = board[r][c];
+            if (piece) {
+              square.textContent = UNICODE_PIECES[piece];
+            }
+
+            square.onclick = () => handleSquareClick(r, c);
             boardElem.appendChild(square);
           }
         }
       }
 
       function handleSquareClick(r, c) {
-        if (turn !== 'w') return;
+        if (!isPlayerTurn) return;
 
-        const piece = boardState[r][c];
-        const isWhitePiece = piece && piece === piece.toUpperCase() && piece !== '';
+        const piece = board[r][c];
+        const isWhite = piece && piece === piece.toUpperCase();
 
-        if (selectedSquare) {
-          // If clicking the same piece, deselect
-          if (selectedSquare.r === r && selectedSquare.c === c) {
-            selectedSquare = null;
+        if (selected) {
+          const move = validMoves.find(m => m.toR === r && m.toC === c);
+          if (move) {
+            makeMove(move);
+            selected = null;
+            validMoves = [];
             renderBoard();
-            return;
-          }
-
-          // Move piece if target square is clicked
-          if (executeMove(selectedSquare.r, selectedSquare.c, r, c)) {
-            selectedSquare = null;
-            renderBoard();
-            turn = 'b';
+            
+            isPlayerTurn = false;
             document.getElementById('statusBox').innerText = "Bot is thinking...";
-            setTimeout(makeBotMove, 400); // Trigger Bot turn
+            setTimeout(triggerBot, 250);
             return;
           }
         }
 
-        if (isWhitePiece) {
-          selectedSquare = { r, c };
+        if (isWhite) {
+          selected = { r, c };
+          validMoves = getLegalMovesForPiece(r, c, board);
+          renderBoard();
+        } else {
+          selected = null;
+          validMoves = [];
           renderBoard();
         }
       }
 
-      function executeMove(fromR, fromC, toR, toC) {
-        const piece = boardState[fromR][fromC];
-        const target = boardState[toR][toC];
+      function makeMove(move) {
+        board[move.toR][move.toC] = board[move.fromR][move.fromC];
+        board[move.fromR][move.fromC] = null;
 
-        // Ensure player isn't capturing their own pieces
-        if (target && (piece === piece.toUpperCase()) === (target === target.toUpperCase())) {
-          return false;
-        }
+        // Auto Pawn Promotion to Queen
+        if (board[move.toR][move.toC] === 'P' && move.toR === 0) board[move.toR][move.toC] = 'Q';
+        if (board[move.toR][move.toC] === 'p' && move.toR === 7) board[move.toR][move.toC] = 'q';
 
-        // Apply Move
-        boardState[toR][toC] = piece;
-        boardState[fromR][fromC] = '';
-        return true;
+        lastMove = move;
       }
 
-      // Custom AI Bot Move Calculation Engine
-      function makeBotMove() {
-        const difficulty = parseInt(document.getElementById('botDifficulty').value);
-        let validMoves = [];
+      function getLegalMovesForPiece(r, c, b) {
+        const piece = b[r][c];
+        if (!piece) return [];
+        const isWhite = piece === piece.toUpperCase();
+        const moves = [];
 
-        // Scan board for Black pieces
-        for (let r = 0; r < 8; r++) {
-          for (let c = 0; c < 8; c++) {
-            const piece = boardState[r][c];
-            if (piece && piece === piece.toLowerCase()) {
-              // Generate candidate moves
-              for (let tr = 0; tr < 8; tr++) {
-                for (let tc = 0; tc < 8; tc++) {
-                  const target = boardState[tr][tc];
-                  const isWhiteTarget = target && target === target.toUpperCase();
-                  const isEmpty = target === '';
+        const directions = {
+          'R': [[1,0], [-1,0], [0,1], [0,-1]],
+          'B': [[1,1], [1,-1], [-1,1], [-1,-1]],
+          'N': [[2,1], [2,-1], [-2,1], [-2,-1], [1,2], [1,-2], [-1,2], [-1,-2]],
+          'K': [[1,0], [-1,0], [0,1], [0,-1], [1,1], [1,-1], [-1,1], [-1,-1]]
+        };
+        directions['Q'] = [...directions['R'], ...directions['B']];
 
-                  if (isEmpty || isWhiteTarget) {
-                    let moveScore = 0;
-                    if (isWhiteTarget) moveScore += VALUES[target] * 10; // Capture bonus
+        const pType = piece.toUpperCase();
 
-                    // Level 2 Positional evaluation: encourage moving towards board center
-                    if (difficulty === 2) {
-                      moveScore += (3.5 - Math.abs(3.5 - tr)) + (3.5 - Math.abs(3.5 - tc));
-                    }
+        // Pawn Moves
+        if (pType === 'P') {
+          const dir = isWhite ? -1 : 1;
+          const startRow = isWhite ? 6 : 1;
 
-                    validMoves.push({ fromR: r, fromC: c, toR: tr, toC: tc, score: moveScore });
-                  }
-                }
+          if (r + dir >= 0 && r + dir < 8 && !b[r + dir][c]) {
+            moves.push({ fromR: r, fromC: c, toR: r + dir, toC: c });
+            if (r === startRow && !b[r + 2 * dir][c]) {
+              moves.push({ fromR: r, fromC: c, toR: r + 2 * dir, toC: c });
+            }
+          }
+          // Captures
+          for (let dc of [-1, 1]) {
+            if (c + dc >= 0 && c + dc < 8) {
+              const target = b[r + dir]?.[c + dc];
+              if (target && (target === target.toUpperCase()) !== isWhite) {
+                moves.push({ fromR: r, fromC: c, toR: r + dir, toC: c + dc });
               }
+            }
+          }
+        } 
+        // Sliding & Jumping Pieces
+        else if (directions[pType]) {
+          const isSingleStep = pType === 'N' || pType === 'K';
+          for (let [dr, dc] of directions[pType]) {
+            let nr = r + dr, nc = c + dc;
+            while (nr >= 0 && nr < 8 && nc >= 0 && nc < 8) {
+              const target = b[nr][nc];
+              if (!target) {
+                moves.push({ fromR: r, fromC: c, toR: nr, toC: nc });
+              } else {
+                if ((target === target.toUpperCase()) !== isWhite) {
+                  moves.push({ fromR: r, fromC: c, toR: nr, toC: nc });
+                }
+                break;
+              }
+              if (isSingleStep) break;
+              nr += dr; nc += dc;
             }
           }
         }
 
-        if (validMoves.length === 0) {
-          document.getElementById('statusBox').innerText = "Game Over!";
-          return;
+        return moves;
+      }
+
+      function getAllMoves(b, isWhite) {
+        let allMoves = [];
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const piece = b[r][c];
+            if (piece && (piece === piece.toUpperCase()) === isWhite) {
+              allMoves.push(...getLegalMovesForPiece(r, c, b));
+            }
+          }
+        }
+        return allMoves;
+      }
+
+      // Board Evaluator (Positive = Good for Black, Negative = Good for White)
+      function evaluateBoard(b) {
+        let score = 0;
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const piece = b[r][c];
+            if (!piece) continue;
+            
+            const isBlack = piece === piece.toLowerCase();
+            const val = PIECE_VALUES[piece];
+            let positional = 0;
+
+            if (piece.toUpperCase() === 'P') positional = PAWN_TABLE[isBlack ? r : 7 - r][c];
+            if (piece.toUpperCase() === 'N') positional = KNIGHT_TABLE[isBlack ? r : 7 - r][c];
+
+            const totalVal = val + positional;
+            score += isBlack ? totalVal : -totalVal;
+          }
+        }
+        return score;
+      }
+
+      // Minimax Search Algorithm
+      function minimax(b, depth, alpha, beta, isMaximizing) {
+        if (depth === 0) return { score: evaluateBoard(b) };
+
+        const moves = getAllMoves(b, !isMaximizing);
+        if (moves.length === 0) return { score: evaluateBoard(b) };
+
+        let bestMove = null;
+
+        if (isMaximizing) { // Black Bot Turn
+          let maxEval = -Infinity;
+          for (let move of moves) {
+            let copy = b.map(row => [...row]);
+            copy[move.toR][move.toC] = copy[move.fromR][move.fromC];
+            copy[move.fromR][move.fromC] = null;
+
+            let evaluation = minimax(copy, depth - 1, alpha, beta, false).score;
+            if (evaluation > maxEval) {
+              maxEval = evaluation;
+              bestMove = move;
+            }
+            alpha = Math.max(alpha, evaluation);
+            if (beta <= alpha) break;
+          }
+          return { score: maxEval, move: bestMove };
+        } else { // White Player Turn
+          let minEval = Infinity;
+          for (let move of moves) {
+            let copy = b.map(row => [...row]);
+            copy[move.toR][move.toC] = copy[move.fromR][move.fromC];
+            copy[move.fromR][move.fromC] = null;
+
+            let evaluation = minimax(copy, depth - 1, alpha, beta, true).score;
+            if (evaluation < minEval) {
+              minEval = evaluation;
+              bestMove = move;
+            }
+            beta = Math.min(beta, evaluation);
+            if (beta <= alpha) break;
+          }
+          return { score: minEval, move: bestMove };
+        }
+      }
+
+      function triggerBot() {
+        const depth = parseInt(document.getElementById('botDepth').value);
+        const result = minimax(board, depth, -Infinity, Infinity, true);
+
+        if (result.move) {
+          makeMove(result.move);
+          document.getElementById('statusBox').innerText = "Your move! Select a White piece.";
+        } else {
+          document.getElementById('statusBox').innerText = "Checkmate or Stalemate!";
         }
 
-        // Sort moves by score & pick top move
-        validMoves.sort((a, b) => b.score - a.score);
-        
-        // Add slight randomness among top 3 tactical moves
-        const topSlice = validMoves.slice(0, Math.min(3, validMoves.length));
-        const chosenMove = topSlice[Math.floor(Math.random() * topSlice.length)];
-
-        executeMove(chosenMove.fromR, chosenMove.fromC, chosenMove.toR, chosenMove.toC);
-        
-        turn = 'w';
+        isPlayerTurn = true;
         renderBoard();
-        document.getElementById('statusBox').innerText = "Your move! Select a White piece.";
       }
 
       function resetGame() {
-        boardState = [
+        board = [
           ['r','n','b','q','k','b','n','r'],
           ['p','p','p','p','p','p','p','p'],
-          ['','','','','','','',''],
-          ['','','','','','','',''],
-          ['','','','','','','',''],
-          ['','','','','','','',''],
+          [null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null],
+          [null,null,null,null,null,null,null,null],
           ['P','P','P','P','P','P','P','P'],
           ['R','N','B','Q','K','B','N','R']
         ];
-        selectedSquare = null;
-        turn = 'w';
+        selected = null;
+        validMoves = [];
+        lastMove = null;
+        isPlayerTurn = true;
+        document.getElementById('statusBox').innerText = "Board reset. Your turn!";
         renderBoard();
-        document.getElementById('statusBox').innerText = "Game reset. Your move!";
       }
 
       window.onload = renderBoard;

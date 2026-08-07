@@ -8,7 +8,6 @@
     <title>Justin's Skillz | Interactive Tech Platform</title>
     <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals through interactive workspaces and real-time code environments.">
     
-    <!-- Favicon Fix -->
     <link rel="icon" href="Justin's Skillz.jpg" type="image/jpeg">
     <link rel="stylesheet" href="style.css">
 
@@ -52,37 +51,65 @@
         </div>
     </section>
 
-    <!-- Features Grid -->
+    <!-- Features Grid with Quick Interactive Lessons -->
     <main id="functionality" class="container">
-        <h2 style="text-align: center; margin-bottom: 1.5rem;">Platform Learning Modules</h2>
+        <h2 style="text-align: center; margin-bottom: 0.5rem;">Platform Learning Modules</h2>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Click any module below to start an interactive lesson or launch the full sandbox!</p>
         
         <div class="grid-layout">
-            <a href="PAGES/coding.html" class="module-card">
+            <!-- Coding -->
+            <div class="module-card" onclick="openLesson('coding')">
                 <h3 style="color: var(--accent-blue);">💻 Interactive Code IDE</h3>
-                <p>Write HTML, CSS, and JavaScript directly in your browser with real-time output rendering.</p>
-            </a>
-            <a href="PAGES/math.html" class="module-card">
+                <p>Learn core HTML5 tags, CSS flexbox layouts, and JavaScript event listeners.</p>
+                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            </div>
+
+            <!-- Math -->
+            <div class="module-card" onclick="openLesson('math')">
                 <h3 style="color: var(--accent-amber);">📐 Advanced Mathematics</h3>
-                <p>Interactive problem solving covering algebra, proofs, matrices, and complex numbers.</p>
-            </a>
-            <a href="PAGES/robotics.html" class="module-card">
+                <p>Master algebra fundamentals, quadratic formulas, and Euler's polar form.</p>
+                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            </div>
+
+            <!-- Robotics / Scripting -->
+            <div class="module-card" onclick="openLesson('robotics')">
                 <h3 style="color: var(--accent-green);">🤖 Logic & Scripting</h3>
-                <p>Learn hardware control logic, block scripting, and firmware mechanics.</p>
-            </a>
-            <a href="PAGES/chess.html" class="module-card">
+                <p>Explore conditional logic, loop iterations, and event-driven block commands.</p>
+                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            </div>
+
+            <!-- Chess -->
+            <div class="module-card" onclick="openLesson('chess')">
                 <h3 style="color: var(--accent-purple);">♟️ Logic Tracking & Chess</h3>
-                <p>Play against a custom Minimax AI engine with castling, en passant, and checkmate detection.</p>
-            </a>
-            <a href="PAGES/french.html" class="module-card">
+                <p>Study opening principles, tactics (forks & pins), and the Minimax AI tree search algorithm.</p>
+                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            </div>
+
+            <!-- French -->
+            <div class="module-card" onclick="openLesson('french')">
                 <h3 style="color: #f472b6;">🇫🇷 Language Modules</h3>
-                <p>Grammar engines and verb conjugation practice.</p>
-            </a>
-            <a href="PAGES/music.html" class="module-card">
+                <p>Master French verb conjugations (Être, Avoir, Aller) and sentence structures.</p>
+                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            </div>
+
+            <!-- Music -->
+            <div class="module-card" onclick="openLesson('music')">
                 <h3 style="color: #fbbf24;">🎹 Music Theory</h3>
-                <p>Composition rules, rhythm dynamics, and synth player.</p>
-            </a>
+                <p>Understand scale intervals, chord triads (Major/Minor), and rhythm time signatures.</p>
+                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            </div>
         </div>
     </main>
+
+    <!-- Lesson Overlay Modal -->
+    <div id="lessonModal" class="auth-modal-overlay hidden" onclick="closeLessonOnBackdrop(event)">
+        <div class="auth-modal-card" style="max-width: 600px; max-height: 85vh; overflow-y: auto;">
+            <button type="button" class="close-btn" onclick="closeLesson()">&times;</button>
+            <div id="lessonContent">
+                <!-- Content gets dynamically populated by JS -->
+            </div>
+        </div>
+    </div>
 
     <!-- Interactive Authentication Modal -->
     <div id="authModal" class="auth-modal-overlay hidden" onclick="closeModalOnBackdrop(event)">
@@ -117,9 +144,8 @@
 
     <!-- Main Controller Script -->
     <script>
-      // 1. Declare modal handlers on window scope immediately
+      // 1. Modal Functions
       window.openModal = function() {
-          console.log("Opening auth modal...");
           const modal = document.getElementById('authModal');
           if (modal) {
               modal.style.display = 'flex';
@@ -136,12 +162,110 @@
       };
 
       window.closeModalOnBackdrop = function(e) {
-          if (e.target.id === 'authModal') {
-              window.closeModal();
+          if (e.target.id === 'authModal') window.closeModal();
+      };
+
+      // 2. Interactive Course Lessons Data & Handlers
+      const lessonsData = {
+          coding: {
+              title: "💻 Web Development: JavaScript DOM Events",
+              concept: "JavaScript interacts with HTML elements by listening for user triggers (like clicks or key presses).",
+              example: "document.querySelector('button').addEventListener('click', () => {\n  alert('Hello World!');\n});",
+              challenge: "Why do we use event.preventDefault() in form handlers?",
+              answer: "It stops the default page refresh behavior when submitting forms.",
+              link: "PAGES/coding.html"
+          },
+          math: {
+              title: "📐 Mathematics: The Quadratic Formula",
+              concept: "Used to find the roots (x-intercepts) of any quadratic equation in the form ax² + bx + c = 0.",
+              example: "x = (-b ± √(b² - 4ac)) / (2a)",
+              challenge: "What does it mean if the discriminant (b² - 4ac) is negative?",
+              answer: "The equation has no real solutions, but two complex/imaginary solutions!",
+              link: "PAGES/math.html"
+          },
+          robotics: {
+              title: "🤖 Logic & Scripting: Conditional Loops",
+              concept: "Programs make decisions using IF statements and repeat tasks using WHILE or FOR loops.",
+              example: "while (robot.hasBattery()) {\n  robot.moveForward();\n  if (robot.detectsObstacle()) robot.turnLeft();\n}",
+              challenge: "What happens if a while loop condition is always true?",
+              answer: "It creates an infinite loop that can freeze or crash your script execution.",
+              link: "PAGES/robotics.html"
+          },
+          chess: {
+              title: "♟️ Logic Tracking: Minimax Search Trees",
+              concept: "Chess AI calculates future board positions by projecting moves ahead and choosing the maximum score while assuming the opponent makes the optimal move.",
+              example: "Evaluation = (White Material) - (Black Material) + Position Bonus",
+              challenge: "What optimization technique speeds up Minimax searching?",
+              answer: "Alpha-Beta Pruning, which eliminates branches that don't need to be calculated.",
+              link: "PAGES/chess.html"
+          },
+          french: {
+              title: "🇫🇷 Language: Present Tense Conjugation",
+              concept: "Regular -ER verbs follow a reliable ending pattern: -e, -es, -e, -ons, -ez, -ent.",
+              example: "Parler (To speak):\nJe parle, Tu parles, Il/Elle parle,\nNous parlons, Vous parlez, Ils/Elles parlent.",
+              challenge: "Conjugate 'Avoir' (To have) for 'Nous':",
+              answer: "Nous avons",
+              link: "PAGES/french.html"
+          },
+          music: {
+              title: "🎹 Music Theory: Building Triad Chords",
+              concept: "A major triad chord consists of a Root note, a Major 3rd (4 semitones up), and a Perfect 5th (7 semitones up).",
+              example: "C Major Chord = C (Root) + E (Major 3rd) + G (Perfect 5th)",
+              challenge: "How do you turn a Major triad into a Minor triad?",
+              answer: "Lower the middle note (the 3rd) by one half-step (flat the 3rd).",
+              link: "PAGES/music.html"
           }
       };
 
-      // 2. Safe Supabase Initialization (Prevents "already declared" SyntaxError)
+      window.openLesson = function(moduleKey) {
+          const lesson = lessonsData[moduleKey];
+          if (!lesson) return;
+
+          const contentDiv = document.getElementById('lessonContent');
+          contentDiv.innerHTML = `
+              <h2 style="margin-top: 0;">${lesson.title}</h2>
+              <div style="background: rgba(15, 23, 42, 0.6); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-card); margin-bottom: 1rem;">
+                  <h4 style="color: var(--accent-amber); margin-bottom: 0.5rem;">Core Concept</h4>
+                  <p style="margin: 0; font-size: 0.95rem; color: var(--text-main);">${lesson.concept}</p>
+              </div>
+              <div style="background: #0f172a; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-card); margin-bottom: 1rem; font-family: monospace;">
+                  <h4 style="color: var(--accent-blue); margin-top: 0; margin-bottom: 0.5rem;">Code / Formula Preview</h4>
+                  <pre style="margin: 0; white-space: pre-wrap; color: #34d399;">${lesson.example}</pre>
+              </div>
+              <div style="margin-bottom: 1.5rem;">
+                  <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem;">Quick Practice Challenge</h4>
+                  <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>Q:</strong> ${lesson.challenge}</p>
+                  <details style="cursor: pointer; color: var(--accent-blue); font-size: 0.9rem;">
+                      <summary>Reveal Answer</summary>
+                      <p style="margin-top: 0.5rem; color: var(--text-main); font-weight: bold;">${lesson.answer}</p>
+                  </details>
+              </div>
+              <div style="display: flex; gap: 0.75rem;">
+                  <a href="${lesson.link}" class="btn btn-primary" style="flex: 1; text-align: center;">Open Full Workspace Sandbox</a>
+                  <button type="button" class="btn btn-outline" onclick="closeLesson()">Close</button>
+              </div>
+          `;
+
+          const modal = document.getElementById('lessonModal');
+          if (modal) {
+              modal.style.display = 'flex';
+              modal.classList.remove('hidden');
+          }
+      };
+
+      window.closeLesson = function() {
+          const modal = document.getElementById('lessonModal');
+          if (modal) {
+              modal.style.display = 'none';
+              modal.classList.add('hidden');
+          }
+      };
+
+      window.closeLessonOnBackdrop = function(e) {
+          if (e.target.id === 'lessonModal') window.closeLesson();
+      };
+
+      // 3. Supabase Safe Init
       const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
@@ -155,14 +279,14 @@
           }
       }
 
-      // 3. OAuth Token Redirect Handler
+      // 4. OAuth Token Redirect Handler
       if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
           const hash = window.location.hash;
           const cleanBase = window.location.origin + window.location.pathname.replace(/index\.html?$/, '');
           window.location.replace(cleanBase + "dashboard.html" + hash);
       }
 
-      // 4. Session Checker
+      // 5. Active Session Checker
       async function checkSession() {
           if (!window.supabaseClient) return;
           try {
@@ -187,7 +311,7 @@
           }
       }
 
-      // 5. DOM Ready Event Binding
+      // 6. Event Binding on DOM Load
       document.addEventListener('DOMContentLoaded', () => {
           checkSession();
 

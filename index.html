@@ -3,7 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-site-verification" content="-G-q80QQ0dQaOWtbVUCFJTeXUYTpr5iWsDHCQaGpNic" />
+
     <title>Justin's Skillz | Interactive Tech Platform</title>
+    <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals through interactive workspaces and real-time code environments.">
+    
+    <!-- Favicon Fix -->
+    <link rel="icon" href="Justin's Skillz.jpg" type="image/jpeg">
     <link rel="stylesheet" href="style.css">
 
     <!-- Supabase Client -->
@@ -25,7 +31,6 @@
         </nav>
         <div class="nav-right">
             <div id="authNavContainer">
-                <!-- Inline onclick guarantees the click works even if other scripts fail -->
                 <button id="signInBtn" type="button" class="btn btn-primary" onclick="openModal()">Sign In</button>
             </div>
             <button id="signOutBtn" type="button" class="btn btn-danger hidden">Sign Out</button>
@@ -79,7 +84,7 @@
         </div>
     </main>
 
-    <!-- Authentication Modal Overlay -->
+    <!-- Interactive Authentication Modal -->
     <div id="authModal" class="auth-modal-overlay hidden" onclick="closeModalOnBackdrop(event)">
         <div class="auth-modal-card">
             <button id="closeModal" type="button" class="close-btn" onclick="closeModal()">&times;</button>
@@ -112,47 +117,56 @@
 
     <!-- Main Controller Script -->
     <script>
+      // 1. Declare modal handlers on window scope immediately
+      window.openModal = function() {
+          console.log("Opening auth modal...");
+          const modal = document.getElementById('authModal');
+          if (modal) {
+              modal.style.display = 'flex';
+              modal.classList.remove('hidden');
+          }
+      };
+
+      window.closeModal = function() {
+          const modal = document.getElementById('authModal');
+          if (modal) {
+              modal.style.display = 'none';
+              modal.classList.add('hidden');
+          }
+      };
+
+      window.closeModalOnBackdrop = function(e) {
+          if (e.target.id === 'authModal') {
+              window.closeModal();
+          }
+      };
+
+      // 2. Safe Supabase Initialization (Prevents "already declared" SyntaxError)
       const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
-      // Global Modal Functions
-      function openModal() {
-          const modal = document.getElementById('authModal');
-          if (modal) modal.classList.remove('hidden');
-      }
-
-      function closeModal() {
-          const modal = document.getElementById('authModal');
-          if (modal) modal.classList.add('hidden');
-      }
-
-      function closeModalOnBackdrop(e) {
-          if (e.target.id === 'authModal') {
-              closeModal();
+      if (typeof window.supabaseClient === 'undefined') {
+          try {
+              if (window.supabase && typeof window.supabase.createClient === 'function') {
+                  window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+              }
+          } catch (err) {
+              console.warn("Supabase client init note:", err);
           }
       }
 
-      // Initialize Supabase
-      let supabase = null;
-      try {
-        if (window.supabase && typeof window.supabase.createClient === 'function') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
-      } catch (err) {
-        console.warn("Supabase init deferred:", err);
-      }
-
-      // OAuth Token Handler
+      // 3. OAuth Token Redirect Handler
       if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
           const hash = window.location.hash;
           const cleanBase = window.location.origin + window.location.pathname.replace(/index\.html?$/, '');
           window.location.replace(cleanBase + "dashboard.html" + hash);
       }
 
+      // 4. Session Checker
       async function checkSession() {
-          if (!supabase) return;
+          if (!window.supabaseClient) return;
           try {
-              const { data: { session } } = await supabase.auth.getSession();
+              const { data: { session } } = await window.supabaseClient.auth.getSession();
               if (session?.user) {
                   const metadata = session.user.user_metadata || {};
                   const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
@@ -169,10 +183,11 @@
                   }
               }
           } catch(e) {
-              console.log("Session check skipped:", e);
+              console.log("Session check bypassed:", e);
           }
       }
 
+      // 5. DOM Ready Event Binding
       document.addEventListener('DOMContentLoaded', () => {
           checkSession();
 
@@ -183,8 +198,8 @@
           if (googleBtn) {
               googleBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
-                  if (!supabase) return alert("Auth service loading, please try again in a second.");
-                  await supabase.auth.signInWithOAuth({
+                  if (!window.supabaseClient) return alert("Auth service loading, please try again.");
+                  await window.supabaseClient.auth.signInWithOAuth({
                       provider: 'google',
                       options: { redirectTo: targetRedirect, queryParams: { prompt: 'select_account' } }
                   });
@@ -194,8 +209,8 @@
           if (githubBtn) {
               githubBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
-                  if (!supabase) return alert("Auth service loading, please try again in a second.");
-                  await supabase.auth.signInWithOAuth({
+                  if (!window.supabaseClient) return alert("Auth service loading, please try again.");
+                  await window.supabaseClient.auth.signInWithOAuth({
                       provider: 'github',
                       options: { redirectTo: targetRedirect }
                   });
@@ -206,7 +221,7 @@
           if (signOutBtn) {
               signOutBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
-                  if (supabase) await supabase.auth.signOut();
+                  if (window.supabaseClient) await window.supabaseClient.auth.signOut();
                   localStorage.clear();
                   sessionStorage.clear();
                   window.location.href = "index.html";

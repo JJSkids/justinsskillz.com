@@ -19,6 +19,8 @@
             --primary-blue: #4f46e5;
             --border-color: #334155;
             --code-bg: #090d16;
+            --green-accent: #10b981;
+            --purple-accent: #8b5cf6;
         }
 
         * {
@@ -38,7 +40,7 @@
         }
 
         .dashboard-header {
-            background-color: rgba(30, 41, 59, 0.8);
+            background-color: rgba(30, 41, 59, 0.85);
             backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--border-color);
             padding: 1rem 2rem;
@@ -158,7 +160,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1.25rem;
         }
 
         .section-header h2 {
@@ -174,7 +177,7 @@
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 1.75rem;
-            margin-bottom: 2.5rem;
+            margin-bottom: 2rem;
         }
 
         .subject-badge {
@@ -190,6 +193,11 @@
             margin-bottom: 0.75rem;
         }
 
+        .badge-math { background: #d97706; }
+        .badge-french { background: #2563eb; }
+        .badge-chess { background: #7c3aed; }
+        .badge-robotics { background: #059669; }
+
         .subject-title {
             font-size: 1.5rem;
             margin-bottom: 0.5rem;
@@ -204,7 +212,7 @@
 
         .topic-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.25rem;
         }
 
@@ -253,52 +261,13 @@
             gap: 0.25rem;
         }
 
-        .other-subjects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 1.25rem;
-            margin-bottom: 3rem;
-        }
-
-        .subject-card-small {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 1.25rem;
-            text-decoration: none;
-            color: inherit;
-            transition: all 0.2s ease;
-            display: block;
-        }
-
-        .subject-card-small:hover {
-            background: var(--card-hover);
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        .subject-card-small h3 {
-            font-size: 1.1rem;
-            color: #ffffff;
-            margin-bottom: 0.4rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .subject-card-small p {
-            font-size: 0.85rem;
-            color: var(--muted-color);
-            margin-bottom: 0.75rem;
-        }
-
         .dashboard-footer {
             border-top: 1px solid var(--border-color);
             padding: 1.5rem;
             text-align: center;
             color: var(--muted-color);
             font-size: 0.85rem;
-            margin-top: auto;
+            margin-top: 3rem;
         }
 
         .dashboard-footer a {
@@ -327,94 +296,205 @@
         
         <section class="welcome-banner">
             <div class="welcome-text">
-                <h1>Developer Learning Workspace</h1>
+                <h1>Developer & Learning Workspace</h1>
                 <p>Welcome back! Choose a course module below to launch your interactive learning environment.</p>
             </div>
             <span class="status-tag">⚡ Active Session</span>
         </section>
 
-        <!-- Main Featured Subject: Coding -->
+        <!-- 1. CODING TRACK -->
         <div class="section-header">
-            <h2>💻 Featured Course: Computer Science & Web Development</h2>
+            <h2>💻 Coding & Web Development</h2>
         </div>
-
         <section class="featured-subject">
             <span class="subject-badge">Interactive Track</span>
-            <h3 class="subject-title">Coding & Web Tools</h3>
-            <p class="subject-desc">Master web architecture, write browser scripts, interact with databases, and automate logic in real-time.</p>
+            <h3 class="subject-title">Full-Stack Web Development & Scripting</h3>
+            <p class="subject-desc">Master HTML5, styling, client-side logic, and database API integrations.</p>
 
             <div class="topic-grid">
-                
                 <a href="PAGES/coding.html" class="topic-card">
                     <div>
                         <div class="topic-icon">🌐</div>
-                        <h4>HTML5 & Modern CSS</h4>
-                        <p>Learn responsive layout design, flexbox alignment, and styled web pages.</p>
+                        <h4>HTML5 & Responsive Layouts</h4>
+                        <p>Flexbox layout grids, semantic components, and mobile design.</p>
                     </div>
-                    <span class="topic-link">Start Coding Course &rarr;</span>
+                    <span class="topic-link">Start Module &rarr;</span>
                 </a>
 
                 <a href="PAGES/coding.html" class="topic-card">
                     <div>
                         <div class="topic-icon">⚡</div>
-                        <h4>JavaScript & Web Logic</h4>
-                        <p>Build dynamic interfaces, handle events, dynamic variables, and DOM manipulation.</p>
+                        <h4>JavaScript Async & DOM</h4>
+                        <p>Event listeners, fetch requests, promises, and dynamic UI states.</p>
                     </div>
-                    <span class="topic-link">Start Coding Course &rarr;</span>
+                    <span class="topic-link">Start Module &rarr;</span>
                 </a>
 
                 <a href="PAGES/coding.html" class="topic-card">
                     <div>
                         <div class="topic-icon">🗄️</div>
-                        <h4>Supabase & Databases</h4>
-                        <p>Configure user authentication, store data, and handle live API sessions.</p>
+                        <h4>Supabase & Auth Mechanics</h4>
+                        <p>User sessions, database record storage, and row-level security.</p>
                     </div>
-                    <span class="topic-link">Start Coding Course &rarr;</span>
+                    <span class="topic-link">Start Module &rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 2. MATHEMATICS TRACK -->
+        <div class="section-header">
+            <h2>📐 Advanced Mathematics</h2>
+        </div>
+        <section class="featured-subject">
+            <span class="subject-badge badge-math">Problem Solving Track</span>
+            <h3 class="subject-title">Algebra, Complex Numbers & Competition Math</h3>
+            <p class="subject-desc">Master mathematical structures, quadratic transformations, and contest problem-solving techniques.</p>
+
+            <div class="topic-grid">
+                <a href="PAGES/math.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">📊</div>
+                        <h4>Quadratic Equations & Graphs</h4>
+                        <p>Parabola vertex formulas, discriminant analysis, and root proofs.</p>
+                    </div>
+                    <span class="topic-link">Start Math Module &rarr;</span>
+                </a>
+
+                <a href="PAGES/math.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">🌀</div>
+                        <h4>Complex Numbers & Polar Coordinates</h4>
+                        <p>Argand plane representations, Euler's formula, and polar vectors.</p>
+                    </div>
+                    <span class="topic-link">Start Math Module &rarr;</span>
+                </a>
+
+                <a href="PAGES/math.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">🏆</div>
+                        <h4>Math Competition Training</h4>
+                        <p>Combinatorics, permutations, modular arithmetic, and timed drills.</p>
+                    </div>
+                    <span class="topic-link">Start Math Module &rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 3. FRENCH LANGUAGE TRACK -->
+        <div class="section-header">
+            <h2>🇫🇷 French Language</h2>
+        </div>
+        <section class="featured-subject">
+            <span class="subject-badge badge-french">Language Mastery Track</span>
+            <h3 class="subject-title">Grammar, Conjugation & Vocabulary</h3>
+            <p class="subject-desc">Interactive conjugation engines, tense rules, and structured writing exercises.</p>
+
+            <div class="topic-grid">
+                <a href="PAGES/french.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">✍️</div>
+                        <h4>Verb Conjugations & Tenses</h4>
+                        <p>Présent, Passé Composé, Imparfait, and Futur Simple rules.</p>
+                    </div>
+                    <span class="topic-link">Start French Module &rarr;</span>
+                </a>
+
+                <a href="PAGES/french.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">📚</div>
+                        <h4>Grammar & Sentence Structures</h4>
+                        <p>Direct/indirect pronouns, adjective agreement, and clause alignment.</p>
+                    </div>
+                    <span class="topic-link">Start French Module &rarr;</span>
+                </a>
+
+                <a href="PAGES/french.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">🎯</div>
+                        <h4>Interactive Translation Drills</h4>
+                        <p>Contextual paragraph translations and real-time feedback exercises.</p>
+                    </div>
+                    <span class="topic-link">Start French Module &rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 4. CHESS STRATEGY TRACK -->
+        <div class="section-header">
+            <h2>♟️ Chess Strategy</h2>
+        </div>
+        <section class="featured-subject">
+            <span class="subject-badge badge-chess">Tactical Track</span>
+            <h3 class="subject-title">Tactics, Openings & Endgame Theory</h3>
+            <p class="subject-desc">Analyze board positions, calculate variations, and solve strategic chess puzzles.</p>
+
+            <div class="topic-grid">
+                <a href="PAGES/chess.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">🧩</div>
+                        <h4>Tactical Patterns & Puzzles</h4>
+                        <p>Forks, pins, skewers, discovered attacks, and forced checkmates.</p>
+                    </div>
+                    <span class="topic-link">Start Chess Module &rarr;</span>
+                </a>
+
+                <a href="PAGES/chess.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">🏰</div>
+                        <h4>Opening Principles & Control</h4>
+                        <p>Center control, piece development, king safety, and key lines.</p>
+                    </div>
+                    <span class="topic-link">Start Chess Module &rarr;</span>
+                </a>
+
+                <a href="PAGES/chess.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">👑</div>
+                        <h4>Pawn Structure & Endgames</h4>
+                        <p>Opposition, passed pawns, rook endgames, and winning technique.</p>
+                    </div>
+                    <span class="topic-link">Start Chess Module &rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 5. ROBOTICS & LOGIC TRACK -->
+        <div class="section-header">
+            <h2>🤖 Robotics & Logic Mechanics</h2>
+        </div>
+        <section class="featured-subject">
+            <span class="subject-badge badge-robotics">Engineering Track</span>
+            <h3 class="subject-title">Automation Logic & Scripting Mechanics</h3>
+            <p class="subject-desc">Learn command systems, hardware circuits, and logic gate architectures.</p>
+
+            <div class="topic-grid">
+                <a href="PAGES/robotics.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">⚙️</div>
+                        <h4>Command Block & Server Logic</h4>
+                        <p>Scoreboard objectives, execution rules, and automated server loops.</p>
+                    </div>
+                    <span class="topic-link">Start Logic Module &rarr;</span>
                 </a>
 
                 <a href="PAGES/robotics.html" class="topic-card">
                     <div>
-                        <div class="topic-icon">🤖</div>
-                        <h4>Hardware & Scripting</h4>
-                        <p>Automation logic, block commands, and firmware circuit principles.</p>
+                        <div class="topic-icon">🔌</div>
+                        <h4>Circuit Logic & Digital Gates</h4>
+                        <p>AND/OR/XOR gates, pulse generators, and signal routing.</p>
                     </div>
-                    <span class="topic-link">Start Robotics Course &rarr;</span>
+                    <span class="topic-link">Start Circuit Module &rarr;</span>
                 </a>
 
+                <a href="PAGES/robotics.html" class="topic-card">
+                    <div>
+                        <div class="topic-icon">🎮</div>
+                        <h4>Game Mechanics Engineering</h4>
+                        <p>Custom loot drop tables, spawn conditions, and event triggers.</p>
+                    </div>
+                    <span class="topic-link">Start Mechanics Module &rarr;</span>
+                </a>
             </div>
-        </section>
-
-        <!-- All Other Learning Tracks -->
-        <div class="section-header">
-            <h2>📚 Course Catalog</h2>
-        </div>
-
-        <section class="other-subjects-grid">
-            
-            <a href="PAGES/math.html" class="subject-card-small">
-                <h3>📐 Mathematics</h3>
-                <p>Algebra, quadratic equations, proofs, and matrix logic structures.</p>
-                <span class="topic-link">Enter Course &rarr;</span>
-            </a>
-
-            <a href="PAGES/french.html" class="subject-card-small">
-                <h3>🇫🇷 French Language</h3>
-                <p>Grammar engines, verb conjugations, and vocabulary mastery.</p>
-                <span class="topic-link">Enter Course &rarr;</span>
-            </a>
-
-            <a href="PAGES/chess.html" class="subject-card-small">
-                <h3>♟️ Chess Strategy</h3>
-                <p>Positional tracking, tactical puzzles, and strategic endgame theory.</p>
-                <span class="topic-link">Enter Course &rarr;</span>
-            </a>
-
-            <a href="PAGES/music.html" class="subject-card-small">
-                <h3>🎹 Music Theory</h3>
-                <p>Composition rules, interval structures, and harmonic progressions.</p>
-                <span class="topic-link">Enter Course &rarr;</span>
-            </a>
-
         </section>
 
     </main>
@@ -432,23 +512,17 @@
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      // Dedicated Logout Handler
       async function handleLogout(e) {
           if (e) e.preventDefault();
-          
           try {
-              // 1. Clear local storage session tokens
               localStorage.clear();
               sessionStorage.clear();
-
-              // 2. Clear Supabase auth session
               if (supabase) {
                   await supabase.auth.signOut();
               }
           } catch (err) {
               console.error("Sign out error:", err);
           } finally {
-              // 3. Force redirect back to index
               window.location.replace("index.html");
           }
       }
@@ -458,7 +532,6 @@
 
           const { data: { session } } = await supabase.auth.getSession();
           
-          // Protect route: redirect if not logged in
           if (!session) {
               window.location.replace("index.html");
               return;
@@ -488,7 +561,6 @@
           }
       }
 
-      // Ensure DOM is fully loaded before binding click events
       document.addEventListener('DOMContentLoaded', () => {
           initDashboardSession();
 

@@ -23,7 +23,7 @@
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      // 1. Session Handler
+      // 1. Safe Session Handler (Preserves Login Session)
       async function handleHomeSession() {
           if (!supabase) return;
 
@@ -33,6 +33,7 @@
               return;
           }
 
+          // Check for existing session in localStorage
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
 
@@ -67,13 +68,16 @@
           }
       }
 
-      // Global Force Sign Out
-      async function forceHomeSignOut() {
-          localStorage.clear();
-          sessionStorage.clear();
+      // Explicit User-Driven Sign Out Only
+      async function forceHomeSignOut(e) {
+          if (e) e.preventDefault();
+          
           if (supabase) {
               await supabase.auth.signOut();
           }
+          localStorage.clear();
+          sessionStorage.clear();
+          
           window.location.href = "index.html";
       }
 
@@ -109,9 +113,6 @@
                   e.preventDefault();
                   e.stopPropagation();
 
-                  localStorage.clear();
-                  sessionStorage.clear();
-
                   await supabase.auth.signInWithOAuth({
                       provider: 'google',
                       options: { 
@@ -126,9 +127,6 @@
               githubBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
                   e.stopPropagation();
-
-                  localStorage.clear();
-                  sessionStorage.clear();
 
                   await supabase.auth.signInWithOAuth({
                       provider: 'github',

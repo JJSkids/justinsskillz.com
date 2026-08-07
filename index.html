@@ -4,14 +4,12 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
-    <!-- Google Search Console & Domain Verification Tag -->
     <meta name="google-site-verification" content="-G-q80QQ0dQaOWtbVUCFJTeXUYTpr5iWsDHCQaGpNic" />
 
     <title>Justin's Skillz | Interactive Tech Platform</title>
     <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals through interactive workspaces and real-time code environments.">
     <link rel="stylesheet" href="style.css">
     
-    <!-- Supabase JS Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -23,25 +21,22 @@
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      // Safe Session Handler with Automatic URL Cleaning
       async function handleHomeSession() {
           if (!supabase) return;
 
-          // Route OAuth tokens landing on index.html directly to dashboard.html
           if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
               window.location.replace("https://jjskids.github.io/justinsskillz.com/dashboard.html" + window.location.hash);
               return;
           }
 
-          // Read session from localStorage
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
 
           const signInBtn = document.getElementById('signInBtn');
           const signOutBtn = document.getElementById('signOutBtn');
+          const heroContainer = document.getElementById('heroContainer');
           
           if (user) {
-              // Silently clear extra token characters from the address bar
               if (window.location.hash) {
                   window.history.replaceState(null, document.title, window.location.pathname);
               }
@@ -57,6 +52,7 @@
                   displayName = parts.charAt(0).toUpperCase() + parts.slice(1);
               }
 
+              // Replace Sign In button with Workspace badge
               if (signInBtn) {
                   signInBtn.outerHTML = `
                     <div class="nav-user-badge" style="display: flex; align-items: center; gap: 0.75rem;">
@@ -70,23 +66,33 @@
                   signOutBtn.classList.remove('hidden');
                   signOutBtn.style.display = 'inline-block';
               }
+
+              // Update Hero Section for logged in users
+              if (heroContainer) {
+                  heroContainer.innerHTML = `
+                    <div class="hero-content" style="background: #1e293b; padding: 2.5rem; border-radius: 12px; border: 1px solid #334155; text-align: left;">
+                        <span class="badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Active Session</span>
+                        <h1 style="color: #fff; margin-top: 0.75rem; font-size: 2.2rem;">Welcome back to your Workspace, ${displayName}! 👋</h1>
+                        <p style="color: #94a3b8; font-size: 1.05rem; margin-bottom: 1.5rem;">Quickly launch your interactive developer tools, math environments, or logic modules below.</p>
+                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                            <a href="dashboard.html" style="padding: 0.75rem 1.5rem; background: #f59e0b; color: #0f172a; text-decoration: none; border-radius: 6px; font-weight: bold;">Open Main Dashboard</a>
+                            <a href="PAGES/coding.html" style="padding: 0.75rem 1.5rem; background: #38bdf8; color: #0f172a; text-decoration: none; border-radius: 6px; font-weight: bold;">Launch Code IDE</a>
+                            <a href="PAGES/math.html" style="padding: 0.75rem 1.5rem; background: #4f46e5; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold;">Math Sandbox</a>
+                        </div>
+                    </div>
+                  `;
+              }
           }
       }
 
-      // Explicit Sign Out Handler
       async function forceHomeSignOut(e) {
           if (e) e.preventDefault();
-          
-          if (supabase) {
-              await supabase.auth.signOut();
-          }
+          if (supabase) await supabase.auth.signOut();
           localStorage.clear();
           sessionStorage.clear();
-          
           window.location.href = "index.html";
       }
 
-      // DOM Listeners & OAuth Initialization
       document.addEventListener('DOMContentLoaded', () => {
           handleHomeSession();
 
@@ -98,31 +104,18 @@
           const googleBtn = document.getElementById('googleAuthBtn');
           const githubBtn = document.getElementById('githubAuthBtn');
 
-          if (signInBtn && authModal) {
-              signInBtn.addEventListener('click', () => authModal.classList.remove('hidden'));
-          }
-
-          if (signOutBtn) {
-              signOutBtn.addEventListener('click', forceHomeSignOut);
-          }
-
-          if (closeModal && authModal) {
-              closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
-          }
+          if (signInBtn && authModal) signInBtn.addEventListener('click', () => authModal.classList.remove('hidden'));
+          if (signOutBtn) signOutBtn.addEventListener('click', forceHomeSignOut);
+          if (closeModal && authModal) closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
 
           const cleanRedirectUrl = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
 
           if (googleBtn) {
               googleBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
-                  e.stopPropagation();
-
                   await supabase.auth.signInWithOAuth({
                       provider: 'google',
-                      options: { 
-                          redirectTo: cleanRedirectUrl,
-                          queryParams: { prompt: 'select_account' }
-                      }
+                      options: { redirectTo: cleanRedirectUrl, queryParams: { prompt: 'select_account' } }
                   });
               });
           }
@@ -130,8 +123,6 @@
           if (githubBtn) {
               githubBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
-                  e.stopPropagation();
-
                   await supabase.auth.signInWithOAuth({
                       provider: 'github',
                       options: { redirectTo: cleanRedirectUrl }
@@ -141,121 +132,103 @@
       });
     </script>
 </head>
-<body>
+<body style="background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0;">
 
-    <!-- App Identification Header -->
-    <header class="nav-header">
+    <header class="nav-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1e293b; border-bottom: 1px solid #334155;">
         <div class="nav-left">
             <a href="index.html" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit;">
                 <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" style="width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;">
-                <span class="brand-name" style="font-weight: 700; font-size: 1.2rem;">Justin's Skillz</span>
+                <span class="brand-name" style="font-weight: 700; font-size: 1.2rem; color: #fff;">Justin's Skillz</span>
             </a>
         </div>
-        <nav class="nav-center">
-            <a href="#about">App Purpose</a>
-            <a href="#functionality">Features</a>
-            <a href="#data-usage">Data Transparency</a>
-            <a href="#contact">Contact</a>
+        <nav class="nav-center" style="display: flex; gap: 1.5rem;">
+            <a href="#about" style="color: #94a3b8; text-decoration: none;">App Purpose</a>
+            <a href="#functionality" style="color: #94a3b8; text-decoration: none;">Features</a>
+            <a href="#data-usage" style="color: #94a3b8; text-decoration: none;">Data Transparency</a>
+            <a href="#contact" style="color: #94a3b8; text-decoration: none;">Contact</a>
         </nav>
-        <div class="nav-right">
-            <button id="themeButton" class="btn-text">🌙</button>
-            <button id="signInBtn" class="btn-primary">Sign In</button>
-            <button id="signOutBtn" class="btn-text hidden">Sign Out</button>
+        <div class="nav-right" style="display: flex; gap: 1rem; align-items: center;">
+            <button id="signInBtn" class="btn-primary" style="background-color: #4f46e5; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Sign In</button>
+            <button id="signOutBtn" class="btn-text hidden" style="background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; display: none;">Sign Out</button>
         </div>
     </header>
 
-    <!-- App Functionality Description -->
-    <section id="about" class="hero-section">
-        <div class="hero-content">
-            <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Interactive Educational Ecosystem</span>
-            <h1>Master Code, Math, and Logic Hands-On</h1>
-            <p><strong>Justin's Skillz</strong> is an online learning and developer sandbox platform designed to teach web development, programming logic, mathematics, and technical concepts through interactive tools and live workspaces.</p>
-            <div class="hero-buttons" style="margin-top: 1.5rem;">
-                <a href="#functionality" class="btn-primary-large" style="padding: 0.75rem 1.5rem; background: #4f46e5; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 0.5rem;">Explore Platform Capabilities</a>
-                <a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" class="btn-secondary-large" style="padding: 0.75rem 1.5rem; border: 1px solid #475569; color: #e2e8f0; text-decoration: none; border-radius: 6px;">Privacy Policy</a>
+    <!-- Dynamic Hero Banner Container -->
+    <section id="about" class="hero-section" style="max-width: 1100px; margin: 3rem auto; padding: 0 1rem;">
+        <div id="heroContainer">
+            <div class="hero-content" style="background: #1e293b; padding: 2.5rem; border-radius: 12px; border: 1px solid #334155;">
+                <span class="badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Interactive Educational Ecosystem</span>
+                <h1 style="color: #fff; font-size: 2.2rem; margin-top: 0.75rem;">Master Code, Math, and Logic Hands-On</h1>
+                <p style="color: #94a3b8; font-size: 1.05rem;"><strong>Justin's Skillz</strong> is an online learning platform designed to teach web development, programming logic, mathematics, and technical concepts through interactive tools.</p>
+                <div class="hero-buttons" style="margin-top: 1.5rem;">
+                    <a href="#functionality" style="padding: 0.75rem 1.5rem; background: #4f46e5; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold; margin-right: 0.5rem;">Explore Features</a>
+                    <a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="padding: 0.75rem 1.5rem; border: 1px solid #475569; color: #e2e8f0; text-decoration: none; border-radius: 6px;">Privacy Policy</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Core App Features Grid -->
-    <main id="functionality" class="dashboard-grid" style="max-width: 1100px; margin: 3rem auto; padding: 0 1rem;">
-        <h2 style="grid-column: 1 / -1; text-align: center; color: #fff; font-size: 1.75rem; margin-bottom: 1.5rem;">Platform Learning Modules</h2>
+    <!-- Features Grid -->
+    <main id="functionality" style="max-width: 1100px; margin: 3rem auto; padding: 0 1rem;">
+        <h2 style="text-align: center; color: #fff; font-size: 1.75rem; margin-bottom: 1.5rem;">Platform Learning Modules</h2>
         
-        <a href="PAGES/coding.html" class="card">
-            <h3>💻 Interactive Code IDE</h3>
-            <p>Write HTML, CSS, and JavaScript directly in your browser with real-time output rendering.</p>
-        </a>
-        <a href="PAGES/math.html" class="card">
-            <h3>📐 Advanced Mathematics</h3>
-            <p>Interactive problem solving covering algebra, proofs, matrices, and complex numbers.</p>
-        </a>
-        <a href="PAGES/robotics.html" class="card">
-            <h3>🤖 Logic & Scripting</h3>
-            <p>Learn hardware control logic, block scripting, and firmware mechanics.</p>
-        </a>
-        <a href="PAGES/chess.html" class="card">
-            <h3>♟️ Logic Tracking & Chess</h3>
-            <p>Analyze positional structures and tactical problem solving.</p>
-        </a>
-        <a href="PAGES/french.html" class="card"><h3>🇫🇷 Language Modules</h3><p>Grammar engines and conjugation practice.</p></a>
-        <a href="PAGES/music.html" class="card"><h3>🎹 Music Theory</h3><p>Composition rules and interval logic.</p></a>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            <a href="PAGES/coding.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
+                <h3 style="margin-top: 0; color: #38bdf8;">💻 Interactive Code IDE</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Write HTML, CSS, and JavaScript directly in your browser with real-time output rendering.</p>
+            </a>
+            <a href="PAGES/math.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
+                <h3 style="margin-top: 0; color: #f59e0b;">📐 Advanced Mathematics</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Interactive problem solving covering algebra, proofs, matrices, and complex numbers.</p>
+            </a>
+            <a href="PAGES/robotics.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
+                <h3 style="margin-top: 0; color: #34d399;">🤖 Logic & Scripting</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Learn hardware control logic, block scripting, and firmware mechanics.</p>
+            </a>
+            <a href="PAGES/chess.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
+                <h3 style="margin-top: 0; color: #a78bfa;">♟️ Logic Tracking & Chess</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Analyze positional structures, tactical puzzles, and problem solving.</p>
+            </a>
+            <a href="PAGES/french.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
+                <h3 style="margin-top: 0; color: #f472b6;">🇫🇷 Language Modules</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Grammar engines and verb conjugation practice.</p>
+            </a>
+            <a href="PAGES/music.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
+                <h3 style="margin-top: 0; color: #fbbf24;">🎹 Music Theory</h3>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Composition rules, rhythm dynamics, and interval logic.</p>
+            </a>
+        </div>
     </main>
 
-    <!-- Transparent Purpose for User Data Request -->
-    <section id="data-usage" style="max-width: 900px; margin: 3rem auto; padding: 2rem; background: #1e293b; border: 1px solid #334155; border-radius: 12px; color: #cbd5e1;">
-        <h2 style="color: #f59e0b; font-size: 1.5rem; margin-top: 0;">🔒 Why We Request User Data</h2>
-        <p style="font-size: 0.95rem; line-height: 1.6;">
-            <strong>Justin's Skillz</strong> uses Google OAuth solely to verify your identity and manage your platform access. When you log in with Google, we request access to basic profile scopes (<strong>Email, Profile Name, Avatar</strong>).
-        </p>
-        <ul style="padding-left: 1.25rem; font-size: 0.95rem;">
-            <li><strong>Name & Avatar:</strong> Used strictly to display your user greeting and workspace identity inside your private dashboard.</li>
-            <li><strong>Email Address:</strong> Used to maintain persistent session security and verify administrative access for verified site managers.</li>
-        </ul>
-        <p style="font-size: 0.9rem; margin-bottom: 0;">
-            We do <strong>not</strong> sell, distribute, or track user information for advertising. For full details, view our official 
-            <a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="color: #f59e0b; text-decoration: underline;">Privacy Policy</a>.
-        </p>
-    </section>
-
-    <!-- Authentication Modal with Direct OAuth Links -->
-    <div id="authModal" class="modal hidden">
-        <div class="modal-content">
-            <button id="closeModal" class="close-btn">&times;</button>
-            <h2>Sign In to Justin's Skillz</h2>
-            <p>Access your private interactive workspace, personal code sandbox, and learning progress.</p>
+    <!-- Modal -->
+    <div id="authModal" class="modal hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+        <div style="background: #1e293b; padding: 2rem; border-radius: 12px; border: 1px solid #334155; max-width: 400px; width: 100%; position: relative;">
+            <button id="closeModal" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer;">&times;</button>
+            <h2 style="color: #fff; margin-top: 0;">Sign In</h2>
+            <p style="color: #94a3b8; font-size: 0.9rem;">Access your workspace sandbox and progress.</p>
             
-            <button id="githubAuthBtn" class="btn-auth github">Continue with GitHub</button>
-            <button id="googleAuthBtn" class="btn-auth google">Continue with Google</button>
-
-            <!-- Legal Links -->
-            <p class="auth-legal-terms" style="font-size: 0.75rem; color: #94a3b8; margin-top: 1.25rem; text-align: center;">
-                By logging in, you agree to our 
-                <a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank" style="color: #f59e0b; text-decoration: underline;">Terms of Service</a> 
-                and 
-                <a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="color: #f59e0b; text-decoration: underline;">Privacy Policy</a>.
-            </p>
+            <button id="githubAuthBtn" style="width: 100%; padding: 0.75rem; margin-bottom: 0.75rem; background: #334155; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Continue with GitHub</button>
+            <button id="googleAuthBtn" style="width: 100%; padding: 0.75rem; background: #ea4335; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Continue with Google</button>
         </div>
     </div>
 
-    <!-- Public Footer -->
-    <footer id="contact" class="main-footer">
-        <div class="footer-container" style="max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; gap: 2rem; padding: 2rem 1rem;">
-            <div class="footer-info">
+    <!-- Footer -->
+    <footer id="contact" style="margin-top: 5rem; background-color: #1e293b; border-top: 1px solid #334155;">
+        <div style="max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; gap: 2rem; padding: 2.5rem 1rem;">
+            <div>
                 <h3 style="color: #fff; margin-top: 0;">Justin's Skillz</h3>
-                <p style="color: #94a3b8; font-size: 0.9rem;">An interactive educational platform for learning coding, logic, and mathematics.</p>
+                <p style="color: #94a3b8; font-size: 0.9rem;">Interactive educational sandbox for coding, logic, and mathematics.</p>
             </div>
-            <div class="footer-contact">
+            <div>
                 <h4 style="color: #f59e0b; margin-top: 0;">Legal & Connect</h4>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="color: #cbd5e1;">Privacy Policy</a></p>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank" style="color: #cbd5e1;">Terms of Service</a></p>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem;">Email: hellojjskids@gmail.com</p>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="color: #cbd5e1; text-decoration: none;">Privacy Policy</a></p>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank" style="color: #cbd5e1; text-decoration: none;">Terms of Service</a></p>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem; color: #cbd5e1;">Email: hellojjskids@gmail.com</p>
             </div>
         </div>
-        <div class="footer-bottom" style="text-align: center; padding: 1rem; border-top: 1px solid #334155; color: #64748b; font-size: 0.85rem;">
-            <p>&copy; 2026 Justin's Skillz. All rights reserved.</p>
+        <div style="text-align: center; padding: 1rem; border-top: 1px solid #334155; color: #64748b; font-size: 0.85rem;">
+            <p style="margin: 0;">&copy; 2026 Justin's Skillz. All rights reserved.</p>
         </div>
     </footer>
-
-    <script src="main.js" defer></script>
 </body>
 </html>

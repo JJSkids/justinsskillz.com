@@ -3,46 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Tactics | Justin's Skillz</title>
+    <title>Chess AI Bot | Justin's Skillz</title>
     <link rel="stylesheet" href="../style.css">
+    <style>
+        .chess-board {
+            display: grid;
+            grid-template-columns: repeat(8, 45px);
+            grid-template-rows: repeat(8, 45px);
+            border: 3px solid #334155;
+            border-radius: 6px;
+            margin: 1.5rem auto;
+            width: 360px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+        .square {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .light { background-color: #cbd5e1; color: #0f172a; }
+        .dark { background-color: #475569; color: #f8fafc; }
+        .selected { background-color: #f59e0b !important; }
+        .highlight { background-color: #34d399 !important; }
+    </style>
 </head>
 <body>
     <header class="nav-header">
         <a href="../dashboard.html" class="btn btn-primary">← Workspace Dashboard</a>
-        <h2 style="margin: 0; font-size: 1.2rem; color: var(--accent-purple);">♟️ Chess Logic & Tactics</h2>
+        <h2 style="margin: 0; font-size: 1.2rem; color: var(--accent-purple);">♟️ Custom AI Chess Bot</h2>
     </header>
 
     <main class="container">
         <div class="card" style="text-align: center;">
-            <h1 style="margin-top: 0;">Knight Fork Tactical Trainer</h1>
-            <p style="color: var(--text-muted);">Find the optimal knight move to fork the King and Queen!</p>
-            
-            <div style="background: var(--bg-main); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); display: inline-block; margin: 1rem 0;">
-                <p style="font-size: 1.1rem; margin-bottom: 1rem;">White Knight at <strong>e4</strong>. Black King at <strong>c7</strong>, Black Queen at <strong>g7</strong>.</p>
-                <div style="display: flex; gap: 0.5rem; justify-content: center;">
-                    <button onclick="checkTactics('Nf6')" class="btn btn-purple">Play Nf6+</button>
-                    <button onclick="checkTactics('Nd6')" class="btn btn-purple">Play Nd6+</button>
-                    <button onclick="checkTactics('Nc5')" class="btn btn-purple">Play Nc5</button>
-                </div>
+            <h1 style="margin-top: 0;">Play vs. Custom Logic Bot</h1>
+            <p style="color: var(--text-muted);">Select a piece (White) and click a square to move. The custom AI bot will evaluate the board state and respond automatically!</p>
+
+            <div style="display: flex; justify-content: center; gap: 1rem; align-items: center; margin-bottom: 1rem;">
+                <label for="botDifficulty" style="font-weight: bold; color: #fff;">Bot Level:</label>
+                <select id="botDifficulty" class="input-field" style="background: var(--bg-card); width: auto;">
+                    <option value="1">Level 1: Tactical Greedy</option>
+                    <option value="2">Level 2: Material & Positional</option>
+                </select>
+                <button onclick="resetGame()" class="btn btn-purple">New Game</button>
             </div>
 
-            <div id="tacticsFeedback" class="result-box">
-                Select a move to solve the tactic.
+            <!-- Chess Board -->
+            <div id="board" class="chess-board"></div>
+
+            <div id="statusBox" class="result-box" style="color: var(--accent-purple);">
+                Your move! Select a White piece to begin.
             </div>
         </div>
     </main>
 
     <script>
-      function checkTactics(move) {
-        const fb = document.getElementById('tacticsFeedback');
-        if (move === 'Nd6') {
-          fb.innerText = "Correct! Nd6+ forks the King on c7 and Queen on g7!";
-          fb.style.color = "#34d399";
-        } else {
-          fb.innerText = `Incorrect. ${move} allows Black to escape without losing material.`;
-          fb.style.color = "#ef4444";
+      // Unicode Pieces Map
+      const SYMBOLS = {
+        'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔',
+        'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚', '': ''
+      };
+
+      // Material Values
+      const VALUES = { 'p': 10, 'n': 30, 'b': 30, 'r': 50, 'q': 90, 'k': 900,
+                       'P': 10, 'N': 30, 'B': 30, 'R': 50, 'Q': 90, 'K': 900 };
+
+      // Initial Board Matrix
+      let boardState = [
+        ['r','n','b','q','k','b','n','r'],
+        ['p','p','p','p','p','p','p','p'],
+        ['','','','','','','',''],
+        ['','','','','','','',''],
+        ['','','','','','','',''],
+        ['','','','','','','',''],
+        ['P','P','P','P','P','P','P','P'],
+        ['R','N','B','Q','K','B','N','R']
+      ];
+
+      let selectedSquare = null;
+      let turn = 'w'; // 'w' = Player, 'b' = Bot
+
+      function renderBoard() {
+        const boardElem = document.getElementById('board');
+        boardElem.innerHTML = '';
+
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const square = document.createElement('div');
+            const isDark = (r + c) % 2 === 1;
+            square.className = `square ${isDark ? 'dark' : 'light'}`;
+            square.dataset.row = r;
+            square.dataset.col = c;
+            
+            const piece = boardState[r][c];
+            square.textContent = SYMBOLS[piece] || '';
+
+            if (selectedSquare && selectedSquare.r === r && selectedSquare.c === c) {
+              square.classList.add('selected');
+            }
+
+            square.addEventListener('click', () => handleSquareClick(r, c));
+            boardElem.appendChild(square);
+          }
         }
       }
+
+      function handleSquareClick(r, c) {
+        if (turn !== 'w') return;
+
+        const piece = boardState[r][c];
+        const isWhitePiece = piece && piece === piece.toUpperCase() && piece !== '';
+
+        if (selectedSquare) {
+          // If clicking the same piece, deselect
+          if (selectedSquare.r === r && selectedSquare.c === c) {
+            selectedSquare = null;
+            renderBoard();
+            return;
+          }
+
+          // Move piece if target square is clicked
+          if (executeMove(selectedSquare.r, selectedSquare.c, r, c)) {
+            selectedSquare = null;
+            renderBoard();
+            turn = 'b';
+            document.getElementById('statusBox').innerText = "Bot is thinking...";
+            setTimeout(makeBotMove, 400); // Trigger Bot turn
+            return;
+          }
+        }
+
+        if (isWhitePiece) {
+          selectedSquare = { r, c };
+          renderBoard();
+        }
+      }
+
+      function executeMove(fromR, fromC, toR, toC) {
+        const piece = boardState[fromR][fromC];
+        const target = boardState[toR][toC];
+
+        // Ensure player isn't capturing their own pieces
+        if (target && (piece === piece.toUpperCase()) === (target === target.toUpperCase())) {
+          return false;
+        }
+
+        // Apply Move
+        boardState[toR][toC] = piece;
+        boardState[fromR][fromC] = '';
+        return true;
+      }
+
+      // Custom AI Bot Move Calculation Engine
+      function makeBotMove() {
+        const difficulty = parseInt(document.getElementById('botDifficulty').value);
+        let validMoves = [];
+
+        // Scan board for Black pieces
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const piece = boardState[r][c];
+            if (piece && piece === piece.toLowerCase()) {
+              // Generate candidate moves
+              for (let tr = 0; tr < 8; tr++) {
+                for (let tc = 0; tc < 8; tc++) {
+                  const target = boardState[tr][tc];
+                  const isWhiteTarget = target && target === target.toUpperCase();
+                  const isEmpty = target === '';
+
+                  if (isEmpty || isWhiteTarget) {
+                    let moveScore = 0;
+                    if (isWhiteTarget) moveScore += VALUES[target] * 10; // Capture bonus
+
+                    // Level 2 Positional evaluation: encourage moving towards board center
+                    if (difficulty === 2) {
+                      moveScore += (3.5 - Math.abs(3.5 - tr)) + (3.5 - Math.abs(3.5 - tc));
+                    }
+
+                    validMoves.push({ fromR: r, fromC: c, toR: tr, toC: tc, score: moveScore });
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        if (validMoves.length === 0) {
+          document.getElementById('statusBox').innerText = "Game Over!";
+          return;
+        }
+
+        // Sort moves by score & pick top move
+        validMoves.sort((a, b) => b.score - a.score);
+        
+        // Add slight randomness among top 3 tactical moves
+        const topSlice = validMoves.slice(0, Math.min(3, validMoves.length));
+        const chosenMove = topSlice[Math.floor(Math.random() * topSlice.length)];
+
+        executeMove(chosenMove.fromR, chosenMove.fromC, chosenMove.toR, chosenMove.toC);
+        
+        turn = 'w';
+        renderBoard();
+        document.getElementById('statusBox').innerText = "Your move! Select a White piece.";
+      }
+
+      function resetGame() {
+        boardState = [
+          ['r','n','b','q','k','b','n','r'],
+          ['p','p','p','p','p','p','p','p'],
+          ['','','','','','','',''],
+          ['','','','','','','',''],
+          ['','','','','','','',''],
+          ['','','','','','','',''],
+          ['P','P','P','P','P','P','P','P'],
+          ['R','N','B','Q','K','B','N','R']
+        ];
+        selectedSquare = null;
+        turn = 'w';
+        renderBoard();
+        document.getElementById('statusBox').innerText = "Game reset. Your move!";
+      }
+
+      window.onload = renderBoard;
     </script>
 </body>
 </html>

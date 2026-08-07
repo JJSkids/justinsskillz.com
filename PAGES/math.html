@@ -1,16 +1,82 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Math | Justin's Skillz</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-        <h1>Welcome to the Math Page!</h1>
-        <a href="../index.html">Go Back Home</a>
-        <script src="../main.js" async defer></script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Math Academy | Justin's Skillz</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --muted-color: #94a3b8;
+            --accent-color: #f59e0b;
+            --border-color: #334155;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg-color); color: var(--text-color); font-family: system-ui, sans-serif; line-height: 1.6; padding: 2rem 1rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        .back-btn { color: var(--accent-color); text-decoration: none; font-weight: 600; }
+        h1 { font-size: 2rem; color: #fff; }
+        .curriculum-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .unit-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.5rem; }
+        .unit-card h3 { color: var(--accent-color); font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .unit-card ul { list-style: none; color: var(--muted-color); font-size: 0.9rem; margin-top: 0.5rem; }
+        .unit-card li { padding: 0.25rem 0; border-bottom: 1px rgba(255,255,255,0.05) solid; }
+        .unit-card li::before { content: "✓ "; color: var(--accent-color); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📐 Mathematics Track (Ages 5 – University)</h1>
+            <a href="../dashboard.html" class="back-btn">&larr; Back to Dashboard</a>
+        </div>
+        <p style="color: var(--muted-color);">Comprehensive problem-solving track from primary arithmetic to linear algebra and calculus.</p>
+
+        <div class="curriculum-grid">
+            <div class="unit-card">
+                <h3>🔢 Ages 5–7: Foundations</h3>
+                <ul>
+                    <li>Counting 1-100 & Number Bonds</li>
+                    <li>Addition & Subtraction (0-20)</li>
+                    <li>Comparing (<, >, =) & Basic Shapes</li>
+                </ul>
+            </div>
+            <div class="unit-card">
+                <h3>⚡ Ages 8–10: Elementary Math</h3>
+                <ul>
+                    <li>Multiplication Tables (1-12) & Division</li>
+                    <li>Fractions, Decimals & Percentages</li>
+                    <li>Order of Operations (PEMDAS/BEDMAS)</li>
+                </ul>
+            </div>
+            <div class="unit-card">
+                <h3>📊 Ages 11–13: Pre-Algebra & Logic</h3>
+                <ul>
+                    <li>Ratios, Proportions & Variables</li>
+                    <li>Solving 1-Step & 2-Step Equations</li>
+                    <li>Pythagorean Theorem & Coordinate Plane</li>
+                </ul>
+            </div>
+            <div class="unit-card">
+                <h3>📈 Ages 14–18: High School Math</h3>
+                <ul>
+                    <li>Linear Systems & Quadratic Factoring</li>
+                    <li>Logarithms & Trigonometry / Unit Circle</li>
+                    <li>Limits, Derivatives & Integrals</li>
+                </ul>
+            </div>
+            <div class="unit-card">
+                <h3>🎓 University Prep Math</h3>
+                <ul>
+                    <li>Calculus I & II (Optimization & Series)</li>
+                    <li>Linear Algebra & Vectors</li>
+                    <li>Discrete Mathematics & Proofs</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
 </html>

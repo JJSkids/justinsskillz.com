@@ -1,16 +1,74 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>French | Justin's Skillz</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-        <h1>Welcome to the French Page!</h1>
-        <a href="../index.html">Go Back Home</a>
-        <script src="../main.js" async defer></script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>French Academy | Justin's Skillz</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --text-color: #f8fafc;
+            --muted-color: #94a3b8;
+            --accent-color: #f59e0b;
+            --border-color: #334155;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg-color); color: var(--text-color); font-family: system-ui, sans-serif; line-height: 1.6; padding: 2rem 1rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
+        .back-btn { color: var(--accent-color); text-decoration: none; font-weight: 600; }
+        h1 { font-size: 2rem; color: #fff; }
+        .curriculum-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+        .unit-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.5rem; }
+        .unit-card h3 { color: #3b82f6; font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .unit-card ul { list-style: none; color: var(--muted-color); font-size: 0.9rem; margin-top: 0.5rem; }
+        .unit-card li { padding: 0.25rem 0; border-bottom: 1px rgba(255,255,255,0.05) solid; }
+        .unit-card li::before { content: "🇫🇷 "; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇫🇷 French Language Course Track</h1>
+            <a href="../dashboard.html" class="back-btn">&larr; Back to Dashboard</a>
+        </div>
+        <p style="color: var(--muted-color);">Master conversational French, core vocabulary, verb conjugations, and grammar engines.</p>
+
+        <div class="curriculum-grid">
+            <div class="unit-card">
+                <h3>💬 Unit 1: Greetings & Introductions</h3>
+                <ul>
+                    <li>Bonjour, Salut, Comment ça va?</li>
+                    <li>Je m'appelle... / Quel âge as-tu?</li>
+                    <li>Numbers 0-100 & Colors</li>
+                </ul>
+            </div>
+            <div class="unit-card">
+                <h3>🏫 Unit 2: Family, Food & School</h3>
+                <ul>
+                    <li>Mère, Père, Frère, Sœur</li>
+                    <li>Pain, Fromage, Eau, Pomme</li>
+                    <li>Livre, Stylo, Crayon, Sac</li>
+                </ul>
+            </div>
+            <div class="unit-card">
+                <h3>✍️ Unit 3: Essential Verbs</h3>
+                <ul>
+                    <li>Être (To be) & Avoir (To have)</li>
+                    <li>Aller (To go) & Faire (To make)</li>
+                    <li>Manger, Boire, Aimer, Parler</li>
+                </ul>
+            </div>
+            <div class="unit-card">
+                <h3>✈️ Unit 4: Travel & Conversation</h3>
+                <ul>
+                    <li>Gare, Aéroport, Hôtel, Restaurant</li>
+                    <li>Question Words: Qui, Où, Quand, Pourquoi</li>
+                    <li>Present Tense & Adjective Agreement</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
 </html>

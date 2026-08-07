@@ -1,507 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Developer Workspace | Justin's Skillz</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workspace Dashboard | Justin's Skillz</title>
+    <link rel="stylesheet" href="style.css">
     
     <!-- Supabase JS Client Library -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --card-hover: #334155;
-            --text-color: #f8fafc;
-            --muted-color: #94a3b8;
-            --accent-color: #f59e0b;
-            --primary-blue: #4f46e5;
-            --border-color: #334155;
-            --code-bg: #090d16;
-            --green-accent: #10b981;
-            --purple-accent: #8b5cf6;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            line-height: 1.6;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .dashboard-header {
-            background-color: rgba(30, 41, 59, 0.85);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--border-color);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .header-brand img {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            object-fit: cover;
-            border: 1px solid var(--accent-color);
-        }
-
-        .header-brand span {
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        .user-nav-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-pill {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(245, 158, 11, 0.1);
-            border: 1px solid var(--accent-color);
-            padding: 0.4rem 0.85rem;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--accent-color);
-        }
-
-        .user-avatar {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--muted-color);
-            padding: 0.4rem 0.85rem;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.875rem;
-            transition: all 0.2s ease;
-        }
-
-        .btn-outline:hover {
-            color: var(--text-color);
-            border-color: var(--accent-color);
-        }
-
-        .workspace-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
-            width: 100%;
-        }
-
-        .welcome-banner {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-        }
-
-        .welcome-text h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-        }
-
-        .welcome-text p {
-            color: var(--muted-color);
-            font-size: 0.95rem;
-        }
-
-        .status-tag {
-            background: #10b98120;
-            color: #10b981;
-            border: 1px solid #10b98150;
-            padding: 0.25rem 0.75rem;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 2rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .section-header h2 {
-            font-size: 1.4rem;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .featured-subject {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 1.75rem;
-            margin-bottom: 2rem;
-        }
-
-        .subject-badge {
-            display: inline-block;
-            background: var(--primary-blue);
-            color: white;
-            padding: 0.25rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 0.75rem;
-        }
-
-        .badge-math { background: #d97706; }
-        .badge-french { background: #2563eb; }
-        .badge-chess { background: #7c3aed; }
-        .badge-robotics { background: #059669; }
-
-        .subject-title {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-        }
-
-        .subject-desc {
-            color: var(--muted-color);
-            font-size: 0.95rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .topic-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 1.25rem;
-        }
-
-        .topic-card {
-            background: var(--code-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 1.25rem;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .topic-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-color);
-        }
-
-        .topic-icon {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .topic-card h4 {
-            font-size: 1.05rem;
-            color: #ffffff;
-            margin-bottom: 0.35rem;
-        }
-
-        .topic-card p {
-            font-size: 0.85rem;
-            color: var(--muted-color);
-            line-height: 1.4;
-            margin-bottom: 1rem;
-        }
-
-        .topic-link {
-            font-size: 0.8rem;
-            color: var(--accent-color);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 0.25rem;
-        }
-
-        .dashboard-footer {
-            border-top: 1px solid var(--border-color);
-            padding: 1.5rem;
-            text-align: center;
-            color: var(--muted-color);
-            font-size: 0.85rem;
-            margin-top: 3rem;
-        }
-
-        .dashboard-footer a {
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-    </style>
-</head>
-<body>
-
-    <header class="dashboard-header">
-        <a href="index.html" class="header-brand">
-            <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo">
-            <span>Justin's Skillz</span>
-        </a>
-        <div class="user-nav-controls">
-            <div class="user-pill">
-                <img id="userAvatar" class="user-avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23f59e0b'%3E%3Cpath d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z'/%3E%3C/svg%3E" alt="Avatar">
-                <span id="usernameDisplay">Loading...</span>
-            </div>
-            <button id="logoutBtn" class="btn-outline" onclick="handleLogout(event)">Sign Out</button>
-        </div>
-    </header>
-
-    <main class="workspace-container">
-        
-        <section class="welcome-banner">
-            <div class="welcome-text">
-                <h1>Developer & Learning Workspace</h1>
-                <p>Welcome back! Choose a course module below to launch your interactive learning environment.</p>
-            </div>
-            <span class="status-tag">⚡ Active Session</span>
-        </section>
-
-        <!-- 1. CODING TRACK -->
-        <div class="section-header">
-            <h2>💻 Coding & Web Development</h2>
-        </div>
-        <section class="featured-subject">
-            <span class="subject-badge">Interactive Track</span>
-            <h3 class="subject-title">Full-Stack Web Development & Scripting</h3>
-            <p class="subject-desc">Master HTML5, styling, client-side logic, and database API integrations.</p>
-
-            <div class="topic-grid">
-                <a href="PAGES/coding.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🌐</div>
-                        <h4>HTML5 & Responsive Layouts</h4>
-                        <p>Flexbox layout grids, semantic components, and mobile design.</p>
-                    </div>
-                    <span class="topic-link">Start Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/coding.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">⚡</div>
-                        <h4>JavaScript Async & DOM</h4>
-                        <p>Event listeners, fetch requests, promises, and dynamic UI states.</p>
-                    </div>
-                    <span class="topic-link">Start Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/coding.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🗄️</div>
-                        <h4>Supabase & Auth Mechanics</h4>
-                        <p>User sessions, database record storage, and row-level security.</p>
-                    </div>
-                    <span class="topic-link">Start Module &rarr;</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- 2. MATHEMATICS TRACK -->
-        <div class="section-header">
-            <h2>📐 Advanced Mathematics</h2>
-        </div>
-        <section class="featured-subject">
-            <span class="subject-badge badge-math">Problem Solving Track</span>
-            <h3 class="subject-title">Algebra, Complex Numbers & Competition Math</h3>
-            <p class="subject-desc">Master mathematical structures, quadratic transformations, and contest problem-solving techniques.</p>
-
-            <div class="topic-grid">
-                <a href="PAGES/math.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">📊</div>
-                        <h4>Quadratic Equations & Graphs</h4>
-                        <p>Parabola vertex formulas, discriminant analysis, and root proofs.</p>
-                    </div>
-                    <span class="topic-link">Start Math Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/math.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🌀</div>
-                        <h4>Complex Numbers & Polar Coordinates</h4>
-                        <p>Argand plane representations, Euler's formula, and polar vectors.</p>
-                    </div>
-                    <span class="topic-link">Start Math Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/math.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🏆</div>
-                        <h4>Math Competition Training</h4>
-                        <p>Combinatorics, permutations, modular arithmetic, and timed drills.</p>
-                    </div>
-                    <span class="topic-link">Start Math Module &rarr;</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- 3. FRENCH LANGUAGE TRACK -->
-        <div class="section-header">
-            <h2>🇫🇷 French Language</h2>
-        </div>
-        <section class="featured-subject">
-            <span class="subject-badge badge-french">Language Mastery Track</span>
-            <h3 class="subject-title">Grammar, Conjugation & Vocabulary</h3>
-            <p class="subject-desc">Interactive conjugation engines, tense rules, and structured writing exercises.</p>
-
-            <div class="topic-grid">
-                <a href="PAGES/french.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">✍️</div>
-                        <h4>Verb Conjugations & Tenses</h4>
-                        <p>Présent, Passé Composé, Imparfait, and Futur Simple rules.</p>
-                    </div>
-                    <span class="topic-link">Start French Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/french.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">📚</div>
-                        <h4>Grammar & Sentence Structures</h4>
-                        <p>Direct/indirect pronouns, adjective agreement, and clause alignment.</p>
-                    </div>
-                    <span class="topic-link">Start French Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/french.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🎯</div>
-                        <h4>Interactive Translation Drills</h4>
-                        <p>Contextual paragraph translations and real-time feedback exercises.</p>
-                    </div>
-                    <span class="topic-link">Start French Module &rarr;</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- 4. CHESS STRATEGY TRACK -->
-        <div class="section-header">
-            <h2>♟️ Chess Strategy</h2>
-        </div>
-        <section class="featured-subject">
-            <span class="subject-badge badge-chess">Tactical Track</span>
-            <h3 class="subject-title">Tactics, Openings & Endgame Theory</h3>
-            <p class="subject-desc">Analyze board positions, calculate variations, and solve strategic chess puzzles.</p>
-
-            <div class="topic-grid">
-                <a href="PAGES/chess.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🧩</div>
-                        <h4>Tactical Patterns & Puzzles</h4>
-                        <p>Forks, pins, skewers, discovered attacks, and forced checkmates.</p>
-                    </div>
-                    <span class="topic-link">Start Chess Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/chess.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🏰</div>
-                        <h4>Opening Principles & Control</h4>
-                        <p>Center control, piece development, king safety, and key lines.</p>
-                    </div>
-                    <span class="topic-link">Start Chess Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/chess.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">👑</div>
-                        <h4>Pawn Structure & Endgames</h4>
-                        <p>Opposition, passed pawns, rook endgames, and winning technique.</p>
-                    </div>
-                    <span class="topic-link">Start Chess Module &rarr;</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- 5. ROBOTICS & LOGIC TRACK -->
-        <div class="section-header">
-            <h2>🤖 Robotics & Logic Mechanics</h2>
-        </div>
-        <section class="featured-subject">
-            <span class="subject-badge badge-robotics">Engineering Track</span>
-            <h3 class="subject-title">Automation Logic & Scripting Mechanics</h3>
-            <p class="subject-desc">Learn command systems, hardware circuits, and logic gate architectures.</p>
-
-            <div class="topic-grid">
-                <a href="PAGES/robotics.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">⚙️</div>
-                        <h4>Command Block & Server Logic</h4>
-                        <p>Scoreboard objectives, execution rules, and automated server loops.</p>
-                    </div>
-                    <span class="topic-link">Start Logic Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/robotics.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🔌</div>
-                        <h4>Circuit Logic & Digital Gates</h4>
-                        <p>AND/OR/XOR gates, pulse generators, and signal routing.</p>
-                    </div>
-                    <span class="topic-link">Start Circuit Module &rarr;</span>
-                </a>
-
-                <a href="PAGES/robotics.html" class="topic-card">
-                    <div>
-                        <div class="topic-icon">🎮</div>
-                        <h4>Game Mechanics Engineering</h4>
-                        <p>Custom loot drop tables, spawn conditions, and event triggers.</p>
-                    </div>
-                    <span class="topic-link">Start Mechanics Module &rarr;</span>
-                </a>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="dashboard-footer">
-        <p>&copy; 2026 Justin's Skillz | Contact: <a href="mailto:hellojjskids@gmail.com">hellojjskids@gmail.com</a> | <a href="pri.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
-    </footer>
 
     <script>
       const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
@@ -512,37 +18,27 @@
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      async function handleLogout(e) {
-          if (e) e.preventDefault();
-          try {
-              localStorage.clear();
-              sessionStorage.clear();
-              if (supabase) {
-                  await supabase.auth.signOut();
-              }
-          } catch (err) {
-              console.error("Sign out error:", err);
-          } finally {
-              window.location.replace("index.html");
-          }
-      }
-
-      async function initDashboardSession() {
+      // Guard Dashboard, Parse User Info, and Clean URL
+      async function initializeDashboard() {
           if (!supabase) return;
 
           const { data: { session } } = await supabase.auth.getSession();
-          
-          if (!session) {
+
+          if (!session || !session.user) {
               window.location.replace("index.html");
               return;
           }
 
+          // Clean up the hash/query parameters once session is active
+          if (window.location.hash || window.location.search) {
+              window.history.replaceState(null, document.title, window.location.pathname);
+          }
+
           const user = session.user;
           const metadata = user.user_metadata || {};
-          
           const rawName = metadata.full_name || metadata.name || metadata.preferred_username || metadata.user_name;
-          let displayName = "Developer";
           
+          let displayName = "Developer";
           if (rawName) {
               displayName = rawName.split(' ')[0];
           } else if (user.email) {
@@ -550,25 +46,118 @@
               displayName = parts.charAt(0).toUpperCase() + parts.slice(1);
           }
 
-          const usernameElem = document.getElementById('usernameDisplay');
-          if (usernameElem) {
-              usernameElem.textContent = displayName;
-          }
-
-          const avatarElem = document.getElementById('userAvatar');
-          if (avatarElem && (metadata.avatar_url || metadata.picture)) {
-              avatarElem.src = metadata.avatar_url || metadata.picture;
+          const userGreeting = document.getElementById('userGreeting');
+          if (userGreeting) {
+              userGreeting.textContent = `Welcome back, ${displayName}! 👋`;
           }
       }
 
-      document.addEventListener('DOMContentLoaded', () => {
-          initDashboardSession();
+      // Sign Out Functionality
+      async function handleDashboardSignOut(e) {
+          if (e) e.preventDefault();
 
-          const logoutBtn = document.getElementById('logoutBtn');
-          if (logoutBtn) {
-              logoutBtn.addEventListener('click', handleLogout);
+          if (supabase) {
+              await supabase.auth.signOut();
+          }
+
+          localStorage.clear();
+          sessionStorage.clear();
+
+          window.location.href = "index.html";
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+          initializeDashboard();
+
+          const signOutBtn = document.getElementById('signOutBtn');
+          if (signOutBtn) {
+              signOutBtn.addEventListener('click', handleDashboardSignOut);
           }
       });
     </script>
+</head>
+<body>
+
+    <!-- Workspace Header / Navbar -->
+    <header class="nav-header">
+        <div class="nav-left">
+            <a href="index.html" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit;">
+                <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" style="width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;">
+                <span class="brand-name" style="font-weight: 700; font-size: 1.2rem;">Justin's Skillz</span>
+            </a>
+        </div>
+        <nav class="nav-center">
+            <a href="index.html">Home</a>
+            <a href="dashboard.html" class="active">Workspace</a>
+        </nav>
+        <div class="nav-right">
+            <button id="signOutBtn" class="btn-primary" style="background-color: #ef4444; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Sign Out</button>
+        </div>
+    </header>
+
+    <!-- Workspace Hero Welcome -->
+    <main class="container" style="max-width: 1100px; margin: 2rem auto; padding: 0 1rem;">
+        <div style="background: #1e293b; padding: 2rem; border-radius: 12px; border: 1px solid #334155; margin-bottom: 2rem;">
+            <h1 id="userGreeting" style="color: #fff; margin-top: 0; font-size: 1.8rem;">Welcome back! 👋</h1>
+            <p style="color: #94a3b8; margin-bottom: 0;">Select an interactive learning track or developer workspace below to continue building.</p>
+        </div>
+
+        <!-- Dashboard Learning Modules Grid -->
+        <h2 style="color: #fff; font-size: 1.5rem; margin-bottom: 1.5rem;">Your Learning Tracks</h2>
+        <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+            
+            <a href="PAGES/coding.html" class="card" style="text-decoration: none; color: inherit;">
+                <h3>💻 Interactive Code IDE</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Write HTML, CSS, JavaScript, and test live front-end logic directly in-browser.</p>
+            </a>
+
+            <a href="PAGES/math.html" class="card" style="text-decoration: none; color: inherit;">
+                <h3>📐 Advanced Mathematics</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Interactive problem solving covering algebra, proofs, matrices, and complex numbers.</p>
+            </a>
+
+            <a href="PAGES/robotics.html" class="card" style="text-decoration: none; color: inherit;">
+                <h3>🤖 Logic & Scripting</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Learn hardware control logic, block scripting, and firmware mechanics.</p>
+            </a>
+
+            <a href="PAGES/chess.html" class="card" style="text-decoration: none; color: inherit;">
+                <h3>♟️ Logic Tracking & Chess</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Analyze positional structures, forks, tactical puzzles, and problem solving.</p>
+            </a>
+
+            <a href="PAGES/french.html" class="card" style="text-decoration: none; color: inherit;">
+                <h3>🇫🇷 Language Modules</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Interactive grammar engines, essential verb conjugations, and vocabulary tracks.</p>
+            </a>
+
+            <a href="PAGES/music.html" class="card" style="text-decoration: none; color: inherit;">
+                <h3>🎹 Music Theory</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem; margin-top: 0.5rem;">Explore notation, rhythm dynamics, interval logic, and composition structures.</p>
+            </a>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer id="contact" class="main-footer" style="margin-top: 4rem;">
+        <div class="footer-container" style="max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; gap: 2rem; padding: 2rem 1rem;">
+            <div class="footer-info">
+                <h3 style="color: #fff; margin-top: 0;">Justin's Skillz</h3>
+                <p style="color: #94a3b8; font-size: 0.9rem;">An interactive educational platform for learning coding, logic, and mathematics.</p>
+            </div>
+            <div class="footer-contact">
+                <h4 style="color: #f59e0b; margin-top: 0;">Legal & Connect</h4>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="color: #cbd5e1;">Privacy Policy</a></p>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank" style="color: #cbd5e1;">Terms of Service</a></p>
+                <p style="margin: 0.25rem 0; font-size: 0.9rem;">Email: hellojjskids@gmail.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom" style="text-align: center; padding: 1rem; border-top: 1px solid #334155; color: #64748b; font-size: 0.85rem;">
+            <p>&copy; 2026 Justin's Skillz. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="main.js" defer></script>
 </body>
 </html>

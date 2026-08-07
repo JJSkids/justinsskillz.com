@@ -1,16 +1,26 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Coding | Justin's Skillz</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="../style.css">
-    </head>
-    <body>
-        <h1>Welcome to the Coding Page!</h1>
-        <a href="../index.html">Go Back Home</a>
-        <script src="../main.js" async defer></script>
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code IDE | Justin's Skillz</title>
+</head>
+<body style="background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0;">
+    <header style="padding: 1rem 2rem; background: #1e293b; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center;">
+        <a href="../dashboard.html" style="color: #f59e0b; text-decoration: none; font-weight: bold;">← Back to Workspace</a>
+        <h2 style="margin: 0; font-size: 1.2rem; color: #38bdf8;">💻 Live Web IDE Sandbox</h2>
+    </header>
+    <main style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
+        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 2rem;">
+            <h1 style="color: #fff; margin-top: 0;">Interactive Code Editor</h1>
+            <p style="color: #94a3b8;">Type HTML code into the box below and press "Run Code" to view rendered results live.</p>
+            
+            <textarea id="codeEditor" style="width: 100%; height: 180px; background: #0f172a; color: #38bdf8; border: 1px solid #334155; border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.95rem; box-sizing: border-box;" placeholder="<h1>Hello World!</h1>"></textarea>
+            <button onclick="document.getElementById('previewFrame').srcdoc = document.getElementById('codeEditor').value" style="margin-top: 1rem; padding: 0.75rem 1.5rem; background: #38bdf8; color: #0f172a; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Run Code</button>
+            
+            <h3 style="color: #fff; margin-top: 2rem;">Live Output:</h3>
+            <iframe id="previewFrame" style="width: 100%; height: 200px; background: #ffffff; border: 1px solid #334155; border-radius: 8px;"></iframe>
+        </div>
+    </main>
+</body>
 </html>

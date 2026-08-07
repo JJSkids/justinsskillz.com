@@ -4,22 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music Theory | Justin's Skillz</title>
+    <link rel="stylesheet" href="../style.css">
 </head>
-<body style="background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0;">
-    <header style="padding: 1rem 2rem; background: #1e293b; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center;">
-        <a href="../dashboard.html" style="color: #f59e0b; text-decoration: none; font-weight: bold;">← Back to Workspace</a>
-        <h2 style="margin: 0; font-size: 1.2rem; color: #fbbf24;">🎹 Composition & Music Theory</h2>
+<body>
+    <header class="nav-header">
+        <a href="../dashboard.html" class="btn btn-primary">← Workspace Dashboard</a>
+        <h2 style="margin: 0; font-size: 1.2rem; color: var(--accent-gold);">🎹 Music Theory & Synth</h2>
     </header>
-    <main style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
-        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 2rem;">
-            <h1 style="color: #fff; margin-top: 0;">Intervals & Scale Logic</h1>
-            <p style="color: #94a3b8;">Interactive key signature and interval tracker.</p>
-            <div style="background: #0f172a; padding: 2rem; border-radius: 8px; text-align: center; border: 1px solid #334155;">
-                <p style="color: #fbbf24; font-size: 1.2rem; font-weight: bold; margin-top: 0;">C Major Scale Structure</p>
-                <p style="color: #fff; font-size: 1.1rem; letter-spacing: 0.2rem;">C — D — E — F — G — A — B — C</p>
-                <p style="color: #94a3b8; font-size: 0.9rem;">Pattern: W — W — H — W — W — W — H</p>
+
+    <main class="container">
+        <div class="card" style="text-align: center;">
+            <h1 style="margin-top: 0;">Interactive C Major Piano</h1>
+            <p style="color: var(--text-muted);">Click key buttons below to trigger real audio frequencies:</p>
+
+            <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin: 1.5rem 0;">
+                <button onclick="playNote(261.63)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">C</button>
+                <button onclick="playNote(293.66)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">D</button>
+                <button onclick="playNote(329.63)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">E</button>
+                <button onclick="playNote(349.23)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">F</button>
+                <button onclick="playNote(392.00)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">G</button>
+                <button onclick="playNote(440.00)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">A</button>
+                <button onclick="playNote(493.88)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">B</button>
+                <button onclick="playNote(523.25)" class="btn" style="background: #fff; color: #000; width: 50px; height: 120px;">C5</button>
+            </div>
+
+            <div class="result-box" style="color: var(--accent-gold);">
+                Major Scale Step Formula: Whole — Whole — Half — Whole — Whole — Whole — Half
             </div>
         </div>
     </main>
+
+    <script>
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function playNote(freq) {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1);
+      }
+    </script>
 </body>
 </html>

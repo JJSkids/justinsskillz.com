@@ -3,22 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Logic | Justin's Skillz</title>
+    <title>Chess Tactics | Justin's Skillz</title>
+    <link rel="stylesheet" href="../style.css">
 </head>
-<body style="background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0;">
-    <header style="padding: 1rem 2rem; background: #1e293b; border-bottom: 1px solid #334155; display: flex; justify-content: space-between; align-items: center;">
-        <a href="../dashboard.html" style="color: #f59e0b; text-decoration: none; font-weight: bold;">← Back to Workspace</a>
-        <h2 style="margin: 0; font-size: 1.2rem; color: #a78bfa;">♟️ Positional Logic Analysis</h2>
+<body>
+    <header class="nav-header">
+        <a href="../dashboard.html" class="btn btn-primary">← Workspace Dashboard</a>
+        <h2 style="margin: 0; font-size: 1.2rem; color: var(--accent-purple);">♟️ Chess Logic & Tactics</h2>
     </header>
-    <main style="max-width: 1000px; margin: 2rem auto; padding: 0 1rem;">
-        <div style="background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 2rem; text-align: center;">
-            <h1 style="color: #fff; margin-top: 0;">Tactical Puzzle Engine</h1>
-            <p style="color: #94a3b8;">Analyze positional structures, forks, pins, and checkmate sequences.</p>
-            <div style="padding: 3rem; background: #0f172a; border: 1px solid #334155; border-radius: 8px; margin-top: 1rem; display: inline-block;">
-                <span style="font-size: 4rem;">♟️ 🏰 🐴 👑</span>
-                <p style="color: #a78bfa; margin-bottom: 0; font-weight: bold;">Tactical puzzle board loading...</p>
+
+    <main class="container">
+        <div class="card" style="text-align: center;">
+            <h1 style="margin-top: 0;">Knight Fork Tactical Trainer</h1>
+            <p style="color: var(--text-muted);">Find the optimal knight move to fork the King and Queen!</p>
+            
+            <div style="background: var(--bg-main); padding: 2rem; border-radius: 8px; border: 1px solid var(--border-color); display: inline-block; margin: 1rem 0;">
+                <p style="font-size: 1.1rem; margin-bottom: 1rem;">White Knight at <strong>e4</strong>. Black King at <strong>c7</strong>, Black Queen at <strong>g7</strong>.</p>
+                <div style="display: flex; gap: 0.5rem; justify-content: center;">
+                    <button onclick="checkTactics('Nf6')" class="btn btn-purple">Play Nf6+</button>
+                    <button onclick="checkTactics('Nd6')" class="btn btn-purple">Play Nd6+</button>
+                    <button onclick="checkTactics('Nc5')" class="btn btn-purple">Play Nc5</button>
+                </div>
+            </div>
+
+            <div id="tacticsFeedback" class="result-box">
+                Select a move to solve the tactic.
             </div>
         </div>
     </main>
+
+    <script>
+      function checkTactics(move) {
+        const fb = document.getElementById('tacticsFeedback');
+        if (move === 'Nd6') {
+          fb.innerText = "Correct! Nd6+ forks the King on c7 and Queen on g7!";
+          fb.style.color = "#34d399";
+        } else {
+          fb.innerText = `Incorrect. ${move} allows Black to escape without losing material.`;
+          fb.style.color = "#ef4444";
+        }
+      }
+    </script>
 </body>
 </html>

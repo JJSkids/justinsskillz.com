@@ -432,11 +432,33 @@
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
+      // Dedicated Logout Handler
+      async function handleLogout(e) {
+          if (e) e.preventDefault();
+          
+          try {
+              // 1. Clear local storage session tokens
+              localStorage.clear();
+              sessionStorage.clear();
+
+              // 2. Clear Supabase auth session
+              if (supabase) {
+                  await supabase.auth.signOut();
+              }
+          } catch (err) {
+              console.error("Sign out error:", err);
+          } finally {
+              // 3. Force redirect back to index
+              window.location.replace("index.html");
+          }
+      }
+
       async function initDashboardSession() {
           if (!supabase) return;
 
           const { data: { session } } = await supabase.auth.getSession();
           
+          // Protect route: redirect if not logged in
           if (!session) {
               window.location.replace("index.html");
               return;
@@ -455,23 +477,26 @@
               displayName = parts.charAt(0).toUpperCase() + parts.slice(1);
           }
 
-          document.getElementById('usernameDisplay').textContent = displayName;
+          const usernameElem = document.getElementById('usernameDisplay');
+          if (usernameElem) {
+              usernameElem.textContent = displayName;
+          }
 
-          if (metadata.avatar_url || metadata.picture) {
-              document.getElementById('userAvatar').src = metadata.avatar_url || metadata.picture;
+          const avatarElem = document.getElementById('userAvatar');
+          if (avatarElem && (metadata.avatar_url || metadata.picture)) {
+              avatarElem.src = metadata.avatar_url || metadata.picture;
           }
       }
 
-      document.getElementById('logoutBtn').addEventListener('click', async () => {
-          localStorage.clear();
-          sessionStorage.clear();
-          if (supabase) {
-              await supabase.auth.signOut();
-          }
-          window.location.href = "index.html";
-      });
+      // Ensure DOM is fully loaded before binding click events
+      document.addEventListener('DOMContentLoaded', () => {
+          initDashboardSession();
 
-      document.addEventListener('DOMContentLoaded', initDashboardSession);
+          const logoutBtn = document.getElementById('logoutBtn');
+          if (logoutBtn) {
+              logoutBtn.addEventListener('click', handleLogout);
+          }
+      });
     </script>
 </body>
 </html>

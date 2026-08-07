@@ -24,6 +24,7 @@
       async function handleHomeSession() {
           if (!supabase) return;
 
+          // FIXED: Redirect correctly if hash is present on index.html
           if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
               window.location.replace("https://jjskids.github.io/justinsskillz.com/dashboard.html" + window.location.hash);
               return;
@@ -108,6 +109,7 @@
           if (signOutBtn) signOutBtn.addEventListener('click', forceHomeSignOut);
           if (closeModal && authModal) closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
 
+          // FIXED: Trailing slash ensured before dashboard.html
           const cleanRedirectUrl = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
 
           if (googleBtn) {

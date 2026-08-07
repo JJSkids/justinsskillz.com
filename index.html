@@ -3,13 +3,36 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    
     <meta name="google-site-verification" content="-G-q80QQ0dQaOWtbVUCFJTeXUYTpr5iWsDHCQaGpNic" />
 
     <title>Justin's Skillz | Interactive Tech Platform</title>
     <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals through interactive workspaces and real-time code environments.">
     <link rel="stylesheet" href="style.css">
     
+    <style>
+        .hidden { display: none !important; }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+        }
+        .modal-card {
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -21,67 +44,33 @@
           supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
+      // Catch returning auth token immediately
+      if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
+          const hash = window.location.hash;
+          const cleanBase = window.location.origin + window.location.pathname.replace(/index\.html?$/, '');
+          window.location.replace(cleanBase + "dashboard.html" + hash);
+      }
+
       async function handleHomeSession() {
           if (!supabase) return;
-
-          // FIXED: Redirect correctly if hash is present on index.html
-          if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
-              window.location.replace("https://jjskids.github.io/justinsskillz.com/dashboard.html" + window.location.hash);
-              return;
-          }
-
           const { data: { session } } = await supabase.auth.getSession();
           const user = session?.user;
 
-          const signInBtn = document.getElementById('signInBtn');
-          const signOutBtn = document.getElementById('signOutBtn');
-          const heroContainer = document.getElementById('heroContainer');
-          
           if (user) {
-              if (window.location.hash) {
-                  window.history.replaceState(null, document.title, window.location.pathname);
-              }
-
               const metadata = user.user_metadata || {};
-              const rawName = metadata.full_name || metadata.name || metadata.preferred_username || metadata.user_name;
-              
-              let displayName = "Developer";
-              if (rawName) {
-                  displayName = rawName.split(' ')[0];
-              } else if (user.email) {
-                  const parts = user.email.split('@')[0];
-                  displayName = parts.charAt(0).toUpperCase() + parts.slice(1);
-              }
+              const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
+              const displayName = rawName ? rawName.split(' ')[0] : 'Developer';
 
-              // Replace Sign In button with Workspace badge
+              const signInBtn = document.getElementById('signInBtn');
+              const signOutBtn = document.getElementById('signOutBtn');
+
               if (signInBtn) {
                   signInBtn.outerHTML = `
-                    <div class="nav-user-badge" style="display: flex; align-items: center; gap: 0.75rem;">
-                      <span style="font-weight: 600; color: #f59e0b;">👋 ${displayName}</span>
-                      <a href="dashboard.html" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem; background: #4f46e5; color: white; border-radius: 6px; font-weight: bold;">💻 Workspace</a>
-                    </div>
+                    <a href="dashboard.html" class="btn-primary" style="text-decoration: none; padding: 0.5rem 1rem; background: #4f46e5; color: white; border-radius: 6px; font-weight: bold;">👋 ${displayName}'s Workspace</a>
                   `;
               }
-
               if (signOutBtn) {
                   signOutBtn.classList.remove('hidden');
-                  signOutBtn.style.display = 'inline-block';
-              }
-
-              // Update Hero Section for logged in users
-              if (heroContainer) {
-                  heroContainer.innerHTML = `
-                    <div class="hero-content" style="background: #1e293b; padding: 2.5rem; border-radius: 12px; border: 1px solid #334155; text-align: left;">
-                        <span class="badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399; padding: 0.35rem 0.75rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">Active Session</span>
-                        <h1 style="color: #fff; margin-top: 0.75rem; font-size: 2.2rem;">Welcome back to your Workspace, ${displayName}! 👋</h1>
-                        <p style="color: #94a3b8; font-size: 1.05rem; margin-bottom: 1.5rem;">Quickly launch your interactive developer tools, math environments, or logic modules below.</p>
-                        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
-                            <a href="dashboard.html" style="padding: 0.75rem 1.5rem; background: #f59e0b; color: #0f172a; text-decoration: none; border-radius: 6px; font-weight: bold;">Open Main Dashboard</a>
-                            <a href="PAGES/coding.html" style="padding: 0.75rem 1.5rem; background: #38bdf8; color: #0f172a; text-decoration: none; border-radius: 6px; font-weight: bold;">Launch Code IDE</a>
-                            <a href="PAGES/math.html" style="padding: 0.75rem 1.5rem; background: #4f46e5; color: #fff; text-decoration: none; border-radius: 6px; font-weight: bold;">Math Sandbox</a>
-                        </div>
-                    </div>
-                  `;
               }
           }
       }
@@ -105,19 +94,41 @@
           const googleBtn = document.getElementById('googleAuthBtn');
           const githubBtn = document.getElementById('githubAuthBtn');
 
-          if (signInBtn && authModal) signInBtn.addEventListener('click', () => authModal.classList.remove('hidden'));
-          if (signOutBtn) signOutBtn.addEventListener('click', forceHomeSignOut);
-          if (closeModal && authModal) closeModal.addEventListener('click', () => authModal.classList.add('hidden'));
+          // Sign In Modal Listeners
+          if (signInBtn && authModal) {
+              signInBtn.addEventListener('click', (e) => {
+                  e.preventDefault();
+                  authModal.classList.remove('hidden');
+              });
+          }
 
-          // FIXED: Trailing slash ensured before dashboard.html
-          const cleanRedirectUrl = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
+          if (closeModal && authModal) {
+              closeModal.addEventListener('click', () => {
+                  authModal.classList.add('hidden');
+              });
+          }
+
+          // Close modal when clicking dark overlay background
+          if (authModal) {
+              authModal.addEventListener('click', (e) => {
+                  if (e.target === authModal) {
+                      authModal.classList.add('hidden');
+                  }
+              });
+          }
+
+          if (signOutBtn) {
+              signOutBtn.addEventListener('click', forceHomeSignOut);
+          }
+
+          const targetRedirect = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
 
           if (googleBtn) {
               googleBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
                   await supabase.auth.signInWithOAuth({
                       provider: 'google',
-                      options: { redirectTo: cleanRedirectUrl, queryParams: { prompt: 'select_account' } }
+                      options: { redirectTo: targetRedirect, queryParams: { prompt: 'select_account' } }
                   });
               });
           }
@@ -127,7 +138,7 @@
                   e.preventDefault();
                   await supabase.auth.signInWithOAuth({
                       provider: 'github',
-                      options: { redirectTo: cleanRedirectUrl }
+                      options: { redirectTo: targetRedirect }
                   });
               });
           }
@@ -146,12 +157,11 @@
         <nav class="nav-center" style="display: flex; gap: 1.5rem;">
             <a href="#about" style="color: #94a3b8; text-decoration: none;">App Purpose</a>
             <a href="#functionality" style="color: #94a3b8; text-decoration: none;">Features</a>
-            <a href="#data-usage" style="color: #94a3b8; text-decoration: none;">Data Transparency</a>
             <a href="#contact" style="color: #94a3b8; text-decoration: none;">Contact</a>
         </nav>
         <div class="nav-right" style="display: flex; gap: 1rem; align-items: center;">
-            <button id="signInBtn" class="btn-primary" style="background-color: #4f46e5; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Sign In</button>
-            <button id="signOutBtn" class="btn-text hidden" style="background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer; display: none;">Sign Out</button>
+            <button id="signInBtn" class="btn-primary" style="background-color: #4f46e5; color: #fff; border: none; padding: 0.5rem 1.2rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Sign In</button>
+            <button id="signOutBtn" class="btn-text hidden" style="background: none; border: none; color: #ef4444; font-weight: bold; cursor: pointer;">Sign Out</button>
         </div>
     </header>
 
@@ -189,7 +199,7 @@
             </a>
             <a href="PAGES/chess.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
                 <h3 style="margin-top: 0; color: #a78bfa;">♟️ Logic Tracking & Chess</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Analyze positional structures, tactical puzzles, and problem solving.</p>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Play against a custom Minimax AI engine with castling, en passant, and checkmate detection.</p>
             </a>
             <a href="PAGES/french.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
                 <h3 style="margin-top: 0; color: #f472b6;">🇫🇷 Language Modules</h3>
@@ -197,17 +207,17 @@
             </a>
             <a href="PAGES/music.html" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block;">
                 <h3 style="margin-top: 0; color: #fbbf24;">🎹 Music Theory</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Composition rules, rhythm dynamics, and interval logic.</p>
+                <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 0;">Composition rules, rhythm dynamics, and synth player.</p>
             </a>
         </div>
     </main>
 
-    <!-- Modal -->
-    <div id="authModal" class="modal hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-        <div style="background: #1e293b; padding: 2rem; border-radius: 12px; border: 1px solid #334155; max-width: 400px; width: 100%; position: relative;">
+    <!-- Interactive Authentication Modal -->
+    <div id="authModal" class="modal hidden">
+        <div class="modal-card">
             <button id="closeModal" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: #94a3b8; font-size: 1.5rem; cursor: pointer;">&times;</button>
             <h2 style="color: #fff; margin-top: 0;">Sign In</h2>
-            <p style="color: #94a3b8; font-size: 0.9rem;">Access your workspace sandbox and progress.</p>
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 1.5rem;">Access your workspace sandbox and progress tracking.</p>
             
             <button id="githubAuthBtn" style="width: 100%; padding: 0.75rem; margin-bottom: 0.75rem; background: #334155; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Continue with GitHub</button>
             <button id="googleAuthBtn" style="width: 100%; padding: 0.75rem; background: #ea4335; color: #fff; border: none; border-radius: 6px; font-weight: bold; cursor: pointer;">Continue with Google</button>

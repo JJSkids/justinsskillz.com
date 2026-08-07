@@ -1,82 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Math Academy | Justin's Skillz</title>
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --text-color: #f8fafc;
-            --muted-color: #94a3b8;
-            --accent-color: #f59e0b;
-            --border-color: #334155;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg-color); color: var(--text-color); font-family: system-ui, sans-serif; line-height: 1.6; padding: 2rem 1rem; }
-        .container { max-width: 1100px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; }
-        .back-btn { color: var(--accent-color); text-decoration: none; font-weight: 600; }
-        h1 { font-size: 2rem; color: #fff; }
-        .curriculum-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
-        .unit-card { background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 10px; padding: 1.5rem; }
-        .unit-card h3 { color: var(--accent-color); font-size: 1.2rem; margin-bottom: 0.5rem; }
-        .unit-card ul { list-style: none; color: var(--muted-color); font-size: 0.9rem; margin-top: 0.5rem; }
-        .unit-card li { padding: 0.25rem 0; border-bottom: 1px rgba(255,255,255,0.05) solid; }
-        .unit-card li::before { content: "✓ "; color: var(--accent-color); }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Sandbox | Justin's Skillz</title>
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📐 Mathematics Track (Ages 5 – University)</h1>
-            <a href="../dashboard.html" class="back-btn">&larr; Back to Dashboard</a>
-        </div>
-        <p style="color: var(--muted-color);">Comprehensive problem-solving track from primary arithmetic to linear algebra and calculus.</p>
+    <header class="nav-header">
+        <a href="../dashboard.html" class="btn btn-primary">← Workspace Dashboard</a>
+        <h2 style="margin: 0; font-size: 1.2rem; color: var(--accent-gold);">📐 Advanced Mathematics</h2>
+    </header>
 
-        <div class="curriculum-grid">
-            <div class="unit-card">
-                <h3>🔢 Ages 5–7: Foundations</h3>
-                <ul>
-                    <li>Counting 1-100 & Number Bonds</li>
-                    <li>Addition & Subtraction (0-20)</li>
-                    <li>Comparing (<, >, =) & Basic Shapes</li>
-                </ul>
+    <main class="container">
+        <div class="card">
+            <h1 style="margin-top: 0;">Quadratic & Complex Roots Solver</h1>
+            <p style="color: var(--text-muted);">Solve equations in the form $ax^2 + bx + c = 0$:</p>
+            
+            <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+                <input id="coeffA" type="number" class="input-field" placeholder="a" style="width: 80px;" value="1">
+                <span>$x^2 +$</span>
+                <input id="coeffB" type="number" class="input-field" placeholder="b" style="width: 80px;" value="2">
+                <span>$x +$</span>
+                <input id="coeffC" type="number" class="input-field" placeholder="c" style="width: 80px;" value="5">
+                <span>$= 0$</span>
+                <button onclick="calculateRoots()" class="btn btn-primary">Compute Roots</button>
             </div>
-            <div class="unit-card">
-                <h3>⚡ Ages 8–10: Elementary Math</h3>
-                <ul>
-                    <li>Multiplication Tables (1-12) & Division</li>
-                    <li>Fractions, Decimals & Percentages</li>
-                    <li>Order of Operations (PEMDAS/BEDMAS)</li>
-                </ul>
-            </div>
-            <div class="unit-card">
-                <h3>📊 Ages 11–13: Pre-Algebra & Logic</h3>
-                <ul>
-                    <li>Ratios, Proportions & Variables</li>
-                    <li>Solving 1-Step & 2-Step Equations</li>
-                    <li>Pythagorean Theorem & Coordinate Plane</li>
-                </ul>
-            </div>
-            <div class="unit-card">
-                <h3>📈 Ages 14–18: High School Math</h3>
-                <ul>
-                    <li>Linear Systems & Quadratic Factoring</li>
-                    <li>Logarithms & Trigonometry / Unit Circle</li>
-                    <li>Limits, Derivatives & Integrals</li>
-                </ul>
-            </div>
-            <div class="unit-card">
-                <h3>🎓 University Prep Math</h3>
-                <ul>
-                    <li>Calculus I & II (Optimization & Series)</li>
-                    <li>Linear Algebra & Vectors</li>
-                    <li>Discrete Mathematics & Proofs</li>
-                </ul>
+
+            <div id="mathOutput" class="result-box" style="color: var(--accent-green);">
+                Click Compute to solve the polynomial roots.
             </div>
         </div>
-    </div>
+    </main>
+
+    <script>
+      function calculateRoots() {
+        const a = parseFloat(document.getElementById('coeffA').value);
+        const b = parseFloat(document.getElementById('coeffB').value);
+        const c = parseFloat(document.getElementById('coeffC').value);
+        const out = document.getElementById('mathOutput');
+
+        if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) {
+          out.innerText = "Please enter valid non-zero coefficients.";
+          return;
+        }
+
+        const disc = b * b - 4 * a * c;
+        if (disc > 0) {
+          const x1 = (-b + Math.sqrt(disc)) / (2 * a);
+          const x2 = (-b - Math.sqrt(disc)) / (2 * a);
+          out.innerText = `Two Real Roots: x₁ = ${x1.toFixed(3)}, x₂ = ${x2.toFixed(3)}`;
+        } else if (disc === 0) {
+          const x = -b / (2 * a);
+          out.innerText = `One Double Root: x = ${x.toFixed(3)}`;
+        } else {
+          const real = (-b / (2 * a)).toFixed(3);
+          const imag = (Math.sqrt(-disc) / (2 * a)).toFixed(3);
+          out.innerText = `Complex Conjugate Pair: x = ${real} ± ${imag}i`;
+        }
+      }
+    </script>
 </body>
 </html>

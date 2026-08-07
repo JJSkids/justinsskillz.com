@@ -3,10 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google-site-verification" content="-G-q80QQ0dQaOWtbVUCFJTeXUYTpr5iWsDHCQaGpNic" />
-
     <title>Justin's Skillz | Interactive Tech Platform</title>
-    <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals through interactive workspaces and real-time code environments.">
     <link rel="stylesheet" href="style.css">
 
     <!-- Supabase Client -->
@@ -27,9 +24,9 @@
             <a href="#contact">Contact</a>
         </nav>
         <div class="nav-right">
-            <!-- Container holds either Sign In button or Dashboard button -->
             <div id="authNavContainer">
-                <button id="signInBtn" type="button" class="btn btn-primary">Sign In</button>
+                <!-- Inline onclick guarantees the click works even if other scripts fail -->
+                <button id="signInBtn" type="button" class="btn btn-primary" onclick="openModal()">Sign In</button>
             </div>
             <button id="signOutBtn" type="button" class="btn btn-danger hidden">Sign Out</button>
         </div>
@@ -82,10 +79,10 @@
         </div>
     </main>
 
-    <!-- Interactive Authentication Modal -->
-    <div id="authModal" class="auth-modal-overlay hidden">
+    <!-- Authentication Modal Overlay -->
+    <div id="authModal" class="auth-modal-overlay hidden" onclick="closeModalOnBackdrop(event)">
         <div class="auth-modal-card">
-            <button id="closeModal" type="button" class="close-btn">&times;</button>
+            <button id="closeModal" type="button" class="close-btn" onclick="closeModal()">&times;</button>
             <h2>Sign In</h2>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Access your workspace sandbox and progress tracking.</p>
             
@@ -118,22 +115,7 @@
       const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
-      let supabase = null;
-      try {
-        if (window.supabase && typeof window.supabase.createClient === 'function') {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
-      } catch (err) {
-        console.warn("Supabase init error:", err);
-      }
-
-      // Handle OAuth Redirect Hashes
-      if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
-          const hash = window.location.hash;
-          const cleanBase = window.location.origin + window.location.pathname.replace(/index\.html?$/, '');
-          window.location.replace(cleanBase + "dashboard.html" + hash);
-      }
-
+      // Global Modal Functions
       function openModal() {
           const modal = document.getElementById('authModal');
           if (modal) modal.classList.remove('hidden');
@@ -142,6 +124,29 @@
       function closeModal() {
           const modal = document.getElementById('authModal');
           if (modal) modal.classList.add('hidden');
+      }
+
+      function closeModalOnBackdrop(e) {
+          if (e.target.id === 'authModal') {
+              closeModal();
+          }
+      }
+
+      // Initialize Supabase
+      let supabase = null;
+      try {
+        if (window.supabase && typeof window.supabase.createClient === 'function') {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+      } catch (err) {
+        console.warn("Supabase init deferred:", err);
+      }
+
+      // OAuth Token Handler
+      if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
+          const hash = window.location.hash;
+          const cleanBase = window.location.origin + window.location.pathname.replace(/index\.html?$/, '');
+          window.location.replace(cleanBase + "dashboard.html" + hash);
       }
 
       async function checkSession() {
@@ -164,37 +169,21 @@
                   }
               }
           } catch(e) {
-              console.log("Session error:", e);
+              console.log("Session check skipped:", e);
           }
       }
 
       document.addEventListener('DOMContentLoaded', () => {
           checkSession();
 
-          // Delegation so button click works even if dynamic
-          document.addEventListener('click', (e) => {
-              if (e.target && e.target.id === 'signInBtn') {
-                  e.preventDefault();
-                  openModal();
-              }
-              if (e.target && e.target.id === 'closeModal') {
-                  e.preventDefault();
-                  closeModal();
-              }
-              if (e.target && e.target.id === 'authModal') {
-                  closeModal();
-              }
-          });
-
           const targetRedirect = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
-
           const googleBtn = document.getElementById('googleAuthBtn');
           const githubBtn = document.getElementById('githubAuthBtn');
 
           if (googleBtn) {
               googleBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
-                  if (!supabase) return alert("Auth initializing, please try again.");
+                  if (!supabase) return alert("Auth service loading, please try again in a second.");
                   await supabase.auth.signInWithOAuth({
                       provider: 'google',
                       options: { redirectTo: targetRedirect, queryParams: { prompt: 'select_account' } }
@@ -205,7 +194,7 @@
           if (githubBtn) {
               githubBtn.addEventListener('click', async (e) => {
                   e.preventDefault();
-                  if (!supabase) return alert("Auth initializing, please try again.");
+                  if (!supabase) return alert("Auth service loading, please try again in a second.");
                   await supabase.auth.signInWithOAuth({
                       provider: 'github',
                       options: { redirectTo: targetRedirect }

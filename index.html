@@ -178,6 +178,7 @@
 
           if (googleOAuthBtn) {
               googleOAuthBtn.addEventListener('click', async () => {
+                  // Dynamically builds redirect URL to dashboard.html regardless of domain/origin
                   const targetDashboardUrl = window.location.href.includes('index.html')
                       ? window.location.href.replace('index.html', 'dashboard.html')
                       : window.location.href.replace(/\/$/, '') + '/dashboard.html';

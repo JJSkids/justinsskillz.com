@@ -55,6 +55,12 @@
             z-index: 100;
         }
 
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
         .brand-link {
             display: flex;
             align-items: center;
@@ -243,10 +249,15 @@
 
     <!-- Header Navigation -->
     <header class="nav-header">
-        <a href="index.html" class="brand-link">
-            <img src="Justin's%20Skillz.jpg" alt="Justin's Skillz Logo" class="brand-logo" onerror="this.style.display='none'">
-            <span>Justin's Skillz Workspace</span>
-        </a>
+        <div class="header-left">
+            <a href="index.html" class="brand-link">
+                <img src="Justin's%20Skillz.jpg" alt="Justin's Skillz Logo" class="brand-logo" onerror="this.style.display='none'">
+                <span>Justin's Skillz Workspace</span>
+            </a>
+            <!-- Back to Home Button -->
+            <a href="index.html" class="btn btn-outline" style="font-size: 0.85rem; padding: 0.35rem 0.75rem;">🏠 Back to Home</a>
+        </div>
+
         <div class="user-badge">
             <span id="userNameDisplay" class="user-name">👋 Welcome Back!</span>
             <button id="signOutBtn" type="button" class="btn btn-danger">Sign Out</button>
@@ -351,7 +362,7 @@
         </div>
     </footer>
 
-    <!-- Supabase Session & Authentication Script -->
+    <!-- Supabase Session Script -->
     <script>
         const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";

@@ -279,14 +279,7 @@
           });
       }
 
-      // 4. Token Redirect Handler
-      if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
-          const hash = window.location.hash;
-          const cleanBase = window.location.origin + window.location.pathname.replace(/index\.html?$/, '');
-          window.location.replace(cleanBase + "dashboard.html" + hash);
-      }
-
-      // 5. Header UI Renderer
+      // 4. Header UI Renderer
       function renderUserUI(user) {
           const container = document.getElementById('authNavContainer');
           const signOutBtn = document.getElementById('signOutBtn');
@@ -312,7 +305,7 @@
           }
       }
 
-      // 6. Auth Listener & Initial Check
+      // 5. Auth Listener & Session Management
       async function setupAuthListener() {
           if (!window.supabaseClient) return;
 
@@ -330,7 +323,7 @@
           });
       }
 
-      // 7. Event Binding on DOM Load
+      // 6. Event Binding on DOM Load
       document.addEventListener('DOMContentLoaded', () => {
           setupAuthListener();
 

@@ -1,422 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="no-js" lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Dashboard | Justin's Skillz</title>
-    <meta name="description" content="Justin's Skillz Dashboard - Access interactive learning modules, coding sandboxes, and personal progress workspace.">
-    
     <link rel="icon" href="Justin's%20Skillz.jpg" type="image/jpeg">
     <link rel="stylesheet" href="style.css">
-
-    <!-- Supabase Client JS SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --card-border: #334155;
-            --accent-blue: #38bdf8;
-            --accent-amber: #fbbf24;
-            --accent-green: #34d399;
-            --accent-purple: #a855f7;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --danger: #ef4444;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Nav Header */
-        .nav-header {
-            background-color: rgba(30, 41, 59, 0.85);
-            backdrop-filter: blur(8px);
-            border-bottom: 1px solid var(--card-border);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .brand-link {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-            color: var(--text-main);
-            font-weight: 700;
-            font-size: 1.2rem;
-        }
-
-        .brand-logo {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .user-name {
-            color: var(--accent-blue);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-            font-size: 0.9rem;
-        }
-
-        .btn-primary {
-            background-color: #0284c7;
-            color: #ffffff;
-        }
-
-        .btn-primary:hover {
-            background-color: #0369a1;
-        }
-
-        .btn-outline {
-            background: transparent;
-            border-color: var(--card-border);
-            color: var(--text-main);
-        }
-
-        .btn-outline:hover {
-            border-color: var(--accent-blue);
-            color: var(--accent-blue);
-        }
-
-        .btn-danger {
-            background-color: rgba(239, 68, 68, 0.15);
-            color: var(--danger);
-            border-color: rgba(239, 68, 68, 0.3);
-        }
-
-        .btn-danger:hover {
-            background-color: var(--danger);
-            color: #fff;
-        }
-
-        /* Main Container */
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-            flex: 1;
-            width: 100%;
-        }
-
-        .welcome-card {
-            background: linear-gradient(135deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-        }
-
-        .welcome-card h1 {
-            font-size: 1.8rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .welcome-card p {
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
-
-        .section-heading {
-            font-size: 1.4rem;
-            margin-bottom: 1.25rem;
-            color: var(--accent-blue);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        /* Modules Grid */
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 3rem;
-        }
-
-        .module-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-        }
-
-        .module-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--accent-blue);
-        }
-
-        .module-card h3 {
-            font-size: 1.25rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .module-card p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Footer */
-        .footer {
-            border-top: 1px solid var(--card-border);
-            background-color: rgba(15, 23, 42, 0.95);
-            padding: 2rem;
-            margin-top: auto;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .footer-container a {
-            color: var(--accent-blue);
-            text-decoration: none;
-        }
-
-        .footer-container a:hover {
-            text-decoration: underline;
-        }
-
-        .footer-bottom {
-            max-width: 1200px;
-            margin: 1.5rem auto 0 auto;
-            padding-top: 1rem;
-            border-top: 1px solid var(--card-border);
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 0.85rem;
-        }
-    </style>
 </head>
 <body>
 
-    <!-- Header Navigation -->
     <header class="nav-header">
-        <div class="header-left">
+        <div class="nav-left">
             <a href="index.html" class="brand-link">
                 <img src="Justin's%20Skillz.jpg" alt="Justin's Skillz Logo" class="brand-logo" onerror="this.style.display='none'">
-                <span>Justin's Skillz Workspace</span>
+                <span class="brand-name">Justin's Skillz</span>
             </a>
-            <!-- Back to Home Button -->
-            <a href="index.html" class="btn btn-outline" style="font-size: 0.85rem; padding: 0.35rem 0.75rem;">🏠 Back to Home</a>
         </div>
-
-        <div class="user-badge">
-            <span id="userNameDisplay" class="user-name">👋 Welcome Back!</span>
-            <button id="signOutBtn" type="button" class="btn btn-danger">Sign Out</button>
+        <nav class="nav-center">
+            <a href="index.html">Home</a>
+            <a href="#workspaces">Workspaces</a>
+        </nav>
+        <div class="nav-right">
+            <button id="dashboardSignOutBtn" type="button" class="btn btn-danger">Sign Out</button>
         </div>
     </header>
 
-    <!-- Main Workspace Container -->
-    <main class="dashboard-container">
-        
-        <!-- Welcome Hero Banner -->
-        <div class="welcome-card">
-            <h1 id="heroGreeting">Developer Dashboard</h1>
-            <p>Access your active course sandboxes, interactive math computational tools, and logic programming suites.</p>
+    <main class="container" style="padding-top: 2rem;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <h1 id="welcomeUser">Welcome to your Workspace!</h1>
+            <p style="color: var(--text-muted);">Access your interactive development sandboxes and modules below.</p>
         </div>
 
-        <h2 class="section-heading">📚 Course Learning Modules & Sandboxes</h2>
-
-        <!-- Module Cards Grid -->
-        <div class="modules-grid">
-            
-            <!-- Mathematics Module -->
+        <section id="workspaces" class="grid-layout">
             <div class="module-card">
-                <div>
-                    <h3 style="color: var(--accent-amber);">📐 Mathematics Sandbox</h3>
-                    <p>Quadratic & complex roots solver, matrix transformations, vector dot products, and periodic trigonometry engines.</p>
-                </div>
-                <a href="PAGES/math.html" class="btn btn-primary" style="width: 100%; text-align: center;">Open Math Sandbox</a>
+                <h3 style="color: var(--accent-blue);">💻 Code Editor Sandbox</h3>
+                <p>Build and run HTML, CSS, and JS web components directly in your browser environment.</p>
+                <a href="PAGES/coding.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Launch IDE</a>
             </div>
 
-            <!-- Coding IDE Module -->
             <div class="module-card">
-                <div>
-                    <h3 style="color: var(--accent-blue);">💻 Interactive Code IDE</h3>
-                    <p>Practice web development using real-time HTML5 markup, CSS layout flexboxes, and JavaScript DOM manipulation.</p>
-                </div>
-                <a href="PAGES/coding.html" class="btn btn-outline" style="width: 100%; text-align: center;">Launch Code IDE</a>
+                <h3 style="color: var(--accent-amber);">📐 Mathematics Lab</h3>
+                <p>Solve algebraic, quadratic, and complex polar form equations visually.</p>
+                <a href="PAGES/math.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open Lab</a>
             </div>
 
-            <!-- Logic & Scripting Module -->
             <div class="module-card">
-                <div>
-                    <h3 style="color: var(--accent-green);">🤖 Logic & Scripting</h3>
-                    <p>Build conditional logic execution loops, block event commands, and algorithmic problem-solving scripts.</p>
-                </div>
-                <a href="PAGES/robotics.html" class="btn btn-outline" style="width: 100%; text-align: center;">Start Logic Suite</a>
+                <h3 style="color: var(--accent-green);">🤖 Logic & Scripting</h3>
+                <p>Test conditional loops, event handlers, and block-based logic scripts.</p>
+                <a href="PAGES/robotics.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open Sandbox</a>
             </div>
 
-            <!-- Logic Tracking & Chess -->
             <div class="module-card">
-                <div>
-                    <h3 style="color: var(--accent-purple);">♟️ Logic Tracking & Chess</h3>
-                    <p>Explore chess tactical patterns, opening principles, and minimax decision tree algorithms.</p>
-                </div>
-                <a href="PAGES/chess.html" class="btn btn-outline" style="width: 100%; text-align: center;">Open Chess Suite</a>
+                <h3 style="color: var(--accent-purple);">♟️ Chess AI & Tactics</h3>
+                <p>Study opening structures and test decision trees using Minimax algorithms.</p>
+                <a href="PAGES/chess.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Start Board</a>
             </div>
 
-            <!-- French Language Module -->
             <div class="module-card">
-                <div>
-                    <h3 style="color: #f472b6;">🇫🇷 French Language Module</h3>
-                    <p>Master French verb conjugations (Être, Avoir, Aller), grammar rules, and sentence patterns.</p>
-                </div>
-                <a href="PAGES/french.html" class="btn btn-outline" style="width: 100%; text-align: center;">Start French Module</a>
+                <h3 style="color: #f472b6;">🇫🇷 Language Module</h3>
+                <p>Practice verb conjugations, grammar structures, and vocabulary drills.</p>
+                <a href="PAGES/french.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open French Lab</a>
             </div>
 
-            <!-- Music Theory Module -->
             <div class="module-card">
-                <div>
-                    <h3 style="color: #fbbf24;">🎹 Music Theory</h3>
-                    <p>Study scale intervals, chord triad structures (Major/Minor), and rhythmic time signatures.</p>
-                </div>
-                <a href="PAGES/music.html" class="btn btn-outline" style="width: 100%; text-align: center;">Start Music Module</a>
+                <h3 style="color: #fbbf24;">🎹 Music Theory</h3>
+                <p>Construct scale intervals, major/minor triads, and timing patterns.</p>
+                <a href="PAGES/music.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open Theory Studio</a>
             </div>
-
-        </div>
+        </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <div>
-                <h3>Justin's Skillz</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
-                    Interactive learning ecosystem for coding, logic, and mathematics.
-                </p>
-            </div>
-            <div>
-                <h4 style="color: var(--accent-amber);">Legal & Support</h4>
-                <p style="margin-top: 0.5rem;">
-                    <a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank">Privacy Policy</a>
-                </p>
-                <p style="margin-top: 0.25rem;">
-                    <a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank">Terms of Service</a>
-                </p>
-                <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.5rem;">
-                    Email: <a href="mailto:hellojjskids@gmail.com">hellojjskids@gmail.com</a>
-                </p>
-            </div>
-        </div>
         <div class="footer-bottom">
             <p>&copy; 2026 Justin's Skillz. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Supabase Session Script -->
     <script>
-        const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
+      const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
+      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
-        let supabaseClient = null;
-        try {
-            if (window.supabase && typeof window.supabase.createClient === 'function') {
-                supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            }
-        } catch (err) {
-            console.warn("Supabase initialization warning:", err);
-        }
+      const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true
+          }
+      });
 
-        async function initDashboardSession() {
-            if (!supabaseClient) return;
+      async function initDashboard() {
+          const { data: { session } } = await supabaseClient.auth.getSession();
 
-            try {
-                const { data: { session } } = await supabaseClient.auth.getSession();
-                if (session && session.user) {
-                    const metadata = session.user.user_metadata || {};
-                    const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
-                    const displayName = rawName ? rawName.split(' ')[0] : 'Developer';
+          if (!session) {
+              window.location.href = "index.html";
+              return;
+          }
 
-                    const userNameDisplay = document.getElementById('userNameDisplay');
-                    const heroGreeting = document.getElementById('heroGreeting');
+          // Clean long token strings from URL
+          if (window.location.hash.includes('access_token')) {
+              window.history.replaceState(null, document.title, window.location.pathname);
+          }
 
-                    if (userNameDisplay) userNameDisplay.innerText = `👋 ${displayName}`;
-                    if (heroGreeting) heroGreeting.innerText = `Welcome to Your Workspace, ${displayName}!`;
-                }
-            } catch (err) {
-                console.error("Session check error:", err);
-            }
-        }
+          const user = session.user;
+          const metadata = user.user_metadata || {};
+          const name = metadata.full_name || metadata.name || 'Developer';
+          
+          const welcomeHeading = document.getElementById('welcomeUser');
+          if (welcomeHeading) {
+              welcomeHeading.textContent = `Welcome back, ${name.split(' ')[0]}!`;
+          }
+      }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initDashboardSession();
+      document.addEventListener('DOMContentLoaded', () => {
+          initDashboard();
 
-            const signOutBtn = document.getElementById('signOutBtn');
-            if (signOutBtn) {
-                signOutBtn.addEventListener('click', async (e) => {
-                    e.preventDefault();
-                    if (supabaseClient) {
-                        try {
-                            await supabaseClient.auth.signOut();
-                        } catch (err) {
-                            console.error("Sign out error:", err);
-                        }
-                    }
-                    localStorage.clear();
-                    sessionStorage.clear();
-                    window.location.href = "index.html";
-                });
-            }
-        });
+          const signOutBtn = document.getElementById('dashboardSignOutBtn');
+          if (signOutBtn) {
+              signOutBtn.addEventListener('click', async (e) => {
+                  e.preventDefault();
+                  await supabaseClient.auth.signOut();
+                  localStorage.clear();
+                  sessionStorage.clear();
+                  window.location.href = "index.html";
+              });
+          }
+      });
     </script>
 </body>
 </html>

@@ -106,7 +106,7 @@
         <div class="auth-modal-card" style="max-width: 600px; max-height: 85vh; overflow-y: auto;">
             <button type="button" class="close-btn" onclick="closeLesson()">&times;</button>
             <div id="lessonContent">
-                <!-- Content gets dynamically populated by JS -->
+                <!-- Content dynamically populated -->
             </div>
         </div>
     </div>
@@ -165,7 +165,7 @@
           if (e.target.id === 'authModal') window.closeModal();
       };
 
-      // 2. Interactive Course Lessons Data & Handlers
+      // 2. Interactive Lessons Data
       const lessonsData = {
           coding: {
               title: "💻 Web Development: JavaScript DOM Events",
@@ -305,16 +305,20 @@
           }
       }
 
-      // 5. Auth Listener & Session Management
+      // 5. Auth Listener & Initial Check (Fixed for Index persistence)
       async function setupAuthListener() {
           if (!window.supabaseClient) return;
 
+          // Force check localStorage on load immediately
           const { data: { session } } = await window.supabaseClient.auth.getSession();
           if (session?.user) {
               renderUserUI(session.user);
+          } else {
+              renderUserUI(null);
           }
 
-          window.supabaseClient.auth.onAuthStateChange((event, session) => {
+          // Realtime listener for tab switches or sign-ins
+          window.supabaseClient.auth.onAuthStateChange((_event, session) => {
               if (session?.user) {
                   renderUserUI(session.user);
               } else {

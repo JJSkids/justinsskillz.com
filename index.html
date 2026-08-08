@@ -265,55 +265,74 @@
           if (e.target.id === 'lessonModal') window.closeLesson();
       };
 
-      // 3. Supabase Safe Init
+      // 3. Supabase Safe Init with Persistence
       const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
-      if (typeof window.supabaseClient === 'undefined') {
-          try {
-              if (window.supabase && typeof window.supabase.createClient === 'function') {
-                  window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      if (typeof window.supabaseClient === 'undefined' && window.supabase) {
+          window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+              auth: {
+                  persistSession: true,
+                  autoRefreshToken: true,
+                  detectSessionInUrl: true
               }
-          } catch (err) {
-              console.warn("Supabase client init note:", err);
-          }
+          });
       }
 
-      // 4. OAuth Token Redirect Handler
+      // 4. Token Redirect Handler
       if (window.location.hash.includes('access_token') || window.location.search.includes('code')) {
           const hash = window.location.hash;
           const cleanBase = window.location.origin + window.location.pathname.replace(/index\.html?$/, '');
           window.location.replace(cleanBase + "dashboard.html" + hash);
       }
 
-      // 5. Active Session Checker
-      async function checkSession() {
-          if (!window.supabaseClient) return;
-          try {
-              const { data: { session } } = await window.supabaseClient.auth.getSession();
-              if (session?.user) {
-                  const metadata = session.user.user_metadata || {};
-                  const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
-                  const displayName = rawName ? rawName.split(' ')[0] : 'Developer';
+      // 5. Header UI Renderer
+      function renderUserUI(user) {
+          const container = document.getElementById('authNavContainer');
+          const signOutBtn = document.getElementById('signOutBtn');
 
-                  const container = document.getElementById('authNavContainer');
-                  const signOutBtn = document.getElementById('signOutBtn');
+          if (user) {
+              const metadata = user.user_metadata || {};
+              const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
+              const displayName = rawName ? rawName.split(' ')[0] : 'Developer';
 
-                  if (container) {
-                      container.innerHTML = `<a href="dashboard.html" class="btn btn-primary">👋 ${displayName}'s Workspace</a>`;
-                  }
-                  if (signOutBtn) {
-                      signOutBtn.classList.remove('hidden');
-                  }
+              if (container) {
+                  container.innerHTML = `<a href="dashboard.html" class="btn btn-primary">👋 ${displayName}'s Workspace</a>`;
               }
-          } catch(e) {
-              console.log("Session check bypassed:", e);
+              if (signOutBtn) {
+                  signOutBtn.classList.remove('hidden');
+              }
+          } else {
+              if (container) {
+                  container.innerHTML = `<button id="signInBtn" type="button" class="btn btn-primary" onclick="openModal()">Sign In</button>`;
+              }
+              if (signOutBtn) {
+                  signOutBtn.classList.add('hidden');
+              }
           }
       }
 
-      // 6. Event Binding on DOM Load
+      // 6. Auth Listener & Initial Check
+      async function setupAuthListener() {
+          if (!window.supabaseClient) return;
+
+          const { data: { session } } = await window.supabaseClient.auth.getSession();
+          if (session?.user) {
+              renderUserUI(session.user);
+          }
+
+          window.supabaseClient.auth.onAuthStateChange((event, session) => {
+              if (session?.user) {
+                  renderUserUI(session.user);
+              } else {
+                  renderUserUI(null);
+              }
+          });
+      }
+
+      // 7. Event Binding on DOM Load
       document.addEventListener('DOMContentLoaded', () => {
-          checkSession();
+          setupAuthListener();
 
           const targetRedirect = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
           const googleBtn = document.getElementById('googleAuthBtn');

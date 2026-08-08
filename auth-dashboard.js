@@ -1,4 +1,3 @@
-// Attach to shared global client
 window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
         persistSession: true,
@@ -7,7 +6,6 @@ window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON
     }
 });
 
-// Update UI welcome header
 function updateDashboardUser(user) {
     const metadata = user.user_metadata || {};
     const rawName = metadata.full_name || metadata.name || metadata.preferred_username || user.email || 'Developer';
@@ -19,7 +17,6 @@ function updateDashboardUser(user) {
     }
 }
 
-// Verify Session & Direct Access
 async function initDashboard() {
     const { data: { session } } = await window.supabaseClient.auth.getSession();
     
@@ -42,7 +39,6 @@ async function initDashboard() {
     });
 }
 
-// Sign Out Handler
 document.addEventListener('DOMContentLoaded', () => {
     initDashboard();
 

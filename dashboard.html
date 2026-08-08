@@ -34,40 +34,52 @@
         </div>
 
         <section id="workspaces" class="grid-layout">
-            <div class="module-card">
-                <h3 style="color: var(--accent-blue);">💻 Code Editor Sandbox</h3>
-                <p>Build and run HTML, CSS, and JS web components directly in your browser environment.</p>
-                <a href="PAGES/coding.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Launch IDE</a>
+            <div class="module-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="color: var(--accent-blue);">💻 Code Editor Sandbox</h3>
+                    <p>Build and run HTML, CSS, and JS web components directly in your browser environment.</p>
+                </div>
+                <a href="PAGES/coding.html" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%; text-align: center; display: block; box-sizing: border-box;">Launch IDE</a>
             </div>
 
-            <div class="module-card">
-                <h3 style="color: var(--accent-amber);">📐 Mathematics Lab</h3>
-                <p>Solve algebraic, quadratic, and complex polar form equations visually.</p>
-                <a href="PAGES/math.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open Lab</a>
+            <div class="module-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="color: var(--accent-amber);">📐 Mathematics Lab</h3>
+                    <p>Solve algebraic, quadratic, and complex polar form equations visually.</p>
+                </div>
+                <a href="PAGES/math.html" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%; text-align: center; display: block; box-sizing: border-box;">Open Lab</a>
             </div>
 
-            <div class="module-card">
-                <h3 style="color: var(--accent-green);">🤖 Logic & Scripting</h3>
-                <p>Test conditional loops, event handlers, and block-based logic scripts.</p>
-                <a href="PAGES/robotics.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open Sandbox</a>
+            <div class="module-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="color: var(--accent-green);">🤖 Logic & Scripting</h3>
+                    <p>Test conditional loops, event handlers, and block-based logic scripts.</p>
+                </div>
+                <a href="PAGES/robotics.html" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%; text-align: center; display: block; box-sizing: border-box;">Open Sandbox</a>
             </div>
 
-            <div class="module-card">
-                <h3 style="color: var(--accent-purple);">♟️ Chess AI & Tactics</h3>
-                <p>Study opening structures and test decision trees using Minimax algorithms.</p>
-                <a href="PAGES/chess.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Start Board</a>
+            <div class="module-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="color: var(--accent-purple);">♟️ Chess AI & Tactics</h3>
+                    <p>Study opening structures and test decision trees using Minimax algorithms.</p>
+                </div>
+                <a href="PAGES/chess.html" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%; text-align: center; display: block; box-sizing: border-box;">Start Board</a>
             </div>
 
-            <div class="module-card">
-                <h3 style="color: #f472b6;">🇫🇷 Language Module</h3>
-                <p>Practice verb conjugations, grammar structures, and vocabulary drills.</p>
-                <a href="PAGES/french.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open French Lab</a>
+            <div class="module-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #f472b6;">🇫🇷 Language Module</h3>
+                    <p>Practice verb conjugations, grammar structures, and vocabulary drills.</p>
+                </div>
+                <a href="PAGES/french.html" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%; text-align: center; display: block; box-sizing: border-box;">Open French Lab</a>
             </div>
 
-            <div class="module-card">
-                <h3 style="color: #fbbf24;">🎹 Music Theory</h3>
-                <p>Construct scale intervals, major/minor triads, and timing patterns.</p>
-                <a href="PAGES/music.html" class="btn btn-primary" style="margin-top: 1rem; width: 100%; text-align: center;">Open Theory Studio</a>
+            <div class="module-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="color: #fbbf24;">🎹 Music Theory</h3>
+                    <p>Construct scale intervals, major/minor triads, and timing patterns.</p>
+                </div>
+                <a href="PAGES/music.html" class="btn btn-primary" style="margin-top: 1.5rem; width: 100%; text-align: center; display: block; box-sizing: border-box;">Open Theory Studio</a>
             </div>
         </section>
     </main>
@@ -92,10 +104,8 @@
       });
 
       function initDashboard() {
-          // Listen for auth state events to process URL tokens before deciding on redirection
-          supabaseClient.auth.onAuthStateChange((event, session) => {
+          supabaseClient.auth.onAuthStateChange((_event, session) => {
               if (session?.user) {
-                  // Clean the long access_token from address bar
                   if (window.location.hash.includes('access_token')) {
                       window.history.replaceState(null, document.title, window.location.pathname);
                   }
@@ -108,7 +118,6 @@
                       welcomeHeading.textContent = `Welcome back, ${rawName.split(' ')[0]}!`;
                   }
               } else {
-                  // Only redirect if there isn't a token currently being processed in the URL hash
                   if (!window.location.hash.includes('access_token')) {
                       window.location.href = "index.html";
                   }

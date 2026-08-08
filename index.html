@@ -3,19 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="google-site-verification" content="-G-q80QQ0dQaOWtbVUCFJTeXUYTpr5iWsDHCQaGpNic" />
-
-    <title>Justin's Skillz | Interactive Tech Platform</title>
-    <meta name="description" content="Learn web development, advanced mathematics, logic scripting, and tech fundamentals through interactive workspaces and real-time code environments.">
-    
+    <title>Justin's Skillz | Interactive Learning & Sandbox Platform</title>
     <link rel="icon" href="Justin's%20Skillz.jpg" type="image/jpeg">
     <link rel="stylesheet" href="style.css">
-
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
+    <!-- Header Navigation -->
     <header class="nav-header">
         <div class="nav-left">
             <a href="index.html" class="brand-link">
@@ -24,292 +20,135 @@
             </a>
         </div>
         <nav class="nav-center">
-            <a href="#about">App Purpose</a>
-            <a href="#functionality">Features</a>
-            <a href="#contact">Contact</a>
+            <a href="index.html" class="active">Home</a>
+            <a href="dashboard.html">Workspaces</a>
+            <a href="#about">About</a>
         </nav>
-        <div class="nav-right">
-            <div id="authNavContainer">
-                <button id="signInBtn" type="button" class="btn btn-primary" onclick="openModal()">Sign In</button>
-            </div>
-            <button id="signOutBtn" type="button" class="btn btn-danger hidden">Sign Out</button>
+        <div class="nav-right" id="navAuthContainer">
+            <button id="navSignInBtn" type="button" class="btn btn-primary">Sign In</button>
         </div>
     </header>
 
-    <!-- Dynamic Hero Banner Container -->
-    <section id="about" class="hero-section">
-        <div id="heroContainer">
-            <div class="card hero-content">
-                <span class="badge">Interactive Educational Ecosystem</span>
-                <h1>Master Code, Math, and Logic Hands-On</h1>
-                <p><strong>Justin's Skillz</strong> is an online learning platform designed to teach web development, programming logic, mathematics, and technical concepts through interactive tools.</p>
-                <div class="hero-buttons">
-                    <a href="#functionality" class="btn btn-primary">Explore Features</a>
-                    <a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" class="btn btn-outline">Privacy Policy</a>
-                </div>
-            </div>
-        </div>
-    </section>
+    <!-- Hero Section -->
+    <main class="container">
+        <section class="hero-section" style="text-align: center; padding: 4rem 1rem 2rem 1rem;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Master Skills Through Interactive Sandboxes</h1>
+            <p style="color: var(--text-muted); max-width: 650px; margin: 0 auto 2rem auto; font-size: 1.1rem;">
+                Explore hands-on labs in coding, algebra, block scripting, chess algorithms, language practice, and music theory.
+            </p>
+            <a href="dashboard.html" class="btn btn-primary" style="padding: 0.8rem 1.8rem; font-size: 1.1rem;">Explore All Workspaces</a>
+        </section>
 
-    <!-- Features Grid with Quick Interactive Lessons -->
-    <main id="functionality" class="container">
-        <h2 style="text-align: center; margin-bottom: 0.5rem;">Platform Learning Modules</h2>
-        <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem;">Click any module below to start an interactive lesson or launch the full sandbox!</p>
-        
-        <div class="grid-layout">
-            <!-- Coding -->
-            <div class="module-card" onclick="openLesson('coding')">
-                <h3 style="color: var(--accent-blue);">💻 Interactive Code IDE</h3>
-                <p>Learn core HTML5 tags, CSS flexbox layouts, and JavaScript event listeners.</p>
-                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+        <!-- Preview Grid Section -->
+        <section id="workspaces-preview" class="grid-layout" style="margin-top: 2rem;">
+            <div class="module-card">
+                <h3 style="color: var(--accent-blue);">💻 Code Editor Sandbox</h3>
+                <p>Build and run HTML, CSS, and JS web components directly in your browser environment.</p>
             </div>
 
-            <!-- Math -->
-            <div class="module-card" onclick="openLesson('math')">
-                <h3 style="color: var(--accent-amber);">📐 Advanced Mathematics</h3>
-                <p>Master algebra fundamentals, quadratic formulas, and Euler's polar form.</p>
-                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            <div class="module-card">
+                <h3 style="color: var(--accent-amber);">📐 Mathematics Lab</h3>
+                <p>Solve algebraic, quadratic, and complex polar form equations visually.</p>
             </div>
 
-            <!-- Robotics / Scripting -->
-            <div class="module-card" onclick="openLesson('robotics')">
+            <div class="module-card">
                 <h3 style="color: var(--accent-green);">🤖 Logic & Scripting</h3>
-                <p>Explore conditional logic, loop iterations, and event-driven block commands.</p>
-                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+                <p>Test conditional loops, event handlers, and block-based logic scripts.</p>
             </div>
 
-            <!-- Chess -->
-            <div class="module-card" onclick="openLesson('chess')">
-                <h3 style="color: var(--accent-purple);">♟️ Logic Tracking & Chess</h3>
-                <p>Study opening principles, tactics (forks & pins), and the Minimax AI tree search algorithm.</p>
-                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            <div class="module-card">
+                <h3 style="color: var(--accent-purple);">♟️ Chess AI & Tactics</h3>
+                <p>Study opening structures and test decision trees using Minimax algorithms.</p>
             </div>
 
-            <!-- French -->
-            <div class="module-card" onclick="openLesson('french')">
-                <h3 style="color: #f472b6;">🇫🇷 Language Modules</h3>
-                <p>Master French verb conjugations (Être, Avoir, Aller) and sentence structures.</p>
-                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+            <div class="module-card">
+                <h3 style="color: #f472b6;">🇫🇷 Language Module</h3>
+                <p>Practice verb conjugations, grammar structures, and vocabulary drills.</p>
             </div>
 
-            <!-- Music -->
-            <div class="module-card" onclick="openLesson('music')">
+            <div class="module-card">
                 <h3 style="color: #fbbf24;">🎹 Music Theory</h3>
-                <p>Understand scale intervals, chord triads (Major/Minor), and rhythm time signatures.</p>
-                <button type="button" class="btn btn-outline" style="margin-top: 1rem; width: 100%;">Start Lesson</button>
+                <p>Construct scale intervals, major/minor triads, and timing patterns.</p>
             </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Lesson Overlay Modal -->
-    <div id="lessonModal" class="auth-modal-overlay hidden" onclick="closeLessonOnBackdrop(event)">
-        <div class="auth-modal-card" style="max-width: 600px; max-height: 85vh; overflow-y: auto;">
-            <button type="button" class="close-btn" onclick="closeLesson()">&times;</button>
-            <div id="lessonContent">
-                <!-- Content dynamically populated -->
-            </div>
-        </div>
-    </div>
-
-    <!-- Interactive Authentication Modal -->
-    <div id="authModal" class="auth-modal-overlay hidden" onclick="closeModalOnBackdrop(event)">
-        <div class="auth-modal-card">
-            <button id="closeModal" type="button" class="close-btn" onclick="closeModal()">&times;</button>
-            <h2>Sign In</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Access your workspace sandbox and progress tracking.</p>
-            
-            <button id="githubAuthBtn" type="button" class="btn btn-github">Continue with GitHub</button>
-            <button id="googleAuthBtn" type="button" class="btn btn-google">Continue with Google</button>
+    <!-- Modal Sign-In Overlay -->
+    <div id="authModal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <button id="closeAuthModal" type="button" class="modal-close">&times;</button>
+            <h2 id="modalTitle" style="margin-bottom: 1rem;">Welcome to Justin's Skillz</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Sign in to access your modules and keep track of your active projects.</p>
+            <button id="googleOAuthBtn" type="button" class="btn btn-secondary" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844a4.14 4.14 0 0 1-1.796 2.716v2.259h2.908c1.702-1.567 2.684-3.875 2.684-6.616z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+                Continue with Google
+            </button>
         </div>
     </div>
 
     <!-- Footer -->
-    <footer id="contact" class="footer">
-        <div class="footer-container">
-            <div>
-                <h3>Justin's Skillz</h3>
-                <p style="color: var(--text-muted); font-size: 0.9rem;">Interactive educational sandbox for coding, logic, and mathematics.</p>
-            </div>
-            <div>
-                <h4 style="color: var(--accent-amber);">Legal & Connect</h4>
-                <p><a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank">Privacy Policy</a></p>
-                <p><a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank">Terms of Service</a></p>
-                <p style="color: var(--text-muted);">Email: hellojjskids@gmail.com</p>
-            </div>
-        </div>
+    <footer class="footer" style="margin-top: 4rem;">
         <div class="footer-bottom">
             <p>&copy; 2026 Justin's Skillz. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Main Controller Script -->
+    <!-- Auth Script -->
     <script>
-      // 1. Modal Functions
-      window.openModal = function() {
-          const modal = document.getElementById('authModal');
-          if (modal) {
-              modal.style.display = 'flex';
-              modal.classList.remove('hidden');
-          }
-      };
-
-      window.closeModal = function() {
-          const modal = document.getElementById('authModal');
-          if (modal) {
-              modal.style.display = 'none';
-              modal.classList.add('hidden');
-          }
-      };
-
-      window.closeModalOnBackdrop = function(e) {
-          if (e.target.id === 'authModal') window.closeModal();
-      };
-
-      // 2. Interactive Lessons Data
-      const lessonsData = {
-          coding: {
-              title: "💻 Web Development: JavaScript DOM Events",
-              concept: "JavaScript interacts with HTML elements by listening for user triggers (like clicks or key presses).",
-              example: "document.querySelector('button').addEventListener('click', () => {\n  alert('Hello World!');\n});",
-              challenge: "Why do we use event.preventDefault() in form handlers?",
-              answer: "It stops the default page refresh behavior when submitting forms.",
-              link: "PAGES/coding.html"
-          },
-          math: {
-              title: "📐 Mathematics: The Quadratic Formula",
-              concept: "Used to find the roots (x-intercepts) of any quadratic equation in the form ax² + bx + c = 0.",
-              example: "x = (-b ± √(b² - 4ac)) / (2a)",
-              challenge: "What does it mean if the discriminant (b² - 4ac) is negative?",
-              answer: "The equation has no real solutions, but two complex/imaginary solutions!",
-              link: "PAGES/math.html"
-          },
-          robotics: {
-              title: "🤖 Logic & Scripting: Conditional Loops",
-              concept: "Programs make decisions using IF statements and repeat tasks using WHILE or FOR loops.",
-              example: "while (robot.hasBattery()) {\n  robot.moveForward();\n  if (robot.detectsObstacle()) robot.turnLeft();\n}",
-              challenge: "What happens if a while loop condition is always true?",
-              answer: "It creates an infinite loop that can freeze or crash your script execution.",
-              link: "PAGES/robotics.html"
-          },
-          chess: {
-              title: "♟️ Logic Tracking: Minimax Search Trees",
-              concept: "Chess AI calculates future board positions by projecting moves ahead and choosing the maximum score while assuming the opponent makes the optimal move.",
-              example: "Evaluation = (White Material) - (Black Material) + Position Bonus",
-              challenge: "What optimization technique speeds up Minimax searching?",
-              answer: "Alpha-Beta Pruning, which eliminates branches that don't need to be calculated.",
-              link: "PAGES/chess.html"
-          },
-          french: {
-              title: "🇫🇷 Language: Present Tense Conjugation",
-              concept: "Regular -ER verbs follow a reliable ending pattern: -e, -es, -e, -ons, -ez, -ent.",
-              example: "Parler (To speak):\nJe parle, Tu parles, Il/Elle parle,\nNous parlons, Vous parlez, Ils/Elles parlent.",
-              challenge: "Conjugate 'Avoir' (To have) for 'Nous':",
-              answer: "Nous avons",
-              link: "PAGES/french.html"
-          },
-          music: {
-              title: "🎹 Music Theory: Building Triad Chords",
-              concept: "A major triad chord consists of a Root note, a Major 3rd (4 semitones up), and a Perfect 5th (7 semitones up).",
-              example: "C Major Chord = C (Root) + E (Major 3rd) + G (Perfect 5th)",
-              challenge: "How do you turn a Major triad into a Minor triad?",
-              answer: "Lower the middle note (the 3rd) by one half-step (flat the 3rd).",
-              link: "PAGES/music.html"
-          }
-      };
-
-      window.openLesson = function(moduleKey) {
-          const lesson = lessonsData[moduleKey];
-          if (!lesson) return;
-
-          const contentDiv = document.getElementById('lessonContent');
-          contentDiv.innerHTML = `
-              <h2 style="margin-top: 0;">${lesson.title}</h2>
-              <div style="background: rgba(15, 23, 42, 0.6); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-card); margin-bottom: 1rem;">
-                  <h4 style="color: var(--accent-amber); margin-bottom: 0.5rem;">Core Concept</h4>
-                  <p style="margin: 0; font-size: 0.95rem; color: var(--text-main);">${lesson.concept}</p>
-              </div>
-              <div style="background: #0f172a; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-card); margin-bottom: 1rem; font-family: monospace;">
-                  <h4 style="color: var(--accent-blue); margin-top: 0; margin-bottom: 0.5rem;">Code / Formula Preview</h4>
-                  <pre style="margin: 0; white-space: pre-wrap; color: #34d399;">${lesson.example}</pre>
-              </div>
-              <div style="margin-bottom: 1.5rem;">
-                  <h4 style="color: var(--accent-purple); margin-bottom: 0.5rem;">Quick Practice Challenge</h4>
-                  <p style="font-size: 0.95rem; margin-bottom: 0.5rem;"><strong>Q:</strong> ${lesson.challenge}</p>
-                  <details style="cursor: pointer; color: var(--accent-blue); font-size: 0.9rem;">
-                      <summary>Reveal Answer</summary>
-                      <p style="margin-top: 0.5rem; color: var(--text-main); font-weight: bold;">${lesson.answer}</p>
-                  </details>
-              </div>
-              <div style="display: flex; gap: 0.75rem;">
-                  <a href="${lesson.link}" class="btn btn-primary" style="flex: 1; text-align: center;">Open Full Workspace Sandbox</a>
-                  <button type="button" class="btn btn-outline" onclick="closeLesson()">Close</button>
-              </div>
-          `;
-
-          const modal = document.getElementById('lessonModal');
-          if (modal) {
-              modal.style.display = 'flex';
-              modal.classList.remove('hidden');
-          }
-      };
-
-      window.closeLesson = function() {
-          const modal = document.getElementById('lessonModal');
-          if (modal) {
-              modal.style.display = 'none';
-              modal.classList.add('hidden');
-          }
-      };
-
-      window.closeLessonOnBackdrop = function(e) {
-          if (e.target.id === 'lessonModal') window.closeLesson();
-      };
-
-      // 3. Supabase Safe Init with Persistence
-      const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
+      const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co";
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
 
-      if (typeof window.supabaseClient === 'undefined' && window.supabase) {
-          window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-              auth: {
-                  persistSession: true,
-                  autoRefreshToken: true,
-                  detectSessionInUrl: true
-              }
-          });
-      }
+      // 1. Initialize Supabase Client
+      window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true
+          }
+      });
 
-      // 4. Header UI Renderer
+      // 2. Render Navigation UI based on session
       function renderUserUI(user) {
-          const container = document.getElementById('authNavContainer');
-          const signOutBtn = document.getElementById('signOutBtn');
+          const navContainer = document.getElementById('navAuthContainer');
+          if (!navContainer) return;
 
           if (user) {
               const metadata = user.user_metadata || {};
-              const rawName = metadata.full_name || metadata.name || metadata.preferred_username;
-              const displayName = rawName ? rawName.split(' ')[0] : 'Developer';
+              const name = metadata.full_name || metadata.name || metadata.preferred_username || 'Developer';
+              const firstName = name.split(' ')[0];
 
-              if (container) {
-                  container.innerHTML = `<a href="dashboard.html" class="btn btn-primary">👋 ${displayName}'s Workspace</a>`;
-              }
+              navContainer.innerHTML = `
+                  <a href="dashboard.html" class="btn btn-secondary" style="margin-right: 0.5rem;">👋 ${firstName}'s Workspace</a>
+                  <button id="indexSignOutBtn" type="button" class="btn btn-danger">Sign Out</button>
+              `;
+
+              const signOutBtn = document.getElementById('indexSignOutBtn');
               if (signOutBtn) {
-                  signOutBtn.classList.remove('hidden');
+                  signOutBtn.addEventListener('click', async () => {
+                      signOutBtn.disabled = true;
+                      await window.supabaseClient.auth.signOut();
+                      localStorage.clear();
+                      sessionStorage.clear();
+                      renderUserUI(null);
+                  });
               }
           } else {
-              if (container) {
-                  container.innerHTML = `<button id="signInBtn" type="button" class="btn btn-primary" onclick="openModal()">Sign In</button>`;
-              }
-              if (signOutBtn) {
-                  signOutBtn.classList.add('hidden');
+              navContainer.innerHTML = `
+                  <button id="navSignInBtn" type="button" class="btn btn-primary">Sign In</button>
+              `;
+              
+              const signInBtn = document.getElementById('navSignInBtn');
+              if (signInBtn) {
+                  signInBtn.addEventListener('click', () => {
+                      const modal = document.getElementById('authModal');
+                      if (modal) modal.style.display = 'flex';
+                  });
               }
           }
       }
 
-      // 5. Auth Listener & Initial Check (Fixed for Index persistence)
-      async function setupAuthListener() {
-          if (!window.supabaseClient) return;
-
-          // Force check localStorage on load immediately
+      // 3. Setup Auth Listeners
+      async function setupAuth() {
           const { data: { session } } = await window.supabaseClient.auth.getSession();
           if (session?.user) {
               renderUserUI(session.user);
@@ -317,54 +156,46 @@
               renderUserUI(null);
           }
 
-          // Realtime listener for tab switches or sign-ins
-          window.supabaseClient.auth.onAuthStateChange((_event, session) => {
+          window.supabaseClient.auth.onAuthStateChange((event, session) => {
               if (session?.user) {
                   renderUserUI(session.user);
-              } else {
+                  const modal = document.getElementById('authModal');
+                  if (modal) modal.style.display = 'none';
+              } else if (event === 'SIGNED_OUT') {
                   renderUserUI(null);
               }
           });
       }
 
-      // 6. Event Binding on DOM Load
+      // 4. Modal and Google OAuth Handlers
       document.addEventListener('DOMContentLoaded', () => {
-          setupAuthListener();
+          setupAuth();
 
-          const targetRedirect = "https://jjskids.github.io/justinsskillz.com/dashboard.html";
-          const googleBtn = document.getElementById('googleAuthBtn');
-          const githubBtn = document.getElementById('githubAuthBtn');
+          const modal = document.getElementById('authModal');
+          const closeModalBtn = document.getElementById('closeAuthModal');
+          const googleOAuthBtn = document.getElementById('googleOAuthBtn');
 
-          if (googleBtn) {
-              googleBtn.addEventListener('click', async (e) => {
-                  e.preventDefault();
-                  if (!window.supabaseClient) return alert("Auth service loading, please try again.");
+          if (closeModalBtn && modal) {
+              closeModalBtn.addEventListener('click', () => {
+                  modal.style.display = 'none';
+              });
+          }
+
+          if (modal) {
+              window.addEventListener('click', (e) => {
+                  if (e.target === modal) modal.style.display = 'none';
+              });
+          }
+
+          if (googleOAuthBtn) {
+              googleOAuthBtn.addEventListener('click', async () => {
+                  const redirectUrl = `${window.location.origin}/dashboard.html`;
                   await window.supabaseClient.auth.signInWithOAuth({
                       provider: 'google',
-                      options: { redirectTo: targetRedirect, queryParams: { prompt: 'select_account' } }
+                      options: {
+                          redirectTo: redirectUrl
+                      }
                   });
-              });
-          }
-
-          if (githubBtn) {
-              githubBtn.addEventListener('click', async (e) => {
-                  e.preventDefault();
-                  if (!window.supabaseClient) return alert("Auth service loading, please try again.");
-                  await window.supabaseClient.auth.signInWithOAuth({
-                      provider: 'github',
-                      options: { redirectTo: targetRedirect }
-                  });
-              });
-          }
-
-          const signOutBtn = document.getElementById('signOutBtn');
-          if (signOutBtn) {
-              signOutBtn.addEventListener('click', async (e) => {
-                  e.preventDefault();
-                  if (window.supabaseClient) await window.supabaseClient.auth.signOut();
-                  localStorage.clear();
-                  sessionStorage.clear();
-                  window.location.href = "index.html";
               });
           }
       });

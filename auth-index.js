@@ -1,4 +1,4 @@
-// Global Supabase initialization
+// Initialize Supabase Globally
 window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     auth: {
         persistSession: true,
@@ -9,14 +9,13 @@ window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON
 
 let isSignUpMode = false;
 
-// Render Navigation State based on User session
 function renderUserUI(user) {
     const navContainer = document.getElementById('navAuthContainer');
     if (!navContainer) return;
 
     if (user) {
         const metadata = user.user_metadata || {};
-        const rawName = metadata.full_name || metadata.name || metadata.preferred_username || user.email || 'Developer';
+        const rawName = metadata.full_name || metadata.name || metadata.preferred_username || user.email || 'User';
         const displayName = rawName.includes('@') ? rawName.split('@')[0] : rawName.split(' ')[0];
 
         navContainer.innerHTML = `
@@ -30,7 +29,16 @@ function renderUserUI(user) {
     }
 }
 
-// Setup Session Listeners
+function showMessage(msg, isError = true) {
+    const msgBox = document.getElementById('authMessage');
+    if (!msgBox) return;
+    msgBox.style.display = 'block';
+    msgBox.style.backgroundColor = isError ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)';
+    msgBox.style.color = isError ? '#fca5a5' : '#86efac';
+    msgBox.style.border = `1px solid ${isError ? '#ef4444' : '#22c55e'}`;
+    msgBox.textContent = msg;
+}
+
 async function setupAuth() {
     const { data: { session } } = await window.supabaseClient.auth.getSession();
     renderUserUI(session?.user || null);
@@ -46,21 +54,10 @@ async function setupAuth() {
     });
 }
 
-// Helper to construct dynamic absolute redirect URL
 function getOAuthRedirectUrl() {
     const currentPath = window.location.pathname;
     const directory = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
     return window.location.origin + directory + 'dashboard.html';
-}
-
-function showMessage(msg, isError = true) {
-    const msgBox = document.getElementById('authMessage');
-    if (!msgBox) return;
-    msgBox.style.display = 'block';
-    msgBox.style.backgroundColor = isError ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)';
-    msgBox.style.color = isError ? '#fca5a5' : '#86efac';
-    msgBox.style.border = `1px solid ${isError ? '#ef4444' : '#22c55e'}`;
-    msgBox.textContent = msg;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -78,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalTitle = document.getElementById('modalTitle');
     const emailAuthSubmitBtn = document.getElementById('emailAuthSubmitBtn');
 
-    // Dynamic Sign In / Sign Out button clicks
     if (navContainer) {
         navContainer.addEventListener('click', async (e) => {
             if (e.target && e.target.id === 'navSignInBtn') {
@@ -95,7 +91,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Toggle between Sign In and Sign Up
     if (authToggleBtn) {
         authToggleBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -117,7 +112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Handle Email/Password Form Submission
     if (emailAuthForm) {
         emailAuthForm.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -134,11 +128,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (error) {
                     showMessage(error.message, true);
+                } else if (data.user && !data.session) {
+                    showMessage("Account created! Please check your email to confirm your sign-up.", false);
                 } else if (data.user && data.session) {
                     renderUserUI(data.user);
                     if (modal) modal.style.display = 'none';
-                } else {
-                    showMessage("Check your email for a confirmation link!", false);
                 }
             } else {
                 const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
@@ -146,7 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 emailAuthSubmitBtn.textContent = "Sign In with Email";
 
                 if (error) {
-                    showMessage(error.message, true);
+                    if (error.status === 400 || error.status === 401) {
+                        showMessage("Invalid email or password. If you haven't created an account yet, click 'Sign Up' below.", true);
+                    } else {
+                        showMessage(error.message, true);
+                    }
                 } else if (data.user) {
                     renderUserUI(data.user);
                     if (modal) modal.style.display = 'none';
@@ -155,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Modal Dismiss Controls
     if (closeModalBtn && modal) {
         closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
     }
@@ -166,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Google OAuth Trigger
     if (googleOAuthBtn) {
         googleOAuthBtn.addEventListener('click', async () => {
             await window.supabaseClient.auth.signInWithOAuth({
@@ -176,7 +172,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // GitHub OAuth Trigger
     if (githubOAuthBtn) {
         githubOAuthBtn.addEventListener('click', async () => {
             await window.supabaseClient.auth.signInWithOAuth({

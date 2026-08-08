@@ -6,8 +6,10 @@
     <title>Dashboard | Justin's Skillz</title>
     <link rel="icon" href="Justin's%20Skillz.jpg" type="image/jpeg">
     <link rel="stylesheet" href="style.css">
-    <!-- Supabase Client -->
+    
+    <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 </head>
 <body>
 
@@ -20,7 +22,7 @@
         </div>
         <nav class="nav-center">
             <a href="index.html">Home</a>
-            <a href="#workspaces">Workspaces</a>
+            <a href="#workspaces" class="active">Workspaces</a>
         </nav>
         <div class="nav-right">
             <button id="dashboardSignOutBtn" type="button" class="btn btn-danger">Sign Out</button>
@@ -91,9 +93,6 @@
     </footer>
 
     <script>
-      const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
-
       const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
           auth: {
               persistSession: true,
@@ -103,18 +102,15 @@
       });
 
       async function initDashboard() {
-          // 1. Wait directly for Supabase to resolve existing local storage session
           const { data: { session } } = await supabaseClient.auth.getSession();
           
           if (session?.user) {
               updateDashboardUser(session.user);
           } else if (!window.location.hash.includes('access_token')) {
-              // Only redirect if there is no session AND no OAuth token in URL
               window.location.href = "index.html";
               return;
           }
 
-          // 2. Listen for auth state changes (OAuth redirects or sign-out events)
           supabaseClient.auth.onAuthStateChange((event, session) => {
               if (session?.user) {
                   if (window.location.hash.includes('access_token')) {
@@ -140,7 +136,6 @@
       document.addEventListener('DOMContentLoaded', () => {
           initDashboard();
 
-          // Bind sign-out directly
           const signOutBtn = document.getElementById('dashboardSignOutBtn');
           if (signOutBtn) {
               signOutBtn.addEventListener('click', async (e) => {

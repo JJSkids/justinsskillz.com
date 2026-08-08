@@ -6,12 +6,14 @@
     <title>Justin's Skillz | Interactive Learning & Sandbox Platform</title>
     <link rel="icon" href="Justin's%20Skillz.jpg" type="image/jpeg">
     <link rel="stylesheet" href="style.css">
-    <!-- Supabase Client -->
+    
+    <!-- Dependencies -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
 </head>
 <body>
 
-    <!-- Header Navigation -->
+    <!-- Navigation Header -->
     <header class="nav-header">
         <div class="nav-left">
             <a href="index.html" class="brand-link">
@@ -39,7 +41,7 @@
             <a href="dashboard.html" class="btn btn-primary" style="padding: 0.8rem 1.8rem; font-size: 1.1rem;">Explore All Workspaces</a>
         </section>
 
-        <!-- Preview Grid Section -->
+        <!-- Preview Grid -->
         <section id="workspaces-preview" class="grid-layout" style="margin-top: 2rem;">
             <div class="module-card">
                 <h3 style="color: var(--accent-blue);">💻 Code Editor Sandbox</h3>
@@ -73,7 +75,7 @@
         </section>
     </main>
 
-    <!-- Modal Sign-In Overlay -->
+    <!-- Modal Overlay -->
     <div id="authModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
             <button id="closeAuthModal" type="button" class="modal-close">&times;</button>
@@ -93,12 +95,8 @@
         </div>
     </footer>
 
-    <!-- Auth Script -->
+    <!-- Logic Script -->
     <script>
-      const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co";
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
-
-      // 1. Initialize Supabase Client
       window.supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
           auth: {
               persistSession: true,
@@ -107,7 +105,6 @@
           }
       });
 
-      // 2. Render Navigation UI based on session
       function renderUserUI(user) {
           const navContainer = document.getElementById('navAuthContainer');
           if (!navContainer) return;
@@ -147,14 +144,9 @@
           }
       }
 
-      // 3. Setup Auth Listeners
       async function setupAuth() {
           const { data: { session } } = await window.supabaseClient.auth.getSession();
-          if (session?.user) {
-              renderUserUI(session.user);
-          } else {
-              renderUserUI(null);
-          }
+          renderUserUI(session?.user || null);
 
           window.supabaseClient.auth.onAuthStateChange((event, session) => {
               if (session?.user) {
@@ -167,7 +159,6 @@
           });
       }
 
-      // 4. Modal and Google OAuth Handlers
       document.addEventListener('DOMContentLoaded', () => {
           setupAuth();
 
@@ -176,9 +167,7 @@
           const googleOAuthBtn = document.getElementById('googleOAuthBtn');
 
           if (closeModalBtn && modal) {
-              closeModalBtn.addEventListener('click', () => {
-                  modal.style.display = 'none';
-              });
+              closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
           }
 
           if (modal) {
@@ -189,12 +178,13 @@
 
           if (googleOAuthBtn) {
               googleOAuthBtn.addEventListener('click', async () => {
-                  const redirectUrl = `${window.location.origin}/dashboard.html`;
+                  const targetDashboardUrl = window.location.href.includes('index.html')
+                      ? window.location.href.replace('index.html', 'dashboard.html')
+                      : window.location.href.replace(/\/$/, '') + '/dashboard.html';
+
                   await window.supabaseClient.auth.signInWithOAuth({
                       provider: 'google',
-                      options: {
-                          redirectTo: redirectUrl
-                      }
+                      options: { redirectTo: targetDashboardUrl }
                   });
               });
           }

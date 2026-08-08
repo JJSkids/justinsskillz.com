@@ -3,161 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workspace Dashboard | Justin's Skillz</title>
-    <link rel="stylesheet" href="style.css">
-    
-    <!-- Supabase JS Client Library -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <script>
-      const SUPABASE_URL = "https://iifhzdioridrmbcflswa.supabase.co"; 
-      const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkrmbcflswaIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088";
-
-      let supabase;
-      if (window.supabase) {
-          supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      }
-
-      // Guard Dashboard, Parse User Info, and Clean URL
-      async function initializeDashboard() {
-          if (!supabase) return;
-
-          const { data: { session } } = await supabase.auth.getSession();
-
-          if (!session || !session.user) {
-              window.location.replace("index.html");
-              return;
-          }
-
-          // Clean up the hash/query parameters once session is active
-          if (window.location.hash || window.location.search) {
-              window.history.replaceState(null, document.title, window.location.pathname);
-          }
-
-          const user = session.user;
-          const metadata = user.user_metadata || {};
-          const rawName = metadata.full_name || metadata.name || metadata.preferred_username || metadata.user_name;
-          
-          let displayName = "Developer";
-          if (rawName) {
-              displayName = rawName.split(' ')[0];
-          } else if (user.email) {
-              const parts = user.email.split('@')[0];
-              displayName = parts.charAt(0).toUpperCase() + parts.slice(1);
-          }
-
-          const userGreeting = document.getElementById('userGreeting');
-          if (userGreeting) {
-              userGreeting.textContent = `Welcome back, ${displayName}! 👋`;
-          }
-      }
-
-      // Sign Out Functionality
-      async function handleDashboardSignOut(e) {
-          if (e) e.preventDefault();
-
-          if (supabase) {
-              await supabase.auth.signOut();
-          }
-
-          localStorage.clear();
-          sessionStorage.clear();
-
-          window.location.href = "index.html";
-      }
-
-      document.addEventListener('DOMContentLoaded', () => {
-          initializeDashboard();
-
-          const signOutBtn = document.getElementById('signOutBtn');
-          if (signOutBtn) {
-              signOutBtn.addEventListener('click', handleDashboardSignOut);
-          }
-      });
-    </script>
+    <title>Justin's Skillz — Creator Dashboard</title>
+    <!-- Tailwind CSS Engine framework link -->
+    <script src="https://tailwindcss.com"></script>
+    <!-- Premium Google Fonts typography integration links -->
+    <link href="https://googleapis.com" rel="stylesheet">
+    <!-- FontAwesome multi-icon stylesheet package anchor -->
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="dashboard-styles.css">
 </head>
-<body style="background-color: #0f172a; color: #f8fafc; font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 0;">
+<body class="min-h-screen flex flex-col md:flex-row">
 
-    <!-- Workspace Header / Navbar -->
-    <header class="nav-header" style="display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background-color: #1e293b; border-bottom: 1px solid #334155;">
-        <div class="nav-left">
-            <a href="index.html" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit;">
-                <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" style="width: 36px; height: 36px; border-radius: 8px; object-fit: cover; border: 1px solid #f59e0b;">
-                <span class="brand-name" style="font-weight: 700; font-size: 1.2rem; color: #fff;">Justin's Skillz</span>
-            </a>
-        </div>
-        <nav class="nav-center" style="display: flex; gap: 1.5rem;">
-            <a href="index.html" style="color: #94a3b8; text-decoration: none; font-weight: 500;">Home</a>
-            <a href="dashboard.html" class="active" style="color: #f59e0b; text-decoration: none; font-weight: 600;">Workspace</a>
-        </nav>
-        <div class="nav-right">
-            <button id="signOutBtn" class="btn-primary" style="background-color: #ef4444; color: #fff; border: none; padding: 0.5rem 1rem; border-radius: 6px; font-weight: bold; cursor: pointer;">Sign Out</button>
-        </div>
-    </header>
-
-    <!-- Workspace Hero Welcome -->
-    <main class="container" style="max-width: 1100px; margin: 2rem auto; padding: 0 1rem;">
-        <div style="background: #1e293b; padding: 2.5rem; border-radius: 12px; border: 1px solid #334155; margin-bottom: 2.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);">
-            <h1 id="userGreeting" style="color: #fff; margin-top: 0; font-size: 2rem; font-weight: 700;">Welcome back! 👋</h1>
-            <p style="color: #94a3b8; margin-bottom: 0; font-size: 1.05rem;">Select an interactive learning track or developer workspace below to continue building.</p>
-        </div>
-
-        <!-- Dashboard Learning Modules Grid -->
-        <h2 style="color: #fff; font-size: 1.6rem; margin-bottom: 1.5rem; font-weight: 600;">Your Learning Tracks</h2>
-        <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+    <!-- SIDE NAVIGATION WORKSPACE PANEL -->
+    <aside class="w-full md:w-64 bg-[#0f172a] border-b md:border-b-0 md:border-r border-slate-800 p-6 flex flex-col justify-between">
+        <div>
+            <!-- Platform Brand Anchor -->
+            <div class="flex items-center space-x-3 mb-8">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center font-extrabold text-white text-sm">JS</div>
+                <span class="font-extrabold text-base tracking-tight bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">JUSTIN'S SKILLZ</span>
+            </div>
             
-            <a href="PAGES/coding.html" class="card" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block; transition: transform 0.2s, border-color 0.2s;">
-                <h3 style="margin-top: 0; color: #38bdf8; font-size: 1.25rem;">💻 Interactive Code IDE</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0; line-height: 1.5;">Write HTML, CSS, JavaScript, and test live front-end logic directly in-browser.</p>
-            </a>
+            <!-- Navigation Links -->
+            <nav class="space-y-2">
+                <button onclick="switchCategory('math')" id="nav-math" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 bg-indigo-600 text-white shadow-lg shadow-indigo-600/10">
+                    <i class="fa-solid fa-calculator text-base w-5"></i><span>Mathematics</span>
+                </button>
+                <button onclick="switchCategory('coding')" id="nav-coding" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-code text-base w-5"></i><span>Coding IDE</span>
+                </button>
+                <button onclick="switchCategory('logic')" id="nav-logic" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all duration-200 text-slate-400 hover:bg-slate-800/50 hover:text-slate-200">
+                    <i class="fa-solid fa-brain text-base w-5"></i><span>Logic & Math</span>
+                </button>
+            </nav>
+        </div>
 
-            <a href="PAGES/math.html" class="card" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block; transition: transform 0.2s, border-color 0.2s;">
-                <h3 style="margin-top: 0; color: #f59e0b; font-size: 1.25rem;">📐 Advanced Mathematics</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0; line-height: 1.5;">Interactive problem solving covering algebra, proofs, matrices, and complex numbers.</p>
-            </a>
+        <!-- User Profile Quick View -->
+        <div class="mt-8 pt-6 border-t border-slate-800 flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-indigo-400" id="user-avatar">U</div>
+            <div>
+                <div class="text-xs font-bold text-slate-400">Welcome Back</div>
+                <div class="text-sm font-extrabold text-slate-200" id="user-display-name">Developer</div>
+            </div>
+        </div>
+    </aside>
 
-            <a href="PAGES/robotics.html" class="card" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block; transition: transform 0.2s, border-color 0.2s;">
-                <h3 style="margin-top: 0; color: #34d399; font-size: 1.25rem;">🤖 Logic & Scripting</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0; line-height: 1.5;">Learn hardware control logic, block scripting, and firmware mechanics.</p>
-            </a>
+    <!-- MAIN DASHBOARD HUB VIEWSPACE -->
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto max-w-5xl mx-auto w-full">
+        
+        <!-- TOP ROW: LIVE TRACKING SYSTEM COUNTERS -->
+        <section class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div class="bg-[#0f172a] p-5 rounded-2xl border border-slate-800 flex items-center space-x-4 shadow-sm">
+                <div class="w-12 h-12 bg-amber-500/10 text-amber-500 rounded-xl flex items-center justify-center border border-amber-500/20"><i class="fa-solid fa-fire text-xl animate-pulse"></i></div>
+                <div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Streak</div>
+                    <div class="text-xl font-extrabold text-slate-100" id="streak-display">5 Days Active</div>
+                </div>
+            </div>
+            <div class="bg-[#0f172a] p-5 rounded-2xl border border-slate-800 flex items-center space-x-4 shadow-sm">
+                <div class="w-12 h-12 bg-cyan-500/10 text-cyan-400 rounded-xl flex items-center justify-center border border-cyan-500/20"><i class="fa-solid fa-bolt text-xl"></i></div>
+                <div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Total Experience</div>
+                    <div class="text-xl font-extrabold text-slate-100" id="xp-display">1,240 XP</div>
+                </div>
+            </div>
+            <div class="bg-[#0f172a] p-5 rounded-2xl border border-slate-800 flex items-center space-x-4 shadow-sm">
+                <div class="w-12 h-12 bg-indigo-500/10 text-indigo-400 rounded-xl flex items-center justify-center border border-indigo-500/20"><i class="fa-solid fa-graduation-cap text-xl"></i></div>
+                <div>
+                    <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Active Track</div>
+                    <div class="text-xl font-extrabold text-slate-100" id="current-track-display">Mathematics</div>
+                </div>
+            </div>
+        </section>
 
-            <a href="PAGES/chess.html" class="card" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block; transition: transform 0.2s, border-color 0.2s;">
-                <h3 style="margin-top: 0; color: #a78bfa; font-size: 1.25rem;">♟️ Logic Tracking & Chess</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0; line-height: 1.5;">Analyze positional structures, forks, tactical puzzles, and problem solving.</p>
-            </a>
+        <!-- TWO COLUMN WORKSPACE BODY GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- LEFT 2 COLUMNS: LESSON MODULE SELECTION LIST -->
+            <section class="lg:col-span-2 space-y-4">
+                <div class="mb-2">
+                    <h2 class="text-xl font-extrabold text-slate-100" id="category-title">Interactive Mathematics Modules</h2>
+                    <p class="text-slate-400 text-xs mt-1" id="category-desc">Select a playground environment below to begin writing engineering code.</p>
+                </div>
+                
+                <!-- Dynamic Target Loop Container -->
+                <div id="modules-list" class="space-y-3">
+                    <!-- JavaScript dynamically injects current lab modules here -->
+                </div>
+            </section>
 
-            <a href="PAGES/french.html" class="card" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block; transition: transform 0.2s, border-color 0.2s;">
-                <h3 style="margin-top: 0; color: #f472b6; font-size: 1.25rem;">🇫🇷 Language Modules</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0; line-height: 1.5;">Interactive grammar engines, essential verb conjugations, and vocabulary tracks.</p>
-            </a>
+            <!-- RIGHT 1 COLUMN: DYNAMIC REAL-TIME TIPS & ALIGNMENT GUIDES -->
+            <aside class="space-y-6">
+                <!-- ACCURATE LEARNING TUTORIAL TIPS SYSTEM BOX -->
+                <div class="bg-gradient-to-br from-slate-900 to-[#111827] p-6 rounded-2xl border border-slate-800/80 shadow-md">
+                    <div class="flex items-center space-x-2 text-indigo-400 font-bold text-xs uppercase tracking-widest mb-3">
+                        <i class="fa-solid fa-lightbulb animate-bounce"></i>
+                        <span>Accurate Tech Tip</span>
+                    </div>
+                    <h3 class="text-sm font-extrabold text-slate-200 mb-2" id="tip-title">Matrix Vector Space</h3>
+                    <p class="text-slate-400 text-xs leading-relaxed" id="tip-body">
+                        Linear systems use a 2x2 coordinate matrix configuration to manipulate points on a 2D plane coordinate matrix grid layout.
+                    </p>
+                </div>
 
-            <a href="PAGES/music.html" class="card" style="text-decoration: none; color: inherit; background: #1e293b; border: 1px solid #334155; border-radius: 10px; padding: 1.5rem; display: block; transition: transform 0.2s, border-color 0.2s;">
-                <h3 style="margin-top: 0; color: #fbbf24; font-size: 1.25rem;">🎹 Music Theory</h3>
-                <p style="color: #94a3b8; font-size: 0.95rem; margin-top: 0.5rem; margin-bottom: 0; line-height: 1.5;">Explore notation, rhythm dynamics, interval logic, and composition structures.</p>
-            </a>
-
+                <!-- PLATFORM SYSTEM STATS SUMMARY BOX -->
+                <div class="bg-[#0f172a] p-6 rounded-2xl border border-slate-800 shadow-sm">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Streak Protection Metrics</h3>
+                    <div class="space-y-3 text-xs">
+                        <div class="flex justify-between items-center text-slate-300">
+                            <span class="font-medium">Streak Freeze Status</span>
+                            <span class="font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">Active</span>
+                        </div>
+                        <div class="flex justify-between items-center text-slate-300">
+                            <span class="font-medium">Next Reset Cycle</span>
+                            <span class="font-bold text-slate-400" id="reset-timer">Midnight</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
         </div>
     </main>
 
-    <!-- Footer -->
-    <footer id="contact" class="main-footer" style="margin-top: 5rem; background-color: #1e293b; border-top: 1px solid #334155;">
-        <div class="footer-container" style="max-width: 1000px; margin: 0 auto; display: flex; justify-content: space-between; gap: 2rem; padding: 2.5rem 1rem;">
-            <div class="footer-info">
-                <h3 style="color: #fff; margin-top: 0;">Justin's Skillz</h3>
-                <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 0;">An interactive educational platform for learning coding, logic, and mathematics.</p>
-            </div>
-            <div class="footer-contact">
-                <h4 style="color: #f59e0b; margin-top: 0;">Legal & Connect</h4>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/pri.html" target="_blank" style="color: #cbd5e1; text-decoration: none;">Privacy Policy</a></p>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem;"><a href="https://jjskids.github.io/justinsskillz.com/terms.html" target="_blank" style="color: #cbd5e1; text-decoration: none;">Terms of Service</a></p>
-                <p style="margin: 0.25rem 0; font-size: 0.9rem; color: #cbd5e1;">Email: hellojjskids@gmail.com</p>
-            </div>
-        </div>
-        <div class="footer-bottom" style="text-align: center; padding: 1rem; border-top: 1px solid #334155; color: #64748b; font-size: 0.85rem;">
-            <p style="margin: 0;">&copy; 2026 Justin's Skillz. All rights reserved.</p>
-        </div>
-    </footer>
-
-    <script src="main.js" defer></script>
+    <!-- INJECT LOGIC ENGINE SCRIPT SOURCE BLOCK LINK -->
+    <script src="dashboard-engine.js"></script>
 </body>
 </html>

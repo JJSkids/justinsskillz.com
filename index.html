@@ -118,29 +118,10 @@
                   <a href="dashboard.html" class="btn btn-secondary" style="margin-right: 0.5rem;">👋 ${firstName}'s Workspace</a>
                   <button id="indexSignOutBtn" type="button" class="btn btn-danger">Sign Out</button>
               `;
-
-              const signOutBtn = document.getElementById('indexSignOutBtn');
-              if (signOutBtn) {
-                  signOutBtn.addEventListener('click', async () => {
-                      signOutBtn.disabled = true;
-                      await window.supabaseClient.auth.signOut();
-                      localStorage.clear();
-                      sessionStorage.clear();
-                      renderUserUI(null);
-                  });
-              }
           } else {
               navContainer.innerHTML = `
                   <button id="navSignInBtn" type="button" class="btn btn-primary">Sign In</button>
               `;
-              
-              const signInBtn = document.getElementById('navSignInBtn');
-              if (signInBtn) {
-                  signInBtn.addEventListener('click', () => {
-                      const modal = document.getElementById('authModal');
-                      if (modal) modal.style.display = 'flex';
-                  });
-              }
           }
       }
 
@@ -165,6 +146,24 @@
           const modal = document.getElementById('authModal');
           const closeModalBtn = document.getElementById('closeAuthModal');
           const googleOAuthBtn = document.getElementById('googleOAuthBtn');
+          const navContainer = document.getElementById('navAuthContainer');
+
+          // Event Delegation: handles clicks on dynamically injected buttons
+          if (navContainer) {
+              navContainer.addEventListener('click', async (e) => {
+                  if (e.target && e.target.id === 'navSignInBtn') {
+                      if (modal) modal.style.display = 'flex';
+                  }
+                  
+                  if (e.target && e.target.id === 'indexSignOutBtn') {
+                      e.target.disabled = true;
+                      await window.supabaseClient.auth.signOut();
+                      localStorage.clear();
+                      sessionStorage.clear();
+                      renderUserUI(null);
+                  }
+              });
+          }
 
           if (closeModalBtn && modal) {
               closeModalBtn.addEventListener('click', () => { modal.style.display = 'none'; });
@@ -178,10 +177,9 @@
 
           if (googleOAuthBtn) {
               googleOAuthBtn.addEventListener('click', async () => {
-                  // Dynamically builds redirect URL to dashboard.html regardless of domain/origin
-                  const targetDashboardUrl = window.location.href.includes('index.html')
-                      ? window.location.href.replace('index.html', 'dashboard.html')
-                      : window.location.href.replace(/\/$/, '') + '/dashboard.html';
+                  const currentPath = window.location.pathname;
+                  const directory = currentPath.substring(0, currentPath.lastIndexOf('/') + 1);
+                  const targetDashboardUrl = window.location.origin + directory + 'dashboard.html';
 
                   await window.supabaseClient.auth.signInWithOAuth({
                       provider: 'google',

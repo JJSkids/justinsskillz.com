@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robotics Logic | Justin's Skillz</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .logic-box { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 2rem; max-width: 650px; margin: 2rem auto; text-align: center; }
+    .toggle-btn { padding: 0.75rem 1.5rem; background: #0f172a; border: 2px solid #334155; color: #f8fafc; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .toggle-btn.on { border-color: #34d399; color: #34d399; }
+    .gate-select { padding: 0.5rem 1rem; background: #0f172a; border: 1px solid #334155; color: #38bdf8; font-size: 1.1rem; border-radius: 6px; }
+    .led { width: 40px; height: 40px; border-radius: 50%; background: #334155; display: inline-block; margin-top: 1rem; box-shadow: 0 0 5px #000; }
+    .led.active { background: #34d399; box-shadow: 0 0 20px #34d399; }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <a href="dashboard.html" class="back-button">← Back to Dashboard</a>
+    <h1>🤖 Robotics Logic Gate Simulator</h1>
+  </header>
+
+  <main class="container">
+    <div class="logic-box">
+      <h3>Digital Logic Gate Tester</h3>
+      <p style="margin-bottom: 1.5rem; color: #94a3b8;">Toggle inputs A and B to evaluate logical output states.</p>
+
+      <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 2rem;">
+        <div>
+          <p>Input A</p>
+          <button id="in-a" class="toggle-btn" onclick="toggleInput('a')">0 (OFF)</button>
+        </div>
+
+        <select id="gate-type" class="gate-select" onchange="evaluateGate()">
+          <option value="AND">AND</option>
+          <option value="OR">OR</option>
+          <option value="XOR">XOR</option>
+          <option value="NAND">NAND</option>
+          <option value="NOR">NOR</option>
+        </select>
+
+        <div>
+          <p>Input B</p>
+          <button id="in-b" class="toggle-btn" onclick="toggleInput('b')">0 (OFF)</button>
+        </div>
+      </div>
+
+      <hr style="border-color: #334155;" />
+
+      <div style="margin-top: 1.5rem;">
+        <h4>Output Signal</h4>
+        <div id="led-indicator" class="led"></div>
+        <p id="output-text" style="margin-top: 0.5rem; font-weight: bold; color: #94a3b8;">OUTPUT: 0</p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    let stateA = false;
+    let stateB = false;
+
+    function toggleInput(which) {
+      if (which === 'a') {
+        stateA = !stateA;
+        const btnA = document.getElementById('in-a');
+        btnA.textContent = stateA ? "1 (ON)" : "0 (OFF)";
+        btnA.classList.toggle('on', stateA);
+      } else {
+        stateB = !stateB;
+        const btnB = document.getElementById('in-b');
+        btnB.textContent = stateB ? "1 (ON)" : "0 (OFF)";
+        btnB.classList.toggle('on', stateB);
+      }
+      evaluateGate();
+    }
+
+    function evaluateGate() {
+      const gate = document.getElementById('gate-type').value;
+      let out = false;
+
+      switch(gate) {
+        case 'AND': out = stateA && stateB; break;
+        case 'OR': out = stateA || stateB; break;
+        case 'XOR': out = stateA !== stateB; break;
+        case 'NAND': out = !(stateA && stateB); break;
+        case 'NOR': out = !(stateA || stateB); break;
+      }
+
+      const led = document.getElementById('led-indicator');
+      const text = document.getElementById('output-text');
+      
+      led.classList.toggle('active', out);
+      text.textContent = out ? "OUTPUT: 1 (HIGH)" : "OUTPUT: 0 (LOW)";
+      text.style.color = out ? "#34d399" : "#94a3b8";
+    }
+  </script>
+</body>
+</html>

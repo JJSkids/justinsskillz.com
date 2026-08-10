@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skillz Chess Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <a href="dashboard.html" class="back-button">← Back to Dashboard</a>
+    <h1>♟️ Skillz Chess AI Sandbox</h1>
+  </header>
+  <main class="container">
+    <div style="text-align: center; margin-bottom: 1rem;">
+      <span id="turn-indicator" class="greeting-badge">Turn: Your Move (White)</span>
+      <button id="reset-btn" class="btn-secondary" style="margin-left: 1rem;">Reset Board</button>
+    </div>
+    <div style="max-width: 480px; margin: 0 auto; aspect-ratio: 1/1; background: #1e293b; padding: 8px; border-radius: 12px; border: 1px solid #334155;">
+      <div id="chess-board" style="display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: 100%; height: 100%;"></div>
+    </div>
+  </main>
+
+  <script>
+    const initialBoard = [
+      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['', '', '', '', '', '', '', ''],
+      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+    ];
+
+    const pieceSymbols = {
+      'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟',
+      'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙'
+    };
+
+    let boardState = [];
+    let selectedSquare = null;
+    let isUserTurn = true;
+
+    function initGame() {
+      boardState = JSON.parse(JSON.stringify(initialBoard));
+      selectedSquare = null;
+      isUserTurn = true;
+      document.getElementById('turn-indicator').textContent = "Turn: Your Move (White)";
+      renderBoard();
+    }
+
+    function renderBoard() {
+      const boardEl = document.getElementById('chess-board');
+      if (!boardEl) return;
+      boardEl.innerHTML = '';
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const square = document.createElement('div');
+          const isDark = (r + c) % 2 === 1;
+          
+          square.style.display = 'flex';
+          square.style.alignItems = 'center';
+          square.style.justifyContent = 'center';
+          square.style.fontSize = '2.2rem';
+          square.style.cursor = 'pointer';
+          square.style.backgroundColor = isDark ? '#475569' : '#e2e8f0';
+          square.style.color = isDark ? '#f8fafc' : '#0f172a';
+
+          const piece = boardState[r][c];
+          if (piece) square.textContent = pieceSymbols[piece];
+
+          if (selectedSquare && selectedSquare.row === r && selectedSquare.col === c) {
+            square.style.backgroundColor = '#f59e0b';
+          }
+
+          square.addEventListener('click', () => handleSquareClick(r, c));
+          boardEl.appendChild(square);
+        }
+      }
+    }
+
+    function handleSquareClick(r, c) {
+      if (!isUserTurn) return;
+      const piece = boardState[r][c];
+
+      // Select White piece
+      if (piece && piece === piece.toUpperCase()) {
+        selectedSquare = { row: r, col: c, piece };
+        renderBoard();
+        return;
+      }
+
+      // Move selected piece
+      if (selectedSquare) {
+        boardState[r][c] = selectedSquare.piece;
+        boardState[selectedSquare.row][selectedSquare.col] = '';
+        selectedSquare = null;
+        renderBoard();
+
+        isUserTurn = false;
+        document.getElementById('turn-indicator').textContent = "Turn: Bot Thinking (Black)...";
+        setTimeout(makeAIMove, 600);
+      }
+    }
+
+    function makeAIMove() {
+      let blackPieces = [];
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const p = boardState[r][c];
+          if (p && p === p.toLowerCase()) {
+            blackPieces.push({ r, c, piece: p });
+          }
+        }
+      }
+
+      if (blackPieces.length > 0) {
+        const p = blackPieces[Math.floor(Math.random() * blackPieces.length)];
+        let targetR = Math.min(7, p.r + 1);
+        let targetC = p.c + (Math.random() > 0.5 ? 1 : -1);
+        if (targetC < 0) targetC = 0;
+        if (targetC > 7) targetC = 7;
+
+        boardState[targetR][targetC] = p.piece;
+        boardState[p.r][p.c] = '';
+      }
+
+      isUserTurn = true;
+      document.getElementById('turn-indicator').textContent = "Turn: Your Move (White)";
+      renderBoard();
+    }
+
+    document.getElementById('reset-btn')?.addEventListener('click', initGame);
+    document.addEventListener('DOMContentLoaded', initGame);
+  </script>
+</body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Justin's Skillz - Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="dashboard-styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="logo">Justin's Skillz Dashboard</div>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="dashboard.html" class="active">Dashboard</a>
+      <a href="admin.html">Admin</a>
+      <a href="../pri.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+    </nav>
+    <div class="user-profile">
+      <span id="user-greeting" class="greeting-badge">👋 Hello Justin's Workspace Dashboard</span>
+      <button id="auth-action-btn" class="btn-secondary">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <h2 class="section-title">Your Learning Modules</h2>
+    <div class="card-grid">
+      <div class="card">
+        <h3>💻 Code Editor</h3>
+        <p>Interactive HTML/CSS/JS sandbox environment.</p>
+        <a href="coding.html">Open Sandbox →</a>
+      </div>
+      <div class="card">
+        <h3>📐 Math Lab</h3>
+        <p>Solve algebraic, quadratic, and complex numbers problems.</p>
+        <a href="math.html">Open Math Lab →</a>
+      </div>
+      <div class="card">
+        <h3>♟️ Chess Lab</h3>
+        <p>Play interactive tap-to-move chess against tactical setups.</p>
+        <a href="chess.html">Play Chess →</a>
+      </div>
+      <div class="card">
+        <h3>🇫🇷 Language Lab</h3>
+        <p>Practice verb conjugations and vocabulary drills.</p>
+        <a href="french.html">Practice French →</a>
+      </div>
+      <div class="card">
+        <h3>🎹 Music Theory</h3>
+        <p>Explore scale intervals and triad chords.</p>
+        <a href="music.html">Open Sound Lab →</a>
+      </div>
+      <div class="card">
+        <h3>🤖 Robotics & Logic</h3>
+        <p>Test conditional logic and event-driven block flows.</p>
+        <a href="robotics.html">Launch Robotics →</a>
+      </div>
+    </div>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="dashboard-engine.js"></script>
+  <script src="dashboard.js"></script>
+  <script src="auth-dashboard.js"></script>
+</body>
+</html>

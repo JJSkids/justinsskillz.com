@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coding Sandbox | Justin's Skillz</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .editor-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; height: 500px; }
+    textarea { width: 100%; height: 100%; background: #0f172a; border: 1px solid #334155; color: #38bdf8; font-family: monospace; padding: 1rem; border-radius: 8px; resize: none; }
+    iframe { width: 100%; height: 100%; background: #ffffff; border: 1px solid #334155; border-radius: 8px; }
+    @media (max-width: 768px) { .editor-layout { grid-template-columns: 1fr; height: auto; } iframe { height: 300px; } textarea { height: 200px; } }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <a href="dashboard.html" class="back-button">← Back to Dashboard</a>
+    <h1>💻 Code Sandbox</h1>
+  </header>
+
+  <main class="container">
+    <button onclick="runCode()" class="btn-primary" style="margin-bottom: 0.5rem;">▶ Run Code</button>
+
+    <div class="editor-layout">
+      <div>
+        <textarea id="code-input" spellcheck="false"><!-- Write HTML / CSS / JS here -->
+<h1 style="color: #0284c7; font-family: sans-serif;">Hello World!</h1>
+<p style="color: #334155;">Welcome to Justin's Skillz Sandbox.</p>
+<button onclick="alert('Code Running!')">Click Me</button></textarea>
+      </div>
+      <div>
+        <iframe id="preview-frame"></iframe>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    function runCode() {
+      const code = document.getElementById('code-input').value;
+      const iframe = document.getElementById('preview-frame');
+      iframe.srcdoc = code;
+    }
+    window.onload = runCode;
+  </script>
+</body>
+</html>

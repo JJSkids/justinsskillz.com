@@ -1,0 +1,30 @@
+/* Master Theme */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0f172a; color: #f8fafc; line-height: 1.5; }
+
+.app-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background-color: #1e293b; border-bottom: 1px solid #334155; }
+.logo { font-size: 1.25rem; font-weight: 800; color: #38bdf8; }
+.nav-links { display: flex; gap: 1.5rem; }
+.nav-links a, .back-button { color: #94a3b8; text-decoration: none; font-weight: 600; }
+.nav-links a.active, .nav-links a:hover { color: #38bdf8; }
+
+.user-profile { display: flex; align-items: center; gap: 1rem; }
+.greeting-badge { background-color: #0f172a; color: #38bdf8; padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid #334155; font-size: 0.9rem; }
+
+.hero-section { text-align: center; padding: 4rem 1.5rem; background: #1e293b; }
+.hero-section h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
+.hero-section p { color: #94a3b8; margin-bottom: 1.5rem; }
+
+.btn-primary, .btn-secondary { background-color: #0284c7; color: #ffffff; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-weight: 600; }
+
+.container { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; }
+.card h3 { color: #f8fafc; margin-bottom: 0.5rem; }
+.card p { color: #94a3b8; margin-bottom: 1rem; }
+.card a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+
+@media (max-width: 768px), body.mobile-mode {
+  .app-header { flex-direction: column; gap: 0.75rem; text-align: center; }
+  .card-grid { grid-template-columns: 1fr; }
+}

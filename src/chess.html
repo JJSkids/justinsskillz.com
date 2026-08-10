@@ -5,26 +5,40 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chess AI - Justin's Skillz</title>
   <link rel="stylesheet" href="styles.css" />
+  <script>
+    // Apply saved theme immediately to prevent flashing
+    const savedTheme = localStorage.getItem('skillz_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+  </script>
   <style>
-    .chess-container {
+    .chess-layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      justify-content: center;
+      align-items: flex-start;
+      max-width: 920px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .board-section {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.5rem;
-      max-width: 600px;
-      margin: 2rem auto;
+      gap: 1rem;
     }
     .board-frame {
       width: 100%;
-      max-width: 480px;
+      max-width: 460px;
       aspect-ratio: 1;
       display: grid;
       grid-template-columns: repeat(8, 1fr);
       grid-template-rows: repeat(8, 1fr);
-      border: 2px solid var(--border-accent);
-      border-radius: var(--radius-md);
+      border: 3px solid var(--board-border);
+      border-radius: 8px;
       overflow: hidden;
-      box-shadow: var(--shadow-md);
+      box-shadow: 0 12px 30px var(--shadow-color);
+      position: relative;
     }
     .square {
       display: flex;
@@ -33,62 +47,230 @@
       position: relative;
       cursor: pointer;
       user-select: none;
+      transition: background-color 0.15s ease;
     }
-    .square.light { background-color: #1e293b; }
-    .square.dark { background-color: #0f172a; }
-    .square.selected { background-color: rgba(56, 189, 248, 0.4) !important; }
-    .square.highlight::after {
+    .square.light { background-color: var(--board-light); }
+    .square.dark { background-color: var(--board-dark); }
+    
+    /* Move Highlights */
+    .square.selected { background-color: var(--square-selected) !important; }
+    .square.last-move { background-color: var(--square-lastmove) !important; }
+    
+    .square.legal-move::after {
       content: '';
-      width: 30%;
-      height: 30%;
-      background-color: rgba(56, 189, 248, 0.6);
+      width: 26%;
+      height: 26%;
+      background-color: var(--square-highlight);
       border-radius: 50%;
-    }
-    .piece-img {
-      width: 85%;
-      height: 85%;
       pointer-events: none;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
     }
-    .controls-panel {
+    .square.legal-capture::after {
+      content: '';
+      position: absolute;
+      width: 80%;
+      height: 80%;
+      border: 3px solid var(--square-highlight);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    /* Enhanced Piece Animations & Styling */
+    .piece-img {
+      width: 88%;
+      height: 88%;
+      pointer-events: none;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+      transition: transform 0.15s ease;
+    }
+    .square:hover .piece-img {
+      transform: scale(1.08) translateY(-2px);
+    }
+    
+    /* Move History Sidebar */
+    .sidebar-panel {
+      width: 280px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-accent);
+      border-radius: 8px;
+      padding: 1rem;
       display: flex;
+      flex-direction: column;
+      height: 460px;
+      box-shadow: 0 4px 12px var(--shadow-color);
+    }
+    .sidebar-title {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--accent-color);
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .book-badge {
+      font-size: 0.75rem;
+      background: var(--accent-color);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 12px;
+      display: none;
+    }
+    .move-log-container {
+      flex: 1;
+      overflow-y: auto;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-accent);
+      border-radius: 6px;
+      padding: 0.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-family: monospace;
+      font-size: 0.95rem;
+    }
+    .log-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 1fr;
+      padding: 4px 6px;
+      border-bottom: 1px solid var(--border-accent);
+      color: var(--text-primary);
+    }
+    .move-num { color: var(--text-secondary); }
+
+    /* Promotion Selection Modal */
+    .modal-overlay {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
       gap: 1rem;
+      border-radius: 6px;
+    }
+    .modal-overlay.active { display: flex; }
+    .promotion-title {
+      color: #fff;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .promotion-choices {
+      display: flex;
+      gap: 0.75rem;
+      background: var(--bg-card);
+      padding: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-accent);
+    }
+    .promo-choice-btn {
+      width: 60px;
+      height: 60px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-accent);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
       align-items: center;
       justify-content: center;
-      flex-wrap: wrap;
+      transition: all 0.2s ease;
+    }
+    .promo-choice-btn:hover {
+      background: var(--accent-color);
+      transform: scale(1.1);
+    }
+    .promo-choice-btn img {
+      width: 80%;
+      height: 80%;
     }
   </style>
 </head>
 <body>
   <header class="app-header">
     <div class="logo">Justin's Skillz</div>
-    <a href="../index.html" class="back-button">← Back to Home</a>
+    <div class="nav-actions">
+      <button id="theme-toggle" class="theme-toggle-btn">🌙 Dark Mode</button>
+      <a href="../index.html" class="btn-secondary" style="text-decoration:none;">← Back Home</a>
+    </div>
   </header>
 
   <main class="container">
-    <div class="chess-container">
-      <h2>♟️ Smart Chess AI Engine</h2>
+    <div class="chess-layout">
       
-      <div class="controls-panel">
-        <label for="ai-depth">AI Depth:</label>
-        <select id="ai-depth" class="btn-secondary">
-          <option value="1">Depth 1 (Fast)</option>
-          <option value="2">Depth 2 (Medium)</option>
-          <option value="3" selected>Depth 3 (Smart)</option>
-        </select>
-        <button id="reset-btn" class="btn-primary">New Game</button>
+      <!-- Board & Controls -->
+      <div class="board-section">
+        <h2>♟️ Chess AI</h2>
+        
+        <div class="controls-panel" style="display:flex; gap:0.75rem; align-items:center;">
+          <label for="ai-depth">Difficulty:</label>
+          <select id="ai-depth" class="btn-secondary">
+            <option value="1">Easy (Depth 1)</option>
+            <option value="2">Medium (Depth 2)</option>
+            <option value="3" selected>Smart (Depth 3)</option>
+          </select>
+          <button id="reset-btn" class="btn-primary">New Game</button>
+        </div>
+
+        <div style="position: relative;">
+          <div id="chess-board" class="board-frame"></div>
+          
+          <!-- Promotion Choice Popup -->
+          <div id="promotion-modal" class="modal-overlay">
+            <div class="promotion-title">Promote Pawn To:</div>
+            <div class="promotion-choices">
+              <button class="promo-choice-btn" data-piece="q" title="Queen">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg" alt="Queen" />
+              </button>
+              <button class="promo-choice-btn" data-piece="r" title="Rook">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg" alt="Rook" />
+              </button>
+              <button class="promo-choice-btn" data-piece="b" title="Bishop">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg" alt="Bishop" />
+              </button>
+              <button class="promo-choice-btn" data-piece="n" title="Knight">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg" alt="Knight" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div id="game-status" class="greeting-badge">Your turn (White)</div>
       </div>
 
-      <div id="chess-board" class="board-frame"></div>
-      <div id="game-status" class="greeting-badge">Your turn (White)</div>
+      <!-- Move History Sidebar -->
+      <div class="sidebar-panel">
+        <div class="sidebar-title">
+          <span>📜 Move History</span>
+          <span id="book-indicator" class="book-badge">📖 Book Move</span>
+        </div>
+        <div id="move-log" class="move-log-container"></div>
+      </div>
+
     </div>
   </main>
 
-  <!-- External Chess Move Logic Engine -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   
   <script>
-    // Wikimedia high-res SVG piece sprites URL map
+    // Theme Switcher Logic
+    const themeBtn = document.getElementById('theme-toggle');
+    function updateThemeButton() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      themeBtn.textContent = currentTheme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+    
+    themeBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('skillz_theme', newTheme);
+      updateThemeButton();
+    });
+    updateThemeButton();
+
+    // High-Resolution SVG Sprites
     const PIECE_SPRITES = {
       p: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg',
       r: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg',
@@ -104,7 +286,19 @@
       K: 'https://upload.wikimedia.org/wikipedia/commons/4/4c/Chess_klt45.svg'
     };
 
-    // Positional evaluation values (Center control & piece placement)
+    const OPENING_BOOK = {
+      "": ["e4", "d4", "Nf3"],
+      "e4": ["e5", "c5", "e6", "c6"],
+      "e4 e5": ["Nf3", "Bc4"],
+      "e4 e5 Nf3": ["Nc6"],
+      "e4 e5 Nf3 Nc6": ["Bc4", "Bb5", "d4"],
+      "e4 e5 Nf3 Nc6 Bc4": ["Bc5", "Nf6"],
+      "e4 c5": ["Nf3", "Nc3"],
+      "d4": ["d5", "Nf6"],
+      "d4 d5": ["c4", "Nf3"],
+      "d4 d5 c4": ["e6", "c6"]
+    };
+
     const PAWN_PST = [
       0,  0,  0,  0,  0,  0,  0,  0,
       50, 50, 50, 50, 50, 50, 50, 50,
@@ -131,6 +325,8 @@
 
     const game = new Chess();
     let selectedSquare = null;
+    let pendingPromotionMove = null;
+    let lastMove = null;
 
     function evaluateBoard(board) {
       let totalEval = 0;
@@ -152,7 +348,6 @@
       return totalEval;
     }
 
-    // Minimax with Alpha-Beta Pruning
     function minimax(depth, alpha, beta, isMaximizing) {
       if (depth === 0 || game.game_over()) {
         return evaluateBoard(game.board());
@@ -167,7 +362,7 @@
           game.undo();
           maxEval = Math.max(maxEval, evalVal);
           alpha = Math.max(alpha, evalVal);
-          if (beta <= alpha) break; // Prune branch
+          if (beta <= alpha) break;
         }
         return maxEval;
       } else {
@@ -178,40 +373,65 @@
           game.undo();
           minEval = Math.min(minEval, evalVal);
           beta = Math.min(beta, evalVal);
-          if (beta <= alpha) break; // Prune branch
+          if (beta <= alpha) break;
         }
         return minEval;
       }
     }
 
+    function getBookMove() {
+      const historyStr = game.history().join(" ");
+      const options = OPENING_BOOK[historyStr];
+      if (options && options.length > 0) {
+        return options[Math.floor(Math.random() * options.length)];
+      }
+      return null;
+    }
+
     function makeAIMove() {
-      const depth = parseInt(document.getElementById('ai-depth').value);
       const moves = game.moves();
       if (moves.length === 0) return;
 
-      let bestMove = null;
-      let bestValue = Infinity; // AI plays Black (minimizing)
+      const bookIndicator = document.getElementById('book-indicator');
+      const bookMove = getBookMove();
 
-      for (let move of moves) {
-        game.move(move);
-        let boardValue = minimax(depth - 1, -Infinity, Infinity, true);
-        game.undo();
+      if (bookMove && moves.includes(bookMove)) {
+        lastMove = game.move(bookMove);
+        if (bookIndicator) bookIndicator.style.display = 'inline-block';
+      } else {
+        if (bookIndicator) bookIndicator.style.display = 'none';
+        const depth = parseInt(document.getElementById('ai-depth').value);
+        let bestMove = null;
+        let bestValue = Infinity;
 
-        if (boardValue < bestValue) {
-          bestValue = boardValue;
-          bestMove = move;
+        for (let move of moves) {
+          game.move(move);
+          let boardValue = minimax(depth - 1, -Infinity, Infinity, true);
+          game.undo();
+
+          if (boardValue < bestValue) {
+            bestValue = boardValue;
+            bestMove = move;
+          }
         }
+        lastMove = game.move(bestMove);
       }
 
-      game.move(bestMove);
       renderBoard();
       updateStatus();
+      updateMoveLog();
     }
 
     function renderBoard() {
       const boardElement = document.getElementById('chess-board');
       boardElement.innerHTML = '';
       const board = game.board();
+
+      // Get valid moves for highlighted selection
+      let legalMoves = [];
+      if (selectedSquare) {
+        legalMoves = game.moves({ square: selectedSquare, verbose: true });
+      }
 
       for (let i = 0; i < 8; i++) {
         for (let j = 0; j < 8; j++) {
@@ -222,6 +442,20 @@
 
           if (selectedSquare === squareName) {
             squareDiv.classList.add('selected');
+          }
+
+          if (lastMove && (lastMove.from === squareName || lastMove.to === squareName)) {
+            squareDiv.classList.add('last-move');
+          }
+
+          // Highlight Legal Destinations (Including Castling & En Passant)
+          const validMove = legalMoves.find(m => m.to === squareName);
+          if (validMove) {
+            if (validMove.captured || validMove.flags.includes('e')) {
+              squareDiv.classList.add('legal-capture');
+            } else {
+              squareDiv.classList.add('legal-move');
+            }
           }
 
           const piece = board[i][j];
@@ -240,14 +474,29 @@
     }
 
     function handleSquareClick(square) {
-      if (game.turn() !== 'w') return; // Wait for AI turn
+      if (game.turn() !== 'w') return;
 
       if (selectedSquare) {
+        // Check if move is a Pawn Promotion
+        const legalMoves = game.moves({ square: selectedSquare, verbose: true });
+        const moveTarget = legalMoves.find(m => m.to === square);
+
+        if (moveTarget && moveTarget.flags.includes('p')) {
+          // Open 4-Choice Promotion Modal
+          pendingPromotionMove = { from: selectedSquare, to: square };
+          document.getElementById('promotion-modal').classList.add('active');
+          return;
+        }
+
+        // Standard Move Execution (Handles Castling & En Passant automatically)
         const move = game.move({ from: selectedSquare, to: square, promotion: 'q' });
         selectedSquare = null;
+        
         if (move) {
+          lastMove = move;
           renderBoard();
           updateStatus();
+          updateMoveLog();
           setTimeout(makeAIMove, 250);
           return;
         }
@@ -260,6 +509,48 @@
         selectedSquare = null;
       }
       renderBoard();
+    }
+
+    // Handle Promotion Choice Selection
+    document.querySelectorAll('.promo-choice-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const pieceType = e.currentTarget.dataset.piece;
+        document.getElementById('promotion-modal').classList.remove('active');
+
+        if (pendingPromotionMove) {
+          lastMove = game.move({
+            from: pendingPromotionMove.from,
+            to: pendingPromotionMove.to,
+            promotion: pieceType
+          });
+          
+          pendingPromotionMove = null;
+          selectedSquare = null;
+          
+          renderBoard();
+          updateStatus();
+          updateMoveLog();
+          setTimeout(makeAIMove, 250);
+        }
+      });
+    });
+
+    function updateMoveLog() {
+      const history = game.history();
+      const logContainer = document.getElementById('move-log');
+      logContainer.innerHTML = '';
+
+      for (let i = 0; i < history.length; i += 2) {
+        const moveNum = Math.floor(i / 2) + 1;
+        const whiteMove = history[i];
+        const blackMove = history[i + 1] || '';
+
+        const row = document.createElement('div');
+        row.className = 'log-row';
+        row.innerHTML = `<span class="move-num">${moveNum}.</span><span>${whiteMove}</span><span>${blackMove}</span>`;
+        logContainer.appendChild(row);
+      }
+      logContainer.scrollTop = logContainer.scrollHeight;
     }
 
     function updateStatus() {
@@ -276,8 +567,11 @@
     document.getElementById('reset-btn').onclick = () => {
       game.reset();
       selectedSquare = null;
+      lastMove = null;
+      document.getElementById('book-indicator').style.display = 'none';
       renderBoard();
       updateStatus();
+      updateMoveLog();
     };
 
     renderBoard();

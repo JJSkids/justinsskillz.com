@@ -1,39 +1,84 @@
 /* ==========================================================================
-   Justin's Skillz - Master Stylesheet (100% Valid CSS)
-   Path: src/styles.css
+   Justin's Skillz - Master Stylesheet
+   Path: styles.css
    ========================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
+/* --------------------------------------------------------------------------
+   1. Theme System & Custom Properties
+   -------------------------------------------------------------------------- */
 :root {
-  /* Color Palette */
-  --bg-dark: #090d16;
-  --bg-card: #131c2e;
-  --bg-card-hover: #1a263d;
-  --border-color: #22324d;
-  --border-accent: #38bdf8;
+  /* Dark Theme (Default) */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-card: rgba(30, 41, 59, 0.7);
+  --bg-card-solid: #1e293b;
+  --bg-input: #0f172a;
   
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  --border-accent: #334155;
+  --border-focus: #38bdf8;
+  
+  --accent-color: #38bdf8;
+  --accent-hover: #0284c7;
+  --accent-glow: rgba(56, 189, 248, 0.25);
+  
+  --danger-color: #ef4444;
+  --danger-hover: #dc2626;
+  --success-color: #10b981;
 
-  --accent-blue: #38bdf8;
-  --accent-blue-hover: #0284c7;
-  --accent-amber: #f59e0b;
-  --accent-green: #34d399;
-  --accent-red: #f43f5e;
+  /* Chess Engine Custom Theme Variables */
+  --board-light: #334155;
+  --board-dark: #0f172a;
+  --board-border: #475569;
+  --square-selected: rgba(56, 189, 248, 0.45);
+  --square-highlight: rgba(56, 189, 248, 0.6);
+  --square-lastmove: rgba(251, 191, 36, 0.35);
+  --shadow-color: rgba(0, 0, 0, 0.5);
 
-  /* Layout & Shadows */
-  --radius-sm: 8px;
-  --radius-md: 12px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
   --radius-lg: 16px;
-  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.25);
-  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius-full: 9999px;
+  
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
 }
 
-/* 1. Global Reset & Ambient Background */
+[data-theme="light"] {
+  /* Light Theme Overrides */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-card: rgba(255, 255, 255, 0.85);
+  --bg-card-solid: #ffffff;
+  --bg-input: #f1f5f9;
+  
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #94a3b8;
+  
+  --border-accent: #e2e8f0;
+  --border-focus: #0284c7;
+  
+  --accent-color: #0284c7;
+  --accent-hover: #0369a1;
+  --accent-glow: rgba(2, 132, 199, 0.2);
+
+  /* Chess Engine (Light Board Variant) */
+  --board-light: #f1f5f9;
+  --board-dark: #cbd5e1;
+  --board-border: #94a3b8;
+  --square-selected: rgba(2, 132, 199, 0.35);
+  --square-highlight: rgba(2, 132, 199, 0.5);
+  --square-lastmove: rgba(245, 158, 11, 0.35);
+  --shadow-color: rgba(0, 0, 0, 0.12);
+}
+
+/* --------------------------------------------------------------------------
+   2. Reset & Core Base Styles
+   -------------------------------------------------------------------------- */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -41,311 +86,466 @@
 }
 
 html {
+  font-size: 16px;
   scroll-behavior: smooth;
-  scrollbar-width: thin;
-  scrollbar-color: #1e293b #090d16;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text-main);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.6;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
   overflow-x: hidden;
-  position: relative;
 }
 
-/* Ambient Radial Glow Behind Page */
-body::before {
-  content: '';
-  position: fixed;
-  top: -200px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 900px;
-  height: 450px;
-  background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(9, 13, 22, 0) 70%);
-  pointer-events: none;
-  z-index: -1;
+a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
-/* 2. Glassmorphism Navigation Bar */
+a:hover {
+  color: var(--accent-hover);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-accent);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* --------------------------------------------------------------------------
+   3. Header & Navigation Bar
+   -------------------------------------------------------------------------- */
 .app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-accent);
   position: sticky;
   top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 2rem;
-  background-color: rgba(19, 28, 46, 0.85);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-color);
-  box-shadow: var(--shadow-sm);
+  z-index: 50;
+  backdrop-filter: blur(8px);
 }
 
 .logo {
-  font-size: 1.35rem;
+  font-size: 1.4rem;
   font-weight: 800;
-  color: var(--accent-blue);
-  letter-spacing: -0.5px;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  letter-spacing: -0.02em;
+  color: var(--accent-color);
 }
 
-.nav-links {
-  display: flex;
-  gap: 1.75rem;
-  align-items: center;
-}
-
-.nav-links a {
-  color: var(--text-muted);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  transition: var(--transition);
-  position: relative;
-  padding: 0.25rem 0;
-}
-
-.nav-links a:hover {
-  color: var(--text-main);
-}
-
-.nav-links a.active {
-  color: var(--accent-blue);
-}
-
-.nav-links a.active::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background-color: var(--accent-blue);
-  border-radius: 2px;
-  box-shadow: 0 0 8px var(--accent-blue);
-}
-
-.back-button {
-  color: var(--accent-blue);
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 0.95rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: var(--transition);
-}
-
-.back-button:hover {
-  transform: translateX(-3px);
-  color: #7dd3fc;
-}
-
-.user-profile {
+.nav-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.greeting-badge {
-  background-color: rgba(56, 189, 248, 0.08);
-  color: var(--accent-blue);
-  padding: 0.4rem 0.9rem;
-  border-radius: 20px;
-  border: 1px solid rgba(56, 189, 248, 0.25);
-  font-size: 0.85rem;
-  font-weight: 600;
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-accent);
+  color: var(--text-primary);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all var(--transition-fast);
 }
 
-/* 3. Hero Section */
-.hero-section {
-  text-align: center;
-  padding: 5rem 1.5rem 4rem;
-  max-width: 900px;
+.theme-toggle-btn:hover {
+  background-color: var(--border-accent);
+  border-color: var(--accent-color);
+}
+
+/* --------------------------------------------------------------------------
+   4. Layout Containers & Grid Utilities
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 2rem 1.5rem;
 }
 
-.hero-section h1 {
-  font-size: 3rem;
-  font-weight: 800;
-  letter-spacing: -1px;
+.grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --------------------------------------------------------------------------
+   5. Typography & Text Utilities
+   -------------------------------------------------------------------------- */
+h1, h2, h3, h4 {
+  color: var(--text-primary);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+h1 { font-size: 2.25rem; margin-bottom: 1rem; }
+h2 { font-size: 1.75rem; margin-bottom: 0.75rem; }
+h3 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+
+p {
+  color: var(--text-secondary);
   margin-bottom: 1rem;
-  color: #ffffff;
 }
 
-.hero-section p {
-  color: var(--text-muted);
-  font-size: 1.15rem;
-  margin-bottom: 2rem;
-  max-width: 650px;
-  margin-left: auto;
-  margin-right: auto;
-}
+.text-muted { color: var(--text-muted); }
+.text-accent { color: var(--accent-color); }
 
-/* 4. Buttons */
-.btn-primary, .btn-secondary {
+/* --------------------------------------------------------------------------
+   6. Buttons & Interactive Controls
+   -------------------------------------------------------------------------- */
+.btn-primary, .btn-secondary, .btn-danger {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.7rem 1.4rem;
-  border-radius: var(--radius-sm);
-  font-weight: 600;
+  padding: 0.55rem 1.25rem;
   font-size: 0.95rem;
-  text-decoration: none;
-  border: none;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: var(--transition);
+  border: none;
+  transition: all var(--transition-fast);
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  background-color: var(--accent-color);
   color: #ffffff;
-  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
 }
-
 .btn-primary:hover {
-  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-glow);
+  background-color: var(--accent-hover);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .btn-secondary {
-  background-color: var(--bg-card);
-  color: var(--text-main);
-  border: 1px solid var(--border-color);
+  background-color: var(--bg-card-solid);
+  color: var(--text-primary);
+  border: 1px solid var(--border-accent);
 }
-
 .btn-secondary:hover {
-  background-color: var(--bg-card-hover);
-  border-color: var(--accent-blue);
-  color: var(--accent-blue);
-  transform: translateY(-1px);
+  border-color: var(--accent-color);
+  background-color: var(--border-accent);
 }
 
-/* 5. Container & Grid Layouts */
-.container {
-  max-width: 1100px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
-  width: 100%;
-  flex: 1;
+.btn-danger {
+  background-color: var(--danger-color);
+  color: #ffffff;
+}
+.btn-danger:hover {
+  background-color: var(--danger-hover);
 }
 
-.card-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.75rem;
-  margin-top: 1.5rem;
+/* Badges */
+.greeting-badge, .book-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-accent);
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
-/* 6. Module Cards */
+.book-badge {
+  background: var(--accent-color);
+  color: #ffffff;
+  border: none;
+  font-size: 0.75rem;
+  padding: 2px 8px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Cards & Content Modules
+   -------------------------------------------------------------------------- */
 .card {
-  background-color: var(--bg-card);
-  border: 1px solid var(--border-color);
+  background: var(--bg-card);
+  border: 1px solid var(--border-accent);
   border-radius: var(--radius-md);
-  padding: 1.75rem;
-  transition: var(--transition);
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
-}
-
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent-blue), transparent);
-  opacity: 0;
-  transition: var(--transition);
+  padding: 1.5rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 4px 20px var(--shadow-color);
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  background-color: var(--bg-card-hover);
-  border-color: rgba(56, 189, 248, 0.4);
-  box-shadow: var(--shadow-md);
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
 }
 
-.card:hover::before {
-  opacity: 1;
+/* --------------------------------------------------------------------------
+   8. Form Inputs & Modal Windows (Auth / Modals)
+   -------------------------------------------------------------------------- */
+.form-group {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
 }
 
-.card h3 {
-  font-size: 1.25rem;
-  color: var(--text-main);
-  margin-bottom: 0.6rem;
+.form-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.form-input, select.btn-secondary {
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  background-color: var(--bg-input);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.form-input:focus, select.btn-secondary:focus {
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 2px var(--accent-glow);
+}
+
+/* Global Modal Overlay */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 40px var(--shadow-color);
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   9. Chess AI Engine Module
+   -------------------------------------------------------------------------- */
+.chess-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: flex-start;
+  max-width: 920px;
+  margin: 1.5rem auto;
+}
+
+.board-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.board-frame {
+  width: 100%;
+  max-width: 460px;
+  aspect-ratio: 1;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  border: 3px solid var(--board-border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: 0 12px 30px var(--shadow-color);
+  position: relative;
+}
+
+.square {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color var(--transition-fast);
 }
 
-.card p {
-  color: var(--text-muted);
-  font-size: 0.95rem;
-  margin-bottom: 1.5rem;
-  flex: 1;
+.square.light { background-color: var(--board-light); }
+.square.dark { background-color: var(--board-dark); }
+
+/* Square State Highlights */
+.square.selected { background-color: var(--square-selected) !important; }
+.square.last-move { background-color: var(--square-lastmove) !important; }
+
+.square.legal-move::after {
+  content: '';
+  width: 26%;
+  height: 26%;
+  background-color: var(--square-highlight);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
-.card a {
-  color: var(--accent-blue);
-  text-decoration: none;
+.square.legal-capture::after {
+  content: '';
+  position: absolute;
+  width: 82%;
+  height: 82%;
+  border: 3px solid var(--square-highlight);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Chess Vector Piece Styling */
+.piece-img {
+  width: 88%;
+  height: 88%;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+  transition: transform var(--transition-fast);
+}
+
+.square:hover .piece-img {
+  transform: scale(1.08) translateY(-2px);
+}
+
+/* Sidebar Move Log */
+.sidebar-panel {
+  width: 280px;
+  background: var(--bg-card-solid);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  height: 460px;
+  box-shadow: 0 4px 12px var(--shadow-color);
+}
+
+.sidebar-title {
+  font-size: 1.1rem;
   font-weight: 700;
-  font-size: 0.95rem;
-  display: inline-flex;
+  color: var(--accent-color);
+  margin-bottom: 0.75rem;
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 0.25rem;
-  transition: var(--transition);
 }
 
-.card a:hover {
-  color: #7dd3fc;
-  transform: translateX(4px);
+.move-log-container {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95rem;
 }
 
-/* 7. Mobile Responsive Adjustments */
+.log-row {
+  display: grid;
+  grid-template-columns: 40px 1fr 1fr;
+  padding: 4px 6px;
+  border-bottom: 1px solid var(--border-accent);
+  color: var(--text-primary);
+}
+
+.log-row:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.move-num { color: var(--text-muted); }
+
+/* Pawn Promotion Choice Options */
+.promotion-choices {
+  display: flex;
+  gap: 0.75rem;
+  background: var(--bg-card-solid);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-accent);
+}
+
+.promo-choice-btn {
+  width: 60px;
+  height: 60px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.promo-choice-btn:hover {
+  background: var(--accent-color);
+  border-color: var(--accent-hover);
+  transform: scale(1.1);
+}
+
+.promo-choice-btn img {
+  width: 80%;
+  height: 80%;
+}
+
+/* --------------------------------------------------------------------------
+   10. Media Queries & Tablet / Mobile Responsiveness
+   -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   .app-header {
+    padding: 0.8rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.2rem;
+  }
+
+  .chess-layout {
     flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
+    align-items: center;
   }
-  .nav-links {
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .hero-section h1 {
-    font-size: 2.25rem;
-  }
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
-body.mobile-mode .app-header {
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-}
-
-body.mobile-mode .nav-links {
-  gap: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-body.mobile-mode .card-grid {
-  grid-template-columns: 1fr;
+  .sidebar-panel {
+    width: 100%;
+    max-width: 460px;
+    height: 220px;
+  }
 }

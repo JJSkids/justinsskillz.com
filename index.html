@@ -3,26 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - STEM, Code & Game Mechanics</title>
-  
-  <!-- Fonts & Supabase SDK -->
+  <title>Justin's Skillz - Hub</title>
+
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Stylesheet & Scripts -->
-  <link rel="stylesheet" href="src/styles.css">
+  
+  <!-- Global Stylesheet -->
+  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Base Scripts -->
   <script src="theme.js" defer></script>
-  <script src="auth.js" defer></script>
 </head>
 <body>
 
-  <!-- Ambient Glow Backgrounds -->
-  <div class="bg-glow glow-top-left"></div>
-  <div class="bg-glow glow-bottom-right"></div>
-
-  <!-- Header / Navigation -->
+  <!-- App Header -->
   <header class="app-header">
     <div class="header-container">
       <a href="index.html" class="logo">
@@ -32,125 +28,92 @@
 
       <nav class="nav-menu">
         <a href="index.html" class="nav-link active">Home</a>
-        <a href="src/dashboard.html" class="nav-link">Dashboard</a>
-        <a href="src/chess.html" class="nav-link">Chess AI</a>
-        <a href="#math-lab" class="nav-link">Math Lab</a>
-        <a href="#bedrock" class="nav-link">Bedrock</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="chess.html" class="nav-link">Chess Engine</a>
+        <a href="commons-upload.html" class="nav-link">Commons Media</a>
       </nav>
 
-      <div class="nav-actions">
-        <button type="button" class="btn btn-secondary" id="open-signin-btn">Sign In</button>
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
           <span class="theme-icon">🌙</span> Dark Mode
         </button>
+        <button type="button" id="login-btn" class="btn btn-primary" style="padding: 0.5rem 1rem;">Sign In</button>
+        <button type="button" id="sign-out-btn" class="btn btn-secondary" style="padding: 0.5rem 1rem; display: none;">Sign Out</button>
       </div>
     </div>
   </header>
 
-  <!-- Hero & Content -->
+  <!-- Main Content -->
   <main class="main-content">
-    <div class="container">
+    <div class="container" style="padding-top: 4rem; padding-bottom: 4rem; text-align: center;">
+      <h1 style="font-size: 3rem; margin-bottom: 1rem;">Welcome to <span class="gradient-text">Justin's Skillz</span></h1>
+      <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto 2.5rem auto;">
+        Your centralized modules for advanced mathematics, programming, game engines, and language studies.
+      </p>
       
-      <section class="hero">
-        <div class="hero-badge">
-          <span class="pulse-dot"></span> Interactive STEM & Web Studio
-        </div>
-        
-        <h1 class="hero-title">
-          Mastering <span class="gradient-text">STEM, Code</span> & Game Mechanics
-        </h1>
-        
-        <p class="hero-subtitle">
-          An interactive digital laboratory housing custom chess AI engines, competitive math prep, full-stack web modules, and Minecraft command engineering.
-        </p>
-
-        <div class="hero-actions">
-          <a href="chess.html" class="btn btn-primary">Play Chess AI &rarr;</a>
-          <a href="dashboard.html" class="btn btn-secondary">Go to Dashboard</a>
-        </div>
-      </section>
-
-      <!-- Modules Grid -->
-      <section class="modules-section">
-        <div class="grid">
-          
-          <div class="card">
-            <div class="card-top">
-              <div class="card-icon icon-purple">♟️</div>
-              <span class="badge badge-purple">AI Engine</span>
-            </div>
-            <h3 class="card-title">Chess AI Engine</h3>
-            <p class="card-description">Interactive chess engine with legal move validation and position analysis.</p>
-            <a href="chess.html" class="btn btn-card">Launch Engine &rarr;</a>
-          </div>
-
-          <div class="card" id="math-lab">
-            <div class="card-top">
-              <div class="card-icon icon-blue">📐</div>
-              <span class="badge badge-blue">UNB Prep</span>
-            </div>
-            <h3 class="card-title">Math & Logic Lab</h3>
-            <p class="card-description">Targeted practice for math competitions, modular arithmetic, and algebra.</p>
-
-            <div class="tag-group">
-              <span class="tag">UNB Math</span>
-              <span class="tag">Algebra</span>
-            </div>
-            <button class="btn btn-card-secondary">Open Practice</button>
-          </div>
-
-          <div class="card" id="bedrock">
-            <div class="card-top">
-              <div class="card-icon icon-emerald">📦</div>
-              <span class="badge badge-emerald">Bedrock 1.21</span>
-            </div>
-            <h3 class="card-title">Bedrock Mechanics</h3>
-            <p class="card-description">Command block string generators, scoreboards, and random loot chests.</p>
-            <button class="btn btn-card-secondary">Generate Commands</button>
-          </div>
-
-        </div>
-      </section>
-
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="dashboard.html" class="btn btn-primary" style="padding: 0.85rem 1.75rem; font-size: 1rem;">Explore Dashboard</a>
+        <a href="chess.html" class="btn btn-secondary" style="padding: 0.85rem 1.75rem; font-size: 1rem;">Play Chess Engine</a>
+      </div>
     </div>
   </main>
 
-  <!-- Sign In Popup Modal -->
-  <div id="auth-modal" class="modal-overlay hidden" aria-hidden="true">
-    <div class="modal-card">
-      <button type="button" class="modal-close" id="close-modal-btn" aria-label="Close Modal">&times;</button>
-      
-      <div class="modal-header">
-        <div class="modal-icon">⚡</div>
-        <h2 class="modal-title">Sign In to <span class="gradient-text">Justin's Skillz</span></h2>
-        <p class="modal-subtitle">Enter your details to access your dashboard</p>
-      </div>
-
-      <form id="auth-form">
-        <div class="form-group">
-          <label for="auth-email">Email Address</label>
-          <input type="email" id="auth-email" placeholder="name@example.com" required autocomplete="email">
-        </div>
-
-        <div class="form-group">
-          <label for="auth-password">Password</label>
-          <input type="password" id="auth-password" placeholder="••••••••" required autocomplete="current-password">
-        </div>
-
-        <div id="auth-error-msg" class="auth-error hidden"></div>
-
-        <button type="submit" id="auth-submit-btn" class="btn btn-primary btn-full">
-          Sign In
-        </button>
-      </form>
-    </div>
-  </div>
-
+  <!-- Footer -->
   <footer class="app-footer">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz.</p>
+    <div class="container">
+      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
     </div>
   </footer>
 
+  <!-- Authentication Modal -->
+  <div id="auth-modal" class="modal-overlay">
+    <div class="modal-content" style="position: relative;">
+      <h2 style="margin-bottom: 1.5rem; text-align: center;">Welcome Back</h2>
+      
+      <!-- OAuth Buttons (Google & GitHub) -->
+      <div class="oauth-buttons">
+        <button type="button" id="btn-google" class="btn btn-oauth">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20px" height="20px">
+            <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+            <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+            <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+            <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+          </svg>
+          Sign in with Google
+        </button>
+
+        <button type="button" id="btn-github" class="btn btn-oauth">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" height="20px">
+            <path fill="currentColor" d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+          </svg>
+          Sign in with GitHub
+        </button>
+      </div>
+
+      <!-- Divider -->
+      <div class="auth-divider">
+        <span>OR</span>
+      </div>
+
+      <!-- Standard Email Form -->
+      <form id="auth-form" style="display: flex; flex-direction: column; gap: 1rem;">
+        <input type="email" id="email-input" placeholder="Email Address" required style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--bg-pill); color: var(--text-main);">
+        <input type="password" id="password-input" placeholder="Password" required style="padding: 0.75rem; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); background: var(--bg-pill); color: var(--text-main);">
+        
+        <div style="display: flex; gap: 1rem; margin-top: 0.5rem;">
+          <button type="submit" id="sign-in-btn" class="btn btn-primary" style="flex: 1;">Sign In</button>
+          <button type="button" id="sign-up-btn" class="btn btn-secondary" style="flex: 1;">Sign Up</button>
+        </div>
+        
+        <p id="auth-message" style="font-size: 0.85rem; text-align: center; margin-top: 0.5rem;"></p>
+      </form>
+      
+      <button type="button" id="close-modal" style="position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--text-muted); font-size: 1.5rem; cursor: pointer;">&times;</button>
+    </div>
+  </div>
+
+  <!-- Supabase CDN & Auth Script -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="auth.js" defer></script>
 </body>
 </html>

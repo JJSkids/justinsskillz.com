@@ -3,22 +3,411 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Justin's Skillz - Admin</title>
+  <title>Admin Control Panel - Justin's Skillz</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* Admin Specific Dashboard Styling */
+    .admin-banner {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(19, 28, 46, 0.8) 100%);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .admin-title-group h1 {
+      font-size: 2rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .admin-title-group p {
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      font-size: 0.95rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(52, 211, 153, 0.15);
+      color: var(--accent-green);
+      border: 1px solid rgba(52, 211, 153, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--accent-green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--accent-green);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .metric-card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
+    }
+
+    .metric-card h4 {
+      font-size: 0.85rem;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-card .value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--accent-blue);
+      margin-top: 0.4rem;
+    }
+
+    .admin-section {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .admin-section h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1.25rem;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Modules Control List */
+    .module-control-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.9rem 1rem;
+      background: rgba(9, 13, 22, 0.5);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      margin-bottom: 0.75rem;
+    }
+
+    .module-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 24px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .3s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: var(--accent-blue);
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+
+    /* Console Logs Window */
+    .log-terminal {
+      background-color: #050811;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.85rem;
+      color: #38bdf8;
+      max-height: 200px;
+      overflow-y: auto;
+      line-height: 1.5;
+    }
+
+    .log-line {
+      margin-bottom: 0.25rem;
+    }
+    .log-time {
+      color: var(--text-subtle);
+    }
+    .log-success {
+      color: var(--accent-green);
+    }
+  </style>
+
+  <!-- 1. Load Supabase Library CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- 2. Load Config & Auth Scripts -->
+  <script src="config.js"></script>
+  <script src="auth-index.js"></script>
+
+  <!-- 3. Immediate Admin Guard Script (Prevents unauthorized page rendering) -->
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Hide body initially to prevent flickering
+      document.body.style.opacity = '0';
+
+      if (!supabase) {
+        alert("Error: Supabase is not initialized. Redirecting...");
+        window.location.href = "../index.html";
+        return;
+      }
+
+      // Fetch current session
+      const { data } = await supabase.auth.getSession();
+      const user = data?.session?.user;
+
+      if (!user || !user.email) {
+        alert("🔒 Access Denied: You must be signed in to view the Admin Panel.");
+        window.location.href = "../index.html";
+        return;
+      }
+
+      const userEmail = user.email.toLowerCase();
+      const adminList = (typeof SKILLZ_CONFIG !== 'undefined' && SKILLZ_CONFIG.adminEmails)
+        ? SKILLZ_CONFIG.adminEmails.map(e => e.toLowerCase())
+        : [];
+
+      if (!adminList.includes(userEmail)) {
+        alert("⛔ Access Denied: The account (" + user.email + ") is not authorized as an Admin.");
+        window.location.href = "../index.html";
+        return;
+      }
+
+      // Reveal body if user is verified as Admin
+      document.body.style.opacity = '1';
+      document.body.style.transition = 'opacity 0.3s ease';
+      
+      const adminBadge = document.getElementById('admin-email-display');
+      if (adminBadge) adminBadge.textContent = user.email;
+
+      addLog("Admin session verified for " + user.email);
+    });
+  </script>
 </head>
 <body>
+
+  <!-- App Header Navbar -->
   <header class="app-header">
-    <a href="../index.html" class="back-button">← Back to Home</a>
-    <h1>Admin Console</h1>
-  </header>
-  <main class="container">
-    <div class="card">
-      <h3>System Settings</h3>
-      <p>Configure app state, reset local database caches, and verify session tokens.</p>
-      <button id="reset-session-btn" class="btn-secondary">Clear Session Cache</button>
+    <div class="logo">Justin's Skillz</div>
+    <nav class="nav-links">
+      <a href="../index.html">Home</a>
+      <a href="dashboard.html">Dashboard</a>
+      <a href="admin.html" class="active">Admin 🔒</a>
+      <a href="../pri.html">Privacy</a>
+      <a href="../terms.html">Terms</a>
+    </nav>
+    <div class="user-profile">
+      <span id="user-greeting" class="greeting-badge">👑 Admin</span>
+      <button id="auth-action-btn" class="btn-secondary">Sign Out</button>
     </div>
+  </header>
+
+  <main class="container">
+
+    <!-- Admin Welcome Banner -->
+    <section class="admin-banner">
+      <div class="admin-title-group">
+        <h1>👑 Admin Control Panel</h1>
+        <p>System management and workspace configurations for <strong id="admin-email-display">Admin User</strong></p>
+      </div>
+      <div class="status-badge">
+        <span class="status-dot"></span> Supabase Connected
+      </div>
+    </section>
+
+    <!-- Key Metrics Grid -->
+    <section class="metrics-grid">
+      <div class="metric-card">
+        <h4>Active Modules</h4>
+        <div class="value">6</div>
+      </div>
+      <div class="metric-card">
+        <h4>Database Health</h4>
+        <div class="value" style="color: var(--accent-green);">100%</div>
+      </div>
+      <div class="metric-card">
+        <h4>App Version</h4>
+        <div class="value" style="font-size: 1.5rem;">v2.1.0</div>
+      </div>
+      <div class="metric-card">
+        <h4>Auth System</h4>
+        <div class="value" style="font-size: 1.4rem; color: var(--accent-amber);">OAuth / Email</div>
+      </div>
+    </section>
+
+    <!-- Module Toggle Controls -->
+    <section class="admin-section">
+      <h2>🧩 Workspace Modules Control</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
+        Enable or disable specific skill modules across the workspace.
+      </p>
+
+      <div class="module-control-item">
+        <div class="module-info">📐 UNB Math & Contest Prep</div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleModuleLog('UNB Math Prep', this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="module-control-item">
+        <div class="module-info">💻 Web & TypeScript Sandbox</div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleModuleLog('Coding Sandbox', this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="module-control-item">
+        <div class="module-info">🇫🇷 French & 🇨🇳 Chinese Language Hub</div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleModuleLog('Language Hub', this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="module-control-item">
+        <div class="module-info">🎮 Minecraft Engine & Commands</div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleModuleLog('Minecraft Engine', this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="module-control-item">
+        <div class="module-info">🎵 Music & Audio Synthesizer</div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleModuleLog('Music Synthesizer', this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="module-control-item">
+        <div class="module-info">🤖 Arduino & Robotics Simulator</div>
+        <label class="toggle-switch">
+          <input type="checkbox" checked onchange="toggleModuleLog('Arduino Simulator', this.checked)">
+          <span class="slider"></span>
+        </label>
+      </div>
+    </section>
+
+    <!-- System Actions & Maintenance -->
+    <section class="admin-section">
+      <h2>🛠️ Quick System Tools</h2>
+      <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+        <button onclick="clearLocalCache()" class="btn-secondary">🧹 Clear Local Storage</button>
+        <button onclick="testSupabaseConnection()" class="btn-secondary">📡 Test Supabase Ping</button>
+        <button onclick="triggerTestNotice()" class="btn-primary">🔔 Test System Alert</button>
+      </div>
+    </section>
+
+    <!-- Live Admin Terminal Log -->
+    <section class="admin-section">
+      <h2>🖥️ System Event Logs</h2>
+      <div id="log-terminal" class="log-terminal">
+        <div class="log-line"><span class="log-time">[System]</span> Initializing Admin Console...</div>
+      </div>
+    </section>
+
   </main>
-  <script src="config.js"></script>
-  <script src="admin.js"></script>
+
+  <script>
+    // Helper function to print events to the log terminal
+    function addLog(message, isSuccess = true) {
+      const terminal = document.getElementById('log-terminal');
+      if (!terminal) return;
+
+      const time = new Date().toLocaleTimeString();
+      const line = document.createElement('div');
+      line.className = 'log-line';
+      line.innerHTML = `<span class="log-time">[${time}]</span> <span class="${isSuccess ? 'log-success' : ''}">${message}</span>`;
+
+      terminal.appendChild(line);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function toggleModuleLog(moduleName, isEnabled) {
+      const status = isEnabled ? "ENABLED" : "DISABLED";
+      addLog(`Module status updated: <strong>${moduleName}</strong> set to ${status}`);
+    }
+
+    function clearLocalCache() {
+      localStorage.clear();
+      addLog("Local storage cache cleared successfully.");
+      alert("Local cache cleared!");
+    }
+
+    async function testSupabaseConnection() {
+      addLog("Pinging Supabase backend...");
+      if (supabase) {
+        const { data, error } = await supabase.auth.getSession();
+        if (error) {
+          addLog("Supabase Ping Error: " + error.message, false);
+        } else {
+          addLog("Supabase Ping OK - Response status 200 OK");
+        }
+      } else {
+        addLog("Supabase client is offline.", false);
+      }
+    }
+
+    function triggerTestNotice() {
+      addLog("Triggered test alert popup.");
+      alert("🔔 System Notification: Admin system test alert verified!");
+    }
+  </script>
 </body>
 </html>

@@ -1,41 +1,217 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Justin's Skillz - Main</title>
-  <link rel="stylesheet" href="src/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Justin's Skillz - STEM, Code & Game Mechanics</title>
+  
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheet -->
+  <link rel="stylesheet" href="src/styles.css">
+  
+  <!-- Theme JavaScript Engine -->
+  <script src="theme.js"></script>
 </head>
 <body>
+
+  <!-- Ambient Background Glows -->
+  <div class="bg-glow glow-top-left"></div>
+  <div class="bg-glow glow-bottom-right"></div>
+
+  <!-- Sticky Navigation Header -->
   <header class="app-header">
-    <div class="logo">Justin's Skillz</div>
-    <nav class="nav-links">
-      <a href="index.html" class="active">Home</a>
-      <a href="src/dashboard.html">Dashboard</a>
-      <a href="src/admin.html">Admin</a>
-      <a href="pri.html">Privacy</a>
-      <a href="terms.html">Terms</a>
-    </nav>
-    <div class="user-profile">
-      <span id="user-greeting" class="greeting-badge">👋 Guest</span>
-      <button id="auth-action-btn" class="btn-secondary">Sign In</button>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="chess.html" class="nav-link">Chess AI</a>
+        <a href="#math-lab" class="nav-link">Math Lab</a>
+        <a href="coding.html" class="nav-link">Code Studio</a>
+        <a href="#bedrock" class="nav-link">Bedrock</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+      </div>
     </div>
   </header>
 
-  <main>
-    <section class="hero-section">
-      <h1>Welcome to Justin's Skillz</h1>
-      <p>Interactive sandboxes for coding, math, languages, music, chess, and robotics.</p>
-      <a href="src/dashboard.html" class="btn-primary">Go to Workspace Dashboard</a>
-    </section>
+  <!-- Main Hub Content -->
+  <main class="main-content">
+    <div class="container">
+      
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span> Interactive STEM & Web Studio
+        </div>
+        
+        <h1 class="hero-title">
+          Mastering <span class="gradient-text">STEM, Code</span> & Game Mechanics
+        </h1>
+        
+        <p class="hero-subtitle">
+          An interactive digital laboratory housing custom chess AI engines, competitive math prep, full-stack web modules, and Minecraft command engineering.
+        </p>
+
+        <div class="hero-actions">
+          <a href="chess.html" class="btn btn-primary">
+            <span>Play Chess AI</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </a>
+          <a href="#hub-modules" class="btn btn-secondary">Explore Modules</a>
+        </div>
+
+        <!-- Quick Stats Strip -->
+        <div class="stats-strip">
+          <div class="stat-item">
+            <span class="stat-value">4+</span>
+            <span class="stat-label">Core Hubs</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-value">Grade 7+</span>
+            <span class="stat-label">UNB Math Prep</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-value">1.21</span>
+            <span class="stat-label">Bedrock Engines</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Interactive Modules Grid -->
+      <section id="hub-modules" class="modules-section">
+        <div class="section-header">
+          <h2>Active <span class="gradient-text">Modules</span></h2>
+          <p>Select a workspace to test algorithms, practice problem-solving, or generate scripts.</p>
+        </div>
+
+        <div class="grid">
+          
+          <!-- Card 1: Chess AI Engine -->
+          <div class="card card-featured">
+            <div class="card-top">
+              <div class="card-icon icon-purple">♟️</div>
+              <span class="badge badge-purple">AI Engine</span>
+            </div>
+            
+            <h3 class="card-title">Chess AI Engine</h3>
+            <p class="card-description">
+              Challenge an engine with legal move validation, visual position evaluation, and dynamic move logging.
+            </p>
+
+            <div class="tag-group">
+              <span class="tag">JavaScript</span>
+              <span class="tag">Algorithms</span>
+              <span class="tag">Minimax</span>
+            </div>
+
+            <div class="card-footer">
+              <a href="chess.html" class="btn btn-card">
+                Launch Engine
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <!-- Card 2: Math & Logic Lab -->
+          <div class="card" id="math-lab">
+            <div class="card-top">
+              <div class="card-icon icon-blue">📐</div>
+              <span class="badge badge-blue">Math Competition</span>
+            </div>
+            
+            <h3 class="card-title">Math & Logic Lab</h3>
+            <p class="card-description">
+              Targeted practice for the UNB Math Competition, quadratic & cubic equation strategies, and modular arithmetic.
+            </p>
+
+            <div class="tag-group">
+              <span class="tag">UNB Math</span>
+              <span class="tag">Algebra</span>
+              <span class="tag">Complex Forms</span>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-card-secondary">Open Practice Lab</button>
+            </div>
+          </div>
+
+          <!-- Card 3: Code Studio -->
+          <div class="card" id="code-studio">
+            <div class="card-top">
+              <div class="card-icon icon-cyan">💻</div>
+              <span class="badge badge-cyan">Development</span>
+            </div>
+            
+            <h3 class="card-title">Code Studio</h3>
+            <p class="card-description">
+              Custom dashboards, JavaScript utility apps, CSS layout systems, and Supabase cloud authentication.
+            </p>
+
+            <div class="tag-group">
+              <span class="tag">HTML/CSS</span>
+              <span class="tag">JS/TS</span>
+              <span class="tag">Supabase</span>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-card-secondary">Browse Workspaces</button>
+            </div>
+          </div>
+
+          <!-- Card 4: Minecraft Mechanics -->
+          <div class="card" id="bedrock">
+            <div class="card-top">
+              <div class="card-icon icon-emerald">📦</div>
+              <span class="badge badge-emerald">Bedrock 1.21</span>
+            </div>
+            
+            <h3 class="card-title">Bedrock Mechanics</h3>
+            <p class="card-description">
+              Command block string generators, custom scoreboard engines, random loot chests, and death trackers.
+            </p>
+
+            <div class="tag-group">
+              <span class="tag">Commands</span>
+              <span class="tag">Scoreboards</span>
+              <span class="tag">JSON Tables</span>
+            </div>
+
+            <div class="card-footer">
+              <button class="btn btn-card-secondary">Generate Strings</button>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
   </main>
 
-  <!-- 1. Supabase Library CDN (MUST be loaded before config.js) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Sleek Footer -->
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz. Built with standard HTML5, CSS3, and modern JavaScript.</p>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="https://github.com" target="_blank" rel="noopener">GitHub</a>
+      </div>
+    </div>
+  </footer>
 
-  <!-- 2. Project Config & Auth Scripts -->
-  <script src="src/config.js"></script>
-  <script src="src/main.js"></script>
-  <script src="src/auth-index.js"></script>
 </body>
 </html>

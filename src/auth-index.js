@@ -1,20 +1,22 @@
 // ==========================================================================
-// Justin's Skillz - Full Auth & Admin Protection Handler
+// Justin's Skillz - Diagnostic & Fixed Auth Handler
 // Path: src/auth-index.js
 // ==========================================================================
 
 let isSignUpMode = false;
 
-// 1. Open / Close Modal
+// 1. Open / Close Auth Modal
 function openAuthModal() {
-  document.getElementById('auth-modal').classList.add('active');
+  const modal = document.getElementById('auth-modal');
+  if (modal) modal.classList.add('active');
 }
 
 function closeAuthModal() {
-  document.getElementById('auth-modal').classList.remove('active');
+  const modal = document.getElementById('auth-modal');
+  if (modal) modal.classList.remove('active');
 }
 
-// 2. Toggle between Sign In & Sign Up
+// 2. Toggle Mode (Sign In vs Sign Up)
 function toggleAuthMode() {
   isSignUpMode = !isSignUpMode;
   const title = document.getElementById('modal-title');
@@ -22,40 +24,66 @@ function toggleAuthMode() {
   const toggleText = document.getElementById('auth-toggle-text');
 
   if (isSignUpMode) {
-    title.textContent = "Create Account";
-    btn.textContent = "Sign Up";
-    toggleText.innerHTML = 'Already have an account? <a onclick="toggleAuthMode()">Sign In</a>';
+    if (title) title.textContent = "Create Account";
+    if (btn) btn.textContent = "Sign Up";
+    if (toggleText) toggleText.innerHTML = 'Already have an account? <a onclick="toggleAuthMode()">Sign In</a>';
   } else {
-    title.textContent = "Sign In";
-    btn.textContent = "Sign In";
-    toggleText.innerHTML = 'Don\'t have an account? <a onclick="toggleAuthMode()">Sign Up</a>';
+    if (title) title.textContent = "Sign In";
+    if (btn) btn.textContent = "Sign In";
+    if (toggleText) toggleText.innerHTML = 'Don\'t have an account? <a onclick="toggleAuthMode()">Sign Up</a>';
   }
 }
 
-// 3. Handle Form Submission (Email + Password)
+// 3. Handle Form Submit (Sign Up / Sign In)
 async function handleAuthSubmit(event) {
   event.preventDefault();
-  if (!supabase) return alert("Supabase not initialized!");
 
-  const email = document.getElementById('auth-email').value.trim();
-  const password = document.getElementById('auth-password').value;
+  if (!supabase) {
+    alert("❌ Error: Supabase is not connected! Check your config.js credentials or make sure your Supabase project is not PAUSED.");
+    return;
+  }
+
+  const emailInput = document.getElementById('auth-email');
+  const passwordInput = document.getElementById('auth-password');
+
+  if (!emailInput || !passwordInput) return;
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value;
+
+  console.log(`[Auth Attempt] Mode: ${isSignUpMode ? 'SignUp' : 'SignIn'}, Email: ${email}`);
 
   if (isSignUpMode) {
-    // --- SIGN UP ---
-    const { data, error } = await supabase.auth.signUp({ email, password });
+    // --- CREATE NEW ACCOUNT ---
+    const { data, error } = await supabase.auth.signUp({
+      email: email,
+      password: password
+    });
+
     if (error) {
-      alert("Sign Up Error: " + error.message);
-    } else {
-      alert("Account created! If email confirmation is enabled in your Supabase settings, please check your inbox.");
+      console.error("Sign Up Failure:", error);
+      alert("❌ Sign Up Failed:\n\n" + error.message);
+    } else if (data.user && data.session) {
+      alert("🎉 Account created and signed in successfully!");
       closeAuthModal();
       updateAuthUI();
-    }
-  } else {
-    // --- SIGN IN ---
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      alert("Sign In Error: " + error.message);
     } else {
+      alert("📧 Account created! If 'Confirm Email' is turned on in Supabase, please check your email inbox to confirm your account before signing in.");
+      closeAuthModal();
+    }
+
+  } else {
+    // --- SIGN IN EXISTING ACCOUNT ---
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password
+    });
+
+    if (error) {
+      console.error("Sign In Failure:", error);
+      alert("❌ Sign In Failed:\n\n" + error.message + "\n\n💡 Note: If you haven't created an account yet, click 'Sign Up' first!");
+    } else {
+      alert("✅ Signed in successfully!");
       closeAuthModal();
       updateAuthUI();
     }
@@ -64,7 +92,10 @@ async function handleAuthSubmit(event) {
 
 // 4. Google Sign In
 async function signInWithGoogle() {
-  if (!supabase) return alert("Supabase not initialized!");
+  if (!supabase) {
+    alert("❌ Supabase client is offline.");
+    return;
+  }
 
   const { error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
@@ -73,28 +104,32 @@ async function signInWithGoogle() {
     }
   });
 
-  if (error) alert("Google Sign-In Error: " + error.message);
+  if (error) {
+    alert("❌ Google Sign-In Error:\n\n" + error.message + "\n\nTip: Google Auth requires Google Cloud OAuth credentials configured in your Supabase Dashboard under Auth -> Providers -> Google.");
+  }
 }
 
-// 5. Sign Out
+// 5. Sign Out Function
 async function signOut() {
   if (supabase) {
     await supabase.auth.signOut();
   }
-  localStorage.removeItem("user_session");
-  alert("Signed out successfully!");
+  localStorage.clear();
+  alert("Signed out successfully.");
   updateAuthUI();
 }
 
-// 6. Helper: Check if Current User is Admin
+// 6. Check if Current User is Admin
 function isAdmin(user) {
   if (!user || !user.email) return false;
   const userEmail = user.email.toLowerCase();
-  const adminList = (SKILLZ_CONFIG.adminEmails || []).map(e => e.toLowerCase());
+  const adminList = (typeof SKILLZ_CONFIG !== 'undefined' && SKILLZ_CONFIG.adminEmails)
+    ? SKILLZ_CONFIG.adminEmails.map(e => e.toLowerCase())
+    : [];
   return adminList.includes(userEmail);
 }
 
-// 7. Update Navigation & Admin Status
+// 7. Update Nav Bar & Admin Links
 async function updateAuthUI() {
   const greeting = document.getElementById('user-greeting');
   const btn = document.getElementById('auth-action-btn');
@@ -103,44 +138,48 @@ async function updateAuthUI() {
   let user = null;
 
   if (supabase) {
-    const { data } = await supabase.auth.getSession();
-    user = data.session?.user || null;
+    try {
+      const { data } = await supabase.auth.getSession();
+      user = data.session?.user || null;
+    } catch (err) {
+      console.error("Session check failed:", err);
+    }
   }
 
   if (user) {
     const userIsAdmin = isAdmin(user);
+    
     if (greeting) {
       greeting.textContent = userIsAdmin ? "👑 Admin: " + user.email : "👋 " + user.email;
     }
 
-    // Show Admin Link in Navbar ONLY if user is Admin
     if (adminNavLink) {
       adminNavLink.style.display = userIsAdmin ? "inline-block" : "none";
     }
 
     if (btn) {
       btn.textContent = "Sign Out";
-      btn.onclick = signOut;
+      btn.onclick = (e) => { e.preventDefault(); signOut(); };
     }
   } else {
     if (greeting) greeting.textContent = "👋 Guest";
     if (adminNavLink) adminNavLink.style.display = "none";
+    
     if (btn) {
       btn.textContent = "Sign In";
-      btn.onclick = openAuthModal;
+      btn.onclick = (e) => { e.preventDefault(); openAuthModal(); };
     }
   }
 }
 
-// 8. Initialize on Page Load
+// 8. Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
 
   if (supabase) {
-    supabase.auth.onAuthStateChange((event) => {
-      if (event === 'SIGNED_IN' || event === 'SIGNED_OUT') {
-        updateAuthUI();
-      }
+    supabase.auth.onAuthStateChange((event, session) => {
+      console.log("Auth State Changed:", event);
+      updateAuthUI();
     });
   }
 });

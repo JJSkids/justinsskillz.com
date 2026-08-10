@@ -22,12 +22,18 @@
     </div>
   </header>
 
-  <section class="hero-section">
-    <h1>Welcome to Justin's Skillz</h1>
-    <p>Interactive sandboxes for coding, math, languages, music, chess, and robotics.</p>
-    <a href="src/dashboard.html" class="btn-primary">Go to Workspace Dashboard</a>
-  </section>
+  <main>
+    <section class="hero-section">
+      <h1>Welcome to Justin's Skillz</h1>
+      <p>Interactive sandboxes for coding, math, languages, music, chess, and robotics.</p>
+      <a href="src/dashboard.html" class="btn-primary">Go to Workspace Dashboard</a>
+    </section>
+  </main>
 
+  <!-- 1. Supabase Library CDN (MUST be loaded before config.js) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- 2. Project Config & Auth Scripts -->
   <script src="src/config.js"></script>
   <script src="src/main.js"></script>
   <script src="src/auth-index.js"></script>

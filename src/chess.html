@@ -3,137 +3,284 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Skillz Chess Lab</title>
+  <title>Chess AI - Justin's Skillz</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .chess-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 600px;
+      margin: 2rem auto;
+    }
+    .board-frame {
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1;
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      grid-template-rows: repeat(8, 1fr);
+      border: 2px solid var(--border-accent);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+    }
+    .square {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+    }
+    .square.light { background-color: #1e293b; }
+    .square.dark { background-color: #0f172a; }
+    .square.selected { background-color: rgba(56, 189, 248, 0.4) !important; }
+    .square.highlight::after {
+      content: '';
+      width: 30%;
+      height: 30%;
+      background-color: rgba(56, 189, 248, 0.6);
+      border-radius: 50%;
+    }
+    .piece-img {
+      width: 85%;
+      height: 85%;
+      pointer-events: none;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+    }
+    .controls-panel {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+  </style>
 </head>
 <body>
   <header class="app-header">
-    <a href="dashboard.html" class="back-button">← Back to Dashboard</a>
-    <h1>♟️ Skillz Chess AI Sandbox</h1>
+    <div class="logo">Justin's Skillz</div>
+    <a href="../index.html" class="back-button">← Back to Home</a>
   </header>
+
   <main class="container">
-    <div style="text-align: center; margin-bottom: 1rem;">
-      <span id="turn-indicator" class="greeting-badge">Turn: Your Move (White)</span>
-      <button id="reset-btn" class="btn-secondary" style="margin-left: 1rem;">Reset Board</button>
-    </div>
-    <div style="max-width: 480px; margin: 0 auto; aspect-ratio: 1/1; background: #1e293b; padding: 8px; border-radius: 12px; border: 1px solid #334155;">
-      <div id="chess-board" style="display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); width: 100%; height: 100%;"></div>
+    <div class="chess-container">
+      <h2>♟️ Smart Chess AI Engine</h2>
+      
+      <div class="controls-panel">
+        <label for="ai-depth">AI Depth:</label>
+        <select id="ai-depth" class="btn-secondary">
+          <option value="1">Depth 1 (Fast)</option>
+          <option value="2">Depth 2 (Medium)</option>
+          <option value="3" selected>Depth 3 (Smart)</option>
+        </select>
+        <button id="reset-btn" class="btn-primary">New Game</button>
+      </div>
+
+      <div id="chess-board" class="board-frame"></div>
+      <div id="game-status" class="greeting-badge">Your turn (White)</div>
     </div>
   </main>
 
+  <!-- External Chess Move Logic Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  
   <script>
-    const initialBoard = [
-      ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
-      ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
-      ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
-      ['', '', '', '', '', '', '', ''],
-      ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
-      ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
-    ];
-
-    const pieceSymbols = {
-      'k': '♚', 'q': '♛', 'r': '♜', 'b': '♝', 'n': '♞', 'p': '♟',
-      'K': '♔', 'Q': '♕', 'R': '♖', 'B': '♗', 'N': '♘', 'P': '♙'
+    // Wikimedia high-res SVG piece sprites URL map
+    const PIECE_SPRITES = {
+      p: 'https://upload.wikimedia.org/wikipedia/commons/c/c7/Chess_pdt45.svg',
+      r: 'https://upload.wikimedia.org/wikipedia/commons/f/ff/Chess_rdt45.svg',
+      n: 'https://upload.wikimedia.org/wikipedia/commons/e/ef/Chess_ndt45.svg',
+      b: 'https://upload.wikimedia.org/wikipedia/commons/9/98/Chess_bdt45.svg',
+      q: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Chess_qdt45.svg',
+      k: 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg',
+      P: 'https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg',
+      R: 'https://upload.wikimedia.org/wikipedia/commons/7/72/Chess_rlt45.svg',
+      N: 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg',
+      B: 'https://upload.wikimedia.org/wikipedia/commons/b/b1/Chess_blt45.svg',
+      Q: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Chess_qlt45.svg',
+      K: 'https://upload.wikimedia.org/wikipedia/commons/4/4c/Chess_klt45.svg'
     };
 
-    let boardState = [];
+    // Positional evaluation values (Center control & piece placement)
+    const PAWN_PST = [
+      0,  0,  0,  0,  0,  0,  0,  0,
+      50, 50, 50, 50, 50, 50, 50, 50,
+      10, 10, 20, 30, 30, 20, 10, 10,
+       5,  5, 10, 25, 25, 10,  5,  5,
+       0,  0,  0, 20, 20,  0,  0,  0,
+       5, -5,-10,  0,  0,-10, -5,  5,
+       5, 10, 10,-20,-20, 10, 10,  5,
+       0,  0,  0,  0,  0,  0,  0,  0
+    ];
+
+    const KNIGHT_PST = [
+      -50,-40,-30,-30,-30,-30,-40,-50,
+      -40,-20,  0,  0,  0,  0,-20,-40,
+      -30,  0, 10, 15, 15, 10,  0,-30,
+      -30,  5, 15, 20, 20, 15,  5,-30,
+      -30,  0, 15, 20, 20, 15,  0,-30,
+      -30,  5, 10, 15, 15, 10,  5,-30,
+      -40,-20,  0,  5,  5,  0,-20,-40,
+      -50,-40,-30,-30,-30,-30,-40,-50
+    ];
+
+    const PIECE_VALUES = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
+
+    const game = new Chess();
     let selectedSquare = null;
-    let isUserTurn = true;
 
-    function initGame() {
-      boardState = JSON.parse(JSON.stringify(initialBoard));
-      selectedSquare = null;
-      isUserTurn = true;
-      document.getElementById('turn-indicator').textContent = "Turn: Your Move (White)";
-      renderBoard();
-    }
+    function evaluateBoard(board) {
+      let totalEval = 0;
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          const piece = board[i][j];
+          if (piece) {
+            const val = PIECE_VALUES[piece.type];
+            let pstVal = 0;
+            const idx = i * 8 + j;
+            if (piece.type === 'p') pstVal = PAWN_PST[idx];
+            if (piece.type === 'n') pstVal = KNIGHT_PST[idx];
 
-    function renderBoard() {
-      const boardEl = document.getElementById('chess-board');
-      if (!boardEl) return;
-      boardEl.innerHTML = '';
-
-      for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) {
-          const square = document.createElement('div');
-          const isDark = (r + c) % 2 === 1;
-          
-          square.style.display = 'flex';
-          square.style.alignItems = 'center';
-          square.style.justifyContent = 'center';
-          square.style.fontSize = '2.2rem';
-          square.style.cursor = 'pointer';
-          square.style.backgroundColor = isDark ? '#475569' : '#e2e8f0';
-          square.style.color = isDark ? '#f8fafc' : '#0f172a';
-
-          const piece = boardState[r][c];
-          if (piece) square.textContent = pieceSymbols[piece];
-
-          if (selectedSquare && selectedSquare.row === r && selectedSquare.col === c) {
-            square.style.backgroundColor = '#f59e0b';
+            const score = val + pstVal;
+            totalEval += (piece.color === 'w' ? score : -score);
           }
-
-          square.addEventListener('click', () => handleSquareClick(r, c));
-          boardEl.appendChild(square);
         }
       }
+      return totalEval;
     }
 
-    function handleSquareClick(r, c) {
-      if (!isUserTurn) return;
-      const piece = boardState[r][c];
-
-      // Select White piece
-      if (piece && piece === piece.toUpperCase()) {
-        selectedSquare = { row: r, col: c, piece };
-        renderBoard();
-        return;
+    // Minimax with Alpha-Beta Pruning
+    function minimax(depth, alpha, beta, isMaximizing) {
+      if (depth === 0 || game.game_over()) {
+        return evaluateBoard(game.board());
       }
 
-      // Move selected piece
-      if (selectedSquare) {
-        boardState[r][c] = selectedSquare.piece;
-        boardState[selectedSquare.row][selectedSquare.col] = '';
-        selectedSquare = null;
-        renderBoard();
-
-        isUserTurn = false;
-        document.getElementById('turn-indicator').textContent = "Turn: Bot Thinking (Black)...";
-        setTimeout(makeAIMove, 600);
+      const moves = game.moves();
+      if (isMaximizing) {
+        let maxEval = -Infinity;
+        for (let move of moves) {
+          game.move(move);
+          let evalVal = minimax(depth - 1, alpha, beta, false);
+          game.undo();
+          maxEval = Math.max(maxEval, evalVal);
+          alpha = Math.max(alpha, evalVal);
+          if (beta <= alpha) break; // Prune branch
+        }
+        return maxEval;
+      } else {
+        let minEval = Infinity;
+        for (let move of moves) {
+          game.move(move);
+          let evalVal = minimax(depth - 1, alpha, beta, true);
+          game.undo();
+          minEval = Math.min(minEval, evalVal);
+          beta = Math.min(beta, evalVal);
+          if (beta <= alpha) break; // Prune branch
+        }
+        return minEval;
       }
     }
 
     function makeAIMove() {
-      let blackPieces = [];
-      for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) {
-          const p = boardState[r][c];
-          if (p && p === p.toLowerCase()) {
-            blackPieces.push({ r, c, piece: p });
-          }
+      const depth = parseInt(document.getElementById('ai-depth').value);
+      const moves = game.moves();
+      if (moves.length === 0) return;
+
+      let bestMove = null;
+      let bestValue = Infinity; // AI plays Black (minimizing)
+
+      for (let move of moves) {
+        game.move(move);
+        let boardValue = minimax(depth - 1, -Infinity, Infinity, true);
+        game.undo();
+
+        if (boardValue < bestValue) {
+          bestValue = boardValue;
+          bestMove = move;
         }
       }
 
-      if (blackPieces.length > 0) {
-        const p = blackPieces[Math.floor(Math.random() * blackPieces.length)];
-        let targetR = Math.min(7, p.r + 1);
-        let targetC = p.c + (Math.random() > 0.5 ? 1 : -1);
-        if (targetC < 0) targetC = 0;
-        if (targetC > 7) targetC = 7;
+      game.move(bestMove);
+      renderBoard();
+      updateStatus();
+    }
 
-        boardState[targetR][targetC] = p.piece;
-        boardState[p.r][p.c] = '';
+    function renderBoard() {
+      const boardElement = document.getElementById('chess-board');
+      boardElement.innerHTML = '';
+      const board = game.board();
+
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          const squareDiv = document.createElement('div');
+          const squareName = String.fromCharCode(97 + j) + (8 - i);
+          squareDiv.className = `square ${(i + j) % 2 === 0 ? 'light' : 'dark'}`;
+          squareDiv.dataset.square = squareName;
+
+          if (selectedSquare === squareName) {
+            squareDiv.classList.add('selected');
+          }
+
+          const piece = board[i][j];
+          if (piece) {
+            const imgKey = piece.color === 'w' ? piece.type.toUpperCase() : piece.type;
+            const img = document.createElement('img');
+            img.src = PIECE_SPRITES[imgKey];
+            img.className = 'piece-img';
+            squareDiv.appendChild(img);
+          }
+
+          squareDiv.onclick = () => handleSquareClick(squareName);
+          boardElement.appendChild(squareDiv);
+        }
+      }
+    }
+
+    function handleSquareClick(square) {
+      if (game.turn() !== 'w') return; // Wait for AI turn
+
+      if (selectedSquare) {
+        const move = game.move({ from: selectedSquare, to: square, promotion: 'q' });
+        selectedSquare = null;
+        if (move) {
+          renderBoard();
+          updateStatus();
+          setTimeout(makeAIMove, 250);
+          return;
+        }
       }
 
-      isUserTurn = true;
-      document.getElementById('turn-indicator').textContent = "Turn: Your Move (White)";
+      const piece = game.get(square);
+      if (piece && piece.color === 'w') {
+        selectedSquare = square;
+      } else {
+        selectedSquare = null;
+      }
       renderBoard();
     }
 
-    document.getElementById('reset-btn')?.addEventListener('click', initGame);
-    document.addEventListener('DOMContentLoaded', initGame);
+    function updateStatus() {
+      const status = document.getElementById('game-status');
+      if (game.in_checkmate()) {
+        status.textContent = game.turn() === 'w' ? 'Checkmate! Black wins.' : 'Checkmate! White wins.';
+      } else if (game.in_draw()) {
+        status.textContent = 'Game Over - Draw!';
+      } else {
+        status.textContent = game.turn() === 'w' ? 'Your turn (White)' : 'AI is thinking...';
+      }
+    }
+
+    document.getElementById('reset-btn').onclick = () => {
+      game.reset();
+      selectedSquare = null;
+      renderBoard();
+      updateStatus();
+    };
+
+    renderBoard();
   </script>
 </body>
 </html>

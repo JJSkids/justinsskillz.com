@@ -1,30 +1,351 @@
-/* Master Theme */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: #0f172a; color: #f8fafc; line-height: 1.5; }
+/* ==========================================================================
+   Justin's Skillz - Master Stylesheet (100% Valid CSS)
+   Path: src/styles.css
+   ========================================================================== */
 
-.app-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; background-color: #1e293b; border-bottom: 1px solid #334155; }
-.logo { font-size: 1.25rem; font-weight: 800; color: #38bdf8; }
-.nav-links { display: flex; gap: 1.5rem; }
-.nav-links a, .back-button { color: #94a3b8; text-decoration: none; font-weight: 600; }
-.nav-links a.active, .nav-links a:hover { color: #38bdf8; }
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-.user-profile { display: flex; align-items: center; gap: 1rem; }
-.greeting-badge { background-color: #0f172a; color: #38bdf8; padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid #334155; font-size: 0.9rem; }
+:root {
+  /* Color Palette */
+  --bg-dark: #090d16;
+  --bg-card: #131c2e;
+  --bg-card-hover: #1a263d;
+  --border-color: #22324d;
+  --border-accent: #38bdf8;
+  
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
 
-.hero-section { text-align: center; padding: 4rem 1.5rem; background: #1e293b; }
-.hero-section h1 { font-size: 2.2rem; margin-bottom: 0.5rem; }
-.hero-section p { color: #94a3b8; margin-bottom: 1.5rem; }
+  --accent-blue: #38bdf8;
+  --accent-blue-hover: #0284c7;
+  --accent-amber: #f59e0b;
+  --accent-green: #34d399;
+  --accent-red: #f43f5e;
 
-.btn-primary, .btn-secondary { background-color: #0284c7; color: #ffffff; padding: 0.6rem 1.2rem; border-radius: 8px; text-decoration: none; border: none; cursor: pointer; font-weight: 600; }
+  /* Layout & Shadows */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+  --shadow-glow: 0 0 20px rgba(56, 189, 248, 0.25);
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
 
-.container { max-width: 1100px; margin: 2rem auto; padding: 0 1.5rem; }
-.card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
-.card { background-color: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; }
-.card h3 { color: #f8fafc; margin-bottom: 0.5rem; }
-.card p { color: #94a3b8; margin-bottom: 1rem; }
-.card a { color: #38bdf8; text-decoration: none; font-weight: 600; }
+/* 1. Global Reset & Ambient Background */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
-@media (max-width: 768px), body.mobile-mode {
-  .app-header { flex-direction: column; gap: 0.75rem; text-align: center; }
-  .card-grid { grid-template-columns: 1fr; }
+html {
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #1e293b #090d16;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Ambient Radial Glow Behind Page */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 900px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.12) 0%, rgba(9, 13, 22, 0) 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* 2. Glassmorphism Navigation Bar */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: rgba(19, 28, 46, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.logo {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.75rem;
+  align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  position: relative;
+  padding: 0.25rem 0;
+}
+
+.nav-links a:hover {
+  color: var(--text-main);
+}
+
+.nav-links a.active {
+  color: var(--accent-blue);
+}
+
+.nav-links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--accent-blue);
+  border-radius: 2px;
+  box-shadow: 0 0 8px var(--accent-blue);
+}
+
+.back-button {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: var(--transition);
+}
+
+.back-button:hover {
+  transform: translateX(-3px);
+  color: #7dd3fc;
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.greeting-badge {
+  background-color: rgba(56, 189, 248, 0.08);
+  color: var(--accent-blue);
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* 3. Hero Section */
+.hero-section {
+  text-align: center;
+  padding: 5rem 1.5rem 4rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.hero-section h1 {
+  font-size: 3rem;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin-bottom: 1rem;
+  color: #ffffff;
+}
+
+.hero-section p {
+  color: var(--text-muted);
+  font-size: 1.15rem;
+  margin-bottom: 2rem;
+  max-width: 650px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 4. Buttons */
+.btn-primary, .btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.4rem;
+  border-radius: var(--radius-sm);
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-glow);
+}
+
+.btn-secondary {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--bg-card-hover);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  transform: translateY(-1px);
+}
+
+/* 5. Container & Grid Layouts */
+.container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+  width: 100%;
+  flex: 1;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.75rem;
+  margin-top: 1.5rem;
+}
+
+/* 6. Module Cards */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.75rem;
+  transition: var(--transition);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent-blue), transparent);
+  opacity: 0;
+  transition: var(--transition);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  background-color: var(--bg-card-hover);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: var(--shadow-md);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card h3 {
+  font-size: 1.25rem;
+  color: var(--text-main);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  flex: 1;
+}
+
+.card a {
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: var(--transition);
+}
+
+.card a:hover {
+  color: #7dd3fc;
+  transform: translateX(4px);
+}
+
+/* 7. Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .app-header {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .nav-links {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .hero-section h1 {
+    font-size: 2.25rem;
+  }
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+body.mobile-mode .app-header {
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+body.mobile-mode .nav-links {
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+body.mobile-mode .card-grid {
+  grid-template-columns: 1fr;
 }

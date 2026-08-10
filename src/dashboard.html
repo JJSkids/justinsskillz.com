@@ -1,67 +1,82 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Justin's Skillz - Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="dashboard-styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Justin's Skillz</title>
+
+  <!-- Fonts & Supabase SDK -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Stylesheet & Scripts -->
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
+  <script src="auth.js" defer></script>
 </head>
 <body>
+
   <header class="app-header">
-    <div class="logo">Justin's Skillz Dashboard</div>
-    <nav class="nav-links">
-      <a href="../index.html">Home</a>
-      <a href="dashboard.html" class="active">Dashboard</a>
-      <a href="admin.html">Admin</a>
-      <a href="../pri.html">Privacy</a>
-      <a href="../terms.html">Terms</a>
-    </nav>
-    <div class="user-profile">
-      <span id="user-greeting" class="greeting-badge">👋 Hello Justin's Workspace Dashboard</span>
-      <button id="auth-action-btn" class="btn-secondary">Sign Out</button>
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="chess.html" class="nav-link">Chess AI</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="btn btn-secondary" id="signout-btn">Sign Out</button>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="container">
-    <h2 class="section-title">Your Learning Modules</h2>
-    <div class="card-grid">
-      <div class="card">
-        <h3>💻 Code Editor</h3>
-        <p>Interactive HTML/CSS/JS sandbox environment.</p>
-        <a href="coding.html">Open Sandbox →</a>
+  <main class="main-content">
+    <div class="container" style="padding-top: 3rem;">
+      
+      <!-- Welcome Header (Populated dynamically by auth.js) -->
+      <div class="hero" style="padding-bottom: 2rem;">
+        <h1 class="hero-title" id="user-welcome-text">Loading workspace...</h1>
+        <p class="hero-subtitle">Your personal STEM, Web Development, and Minecraft engineering control panel.</p>
       </div>
-      <div class="card">
-        <h3>📐 Math Lab</h3>
-        <p>Solve algebraic, quadratic, and complex numbers problems.</p>
-        <a href="math.html">Open Math Lab →</a>
+
+      <div class="grid">
+        <div class="card">
+          <h3 class="card-title">📐 Math Workspace</h3>
+          <p class="card-description">UNB competition flashcards, algebra practice sheets, and modular arithmetic tools.</p>
+          <button class="btn btn-card-secondary">Launch Workspace</button>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">💻 Web Development Studio</h3>
+          <p class="card-description">HTML, CSS, TypeScript code sandbox and Supabase client integration.</p>
+          <button class="btn btn-card-secondary">Open Code Studio</button>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title">📦 Minecraft Bedrock Tools</h3>
+          <p class="card-description">Scoreboard strings, random loot chest generators, and command engines.</p>
+          <button class="btn btn-card-secondary">Open Bedrock Generator</button>
+        </div>
       </div>
-      <div class="card">
-        <h3>♟️ Chess Lab</h3>
-        <p>Play interactive tap-to-move chess against tactical setups.</p>
-        <a href="chess.html">Play Chess →</a>
-      </div>
-      <div class="card">
-        <h3>🇫🇷 Language Lab</h3>
-        <p>Practice verb conjugations and vocabulary drills.</p>
-        <a href="french.html">Practice French →</a>
-      </div>
-      <div class="card">
-        <h3>🎹 Music Theory</h3>
-        <p>Explore scale intervals and triad chords.</p>
-        <a href="music.html">Open Sound Lab →</a>
-      </div>
-      <div class="card">
-        <h3>🤖 Robotics & Logic</h3>
-        <p>Test conditional logic and event-driven block flows.</p>
-        <a href="robotics.html">Launch Robotics →</a>
-      </div>
+
     </div>
   </main>
 
-  <script src="config.js"></script>
-  <script src="dashboard-engine.js"></script>
-  <script src="dashboard.js"></script>
-  <script src="auth-dashboard.js"></script>
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz.</p>
+    </div>
+  </footer>
+
 </body>
 </html>

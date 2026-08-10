@@ -3,92 +3,33 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Justin's Skillz - Master Skills</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Justin's Skillz - Main</title>
+  <link rel="stylesheet" href="src/styles/styles.css" />
 </head>
 <body>
-
-  <!-- Top Navigation Header -->
   <header class="app-header">
     <div class="logo">Justin's Skillz</div>
     <nav class="nav-links">
       <a href="index.html" class="active">Home</a>
-      <a href="dashboard.html">Workspaces</a>
-      <a href="#about">About</a>
+      <a href="src/pages/dashboard.html">Dashboard</a>
+      <a href="src/pages/admin.html">Admin</a>
+      <a href="pri.html">Privacy</a>
+      <a href="terms.html">Terms</a>
     </nav>
     <div class="user-profile">
-      <span>👋 Justin's Workspace</span>
-      <button class="btn-secondary">Sign Out</button>
+      <span id="user-greeting" class="greeting-badge">👋 Guest</span>
+      <button id="auth-action-btn" class="btn-secondary">Sign In</button>
     </div>
   </header>
 
-  <!-- Hero Section -->
   <section class="hero-section">
-    <h1>Master Skills Through Interactive Sandboxes</h1>
-    <p>Explore hands-on labs in coding, algebra, block scripting, chess algorithms, language practice, and music theory.</p>
-    <a href="dashboard.html" class="btn-primary">Explore All Workspaces</a>
+    <h1>Welcome to Justin's Skillz</h1>
+    <p>Interactive sandboxes for coding, math, languages, music, chess, and robotics.</p>
+    <a href="src/pages/dashboard.html" class="btn-primary">Go to Workspace Dashboard</a>
   </section>
 
-  <!-- Workspaces Grid Section -->
-  <main class="container" id="workspaces">
-    <h2 class="section-title">Available Workspaces</h2>
-
-    <div class="card-grid">
-      
-      <!-- Code Editor Card -->
-      <div class="card">
-        <div class="card-icon">💻</div>
-        <h3>Code Editor Sandbox</h3>
-        <p>Build and run HTML, CSS, and JS web components directly in your browser environment.</p>
-        <a href="editor.html" class="card-link">Launch Editor →</a>
-      </div>
-
-      <!-- Mathematics Lab Card -->
-      <div class="card">
-        <div class="card-icon">📐</div>
-        <h3>Mathematics Lab</h3>
-        <p>Solve algebraic, quadratic, and complex polar form equations visually.</p>
-        <a href="math.html" class="card-link">Launch Math Lab →</a>
-      </div>
-
-      <!-- Logic & Scripting Card -->
-      <div class="card">
-        <div class="card-icon">🤖</div>
-        <h3>Logic & Scripting</h3>
-        <p>Test conditional loops, event handlers, and block-based logic scripts.</p>
-        <a href="logic.html" class="card-link">Launch Scripting →</a>
-      </div>
-
-      <!-- Chess AI & Tactics Card -->
-      <div class="card">
-        <div class="card-icon">♟️</div>
-        <h3>Chess AI & Tactics</h3>
-        <p>Study opening structures and test decision trees using Minimax algorithms.</p>
-        <a href="chess.html" class="card-link">Play Chess →</a>
-      </div>
-
-      <!-- Language Module Card -->
-      <div class="card">
-        <div class="card-icon">🇫🇷</div>
-        <h3>Language Module</h3>
-        <p>Practice verb conjugations, grammar structures, and vocabulary drills.</p>
-        <a href="language.html" class="card-link">Practice French →</a>
-      </div>
-
-      <!-- Music Theory Card -->
-      <div class="card">
-        <div class="card-icon">🎹</div>
-        <h3>Music Theory</h3>
-        <p>Construct scale intervals, major/minor triads, and timing patterns.</p>
-        <a href="music.html" class="card-link">Open Sound Lab →</a>
-      </div>
-
-    </div>
-  </main>
-
-  <footer class="app-footer">
-    <p>&copy; 2026 Justin's Skillz. All rights reserved.</p>
-  </footer>
-
+  <script src="src/scripts/config.js"></script>
+  <script src="src/scripts/main.js"></script>
+  <script src="src/scripts/auth-index.js"></script>
 </body>
 </html>

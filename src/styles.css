@@ -348,7 +348,52 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* --------------------------------------------------------------------------
-   8. Wikimedia Commons Hub
+   8. Interactive STEM & Web Studio Animated Elements
+   -------------------------------------------------------------------------- */
+.stem-studio-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.animated-circle {
+  width: 12px;
+  height: 12px;
+  background-color: var(--accent-cyan);
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+}
+
+.animated-circle::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  right: -4px;
+  bottom: -4px;
+  border: 2px solid var(--accent-cyan);
+  border-radius: 50%;
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.4);
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. Wikimedia Commons Hub
    -------------------------------------------------------------------------- */
 #dropzone {
   border: 2px dashed var(--border-subtle);
@@ -366,7 +411,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* --------------------------------------------------------------------------
-   9. Chess Board Engine Styles
+   10. Chess Board Engine Styles
    -------------------------------------------------------------------------- */
 .chess-layout {
   display: flex;
@@ -434,7 +479,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* --------------------------------------------------------------------------
-   10. Footer
+   11. Footer
    -------------------------------------------------------------------------- */
 .app-footer {
   border-top: 1px solid var(--border-subtle);
@@ -449,7 +494,7 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* --------------------------------------------------------------------------
-   11. Responsive Media Queries (Tablet/Mobile support)
+   12. Responsive Media Queries (Tablet/Mobile support)
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   .header-container {

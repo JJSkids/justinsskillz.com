@@ -10,8 +10,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Chess.js for strict legal move validation and rules -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+  <!-- Corrected Chess.js CDN Link -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="styles.css">
@@ -205,7 +205,7 @@
   </footer>
 
   <script>
-    let game = new Chess();
+    let game;
     let selectedSquare = null;
     let possibleMoves = [];
 
@@ -213,6 +213,15 @@
       'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚',
       'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔'
     };
+
+    function initGame() {
+      if (typeof Chess === 'undefined') {
+        document.getElementById('game-status').textContent = 'Error loading chess engine!';
+        return;
+      }
+      game = new Chess();
+      renderBoard();
+    }
 
     function renderBoard() {
       const boardElement = document.getElementById('chessboard');
@@ -274,7 +283,6 @@
             setTimeout(makeAiMove, 300);
           }
         } else {
-          // Re-select if clicking another own piece
           const piece = game.get(square);
           if (piece && piece.color === game.turn()) {
             selectedSquare = square;
@@ -295,11 +303,9 @@
       if (difficulty === 'easy') {
         chosenMove = moves[Math.floor(Math.random() * moves.length)];
       } else if (difficulty === 'medium') {
-        // Capture preference or random
         const captures = moves.filter(m => m.captured);
         chosenMove = captures.length > 0 ? captures[Math.floor(Math.random() * captures.length)] : moves[Math.floor(Math.random() * moves.length)];
       } else {
-        // Smart heuristic search (Simple Minimax Depth 2)
         let bestScore = -9999;
         let bestMoves = [];
         for (let m of moves) {
@@ -367,7 +373,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      renderBoard();
+      initGame();
     });
   </script>
 </body>

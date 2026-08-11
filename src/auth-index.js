@@ -3,14 +3,12 @@
 // Path: src/auth-index.js
 // ==========================================================================
 
-// Safely retrieve the Supabase instance
 function getSupabase() {
   return window.supabaseClient || window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
 }
 
 let isSignUpMode = false;
 
-// 1. Open / Close Auth Modal
 function openAuthModal() {
   const modal = document.getElementById('auth-modal');
   if (modal) modal.classList.add('active');
@@ -21,7 +19,6 @@ function closeAuthModal() {
   if (modal) modal.classList.remove('active');
 }
 
-// 2. Toggle Mode (Sign In vs Sign Up)
 function toggleAuthMode() {
   isSignUpMode = !isSignUpMode;
   const title = document.getElementById('modal-title');
@@ -31,21 +28,20 @@ function toggleAuthMode() {
   if (isSignUpMode) {
     if (title) title.textContent = "Create Account";
     if (btn) btn.textContent = "Sign Up";
-    if (toggleText) toggleText.innerHTML = 'Already have an account? <a onclick="toggleAuthMode()">Sign In</a>';
+    if (toggleText) toggleText.innerHTML = 'Already have an account? <a onclick="toggleAuthMode()" style="color: var(--accent-cyan); cursor: pointer;">Sign In</a>';
   } else {
     if (title) title.textContent = "Sign In";
     if (btn) btn.textContent = "Sign In";
-    if (toggleText) toggleText.innerHTML = 'Don\'t have an account? <a onclick="toggleAuthMode()">Sign Up</a>';
+    if (toggleText) toggleText.innerHTML = 'Don\'t have an account? <a onclick="toggleAuthMode()" style="color: var(--accent-cyan); cursor: pointer;">Sign Up</a>';
   }
 }
 
-// 3. Handle Form Submit
 async function handleAuthSubmit(event) {
   event.preventDefault();
   const client = getSupabase();
 
   if (!client || !client.auth) {
-    alert("❌ Error: Supabase is not connected! Check that the Supabase CDN script is loaded before config.js in your HTML.");
+    alert("❌ Error: Supabase is not connected!");
     return;
   }
 
@@ -65,7 +61,7 @@ async function handleAuthSubmit(event) {
       closeAuthModal();
       updateAuthUI();
     } else {
-      alert("📧 Account created! If email confirmation is enabled in Supabase, please check your inbox.");
+      alert("📧 Account created! Please check your inbox if email confirmation is required.");
       closeAuthModal();
     }
   } else {
@@ -80,7 +76,6 @@ async function handleAuthSubmit(event) {
   }
 }
 
-// 4. Google Sign In
 async function signInWithGoogle() {
   const client = getSupabase();
   if (!client || !client.auth) {
@@ -98,7 +93,6 @@ async function signInWithGoogle() {
   if (error) alert("❌ Google Sign-In Error:\n\n" + error.message);
 }
 
-// 5. Sign Out Function
 async function signOut() {
   const client = getSupabase();
   if (client && client.auth) {
@@ -107,9 +101,9 @@ async function signOut() {
   localStorage.clear();
   alert("Signed out successfully.");
   updateAuthUI();
+  window.location.reload();
 }
 
-// 6. Check Admin Status
 function isAdmin(user) {
   if (!user || !user.email) return false;
   const userEmail = user.email.toLowerCase();
@@ -119,7 +113,6 @@ function isAdmin(user) {
   return adminList.includes(userEmail);
 }
 
-// 7. Update UI
 async function updateAuthUI() {
   const greeting = document.getElementById('user-greeting');
   const btn = document.getElementById('auth-action-btn');
@@ -155,14 +148,12 @@ async function updateAuthUI() {
   }
 }
 
-// 8. Event Listener Setup
 document.addEventListener('DOMContentLoaded', () => {
   updateAuthUI();
 
   const client = getSupabase();
   if (client && client.auth) {
-    client.auth.onAuthStateChange((event) => {
-      console.log("Auth event:", event);
+    client.auth.onAuthStateChange(() => {
       updateAuthUI();
     });
   }

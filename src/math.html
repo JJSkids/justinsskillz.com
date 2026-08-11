@@ -1,24 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Math Lab | Justin's Skillz</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .math-card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
+    .math-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
     .input-group { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; }
-    .input-group input { width: 80px; padding: 0.5rem; background: #0f172a; border: 1px solid #334155; color: #f8fafc; border-radius: 6px; font-size: 1rem; text-align: center; }
-    .result-box { background: #0f172a; border-left: 4px solid #38bdf8; padding: 1rem; margin-top: 1rem; border-radius: 6px; }
+    .input-group input { width: 80px; padding: 0.5rem; background: var(--bg-pill); border: 1px solid var(--border-subtle); color: var(--text-main); border-radius: 6px; font-size: 1rem; text-align: center; }
+    .result-box { background: #0f172a; border-left: 4px solid var(--accent-cyan); padding: 1rem; margin-top: 1rem; border-radius: 6px; }
   </style>
 </head>
 <body>
   <header class="app-header">
-    <a href="dashboard.html" class="back-button">← Back to Dashboard</a>
-    <h1>📐 Skillz Math Lab</h1>
+    <div class="header-container">
+      <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
+      <h1>📐 Skillz Math Lab</h1>
+      <div></div>
+    </div>
   </header>
 
-  <main class="container">
+  <main class="container" style="padding-top: 2rem;">
     <div class="math-card">
       <h3>Quadratic Equation Solver</h3>
       <p>Solves $ax^2 + bx + c = 0$ for real and complex roots.</p>
@@ -27,7 +30,7 @@
         <input type="number" id="coeff-a" value="1" placeholder="a" /> <span>$x^2 +$</span>
         <input type="number" id="coeff-b" value="-5" placeholder="b" /> <span>$x +$</span>
         <input type="number" id="coeff-c" value="6" placeholder="c" /> <span>$= 0$</span>
-        <button onclick="solveQuadratic()" class="btn-primary">Solve</button>
+        <button onclick="solveQuadratic()" class="btn btn-primary">Solve</button>
       </div>
 
       <div id="math-output" class="result-box">Click <strong>Solve</strong> to compute roots.</div>
@@ -47,19 +50,19 @@
       }
 
       const delta = (b * b) - (4 * a * c);
-      let res = `<strong>Discriminant (&Delta;):</strong> ${delta}<br>`;
+      let res = `<strong>Discriminant (Δ):</strong> ${delta}<br>`;
 
       if (delta > 0) {
         const x1 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(4);
         const x2 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(4);
-        res += `<span style='color:#34d399;'>Two Real Roots: x₁ = ${x1}, x₂ = ${x2}</span>`;
+        res += `<span style='color:var(--accent-green);'>Two Real Roots: x₁ = ${x1}, x₂ = ${x2}</span>`;
       } else if (delta === 0) {
         const x = (-b / (2 * a)).toFixed(4);
-        res += `<span style='color:#38bdf8;'>One Double Root: x = ${x}</span>`;
+        res += `<span style='color:var(--accent-cyan);'>One Double Root: x = ${x}</span>`;
       } else {
         const real = (-b / (2 * a)).toFixed(4);
         const imag = (Math.sqrt(-delta) / (2 * a)).toFixed(4);
-        res += `<span style='color:#f59e0b;'>Complex Roots: x₁ = ${real} + ${imag}i, x₂ = ${real} - ${imag}i</span>`;
+        res += `<span style='color:var(--accent-amber);'>Complex Roots: x₁ = ${real} + ${imag}i, x₂ = ${real} - ${imag}i</span>`;
       }
       out.innerHTML = res;
     }

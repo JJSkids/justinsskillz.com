@@ -1,9 +1,8 @@
 /**
  * Justin's Skillz - Interactive Chess Engine & UI
- * Powered by Chess.js & Wikimedia Commons Vector Sets
+ * Path: src/chess.js
  */
 
-// 1. Wikimedia Commons SVG Piece Mapping (Cburnett Set)
 const PIECE_IMAGES = {
     'wP': 'https://upload.wikimedia.org/wikipedia/commons/4/45/Chess_plt45.svg',
     'wN': 'https://upload.wikimedia.org/wikipedia/commons/7/70/Chess_nlt45.svg',
@@ -19,7 +18,6 @@ const PIECE_IMAGES = {
     'bK': 'https://upload.wikimedia.org/wikipedia/commons/f/f0/Chess_kdt45.svg'
 };
 
-// 2. Piece Values & Piece-Square Tables for AI Evaluation
 const PIECE_VALUES = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
 
 const PAWN_TABLE = [
@@ -44,21 +42,19 @@ const KNIGHT_TABLE = [
     -50,-40,-30,-30,-30,-30,-40,-50
 ];
 
-// Game State Variables
 let game = new Chess();
 let selectedSquare = null;
-let playerColor = 'w'; // 'w' for White, 'b' for Black
-let aiDepth = 2;       // Easy = 1, Medium = 2, Hard = 3
+let playerColor = 'w'; 
+let aiDepth = 2;       
 
-// DOM Elements
 const boardElement = document.getElementById('chessboard');
 const statusElement = document.getElementById('game-status');
-const difficultySelect = document.getElementById('difficulty');
+const difficultySelect = document.getElementById('ai-difficulty');
 const playerColorSelect = document.getElementById('player-color');
-const newGameBtn = document.getElementById('new-game-btn');
+const resetGameBtn = document.getElementById('reset-game-btn');
 
-// Initialize Board UI
 function createBoard() {
+    if (!boardElement) return;
     boardElement.innerHTML = '';
     const boardState = game.board();
 
@@ -74,7 +70,6 @@ function createBoard() {
             squareSquare.className = `square ${isLight ? 'light' : 'dark'}`;
             squareSquare.dataset.square = squareName;
 
-            // Render Piece Image
             const piece = boardState[rowIdx][colIdx];
             if (piece) {
                 const key = `${piece.color}${piece.type.toUpperCase()}`;
@@ -92,12 +87,10 @@ function createBoard() {
     updateStatus();
 }
 
-// User Interaction Handler
 function handleSquareClick(square) {
     if (game.game_over() || game.turn() !== playerColor) return;
 
     if (selectedSquare === null) {
-        // Select square if it contains current player's piece
         const piece = game.get(square);
         if (piece && piece.color === playerColor) {
             selectedSquare = square;
@@ -105,11 +98,10 @@ function handleSquareClick(square) {
             highlightPossibleMoves(square);
         }
     } else {
-        // Attempt Move
         const move = game.move({
             from: selectedSquare,
             to: square,
-            promotion: 'q' // Auto-promote to Queen for simplicity
+            promotion: 'q' 
         });
 
         clearHighlights();
@@ -121,7 +113,6 @@ function handleSquareClick(square) {
                 window.setTimeout(makeAIMove, 250);
             }
         } else {
-            // Re-select if clicking another friendly piece
             const piece = game.get(square);
             if (piece && piece.color === playerColor) {
                 selectedSquare = square;
@@ -132,16 +123,13 @@ function handleSquareClick(square) {
     }
 }
 
-// AI Engine (Minimax with Alpha-Beta Pruning)
 function makeAIMove() {
     if (game.game_over()) return;
-
     statusElement.innerText = "AI is thinking...";
     
-    // Give browser time to update UI before computing
     setTimeout(() => {
         const bestMove = getBestMove(game, aiDepth, game.turn() === 'w');
-        game.move(bestMove);
+        if (bestMove) game.move(bestMove);
         createBoard();
     }, 50);
 }
@@ -181,10 +169,10 @@ function minimax(depth, alpha, beta, isMaximizing) {
         let maxEval = -Infinity;
         for (const move of moves) {
             game.move(move);
-            const eval = minimax(depth - 1, alpha, beta, false);
+            const evaluation = minimax(depth - 1, alpha, beta, false);
             game.undo();
-            maxEval = Math.max(maxEval, eval);
-            alpha = Math.max(alpha, eval);
+            maxEval = Math.max(maxEval, evaluation);
+            alpha = Math.max(alpha, evaluation);
             if (beta <= alpha) break;
         }
         return maxEval;
@@ -192,25 +180,27 @@ function minimax(depth, alpha, beta, isMaximizing) {
         let minEval = Infinity;
         for (const move of moves) {
             game.move(move);
-            const eval = minimax(depth - 1, alpha, beta, true);
+            const evaluation = minimax(depth - 1, alpha, beta, true);
             game.undo();
-            minEval = Math.min(minEval, eval);
-            beta = Math.min(beta, eval);
+            minEval = Math.min(minEval, evaluation);
+            beta = Math.min(beta, evaluation);
             if (beta <= alpha) break;
         }
         return minEval;
     }
 }
 
-function getBestMove(game, depth, isMaximizing) {
-    const moves = game.moves({ verbose: true });
+function getBestMove(gameInstance, depth, isMaximizing) {
+    const moves = gameInstance.moves({ verbose: true });
+    if (moves.length === 0) return null;
+    
     let bestMove = moves[Math.floor(Math.random() * moves.length)];
     let bestValue = isMaximizing ? -Infinity : Infinity;
 
     for (const move of moves) {
-        game.move(move);
+        gameInstance.move(move);
         const boardValue = minimax(depth - 1, -Infinity, Infinity, !isMaximizing);
-        game.undo();
+        gameInstance.undo();
 
         if (isMaximizing && boardValue > bestValue) {
             bestValue = boardValue;
@@ -223,7 +213,6 @@ function getBestMove(game, depth, isMaximizing) {
     return bestMove;
 }
 
-// Highlight Helpers
 function highlightSquare(square, isSelected) {
     const el = document.querySelector(`[data-square="${square}"]`);
     if (el) el.classList.add(isSelected ? 'selected' : 'highlight-move');
@@ -241,6 +230,7 @@ function clearHighlights() {
 }
 
 function updateStatus() {
+    if (!statusElement) return;
     if (game.in_checkmate()) {
         statusElement.innerText = `Checkmate! ${game.turn() === 'w' ? 'Black' : 'White'} wins.`;
     } else if (game.in_draw()) {
@@ -252,16 +242,16 @@ function updateStatus() {
     }
 }
 
-// Event Listeners
-newGameBtn.addEventListener('click', () => {
-    game.reset();
-    playerColor = playerColorSelect.value;
-    aiDepth = parseInt(difficultySelect.value);
-    createBoard();
-    if (playerColor === 'b') {
-        window.setTimeout(makeAIMove, 300);
-    }
-});
+if (resetGameBtn) {
+    resetGameBtn.addEventListener('click', () => {
+        game.reset();
+        playerColor = playerColorSelect ? playerColorSelect.value : 'w';
+        aiDepth = difficultySelect ? parseInt(difficultySelect.value) : 2;
+        createBoard();
+        if (playerColor === 'b') {
+            window.setTimeout(makeAIMove, 300);
+        }
+    });
+}
 
-// Initialization
 createBoard();

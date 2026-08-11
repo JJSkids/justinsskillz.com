@@ -5,16 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Justin's Skillz</title>
 
-  <!-- Fonts & Supabase SDK -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Stylesheet & Scripts -->
   <link rel="stylesheet" href="styles.css">
-  <script src="../theme.js" defer></script>
-  <script src="auth.js" defer></script>
+  <script src="theme.js" defer></script>
+  <script src="config.js" defer></script>
+  <script src="auth-index.js" defer></script>
+  <script src="auth-dashboard.js" defer></script>
 </head>
 <body>
 
@@ -29,10 +29,11 @@
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link active">Dashboard</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
+        <a href="admin.html" class="nav-link" id="admin-nav-link" style="display: none;">Admin 🔒</a>
       </nav>
 
       <div class="nav-actions">
-        <button type="button" class="btn btn-secondary" id="signout-btn">Sign Out</button>
+        <button type="button" class="btn btn-secondary" id="auth-action-btn">Sign Out</button>
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
           <span class="theme-icon">🌙</span> Dark Mode
         </button>
@@ -43,9 +44,8 @@
   <main class="main-content">
     <div class="container" style="padding-top: 3rem;">
       
-      <!-- Welcome Header (Populated dynamically by auth.js) -->
       <div class="hero" style="padding-bottom: 2rem;">
-        <h1 class="hero-title" id="user-welcome-text">Loading workspace...</h1>
+        <h1 class="hero-title" id="user-greeting">Loading workspace...</h1>
         <p class="hero-subtitle">Your personal STEM, Web Development, and Minecraft engineering control panel.</p>
       </div>
 
@@ -53,19 +53,19 @@
         <div class="card">
           <h3 class="card-title">📐 Math Workspace</h3>
           <p class="card-description">UNB competition flashcards, algebra practice sheets, and modular arithmetic tools.</p>
-          <button class="btn btn-card-secondary">Launch Workspace</button>
+          <a href="math.html" class="btn btn-secondary" style="margin-top: 1rem; display: inline-block;">Launch Workspace</a>
         </div>
 
         <div class="card">
           <h3 class="card-title">💻 Web Development Studio</h3>
           <p class="card-description">HTML, CSS, TypeScript code sandbox and Supabase client integration.</p>
-          <button class="btn btn-card-secondary">Open Code Studio</button>
+          <a href="coding.html" class="btn btn-secondary" style="margin-top: 1rem; display: inline-block;">Open Code Studio</a>
         </div>
 
         <div class="card">
-          <h3 class="card-title">📦 Minecraft Bedrock Tools</h3>
-          <p class="card-description">Scoreboard strings, random loot chest generators, and command engines.</p>
-          <button class="btn btn-card-secondary">Open Bedrock Generator</button>
+          <h3 class="card-title">🤖 Robotics & Logic Gate Lab</h3>
+          <p class="card-description">Interactive digital logic gate tester (AND, OR, XOR, NAND, NOR).</p>
+          <a href="robotics.html" class="btn btn-secondary" style="margin-top: 1rem; display: inline-block;">Open Logic Lab</a>
         </div>
       </div>
 

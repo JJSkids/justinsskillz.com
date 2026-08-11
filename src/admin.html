@@ -1,15 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Control Panel - Justin's Skillz</title>
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* Admin Specific Dashboard Styling */
     .admin-banner {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(19, 28, 46, 0.8) 100%);
-      border: 1px solid var(--border-accent);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(30, 41, 59, 0.8) 100%);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       padding: 2rem;
       margin-bottom: 2rem;
@@ -19,21 +18,8 @@
       flex-wrap: wrap;
       gap: 1rem;
     }
-
-    .admin-title-group h1 {
-      font-size: 2rem;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .admin-title-group p {
-      color: var(--text-muted);
-      margin-top: 0.25rem;
-      font-size: 0.95rem;
-    }
-
+    .admin-title-group h1 { font-size: 2rem; color: #ffffff; display: flex; align-items: center; gap: 0.75rem; }
+    .admin-title-group p { color: var(--text-muted); margin-top: 0.25rem; font-size: 0.95rem; }
     .status-badge {
       display: inline-flex;
       align-items: center;
@@ -46,157 +32,33 @@
       font-weight: 600;
       font-size: 0.85rem;
     }
-
-    .status-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--accent-green);
-      border-radius: 50%;
-      box-shadow: 0 0 8px var(--accent-green);
-    }
-
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 1.25rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .metric-card {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 1.25rem 1.5rem;
-    }
-
-    .metric-card h4 {
-      font-size: 0.85rem;
-      color: var(--text-subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .metric-card .value {
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--accent-blue);
-      margin-top: 0.4rem;
-    }
-
-    .admin-section {
-      background-color: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      margin-bottom: 2rem;
-    }
-
-    .admin-section h2 {
-      font-size: 1.3rem;
-      margin-bottom: 1.25rem;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* Modules Control List */
-    .module-control-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.9rem 1rem;
-      background: rgba(9, 13, 22, 0.5);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-sm);
-      margin-bottom: 0.75rem;
-    }
-
-    .module-info {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 600;
-    }
-
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 24px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #334155;
-      transition: .3s;
-      border-radius: 24px;
-    }
-
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-    }
-
-    input:checked + .slider {
-      background-color: var(--accent-blue);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(22px);
-    }
-
-    /* Console Logs Window */
-    .log-terminal {
-      background-color: #050811;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 0.85rem;
-      color: #38bdf8;
-      max-height: 200px;
-      overflow-y: auto;
-      line-height: 1.5;
-    }
-
-    .log-line {
-      margin-bottom: 0.25rem;
-    }
-    .log-time {
-      color: var(--text-subtle);
-    }
-    .log-success {
-      color: var(--accent-green);
-    }
+    .status-dot { width: 8px; height: 8px; background-color: var(--accent-green); border-radius: 50%; box-shadow: 0 0 8px var(--accent-green); }
+    .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-bottom: 2.5rem; }
+    .metric-card { background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem 1.5rem; }
+    .metric-card h4 { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-card .value { font-size: 1.8rem; font-weight: 800; color: var(--accent-cyan); margin-top: 0.4rem; }
+    .admin-section { background-color: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 2rem; }
+    .admin-section h2 { font-size: 1.3rem; margin-bottom: 1.25rem; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem; }
+    .module-control-item { display: flex; align-items: center; justify-content: space-between; padding: 0.9rem 1rem; background: rgba(15, 23, 42, 0.5); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); margin-bottom: 0.75rem; }
+    .module-info { display: flex; align-items: center; gap: 0.75rem; font-weight: 600; }
+    .toggle-switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #334155; transition: .3s; border-radius: 24px; }
+    .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+    input:checked + .slider { background-color: var(--accent-cyan); }
+    input:checked + .slider:before { transform: translateX(22px); }
+    .log-terminal { background-color: #050811; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem; font-family: monospace; font-size: 0.85rem; color: #38bdf8; max-height: 200px; overflow-y: auto; line-height: 1.5; }
+    .log-line { margin-bottom: 0.25rem; }
+    .log-time { color: var(--text-muted); }
+    .log-success { color: var(--accent-green); }
   </style>
 
-  <!-- 1. Load Supabase Library CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- 2. Load Config & Auth Scripts -->
   <script src="config.js"></script>
   <script src="auth-index.js"></script>
 
-  <!-- 3. Immediate Admin Guard Script (Prevents unauthorized page rendering) -->
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      // Hide body initially to prevent flickering
       document.body.style.opacity = '0';
 
       if (!supabase) {
@@ -205,7 +67,6 @@
         return;
       }
 
-      // Fetch current session
       const { data } = await supabase.auth.getSession();
       const user = data?.session?.user;
 
@@ -226,7 +87,6 @@
         return;
       }
 
-      // Reveal body if user is verified as Admin
       document.body.style.opacity = '1';
       document.body.style.transition = 'opacity 0.3s ease';
       
@@ -239,25 +99,26 @@
 </head>
 <body>
 
-  <!-- App Header Navbar -->
   <header class="app-header">
-    <div class="logo">Justin's Skillz</div>
-    <nav class="nav-links">
-      <a href="../index.html">Home</a>
-      <a href="dashboard.html">Dashboard</a>
-      <a href="admin.html" class="active">Admin 🔒</a>
-      <a href="../pri.html">Privacy</a>
-      <a href="../terms.html">Terms</a>
-    </nav>
-    <div class="user-profile">
-      <span id="user-greeting" class="greeting-badge">👑 Admin</span>
-      <button id="auth-action-btn" class="btn-secondary">Sign Out</button>
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="admin.html" class="nav-link active">Admin 🔒</a>
+      </nav>
+      <div class="nav-actions">
+        <span id="user-greeting" class="nav-link" style="color: var(--accent-amber);">👑 Admin</span>
+        <button id="auth-action-btn" class="btn btn-secondary">Sign Out</button>
+      </div>
     </div>
   </header>
 
-  <main class="container">
+  <main class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
 
-    <!-- Admin Welcome Banner -->
     <section class="admin-banner">
       <div class="admin-title-group">
         <h1>👑 Admin Control Panel</h1>
@@ -268,7 +129,6 @@
       </div>
     </section>
 
-    <!-- Key Metrics Grid -->
     <section class="metrics-grid">
       <div class="metric-card">
         <h4>Active Modules</h4>
@@ -288,7 +148,6 @@
       </div>
     </section>
 
-    <!-- Module Toggle Controls -->
     <section class="admin-section">
       <h2>🧩 Workspace Modules Control</h2>
       <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">
@@ -326,35 +185,18 @@
           <span class="slider"></span>
         </label>
       </div>
-
-      <div class="module-control-item">
-        <div class="module-info">🎵 Music & Audio Synthesizer</div>
-        <label class="toggle-switch">
-          <input type="checkbox" checked onchange="toggleModuleLog('Music Synthesizer', this.checked)">
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div class="module-control-item">
-        <div class="module-info">🤖 Arduino & Robotics Simulator</div>
-        <label class="toggle-switch">
-          <input type="checkbox" checked onchange="toggleModuleLog('Arduino Simulator', this.checked)">
-          <span class="slider"></span>
-        </label>
-      </div>
     </section>
 
-    <!-- System Actions & Maintenance -->
     <section class="admin-section">
       <h2>🛠️ Quick System Tools</h2>
       <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
-        <button onclick="clearLocalCache()" class="btn-secondary">🧹 Clear Local Storage</button>
-        <button onclick="testSupabaseConnection()" class="btn-secondary">📡 Test Supabase Ping</button>
-        <button onclick="triggerTestNotice()" class="btn-primary">🔔 Test System Alert</button>
+        <button onclick="clearLocalCache()" class="btn btn-secondary">🧹 Clear Local Storage</button>
+        <button onclick="testSupabaseConnection()" class="btn btn-secondary">📡 Test Supabase Ping</button>
+        <button onclick="triggerTestNotice()" class="btn btn-primary">🔔 Test System Alert</button>
+        <button id="reset-session-btn" class="btn btn-secondary" style="color: #ef4444; border-color: rgba(239, 68, 68, 0.4);">⚠️ Reset Session</button>
       </div>
     </section>
 
-    <!-- Live Admin Terminal Log -->
     <section class="admin-section">
       <h2>🖥️ System Event Logs</h2>
       <div id="log-terminal" class="log-terminal">
@@ -364,8 +206,8 @@
 
   </main>
 
+  <script src="admin.js"></script>
   <script>
-    // Helper function to print events to the log terminal
     function addLog(message, isSuccess = true) {
       const terminal = document.getElementById('log-terminal');
       if (!terminal) return;

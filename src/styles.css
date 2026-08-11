@@ -1,8 +1,7 @@
 /* ==========================================================================
-   JUSTIN'S SKILLZ - FULL JOVIAL, VIBRANT & SPACIOUS STYLESHEET
+   JUSTIN'S SKILLZ - FULL VIBRANT, SPACIOUS & RESPONSIVE STYLESHEET
    ========================================================================== */
 
-/* CSS Variables & Theme Setup */
 :root {
   --bg-primary: #0f172a;
   --bg-card: #1e293b;
@@ -12,7 +11,6 @@
   --border-subtle: #334155;
   --border-color: #334155;
   
-  /* Vibrant Multi-Color Gradients & Accents */
   --accent-gradient: linear-gradient(135deg, #ff007f, #7928ca, #4facfe, #00f2fe);
   --accent-cyan: #22d3ee;
   --accent-purple: #a855f7;
@@ -52,7 +50,7 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Background Ambient Glow Effects */
+/* Ambient Glow Effects */
 .bg-glow {
   position: absolute;
   width: 500px;
@@ -76,12 +74,13 @@ body {
   background: var(--neon-pink);
 }
 
-/* Layout & Containers (Anti-Clustering Spacing) */
-.container {
+/* Fluid Side Spacing & Containers */
+.container, .header-container, .footer-content {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 2.5rem;
+  padding-left: clamp(1.5rem, 5vw, 3.5rem);
+  padding-right: clamp(1.5rem, 5vw, 3.5rem);
   position: relative;
   z-index: 1;
 }
@@ -101,9 +100,6 @@ body {
   align-items: center;
   justify-content: space-between;
   height: 85px;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 2.5rem;
 }
 
 .logo {
@@ -283,7 +279,6 @@ body {
   height: 10px;
   background-color: #10b981;
   border-radius: 50%;
-  box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
   animation: pulse 2s infinite;
 }
 
@@ -294,14 +289,14 @@ body {
 }
 
 .hero-title {
-  font-size: 3.25rem;
+  font-size: clamp(2.25rem, 5vw, 3.25rem);
   font-weight: 800;
   line-height: 1.2;
   margin-bottom: 1.5rem;
 }
 
 .hero-subtitle {
-  font-size: 1.15rem;
+  font-size: clamp(1rem, 2vw, 1.15rem);
   line-height: 1.75;
   color: var(--text-muted);
   margin-bottom: 2.75rem;
@@ -321,7 +316,7 @@ body {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
   gap: 2.5rem;
   align-items: stretch;
 }
@@ -434,7 +429,7 @@ body {
   color: var(--text-muted);
 }
 
-/* Modal Overlay & Content Styling */
+/* Modal Styling */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -536,17 +531,11 @@ input:focus {
   margin-top: auto;
 }
 
-.footer-content {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 2.5rem;
-  text-align: center;
-}
-
 .footer-text {
   color: var(--text-muted);
   font-size: 0.9rem;
   font-weight: 500;
+  text-align: center;
 }
 
 .footer-text a {
@@ -561,14 +550,7 @@ input:focus {
   text-decoration: underline;
 }
 
-/* Responsive Media Queries */
 @media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.35rem;
-  }
-  .header-container, .container, .footer-content {
-    padding: 0 1.25rem;
-  }
   .nav-menu {
     display: none;
   }

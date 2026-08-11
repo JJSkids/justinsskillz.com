@@ -12,8 +12,24 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="styles.css">
-  <script src="theme.js" defer></script>
   <script src="config.js" defer></script>
+  <script src="theme.js" defer></script>
+
+  <!-- Route Guard: Restrict access to signed-in users only -->
+  <script>
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Give a tiny moment for config.js to establish the global supabase instance
+      setTimeout(async () => {
+        if (typeof supabase !== 'undefined') {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (!session) {
+            alert("Access restricted. Please sign in to view your dashboard.");
+            window.location.href = '../index.html';
+          }
+        }
+      }, 100);
+    });
+  </script>
 </head>
 <body>
 

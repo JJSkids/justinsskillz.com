@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Justin's Skillz - Hub & Dashboard</title>
   
-  <!-- Google Search & SEO Meta Tags -->
+  <!-- SEO & Meta Tags -->
   <meta name="description" content="Justin's Skillz Hub - Interactive STEM, Advanced Mathematics, Music, French, Chess Engine, Robotics, and high-performance learning platform.">
-  <meta name="keywords" content="Justin's Skillz, STEM, Math, Music, French, Chess, Robotics, Web Development, Supabase">
+  <meta name="google-site-verification" content="YOUR_GOOGLE_SEARCH_VERIFICATION_CODE">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -15,7 +15,7 @@
   <!-- Supabase Client SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   
-  <!-- Link to your Master Stylesheet -->
+  <!-- Master Stylesheet -->
   <link rel="stylesheet" href="src/styles.css">
 </head>
 <body>
@@ -23,16 +23,16 @@
   <!-- App Header & Navigation -->
   <header class="app-header">
     <div class="header-container">
-      <a href="#" class="logo">
+      <a href="index.html" class="logo">
         <span class="logo-icon">⚡</span>
         <span class="gradient-text" style="background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Justin's Skillz</span>
       </a>
 
       <nav class="nav-menu">
-        <a href="#" class="nav-link active">Hub</a>
-        <a href="#" class="nav-link">Dashboard</a>
-        <a href="#" class="nav-link">Chess Engine</a>
-        <a href="#" class="nav-link">Wiki Hub</a>
+        <a href="index.html" class="nav-link active">Hub</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="chess.html" class="nav-link">Chess Engine</a>
+        <a href="wiki.html" class="nav-link">Wiki Hub</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; align-items: center; gap: 0.75rem;">
@@ -48,7 +48,7 @@
   <main class="main-content">
     <div class="container" style="padding-top: 3rem; padding-bottom: 3rem;">
       
-      <!-- STEM & Web Studio Header with Animated Circle -->
+      <!-- STEM Studio Banner -->
       <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
         <div class="stem-studio-header" style="margin-bottom: 1rem; display: flex; align-items: center; gap: 1rem;">
           <span class="animated-circle"></span>
@@ -57,46 +57,46 @@
         <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
           Explore advanced mathematics, musical compositions, French grammar modules, interactive chess simulations, robotics prototyping, and live web development tools.
         </p>
-        <button class="btn btn-secondary" onclick="alert('Studio module launching soon!')">Launch Workspace</button>
+        <a href="dashboard.html" class="btn btn-secondary" style="display: inline-block; text-decoration: none;">Launch Dashboard</a>
       </div>
 
-      <!-- Dashboard Grid: Math, Music, French, Chess, Robotics -->
+      <!-- Dashboard Grid with Clickable Module Links -->
       <div class="dashboard-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem;">
         
         <!-- Advanced Math -->
-        <div class="card module-card" style="padding: 1.5rem;">
+        <a href="src/math.html" class="card module-card" style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
           <div class="module-icon" style="font-size: 2rem; margin-bottom: 0.75rem;">📐</div>
           <h3 style="background: linear-gradient(135deg, #60a5fa, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">Advanced Math</h3>
           <p style="color: var(--text-muted); font-size: 0.9rem;">Quadratic equations, algebra, complex numbers, polar forms, and competitive problem sets.</p>
-        </div>
+        </a>
 
         <!-- Music -->
-        <div class="card module-card" style="padding: 1.5rem;">
+        <a href="src/music.html" class="card module-card" style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
           <div class="module-icon" style="font-size: 2rem; margin-bottom: 0.75rem;">🎵</div>
           <h3 style="background: linear-gradient(135deg, #f472b6, #db2777); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">Music Studio</h3>
           <p style="color: var(--text-muted); font-size: 0.9rem;">Interactive rhythm frameworks, melodic sequencing, and digital audio tools.</p>
-        </div>
+        </a>
 
         <!-- French -->
-        <div class="card module-card" style="padding: 1.5rem;">
+        <a href="src/french.html" class="card module-card" style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
           <div class="module-icon" style="font-size: 2rem; margin-bottom: 0.75rem;">🇫🇷</div>
           <h3 style="background: linear-gradient(135deg, #38bdf8, #0284c7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">French Language</h3>
           <p style="color: var(--text-muted); font-size: 0.9rem;">Grammar mechanics, verb conjugations, and immersive bilingual writing practice.</p>
-        </div>
+        </a>
 
         <!-- Chess Engine -->
-        <div class="card module-card" style="padding: 1.5rem;">
+        <a href="src/chess.html" class="card module-card" style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
           <div class="module-icon" style="font-size: 2rem; margin-bottom: 0.75rem;">♟️</div>
           <h3 style="background: linear-gradient(135deg, #4ade80, #16a34a); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">Chess Engine</h3>
           <p style="color: var(--text-muted); font-size: 0.9rem;">Tactical board mechanics, custom square highlighting, and strategic move calculations.</p>
-        </div>
+        </a>
 
         <!-- Robotics -->
-        <div class="card module-card" style="padding: 1.5rem;">
+        <a href="src/robotics.html" class="card module-card" style="padding: 1.5rem; text-decoration: none; color: inherit; display: block;">
           <div class="module-icon" style="font-size: 2rem; margin-bottom: 0.75rem;">🤖</div>
           <h3 style="background: linear-gradient(135deg, #fbbf24, #d97706); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem;">Robotics & IoT</h3>
           <p style="color: var(--text-muted); font-size: 0.9rem;">Electronic prototyping with Arduino controllers, sensor automation, and circuit logic.</p>
-        </div>
+        </a>
 
       </div>
 
@@ -124,7 +124,7 @@
         </button>
       </div>
 
-      <div class="auth-divider" style="margin: 1.25rem 0; text-align: center; color: var(--text-muted); font-size: 0.85rem;">
+      <div class="auth-divider">
         <span>or sign in with email</span>
       </div>
 
@@ -132,11 +132,11 @@
       <form id="signin-form" style="display: flex; flex-direction: column; gap: 1rem;">
         <div>
           <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted);">Email Address</label>
-          <input type="email" id="email-input" placeholder="student@justinetskillz.com" style="width: 100%;" required>
+          <input type="email" id="email-input" placeholder="student@justinetskillz.com" required>
         </div>
         <div>
           <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.4rem; color: var(--text-muted);">Password</label>
-          <input type="password" id="password-input" placeholder="••••••••" style="width: 100%;" required>
+          <input type="password" id="password-input" placeholder="••••••••" required>
         </div>
         <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">Sign In</button>
       </form>
@@ -150,7 +150,7 @@
     </div>
   </footer>
 
-  <!-- Core JavaScript & Supabase Auth Integration -->
+  <!-- Script Logic -->
   <script>
     const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5OSwKZXhwIjoyMDk5NjQwOTA1fQ.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
@@ -162,35 +162,18 @@
       console.warn('Supabase initialization error:', err);
     }
 
-    // Modal Toggle Logic
+    // Modal Toggles
     const loginBtn = document.getElementById('login-btn');
     const authModal = document.getElementById('auth-modal');
     const closeModalBtn = document.getElementById('close-modal');
 
-    if (loginBtn && authModal) {
-      loginBtn.addEventListener('click', () => {
-        authModal.classList.add('active');
-      });
-    }
+    if (loginBtn && authModal) loginBtn.addEventListener('click', () => authModal.classList.add('active'));
+    if (closeModalBtn && authModal) closeModalBtn.addEventListener('click', () => authModal.classList.remove('active'));
+    if (authModal) authModal.addEventListener('click', (e) => { if (e.target === authModal) authModal.classList.remove('active'); });
 
-    if (closeModalBtn && authModal) {
-      closeModalBtn.addEventListener('click', () => {
-        authModal.classList.remove('active');
-      });
-    }
-
-    if (authModal) {
-      authModal.addEventListener('click', (e) => {
-        if (e.target === authModal) {
-          authModal.classList.remove('active');
-        }
-      });
-    }
-
-    // Theme Toggle Logic
+    // Theme Toggle
     const themeToggleBtn = document.getElementById('theme-toggle');
     const htmlElement = document.documentElement;
-
     if (themeToggleBtn) {
       themeToggleBtn.addEventListener('click', () => {
         const currentTheme = htmlElement.getAttribute('data-theme');
@@ -200,43 +183,30 @@
       });
     }
 
-    // Google Sign-In
+    // Auth Handlers
     const googleLoginBtn = document.getElementById('google-login-btn');
     if (googleLoginBtn && supabase) {
       googleLoginBtn.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: { redirectTo: window.location.origin }
-        });
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin } });
         if (error) alert('Google Sign-In Error: ' + error.message);
       });
     }
 
-    // GitHub Sign-In
     const githubLoginBtn = document.getElementById('github-login-btn');
     if (githubLoginBtn && supabase) {
       githubLoginBtn.addEventListener('click', async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'github',
-          options: { redirectTo: window.location.origin }
-        });
+        const { error } = await supabase.auth.signInWithOAuth({ provider: 'github', options: { redirectTo: window.location.origin } });
         if (error) alert('GitHub Sign-In Error: ' + error.message);
       });
     }
 
-    // Email & Password Sign-In
     const signinForm = document.getElementById('signin-form');
     if (signinForm && supabase) {
       signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email-input').value;
         const password = document.getElementById('password-input').value;
-
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
-
+        const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) {
           alert('Sign-In Failed: ' + error.message);
         } else {

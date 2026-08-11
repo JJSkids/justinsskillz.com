@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess AI - Justin's Skillz</title>
+    <title>Chess Arena - Justin's Skillz</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -31,15 +31,61 @@
     <main class="main-content">
         <div class="container">
             <h1 class="dashboard-title">Chess Arena</h1>
-            <p class="dashboard-subtitle">Test your strategy, analyze openings, and sharpen your tactical thinking.</p>
+            <p class="dashboard-subtitle">Test your strategy, analyze tactical lines, and play right on the board.</p>
             
-            <div class="card">
+            <div class="card" style="display: flex; flex-direction: column; align-items: center;">
                 <div class="chess-layout">
-                    <div class="board-frame" id="board">
-                        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
-                            <p style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">Board Initialized</p>
-                            <p style="font-size: 0.9rem;">Ready for your chess engine or interactive move logic script.</p>
-                        </div>
+                    <!-- Real 8x8 Chess Grid Container for Piece Placement -->
+                    <div class="chess-board" id="chessBoard">
+                        <!-- Rank 8 -->
+                        <div class="square light" data-square="a8">∜</div>
+                        <div class="square dark" data-square="b8">♞</div>
+                        <div class="square light" data-square="c8">♝</div>
+                        <div class="square dark" data-square="d8">♛</div>
+                        <div class="square light" data-square="e8">♚</div>
+                        <div class="square dark" data-square="f8">♝</div>
+                        <div class="square light" data-square="g8">♞</div>
+                        <div class="square dark" data-square="h8">∜</div>
+                        
+                        <!-- Rank 7 -->
+                        <div class="square dark" data-square="a7">♟</div>
+                        <div class="square light" data-square="b7">♟</div>
+                        <div class="square dark" data-square="c7">♟</div>
+                        <div class="square light" data-square="d7">♟</div>
+                        <div class="square dark" data-square="e7">♟</div>
+                        <div class="square light" data-square="f7">♟</div>
+                        <div class="square dark" data-square="g7">♟</div>
+                        <div class="square light" data-square="h7">♟</div>
+
+                        <!-- Ranks 6 to 3 (Empty Squares with alternating patterns) -->
+                        <!-- Rank 6 -->
+                        <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
+                        <!-- Rank 5 -->
+                        <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
+                        <!-- Rank 4 -->
+                        <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
+                        <!-- Rank 3 -->
+                        <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
+
+                        <!-- Rank 2 -->
+                        <div class="square light" data-square="a2">♙</div>
+                        <div class="square dark" data-square="b2">♙</div>
+                        <div class="square light" data-square="c2">♙</div>
+                        <div class="square dark" data-square="d2">♙</div>
+                        <div class="square light" data-square="e2">♙</div>
+                        <div class="square dark" data-square="f2">♙</div>
+                        <div class="square light" data-square="g2">♙</div>
+                        <div class="square dark" data-square="h2">♙</div>
+
+                        <!-- Rank 1 -->
+                        <div class="square dark" data-square="a1">♖</div>
+                        <div class="square light" data-square="b1">♘</div>
+                        <div class="square dark" data-square="c1">♗</div>
+                        <div class="square light" data-square="d1">♕</div>
+                        <div class="square dark" data-square="e1">♔</div>
+                        <div class="square light" data-square="f1">♗</div>
+                        <div class="square dark" data-square="g1">♘</div>
+                        <div class="square light" data-square="h1">♖</div>
                     </div>
                 </div>
             </div>

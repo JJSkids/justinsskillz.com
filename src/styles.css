@@ -104,7 +104,8 @@ a {
    4. Header & Navigation
    -------------------------------------------------------------------------- */
 .app-header {
-  background: rgba(var(--bg-surface), 0.8);
+  background: var(--bg-surface);
+  opacity: 0.95;
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-subtle);
@@ -172,7 +173,7 @@ a {
 }
 
 /* --------------------------------------------------------------------------
-   5. Buttons & Forms
+   5. Buttons & Form Elements
    -------------------------------------------------------------------------- */
 .btn {
   display: inline-flex;
@@ -212,6 +213,13 @@ a {
 
 input, select, textarea {
   outline: none;
+  background: var(--bg-pill);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem;
+  font-family: inherit;
+  font-size: 0.95rem;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -221,13 +229,14 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* --------------------------------------------------------------------------
-   6. Modal (Auth & Alerts)
+   6. Modal, Auth & OAuth Layouts
    -------------------------------------------------------------------------- */
 .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -249,12 +258,61 @@ input:focus, select:focus, textarea:focus {
   border-radius: var(--radius-md);
   width: 90%;
   max-width: 400px;
+  position: relative;
   transform: translateY(20px);
   transition: transform 0.3s ease;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
 }
 
 .modal-overlay.active .modal-content {
   transform: translateY(0);
+}
+
+.oauth-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.btn-oauth {
+  background: var(--bg-pill);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+}
+
+.btn-oauth:hover {
+  background: var(--border-subtle);
+  transform: translateY(-1px);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.auth-divider span {
+  padding: 0 10px;
 }
 
 /* --------------------------------------------------------------------------
@@ -361,12 +419,11 @@ input:focus, select:focus, textarea:focus {
   z-index: 10;
 }
 
-/* SVG Vector Piece Styling */
 .chess-piece {
   width: 85%;
   height: 85%;
   object-fit: contain;
-  pointer-events: none; /* Let clicks pass to the square */
+  pointer-events: none;
   filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.4));
   transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 5;
@@ -399,17 +456,18 @@ input:focus, select:focus, textarea:focus {
     flex-direction: column;
     gap: 1rem;
     padding: 1rem;
+    text-align: center;
   }
   
   .nav-menu {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 1rem;
   }
-  
-  .theme-toggle-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+
+  .nav-actions {
+    width: 100%;
+    justify-content: center;
   }
   
   .board-frame {

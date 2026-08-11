@@ -1,71 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Justin's Skillz - Dashboard</title>
-    <!-- Favicon -->
-    <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
-    <!-- Master Stylesheet -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Justin's Skillz</title>
+
+  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
+  <script src="config.js" defer></script>
 </head>
 <body>
 
-    <header>
-        <a href="dashboard.html" class="logo-container">
-            <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
-            <span>Justin's Skillz</span>
-        </a>
-    </header>
+  <div class="bg-glow glow-top-left"></div>
+  <div class="bg-glow glow-bottom-right"></div>
 
-    <main class="dashboard-container animate-fade-in">
-        <h1 class="dashboard-title">Workspace Dashboard</h1>
-        <p class="dashboard-subtitle">Select a module to continue learning and building.</p>
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
 
-        <div class="modules-grid">
-            <a href="math.html" class="module-card">
-                <div>
-                    <h3>Math</h3>
-                    <p>Practice advanced equations, problem-solving, and competition challenges.</p>
-                </div>
-            </a>
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="chess.html" class="nav-link">Chess AI</a>
+        <a href="math.html" class="nav-link">Math Lab</a>
+      </nav>
 
-            <a href="music.html" class="module-card">
-                <div>
-                    <h3>Music</h3>
-                    <p>Explore music theory, tracks, and interactive audio tools.</p>
-                </div>
-            </a>
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+      </div>
+    </div>
+  </header>
 
-            <a href="french.html" class="module-card">
-                <div>
-                    <h3>French</h3>
-                    <p>Master verb conjugations, grammar rules, and vocabulary.</p>
-                </div>
-            </a>
-
-            <a href="coding.html" class="module-card">
-                <div>
-                    <h3>Coding</h3>
-                    <p>Build web applications, scripts, HTML/CSS, and database integration.</p>
-                </div>
-            </a>
-
-            <a href="chess.html" class="module-card">
-                <div>
-                    <h3>Chess</h3>
-                    <p>Sharpen your tactical skills, strategy, and gameplay against engines.</p>
-                </div>
-            </a>
-
-            <a href="robotics.html" class="module-card">
-                <div>
-                    <h3>Robotics</h3>
-                    <p>Experiment with hardware prototyping, circuits, and automation scripts.</p>
-                </div>
-            </a>
+  <main class="main-content">
+    <div class="container">
+      
+      <section class="hero" style="margin-bottom: 3rem;">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span> Control Center
         </div>
-    </main>
+        <h1 class="hero-title">
+          Your Developer & <span class="gradient-text">STEM Studio</span>
+        </h1>
+        <p class="hero-subtitle">
+          Manage your modules, check command block scripts, and track your learning progress across web tools, math, and code.
+        </p>
+      </section>
+
+      <section class="modules-section">
+        <div class="grid">
+          
+          <div class="card">
+            <div class="card-top">
+              <div class="card-icon icon-purple">⚡</div>
+              <span class="badge badge-purple">Active Status</span>
+            </div>
+            <h3 class="card-title">Project Workspace</h3>
+            <p class="card-description">Quick access to your deployed modules, databases, and configuration settings.</p>
+            <div class="tag-group">
+              <span class="tag">Supabase DB</span>
+              <span class="tag">HTML5 / CSS</span>
+            </div>
+            <a href="../index.html" class="btn btn-card">Back to Home &rarr;</a>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <div class="card-icon icon-emerald">📦</div>
+              <span class="badge badge-emerald">Bedrock 1.21</span>
+            </div>
+            <h3 class="card-title">Minecraft Engineering</h3>
+            <p class="card-description">Command block string tools, death-tracking setups, and custom loot table builders.</p>
+            <div class="tag-group">
+              <span class="tag">Command Blocks</span>
+              <span class="tag">Scoreboards</span>
+            </div>
+            <a href="chess.html" class="btn btn-card-secondary">Launch Chess AI</a>
+          </div>
+
+          <div class="card">
+            <div class="card-top">
+              <div class="card-icon icon-blue">📐</div>
+              <span class="badge badge-blue">Competition Prep</span>
+            </div>
+            <h3 class="card-title">UNB Math Lab</h3>
+            <p class="card-description">Review competitive math problems, advanced algebra, and practice sets.</p>
+            <div class="tag-group">
+              <span class="tag">Algebra</span>
+              <span class="tag">Modular Math</span>
+            </div>
+            <a href="math.html" class="btn btn-card-secondary">Open Math Lab</a>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
+    </div>
+  </footer>
 
 </body>
 </html>

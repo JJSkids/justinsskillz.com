@@ -93,6 +93,18 @@ async function signInWithGoogle() {
   if (error) alert("❌ Google Sign-In Error:\n\n" + error.message);
 }
 
+async function signInWithGithub() {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'github',
+    options: {
+      redirectTo: window.location.origin + '/index.html'
+    }
+  });
+  if (error) {
+    alert("Error signing in with GitHub: " + error.message);
+  }
+}
+
 async function signOut() {
   const client = getSupabase();
   if (client && client.auth) {

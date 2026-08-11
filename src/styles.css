@@ -1,135 +1,70 @@
-/* ==========================================================================
-   Justin's Skillz - Master Global Stylesheet
-   Covers: Hub, Dashboard, Auth, Wikimedia Commons, and Chess Engine
-   ========================================================================== */
-
-/* --------------------------------------------------------------------------
-   1. CSS Variables & Theming (Dark Mode Default)
-   -------------------------------------------------------------------------- */
-:root, [data-theme="dark"] {
-  --bg-main: #0f172a;
-  --bg-surface: #1e293b;
-  --bg-pill: #334155;
+/* CSS Variables & Theme Setup */
+:root {
+  --bg-primary: #0f172a;
+  --bg-card: #1e293b;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
-  --accent-cyan: #38bdf8;
-  --accent-cyan-hover: #0ea5e9;
-  --accent-purple: #818cf8;
-  --border-subtle: #475569;
-  
-  /* Chess Board Colors */
-  --board-light: #eeeed2;
-  --board-dark: #769656;
-  --board-selected: rgba(255, 235, 59, 0.7);
-  --board-highlight: rgba(56, 189, 248, 0.6);
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 24px;
+  --border-color: #334155;
+  --accent-gradient: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
 }
 
 [data-theme="light"] {
-  --bg-main: #f8fafc;
-  --bg-surface: #ffffff;
-  --bg-pill: #f1f5f9;
+  --bg-primary: #f8fafc;
+  --bg-card: #ffffff;
   --text-main: #0f172a;
   --text-muted: #64748b;
-  --accent-cyan: #0284c7;
-  --accent-cyan-hover: #0369a1;
-  --accent-purple: #6366f1;
-  --border-subtle: #e2e8f0;
+  --border-color: #e2e8f0;
 }
 
-/* --------------------------------------------------------------------------
-   2. Reset & Typography
-   -------------------------------------------------------------------------- */
 * {
+  box-sizing: border-box;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', sans-serif;
 }
 
 body {
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-main);
+  background-color: var(--bg-primary);
   color: var(--text-main);
-  line-height: 1.5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-h1, h2, h3, h4 {
-  line-height: 1.2;
-  font-weight: 700;
-}
-
-a {
-  text-decoration: none;
-  color: inherit;
-}
-
-.gradient-text {
-  background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* --------------------------------------------------------------------------
-   3. Global Layout Utilities
-   -------------------------------------------------------------------------- */
-.main-content {
-  flex: 1;
-}
-
 .container {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
+  padding: 0 1.5rem;
 }
 
-.card {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-/* --------------------------------------------------------------------------
-   4. Header & Navigation
-   -------------------------------------------------------------------------- */
+/* App Header */
 .app-header {
-  background: var(--bg-surface);
-  opacity: 0.95;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--bg-card);
   position: sticky;
   top: 0;
   z-index: 100;
 }
 
 .header-container {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 70px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
 .logo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  text-decoration: none;
   font-weight: 800;
   font-size: 1.25rem;
-  letter-spacing: -0.02em;
 }
 
 .logo-icon {
@@ -142,126 +77,141 @@ a {
 }
 
 .nav-link {
-  font-weight: 600;
-  font-size: 0.95rem;
+  text-decoration: none;
   color: var(--text-muted);
+  font-weight: 500;
+  font-size: 0.95rem;
   transition: color 0.2s;
-  padding: 0.5rem 0;
 }
 
 .nav-link:hover, .nav-link.active {
-  color: var(--accent-cyan);
-}
-
-.theme-toggle-btn {
-  background: var(--bg-pill);
-  border: 1px solid var(--border-subtle);
   color: var(--text-main);
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-family: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  transition: background 0.2s;
 }
 
-.theme-toggle-btn:hover {
-  background: var(--border-subtle);
-}
-
-/* --------------------------------------------------------------------------
-   5. Buttons & Form Elements
-   -------------------------------------------------------------------------- */
+/* Buttons */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 0.65rem 1.25rem;
-  border-radius: var(--radius-sm);
+  padding: 0.6rem 1.25rem;
+  border-radius: 0.5rem;
   font-weight: 600;
-  font-family: inherit;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   cursor: pointer;
   border: none;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.9;
 }
 
 .btn-primary {
-  background: var(--accent-cyan);
+  background: linear-gradient(135deg, #6366f1, #a855f7);
   color: #fff;
-  box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
-}
-
-.btn-primary:hover {
-  background: var(--accent-cyan-hover);
-  transform: translateY(-1px);
 }
 
 .btn-secondary {
-  background: var(--bg-pill);
+  background-color: var(--border-color);
   color: var(--text-main);
-  border: 1px solid var(--border-subtle);
 }
 
-.btn-secondary:hover {
-  background: var(--border-subtle);
-}
-
-input, select, textarea {
-  outline: none;
-  background: var(--bg-pill);
+.theme-toggle-btn {
+  background: none;
+  border: 1px solid var(--border-color);
   color: var(--text-main);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  padding: 0.75rem;
-  font-family: inherit;
-  font-size: 0.95rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
-input:focus, select:focus, textarea:focus {
-  border-color: var(--accent-cyan) !important;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+/* Main Content & Cards */
+.main-content {
+  flex: 1;
 }
 
-/* --------------------------------------------------------------------------
-   6. Modal, Auth & OAuth Layouts
-   -------------------------------------------------------------------------- */
+.card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.stem-studio-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.animated-circle {
+  width: 12px;
+  height: 12px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.module-card {
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.module-card:hover {
+  transform: translateY(-3px);
+  border-color: #6366f1;
+}
+
+/* Modal Styling */
 .modal-overlay {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
   opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1000;
 }
 
 .modal-overlay.active {
   opacity: 1;
-  pointer-events: all;
+  visibility: visible;
 }
 
 .modal-content {
-  background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
-  padding: 2rem;
-  border-radius: var(--radius-md);
-  width: 90%;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 1rem;
+  width: 100%;
   max-width: 400px;
-  position: relative;
-  transform: translateY(20px);
-  transition: transform 0.3s ease;
+  padding: 2rem;
   box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+  transform: translateY(10px);
+  transition: transform 0.3s ease;
 }
 
 .modal-overlay.active .modal-content {
@@ -272,250 +222,79 @@ input:focus, select:focus, textarea:focus {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  margin-bottom: 1.25rem;
 }
 
 .btn-oauth {
-  background: var(--bg-pill);
-  color: var(--text-main);
-  border: 1px solid var(--border-subtle);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
   width: 100%;
   padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
   font-weight: 600;
-  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color 0.2s;
 }
 
 .btn-oauth:hover {
-  background: var(--border-subtle);
-  transform: translateY(-1px);
+  background-color: var(--border-color);
 }
 
 .auth-divider {
-  display: flex;
-  align-items: center;
+  margin: 1.25rem 0;
   text-align: center;
-  margin-bottom: 1.25rem;
-  color: var(--text-muted);
-  font-size: 0.85rem;
-  font-weight: 600;
+  position: relative;
 }
 
-.auth-divider::before,
-.auth-divider::after {
-  content: '';
-  flex: 1;
-  border-bottom: 1px solid var(--border-subtle);
+.auth-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--border-color);
+  z-index: 1;
 }
 
 .auth-divider span {
-  padding: 0 10px;
-}
-
-/* --------------------------------------------------------------------------
-   7. Dashboard & Module Grid
-   -------------------------------------------------------------------------- */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.module-card {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.module-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--accent-cyan);
-}
-
-.module-icon {
-  font-size: 2.5rem;
-  background: var(--bg-pill);
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: var(--radius-sm);
-}
-
-/* --------------------------------------------------------------------------
-   8. Interactive STEM & Web Studio Animated Elements
-   -------------------------------------------------------------------------- */
-.stem-studio-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.animated-circle {
-  width: 12px;
-  height: 12px;
-  background-color: var(--accent-cyan);
-  border-radius: 50%;
-  display: inline-block;
+  background-color: var(--bg-card);
+  padding: 0 0.75rem;
   position: relative;
+  z-index: 2;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
-.animated-circle::after {
-  content: '';
-  position: absolute;
-  top: -4px;
-  left: -4px;
-  right: -4px;
-  bottom: -4px;
-  border: 2px solid var(--accent-cyan);
-  border-radius: 50%;
-  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-}
-
-@keyframes pulse-ring {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.4);
-    opacity: 0.4;
-  }
-  100% {
-    transform: scale(1.8);
-    opacity: 0;
-  }
-}
-
-/* --------------------------------------------------------------------------
-   9. Wikimedia Commons Hub
-   -------------------------------------------------------------------------- */
-#dropzone {
-  border: 2px dashed var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 2rem;
-  text-align: center;
-  background: var(--bg-pill);
-  cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
-}
-
-#dropzone:hover {
-  border-color: var(--accent-cyan);
-  background: rgba(56, 189, 248, 0.05);
-}
-
-/* --------------------------------------------------------------------------
-   10. Chess Board Engine Styles
-   -------------------------------------------------------------------------- */
-.chess-layout {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 1rem;
-}
-
-.board-frame {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
-  grid-template-rows: repeat(8, 1fr);
+input[type="email"], input[type="password"] {
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-size: 0.95rem;
   width: 100%;
-  max-width: 600px;
-  aspect-ratio: 1 / 1;
-  border: 4px solid var(--border-subtle);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
 }
 
-.square {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-  user-select: none;
+input:focus {
+  outline: none;
+  border-color: #6366f1;
 }
 
-.square.light {
-  background-color: var(--board-light);
-}
-
-.square.dark {
-  background-color: var(--board-dark);
-}
-
-.square.selected {
-  background-color: var(--board-selected) !important;
-}
-
-.square.highlight-move::after {
-  content: '';
-  width: 25%;
-  height: 25%;
-  background-color: var(--board-highlight);
-  border-radius: 50%;
-  position: absolute;
-  z-index: 10;
-}
-
-.chess-piece {
-  width: 85%;
-  height: 85%;
-  object-fit: contain;
-  pointer-events: none;
-  filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.4));
-  transition: transform 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 5;
-}
-
-.square:hover .chess-piece {
-  transform: scale(1.1);
-}
-
-/* --------------------------------------------------------------------------
-   11. Footer
-   -------------------------------------------------------------------------- */
+/* Footer */
 .app-footer {
-  border-top: 1px solid var(--border-subtle);
-  padding: 2rem 0;
-  margin-top: auto;
+  border-top: 1px solid var(--border-color);
+  background-color: var(--bg-card);
+  padding: 1.5rem 0;
   text-align: center;
+  margin-top: auto;
 }
 
 .footer-text {
   color: var(--text-muted);
-  font-size: 0.9rem;
-}
-
-/* --------------------------------------------------------------------------
-   12. Responsive Media Queries (Tablet/Mobile support)
-   -------------------------------------------------------------------------- */
-@media (max-width: 768px) {
-  .header-container {
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-    text-align: center;
-  }
-  
-  .nav-menu {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-  }
-
-  .nav-actions {
-    width: 100%;
-    justify-content: center;
-  }
-  
-  .board-frame {
-    max-width: 100%;
-  }
+  font-size: 0.85rem;
 }

@@ -1,33 +1,51 @@
 /* ==========================================================================
-   THEME CONFIGURATION & VARIABLES
+   1. GLOBAL VARIABLES & THEME CONFIGURATION
    ========================================================================== */
 :root, [data-theme="dark"] {
-    --bg-color: #0f1015;
-    --surface-color: #161821;
-    --card-bg: #1a1c26;
+    /* Color Palette */
+    --bg-color: #0f0f12;
+    --surface-color: #16161a;
+    --card-bg: #1e1e24;
+    --card-hover: #25252e;
+    --border-color: #2a2a35;
     --border-subtle: #2d3142;
-    --border-color: #2d3142;
+    --border-hover: #e6b800;
     
+    /* Brand Accents */
     --accent-color: #e6b800;
     --accent-hover: #ffd700;
+    --accent-glow: rgba(230, 184, 0, 0.25);
     --accent-cyan: #2ec4b6;
     
+    /* Text Colors */
+    --text-primary: #ffffff;
     --text-main: #ffffff;
-    --text-secondary: #a0a4b8;
-    --text-muted: #7b7f95;
+    --text-secondary: #a0a0b0;
+    --text-muted: #6c6c80;
     
+    /* UI Elements */
     --bg-pill: #222532;
-    
+    --success-color: #2ec4b6;
+    --danger-color: #e71d36;
+    --warning-color: #ff9f1c;
+
+    /* Shadows & Elevation */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 16px 32px rgba(0, 0, 0, 0.8);
+    --shadow-glow: 0 0 20px var(--accent-glow);
+
+    /* Transitions & Radii */
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.3s ease;
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 20px;
-    
-    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+    --radius-full: 9999px;
 }
 
 /* ==========================================================================
-   RESET & BASE STYLES
+   2. CSS RESET & BASE STYLES
    ========================================================================== */
 *, *::before, *::after {
     box-sizing: border-box;
@@ -35,66 +53,69 @@
     padding: 0;
 }
 
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+
 body {
     background-color: var(--bg-color);
-    color: var(--text-main);
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
 }
 
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-color);
+}
+
 /* ==========================================================================
-   HEADER & NAVIGATION
+   3. TYPOGRAPHY
    ========================================================================== */
-.app-header {
-    position: sticky;
-    top: 0;
-    background-color: rgba(22, 24, 33, 0.85);
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border-subtle);
-    z-index: 1000;
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-primary);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.5em;
 }
 
-.header-container {
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 0 2rem;
-    height: 75px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+h1 { font-size: clamp(2rem, 5vw, 3rem); }
+h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); }
+h3 { font-size: clamp(1.25rem, 3vw, 1.5rem); }
+
+p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
 }
 
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+a {
+    color: var(--accent-color);
     text-decoration: none;
-    font-weight: 800;
-    font-size: 1.15rem;
-    color: var(--text-main);
-    transition: transform 0.2s ease;
+    transition: color var(--transition-fast);
 }
 
-.logo:hover {
-    transform: scale(1.02);
-}
-
-.nav-logo-img {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid var(--accent-color);
-    box-shadow: 0 0 10px rgba(230, 184, 0, 0.2);
-}
-
-.logo-text {
-    letter-spacing: 0.5px;
+a:hover {
+    color: var(--accent-hover);
 }
 
 .gradient-text {
@@ -105,10 +126,67 @@ body {
     color: transparent;
 }
 
+/* ==========================================================================
+   4. NAVIGATION & HEADER
+   ========================================================================== */
+.app-header {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 75px;
+    display: flex;
+    align-items: center;
+    background-color: rgba(22, 22, 26, 0.85);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    z-index: 1000;
+    box-shadow: var(--shadow-sm);
+}
+
+.header-container {
+    max-width: 1280px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    text-decoration: none;
+    transition: transform var(--transition-fast);
+}
+
+.logo:hover {
+    transform: scale(1.02);
+}
+
+.nav-logo-img {
+    width: 38px;
+    height: 38px;
+    border-radius: var(--radius-full);
+    object-fit: cover;
+    border: 2px solid var(--accent-color);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.logo-text {
+    letter-spacing: 0.5px;
+}
+
 .nav-menu {
     display: flex;
     align-items: center;
     gap: 1.5rem;
+    list-style: none;
 }
 
 .nav-link {
@@ -116,7 +194,7 @@ body {
     text-decoration: none;
     font-weight: 600;
     font-size: 0.95rem;
-    transition: color 0.2s ease;
+    transition: color var(--transition-fast);
 }
 
 .nav-link:hover, .nav-link.active {
@@ -132,7 +210,7 @@ body {
 .theme-toggle-btn {
     background: var(--bg-pill);
     border: 1px solid var(--border-subtle);
-    color: var(--text-main);
+    color: var(--text-primary);
     padding: 0.5rem 1rem;
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -142,7 +220,7 @@ body {
     display: flex;
     align-items: center;
     gap: 6px;
-    transition: all 0.2s ease;
+    transition: all var(--transition-normal);
 }
 
 .theme-toggle-btn:hover {
@@ -155,97 +233,182 @@ body {
     font-size: 1rem;
 }
 
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--accent-color);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    background: rgba(230, 184, 0, 0.1);
+    border: 1px solid rgba(230, 184, 0, 0.2);
+    transition: all var(--transition-normal);
+}
+
+.back-link:hover {
+    background: var(--accent-color);
+    color: #000000;
+    box-shadow: var(--shadow-glow);
+}
+
 /* ==========================================================================
-   LAYOUT CONTAINERS, CARDS & DASHBOARD TYPOGRAPHY
+   5. LAYOUT CONTAINERS & GRID SYSTEM
    ========================================================================== */
 .main-content {
     flex: 1;
 }
 
-.container {
-    max-width: 1200px;
+.container, 
+.dashboard-container, 
+.content-container {
+    max-width: 1280px;
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 2.5rem 1.5rem;
+    width: 100%;
 }
 
 .dashboard-title {
     font-size: clamp(1.75rem, 4vw, 2.5rem);
     font-weight: 800;
-    color: var(--text-main);
+    color: var(--text-primary);
     margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px var(--accent-glow);
 }
 
 .dashboard-subtitle {
     color: var(--text-secondary);
     font-size: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 
 .modules-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
-.module-card {
+/* ==========================================================================
+   6. CARDS & INTERACTIVE MODULES
+   ========================================================================== */
+.module-card, 
+.card {
     background-color: var(--card-bg);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
-    padding: 1.75rem;
-    text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    transition: all 0.2s ease;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all var(--transition-normal);
     box-shadow: var(--shadow-sm);
 }
 
+.module-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    text-decoration: none;
+}
+
+.module-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
 .module-card:hover {
+    transform: translateY(-6px);
+    background-color: var(--card-hover);
     border-color: var(--accent-color);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+.module-card:hover::before {
+    opacity: 1;
 }
 
 .module-card h3 {
     color: var(--accent-color);
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.35rem;
+    margin-bottom: 0;
 }
 
 .module-card p {
     color: var(--text-secondary);
-    font-size: 0.925rem;
-    line-height: 1.5;
-    margin: 0;
-}
-
-.card {
-    background-color: var(--card-bg);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-sm);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0;
 }
 
 /* ==========================================================================
-   BUTTONS
+   7. FIX FOR MODALS & AUTH CONTAINERS (Prevents floating at bottom)
+   ========================================================================== */
+.auth-modal, 
+.auth-container,
+.modal-overlay {
+    display: none; /* Hidden by default until toggled by JS */
+}
+
+.auth-modal.active, 
+.auth-container.active,
+.modal-overlay.active {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ==========================================================================
+   8. BUTTONS & CONTROLS
    ========================================================================== */
 .btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
+    padding: 10px 20px;
     font-family: inherit;
+    font-size: 0.95rem;
     font-weight: 600;
     border-radius: var(--radius-sm);
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.2s ease;
     border: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--accent-color);
+    color: #000000;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    box-shadow: var(--shadow-glow);
+    transform: translateY(-2px);
 }
 
 .btn-secondary {
     background: var(--bg-pill);
-    color: var(--text-main);
+    color: var(--text-primary);
     border: 1px solid var(--border-subtle);
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
@@ -257,7 +420,7 @@ body {
 }
 
 /* ==========================================================================
-   CHESS BOARD SPECIFIC LAYOUT
+   9. CHESS & SPECIALIZED MODULE WRAPPERS
    ========================================================================== */
 .chess-layout {
     display: flex;
@@ -279,12 +442,12 @@ body {
 }
 
 /* ==========================================================================
-   FOOTER
+   10. FOOTER
    ========================================================================== */
 .app-footer {
     background-color: var(--surface-color);
     border-top: 1px solid var(--border-subtle);
-    padding: 1.5rem 0;
+    padding: 2rem 0;
     text-align: center;
     margin-top: auto;
 }
@@ -292,10 +455,11 @@ body {
 .footer-text {
     color: var(--text-muted);
     font-size: 0.85rem;
+    margin: 0;
 }
 
 /* ==========================================================================
-   RESPONSIVE DESIGN
+   11. RESPONSIVE MEDIA QUERIES
    ========================================================================== */
 @media (max-width: 768px) {
     .header-container {
@@ -305,10 +469,21 @@ body {
     .nav-menu {
         display: none;
     }
+    
+    .container, 
+    .dashboard-container, 
+    .content-container {
+        padding: 1.5rem 1rem;
+    }
+
+    .modules-grid {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
 
     .board-frame {
         width: 100%;
-        max-width: 380px;
-        height: 380px;
+        max-width: 360px;
+        height: 360px;
     }
 }

@@ -7,74 +7,103 @@
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
     <style>
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1a1a1a;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+            --accent-color: #e6b800;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+        }
+
         body {
-            background-color: #121212;
-            color: #ffffff;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            padding-top: 80px; /* Prevents header overlap */
         }
+
         header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 20px 40px;
-            background-color: #1a1a1a;
-            border-bottom: 2px solid #e6b800;
+            padding: 15px 30px;
+            background-color: var(--surface-color);
+            border-bottom: 2px solid var(--accent-color);
+            box-sizing: border-box;
+            z-index: 1000;
         }
+
         .logo-container {
             display: flex;
             align-items: center;
             gap: 15px;
-            font-size: 24px;
+            font-size: clamp(20px, 4vw, 24px);
             font-weight: bold;
-            color: #e6b800;
+            color: var(--accent-color);
+            text-decoration: none;
         }
-        /* Lightning removed and replaced with logo image */
+
         .nav-logo-img {
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             object-fit: cover;
-            border: 1px solid #e6b800;
+            border: 1px solid var(--accent-color);
         }
+
         .dashboard-container {
             max-width: 1200px;
             margin: 40px auto;
             padding: 0 20px;
         }
+
         .dashboard-title {
             text-align: center;
-            color: #e6b800;
-            margin-bottom: 30px;
+            color: var(--accent-color);
+            font-size: clamp(28px, 5vw, 36px);
+            margin-bottom: 40px;
         }
+
         .modules-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            gap: 25px;
         }
+
         .module-card {
-            background-color: #1e1e1e;
-            border: 1px solid #333;
-            border-radius: 8px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
             padding: 30px;
             text-align: center;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: transform 0.2s ease, border-color 0.2s ease;
             text-decoration: none;
-            color: #ffffff;
+            color: var(--text-primary);
         }
+
         .module-card:hover {
             transform: translateY(-5px);
-            border-color: #e6b800;
+            border-color: var(--accent-color);
         }
+
         .module-card h3 {
-            color: #e6b800;
+            color: var(--accent-color);
             margin-top: 0;
             font-size: 22px;
         }
+
         .module-card p {
-            color: #cccccc;
+            color: var(--text-secondary);
             font-size: 14px;
+            line-height: 1.5;
             margin-bottom: 0;
         }
     </style>
@@ -82,23 +111,22 @@
 <body>
 
     <header>
-        <div class="logo-container">
-            <!-- Lightning icon removed and replaced with the logo image -->
+        <a href="dashboard.html" class="logo-container">
             <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
             <span>Justin's Skillz</span>
-        </div>
+        </a>
     </header>
 
     <main class="dashboard-container">
-        <h1 class="dashboard-title">Dashboard Modules</h1>
+        <h1 class="dashboard-title">Workspace Dashboard</h1>
         <div class="modules-grid">
             <a href="math.html" class="module-card">
                 <h3>Math</h3>
-                <p>Practice advanced equations, problem-solving, and challenges.</p>
+                <p>Practice advanced equations, problem-solving, and competition challenges.</p>
             </a>
             <a href="music.html" class="module-card">
                 <h3>Music</h3>
-                <p>Explore music theory, tracks, and creative audio tools.</p>
+                <p>Explore music theory, tracks, and interactive audio tools.</p>
             </a>
             <a href="french.html" class="module-card">
                 <h3>French</h3>
@@ -110,11 +138,11 @@
             </a>
             <a href="chess.html" class="module-card">
                 <h3>Chess</h3>
-                <p>Sharpen your tactical skills, strategy, and gameplay.</p>
+                <p>Sharpen your tactical skills, strategy, and gameplay against engines.</p>
             </a>
             <a href="robotics.html" class="module-card">
                 <h3>Robotics</h3>
-                <p>Experiment with hardware prototyping, circuits, and automation.</p>
+                <p>Experiment with hardware prototyping, circuits, and automation scripts.</p>
             </a>
         </div>
     </main>

@@ -14,7 +14,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="styles.css">
-  <script src="config.js" defer></script>
   <script src="theme.js" defer></script>
 
   <style>
@@ -241,6 +240,10 @@
   </footer>
 
   <script>
+    // Direct Supabase Configuration Credentials
+    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+
     let game;
     let selectedSquare = null;
     let possibleMoves = [];
@@ -547,12 +550,9 @@
 
     async function saveGameToSupabase() {
       const feedbackEl = document.getElementById('save-feedback');
-      
-      const sbUrl = window.SUPABASE_URL || (typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : null);
-      const sbKey = window.SUPABASE_ANON_KEY || (typeof SUPABASE_ANON_KEY !== 'undefined' ? SUPABASE_ANON_KEY : null);
 
-      if (typeof supabase === 'undefined' || !sbUrl || !sbKey) {
-        feedbackEl.textContent = "Supabase client not initialized in config.js!";
+      if (typeof supabase === 'undefined' || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+        feedbackEl.textContent = "Supabase client not initialized!";
         return;
       }
 
@@ -562,7 +562,7 @@
         const moveHistoryText = document.getElementById('move-history').textContent;
         const difficulty = document.getElementById('ai-difficulty').value;
 
-        const client = supabase.createClient(sbUrl, sbKey);
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
         const { error } = await client
           .from('chess_games')

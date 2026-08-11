@@ -6,107 +6,8 @@
     <title>Justin's Skillz - Dashboard</title>
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
-    <style>
-        :root {
-            --bg-color: #121212;
-            --surface-color: #1a1a1a;
-            --card-bg: #1e1e1e;
-            --border-color: #333333;
-            --accent-color: #e6b800;
-            --text-primary: #ffffff;
-            --text-secondary: #cccccc;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            padding-top: 80px; /* Prevents header overlap */
-        }
-
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 15px 30px;
-            background-color: var(--surface-color);
-            border-bottom: 2px solid var(--accent-color);
-            box-sizing: border-box;
-            z-index: 1000;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: clamp(20px, 4vw, 24px);
-            font-weight: bold;
-            color: var(--accent-color);
-            text-decoration: none;
-        }
-
-        .nav-logo-img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 1px solid var(--accent-color);
-        }
-
-        .dashboard-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
-
-        .dashboard-title {
-            text-align: center;
-            color: var(--accent-color);
-            font-size: clamp(28px, 5vw, 36px);
-            margin-bottom: 40px;
-        }
-
-        .modules-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-        }
-
-        .module-card {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 30px;
-            text-align: center;
-            transition: transform 0.2s ease, border-color 0.2s ease;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-
-        .module-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent-color);
-        }
-
-        .module-card h3 {
-            color: var(--accent-color);
-            margin-top: 0;
-            font-size: 22px;
-        }
-
-        .module-card p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 0;
-        }
-    </style>
+    <!-- Master Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -117,32 +18,51 @@
         </a>
     </header>
 
-    <main class="dashboard-container">
+    <main class="dashboard-container animate-fade-in">
         <h1 class="dashboard-title">Workspace Dashboard</h1>
+        <p class="dashboard-subtitle">Select a module to continue learning and building.</p>
+
         <div class="modules-grid">
             <a href="math.html" class="module-card">
-                <h3>Math</h3>
-                <p>Practice advanced equations, problem-solving, and competition challenges.</p>
+                <div>
+                    <h3>Math</h3>
+                    <p>Practice advanced equations, problem-solving, and competition challenges.</p>
+                </div>
             </a>
+
             <a href="music.html" class="module-card">
-                <h3>Music</h3>
-                <p>Explore music theory, tracks, and interactive audio tools.</p>
+                <div>
+                    <h3>Music</h3>
+                    <p>Explore music theory, tracks, and interactive audio tools.</p>
+                </div>
             </a>
+
             <a href="french.html" class="module-card">
-                <h3>French</h3>
-                <p>Master verb conjugations, grammar rules, and vocabulary.</p>
+                <div>
+                    <h3>French</h3>
+                    <p>Master verb conjugations, grammar rules, and vocabulary.</p>
+                </div>
             </a>
+
             <a href="coding.html" class="module-card">
-                <h3>Coding</h3>
-                <p>Build web applications, scripts, HTML/CSS, and database integration.</p>
+                <div>
+                    <h3>Coding</h3>
+                    <p>Build web applications, scripts, HTML/CSS, and database integration.</p>
+                </div>
             </a>
+
             <a href="chess.html" class="module-card">
-                <h3>Chess</h3>
-                <p>Sharpen your tactical skills, strategy, and gameplay against engines.</p>
+                <div>
+                    <h3>Chess</h3>
+                    <p>Sharpen your tactical skills, strategy, and gameplay against engines.</p>
+                </div>
             </a>
+
             <a href="robotics.html" class="module-card">
-                <h3>Robotics</h3>
-                <p>Experiment with hardware prototyping, circuits, and automation scripts.</p>
+                <div>
+                    <h3>Robotics</h3>
+                    <p>Experiment with hardware prototyping, circuits, and automation scripts.</p>
+                </div>
             </a>
         </div>
     </main>

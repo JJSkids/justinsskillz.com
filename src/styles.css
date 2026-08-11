@@ -53,6 +53,7 @@ body {
     position: sticky;
     top: 0;
     background-color: rgba(22, 24, 33, 0.85);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border-subtle);
     z-index: 1000;
@@ -99,7 +100,9 @@ body {
 .gradient-text {
     background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
+    color: transparent;
 }
 
 .nav-menu {

@@ -147,8 +147,13 @@ body {
     border-color: var(--text-secondary);
 }
 
+.theme-icon {
+    display: inline-block;
+    font-size: 1rem;
+}
+
 /* ==========================================================================
-   LAYOUT CONTAINERS & CARDS
+   LAYOUT CONTAINERS, CARDS & DASHBOARD TYPOGRAPHY
    ========================================================================== */
 .main-content {
     flex: 1;
@@ -158,6 +163,57 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
+}
+
+.dashboard-title {
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 800;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 2rem;
+}
+
+.modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.module-card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1.75rem;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.module-card:hover {
+    border-color: var(--accent-color);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.module-card h3 {
+    color: var(--accent-color);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.module-card p {
+    color: var(--text-secondary);
+    font-size: 0.925rem;
+    line-height: 1.5;
+    margin: 0;
 }
 
 .card {

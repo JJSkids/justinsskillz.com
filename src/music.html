@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Music Studio - Justin's Skillz</title>
+  
+  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="styles.css">
+  
+  <script src="theme.js" defer></script>
+  <script src="config.js" defer></script>
+  <script src="auth-index.js" defer></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="music.html" class="nav-link active">Music</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+        <div>
+          <h2>🎵 Music Studio & Theory</h2>
+          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
+            Explore music theory, tracks, and interactive audio tools.
+          </p>
+        </div>
+        <a href="dashboard.html" class="btn btn-secondary">&larr; Back to Dashboard</a>
+      </div>
+
+      <div class="card" style="padding: 2rem; margin-bottom: 1.5rem;">
+        <h3 style="color: var(--accent-color); margin-bottom: 1rem;">Interactive Audio & Tracks</h3>
+        <p style="color: var(--text-secondary); line-height: 1.6;">
+          Use this module to test audio properties, review music theory notes, and interact with built-in sound tools.
+        </p>
+        
+        <div style="background-color: var(--bg-pill); border: 1px dashed var(--border-subtle); padding: 3rem; border-radius: var(--radius-sm); text-align: center; margin-top: 1.5rem;">
+          <p style="color: var(--text-muted); margin: 0;">[ Audio Player & Synthesizer Workspace ]</p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,82 +1,123 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Justin's Skillz</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <link rel="stylesheet" href="styles.css">
-  <script src="theme.js" defer></script>
-  <script src="config.js" defer></script>
-  <script src="auth-index.js" defer></script>
-  <script src="auth-dashboard.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justin's Skillz - Dashboard</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            background-color: #1a1a1a;
+            border-bottom: 2px solid #e6b800;
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #e6b800;
+        }
+        /* Lightning removed and replaced with logo image */
+        .nav-logo-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid #e6b800;
+        }
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .dashboard-title {
+            text-align: center;
+            color: #e6b800;
+            margin-bottom: 30px;
+        }
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .module-card {
+            background-color: #1e1e1e;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.2s, border-color 0.2s;
+            text-decoration: none;
+            color: #ffffff;
+        }
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: #e6b800;
+        }
+        .module-card h3 {
+            color: #e6b800;
+            margin-top: 0;
+            font-size: 22px;
+        }
+        .module-card p {
+            color: #cccccc;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+    </style>
 </head>
 <body>
 
-  <header class="app-header">
-    <div class="header-container">
-      <a href="../index.html" class="logo">
-        <span class="logo-icon">⚡</span>
-        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
-      </a>
-
-      <nav class="nav-menu">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="dashboard.html" class="nav-link active">Dashboard</a>
-        <a href="chess.html" class="nav-link">Chess AI</a>
-        <a href="admin.html" class="nav-link" id="admin-nav-link" style="display: none;">Admin 🔒</a>
-      </nav>
-
-      <div class="nav-actions">
-        <button type="button" class="btn btn-secondary" id="auth-action-btn">Sign Out</button>
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="main-content">
-    <div class="container" style="padding-top: 3rem;">
-      
-      <div class="hero" style="padding-bottom: 2rem;">
-        <h1 class="hero-title" id="user-greeting">Loading workspace...</h1>
-        <p class="hero-subtitle">Your personal STEM, Web Development, and Minecraft engineering control panel.</p>
-      </div>
-
-      <div class="grid">
-        <div class="card">
-          <h3 class="card-title">📐 Math Workspace</h3>
-          <p class="card-description">UNB competition flashcards, algebra practice sheets, and modular arithmetic tools.</p>
-          <a href="math.html" class="btn btn-secondary" style="margin-top: 1rem; display: inline-block;">Launch Workspace</a>
+    <header>
+        <div class="logo-container">
+            <!-- Lightning icon removed and replaced with the logo image -->
+            <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+            <span>Justin's Skillz</span>
         </div>
+    </header>
 
-        <div class="card">
-          <h3 class="card-title">💻 Web Development Studio</h3>
-          <p class="card-description">HTML, CSS, TypeScript code sandbox and Supabase client integration.</p>
-          <a href="coding.html" class="btn btn-secondary" style="margin-top: 1rem; display: inline-block;">Open Code Studio</a>
+    <main class="dashboard-container">
+        <h1 class="dashboard-title">Dashboard Modules</h1>
+        <div class="modules-grid">
+            <a href="math.html" class="module-card">
+                <h3>Math</h3>
+                <p>Practice advanced equations, problem-solving, and challenges.</p>
+            </a>
+            <a href="music.html" class="module-card">
+                <h3>Music</h3>
+                <p>Explore music theory, tracks, and creative audio tools.</p>
+            </a>
+            <a href="french.html" class="module-card">
+                <h3>French</h3>
+                <p>Master verb conjugations, grammar rules, and vocabulary.</p>
+            </a>
+            <a href="coding.html" class="module-card">
+                <h3>Coding</h3>
+                <p>Build web applications, scripts, HTML/CSS, and database integration.</p>
+            </a>
+            <a href="chess.html" class="module-card">
+                <h3>Chess</h3>
+                <p>Sharpen your tactical skills, strategy, and gameplay.</p>
+            </a>
+            <a href="robotics.html" class="module-card">
+                <h3>Robotics</h3>
+                <p>Experiment with hardware prototyping, circuits, and automation.</p>
+            </a>
         </div>
-
-        <div class="card">
-          <h3 class="card-title">🤖 Robotics & Logic Gate Lab</h3>
-          <p class="card-description">Interactive digital logic gate tester (AND, OR, XOR, NAND, NOR).</p>
-          <a href="robotics.html" class="btn btn-secondary" style="margin-top: 1rem; display: inline-block;">Open Logic Lab</a>
-        </div>
-      </div>
-
-    </div>
-  </main>
-
-  <footer class="app-footer">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz.</p>
-    </div>
-  </footer>
+    </main>
 
 </body>
 </html>

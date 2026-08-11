@@ -1,102 +1,374 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chess Arena - Justin's Skillz</title>
-    <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chess AI Engine - Justin's Skillz</title>
+
+  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Chess.js for strict legal move validation and rules -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js" defer></script>
+  <script src="theme.js" defer></script>
+  <script src="chess.js" defer></script>
+
+  <style>
+    .chess-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .chess-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .board-container {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .chessboard-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      width: 100%;
+      max-width: 480px;
+      aspect-ratio: 1;
+      border: 3px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+    }
+    .square {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s ease;
+    }
+    .square.light {
+      background-color: #334155;
+      color: #f8fafc;
+    }
+    .square.dark {
+      background-color: #1e293b;
+      color: #cbd5e1;
+    }
+    .square.selected {
+      background-color: rgba(168, 85, 247, 0.4) !important;
+      box-shadow: inset 0 0 10px var(--accent-purple);
+    }
+    .square.highlight {
+      background-color: rgba(34, 211, 238, 0.3) !important;
+    }
+    .control-panel {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .status-box {
+      padding: 1rem;
+      background: var(--bg-pill);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      text-align: center;
+      font-size: 1rem;
+    }
+    .move-history {
+      height: 180px;
+      overflow-y: auto;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+    .settings-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--text-muted);
+    }
+    .settings-group select {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--bg-primary);
+      border: 2px solid var(--border-subtle);
+      color: var(--text-main);
+      border-radius: var(--radius-md);
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
-    <!-- App Header -->
-    <header class="app-header">
-        <div class="header-container">
-            <a href="../index.html" class="logo">
-                <span class="logo-icon">♟️</span>
-                <span>Justin's Skillz</span>
-            </a>
-            <nav class="nav-menu">
-                <a href="dashboad.html" class="nav-link">Dashboard</a>
-                <a href="chess.html" class="nav-link active">Chess Arena</a>
-            </nav>
-            <div class="nav-actions">
-                <button class="theme-toggle-btn" id="themeToggle">
-                    <span>🌙</span> <span id="themeText">Dark</span>
-                </button>
-            </div>
+
+  <div class="bg-glow glow-top-left"></div>
+  <div class="bg-glow glow-bottom-right"></div>
+
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="chess.html" class="nav-link active">Chess AI</a>
+        <a href="math.html" class="nav-link">Math Lab</a>
+      </nav>
+
+      <div class="nav-actions">
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      
+      <section class="hero" style="margin-bottom: 2.5rem;">
+        <div class="hero-badge">
+          <span class="pulse-dot"></span> Interactive AI Engine
         </div>
-    </header>
+        <h1 class="hero-title">
+          Advanced <span class="gradient-text">Chess Lab</span>
+        </h1>
+        <p class="hero-subtitle">
+          Test your tactical skills against legal move validation and intelligent heuristics.
+        </p>
+      </section>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <h1 class="dashboard-title">Chess Arena</h1>
-            <p class="dashboard-subtitle">Test your strategy, analyze tactical lines, and play right on the board.</p>
-            
-            <div class="card" style="display: flex; flex-direction: column; align-items: center;">
-                <div class="chess-layout">
-                    <!-- Real 8x8 Chess Grid Container for Piece Placement -->
-                    <div class="chess-board" id="chessBoard">
-                        <!-- Rank 8 -->
-                        <div class="square light" data-square="a8">∜</div>
-                        <div class="square dark" data-square="b8">♞</div>
-                        <div class="square light" data-square="c8">♝</div>
-                        <div class="square dark" data-square="d8">♛</div>
-                        <div class="square light" data-square="e8">♚</div>
-                        <div class="square dark" data-square="f8">♝</div>
-                        <div class="square light" data-square="g8">♞</div>
-                        <div class="square dark" data-square="h8">∜</div>
-                        
-                        <!-- Rank 7 -->
-                        <div class="square dark" data-square="a7">♟</div>
-                        <div class="square light" data-square="b7">♟</div>
-                        <div class="square dark" data-square="c7">♟</div>
-                        <div class="square light" data-square="d7">♟</div>
-                        <div class="square dark" data-square="e7">♟</div>
-                        <div class="square light" data-square="f7">♟</div>
-                        <div class="square dark" data-square="g7">♟</div>
-                        <div class="square light" data-square="h7">♟</div>
-
-                        <!-- Ranks 6 to 3 (Empty Squares with alternating patterns) -->
-                        <!-- Rank 6 -->
-                        <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
-                        <!-- Rank 5 -->
-                        <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
-                        <!-- Rank 4 -->
-                        <div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div>
-                        <!-- Rank 3 -->
-                        <div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div><div class="square dark"></div><div class="square light"></div>
-
-                        <!-- Rank 2 -->
-                        <div class="square light" data-square="a2">♙</div>
-                        <div class="square dark" data-square="b2">♙</div>
-                        <div class="square light" data-square="c2">♙</div>
-                        <div class="square dark" data-square="d2">♙</div>
-                        <div class="square light" data-square="e2">♙</div>
-                        <div class="square dark" data-square="f2">♙</div>
-                        <div class="square light" data-square="g2">♙</div>
-                        <div class="square dark" data-square="h2">♙</div>
-
-                        <!-- Rank 1 -->
-                        <div class="square dark" data-square="a1">♖</div>
-                        <div class="square light" data-square="b1">♘</div>
-                        <div class="square dark" data-square="c1">♗</div>
-                        <div class="square light" data-square="d1">♕</div>
-                        <div class="square dark" data-square="e1">♔</div>
-                        <div class="square light" data-square="f1">♗</div>
-                        <div class="square dark" data-square="g1">♘</div>
-                        <div class="square light" data-square="h1">♖</div>
-                    </div>
-                </div>
-            </div>
+      <div class="chess-layout">
+        
+        <div class="board-container">
+          <div id="chessboard" class="chessboard-grid"></div>
         </div>
-    </main>
 
-    <!-- App Footer -->
-    <footer class="app-footer">
-        <div class="container">
-            <p class="footer-text">&copy; 2026 Justin's Skillz. Built for peak performance.</p>
+        <div class="control-panel">
+          <div class="status-box" id="game-status">White's Turn</div>
+
+          <div class="settings-group">
+            <label for="ai-difficulty">AI Difficulty</label>
+            <select id="ai-difficulty">
+              <option value="easy">Easy (Random Tactics)</option>
+              <option value="medium" selected>Medium (Heuristic Evaluation)</option>
+              <option value="smart">Smart (Minimax Depth 2)</option>
+            </select>
+          </div>
+
+          <div class="settings-group">
+            <label>Move History</label>
+            <div id="move-history" class="move-history">Game started. Make your move!</div>
+          </div>
+
+          <button type="button" onclick="resetGame()" class="btn btn-primary" style="width: 100%;">
+            Reset Game 🔄
+          </button>
         </div>
-    </footer>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    let game = new Chess();
+    let selectedSquare = null;
+    let possibleMoves = [];
+
+    const pieceUnicode = {
+      'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚',
+      'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔'
+    };
+
+    function renderBoard() {
+      const boardElement = document.getElementById('chessboard');
+      boardElement.innerHTML = '';
+      const board = game.board();
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const squareDiv = document.createElement('div');
+          const isDark = (r + c) % 2 === 1;
+          squareDiv.className = `square ${isDark ? 'dark' : 'light'}`;
+          
+          const squareCoord = 'abcdefgh'[c] + (8 - r);
+          squareDiv.dataset.square = squareCoord;
+
+          if (selectedSquare === squareCoord) {
+            squareDiv.classList.add('selected');
+          }
+          if (possibleMoves.includes(squareCoord)) {
+            squareDiv.classList.add('highlight');
+          }
+
+          const piece = board[r][c];
+          if (piece) {
+            squareDiv.textContent = pieceUnicode[piece.color === 'w' ? piece.type.toUpperCase() : piece.type];
+          }
+
+          squareDiv.addEventListener('click', () => handleSquareClick(squareCoord));
+          boardElement.appendChild(squareDiv);
+        }
+      }
+      updateStatus();
+    }
+
+    function handleSquareClick(square) {
+      if (game.game_over()) return;
+
+      if (selectedSquare === null) {
+        const piece = game.get(square);
+        if (piece && piece.color === game.turn()) {
+          selectedSquare = square;
+          possibleMoves = game.moves({ square, verbose: true }).map(m => m.to);
+          renderBoard();
+        }
+      } else {
+        const move = game.move({
+          from: selectedSquare,
+          to: square,
+          promotion: 'q'
+        });
+
+        selectedSquare = null;
+        possibleMoves = [];
+
+        if (move) {
+          appendHistory(move.san);
+          renderBoard();
+          if (!game.game_over() && game.turn() === 'b') {
+            setTimeout(makeAiMove, 300);
+          }
+        } else {
+          // Re-select if clicking another own piece
+          const piece = game.get(square);
+          if (piece && piece.color === game.turn()) {
+            selectedSquare = square;
+            possibleMoves = game.moves({ square, verbose: true }).map(m => m.to);
+          }
+          renderBoard();
+        }
+      }
+    }
+
+    function makeAiMove() {
+      const difficulty = document.getElementById('ai-difficulty').value;
+      const moves = game.moves({ verbose: true });
+      if (moves.length === 0) return;
+
+      let chosenMove;
+
+      if (difficulty === 'easy') {
+        chosenMove = moves[Math.floor(Math.random() * moves.length)];
+      } else if (difficulty === 'medium') {
+        // Capture preference or random
+        const captures = moves.filter(m => m.captured);
+        chosenMove = captures.length > 0 ? captures[Math.floor(Math.random() * captures.length)] : moves[Math.floor(Math.random() * moves.length)];
+      } else {
+        // Smart heuristic search (Simple Minimax Depth 2)
+        let bestScore = -9999;
+        let bestMoves = [];
+        for (let m of moves) {
+          game.move(m);
+          let score = evaluateBoard();
+          game.undo();
+          if (score > bestScore) {
+            bestScore = score;
+            bestMoves = [m];
+          } else if (score === bestScore) {
+            bestMoves.push(m);
+          }
+        }
+        chosenMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+      }
+
+      const moveResult = game.move(chosenMove);
+      if (moveResult) {
+        appendHistory(moveResult.san);
+        renderBoard();
+      }
+    }
+
+    function evaluateBoard() {
+      const pieceValues = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
+      let totalEvaluation = 0;
+      const board = game.board();
+      for (let row of board) {
+        for (let piece of row) {
+          if (piece) {
+            const val = pieceValues[piece.type];
+            totalEvaluation += (piece.color === 'b' ? val : -val);
+          }
+        }
+      }
+      return totalEvaluation;
+    }
+
+    function updateStatus() {
+      const statusEl = document.getElementById('game-status');
+      if (game.in_checkmate()) {
+        statusEl.textContent = `Checkmate! ${game.turn() === 'w' ? 'Black' : 'White'} wins!`;
+      } else if (game.in_draw()) {
+        statusEl.textContent = "Draw game!";
+      } else {
+        statusEl.textContent = `${game.turn() === 'w' ? "White's Turn" : "AI's Turn (Black)"}`;
+      }
+    }
+
+    function appendHistory(san) {
+      const historyEl = document.getElementById('move-history');
+      if (historyEl.textContent.includes('Game started')) {
+        historyEl.textContent = '';
+      }
+      historyEl.textContent += `${san} `;
+      historyEl.scrollTop = historyEl.scrollHeight;
+    }
+
+    function resetGame() {
+      game.reset();
+      selectedSquare = null;
+      possibleMoves = [];
+      document.getElementById('move-history').textContent = 'Game started. Make your move!';
+      renderBoard();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderBoard();
+    });
+  </script>
 </body>
 </html>

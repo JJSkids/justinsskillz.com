@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chess AI Engine - Justin's Skillz</title>
+  <title>Justin AI - Chess Lab</title>
 
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -84,7 +84,7 @@
       padding: 2rem;
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1.25rem;
     }
     .status-box {
       padding: 1rem;
@@ -96,7 +96,7 @@
       font-size: 1rem;
     }
     .move-history {
-      height: 180px;
+      height: 150px;
       overflow-y: auto;
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
@@ -110,7 +110,7 @@
       display: block;
       font-size: 0.85rem;
       font-weight: 700;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
       color: var(--text-muted);
     }
     .settings-group select {
@@ -121,6 +121,34 @@
       color: var(--text-main);
       border-radius: var(--radius-md);
       font-weight: 600;
+    }
+    .action-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .save-feedback {
+      font-size: 0.85rem;
+      text-align: center;
+      font-weight: 600;
+      color: var(--accent-purple, #a855f7);
+      min-height: 1.2rem;
+    }
+
+    /* Mobile Responsiveness Adjustments */
+    @media (max-width: 640px) {
+      .board-container {
+        padding: 1rem;
+      }
+      .control-panel {
+        padding: 1.25rem;
+      }
+      .square {
+        font-size: 1.85rem;
+      }
+      .hero-title {
+        font-size: 2rem;
+      }
     }
   </style>
 </head>
@@ -156,13 +184,13 @@
       
       <section class="hero" style="margin-bottom: 2.5rem;">
         <div class="hero-badge">
-          <span class="pulse-dot"></span> Interactive AI Engine
+          <span class="pulse-dot"></span> Play vs Justin AI
         </div>
         <h1 class="hero-title">
-          Advanced <span class="gradient-text">Chess Lab</span>
+          Justin's <span class="gradient-text">Chess Arena</span>
         </h1>
         <p class="hero-subtitle">
-          Test your tactical skills against legal move validation and intelligent heuristics.
+          Test your tactical skills against Justin AI and save your match history to Supabase.
         </p>
       </section>
 
@@ -173,25 +201,32 @@
         </div>
 
         <div class="control-panel">
-          <div class="status-box" id="game-status">White's Turn</div>
+          <div class="status-box" id="game-status">Your Turn (White)</div>
 
           <div class="settings-group">
-            <label for="ai-difficulty">AI Difficulty</label>
+            <label for="ai-difficulty">Justin AI Difficulty</label>
             <select id="ai-difficulty">
-              <option value="easy">Easy (Random Tactics)</option>
-              <option value="medium" selected>Medium (Heuristic Evaluation)</option>
-              <option value="smart">Smart (Minimax Depth 2)</option>
+              <option value="easy">Casual Justin (Random Moves)</option>
+              <option value="medium" selected>Smart Justin (Capture Focused)</option>
+              <option value="smart">Grandmaster Justin (Minimax Depth 2)</option>
             </select>
           </div>
 
           <div class="settings-group">
             <label>Move History</label>
-            <div id="move-history" class="move-history">Game started. Make your move!</div>
+            <div id="move-history" class="move-history">Game started. Make your move against Justin!</div>
           </div>
 
-          <button type="button" onclick="resetGame()" class="btn btn-primary" style="width: 100%;">
-            Reset Game 🔄
-          </button>
+          <div class="save-feedback" id="save-feedback"></div>
+
+          <div class="action-buttons">
+            <button type="button" onclick="saveGameToSupabase()" class="btn btn-secondary" style="width: 100%;">
+              💾 Save Game to Cloud
+            </button>
+            <button type="button" onclick="resetGame()" class="btn btn-primary" style="width: 100%;">
+              Reset Game 🔄
+            </button>
+          </div>
         </div>
 
       </div>
@@ -281,7 +316,8 @@
           appendHistory(move.san);
           renderBoard();
           if (!game.game_over() && game.turn() === 'b') {
-            setTimeout(makeAiMove, 300);
+            document.getElementById('game-status').textContent = "Justin AI is thinking...";
+            setTimeout(makeAiMove, 400);
           }
         } else {
           const piece = game.get(square);
@@ -348,11 +384,11 @@
     function updateStatus() {
       const statusEl = document.getElementById('game-status');
       if (game.in_checkmate()) {
-        statusEl.textContent = `Checkmate! ${game.turn() === 'w' ? 'Black' : 'White'} wins!`;
+        statusEl.textContent = `Checkmate! ${game.turn() === 'w' ? 'Justin AI' : 'You'} wins! 🏆`;
       } else if (game.in_draw()) {
-        statusEl.textContent = "Draw game!";
+        statusEl.textContent = "It's a draw! 🤝";
       } else {
-        statusEl.textContent = `${game.turn() === 'w' ? "White's Turn" : "AI's Turn (Black)"}`;
+        statusEl.textContent = `${game.turn() === 'w' ? "Your Turn (White)" : "Justin AI's Turn (Black)"}`;
       }
     }
 
@@ -365,11 +401,49 @@
       historyEl.scrollTop = historyEl.scrollHeight;
     }
 
+    async function saveGameToSupabase() {
+      const feedbackEl = document.getElementById('save-feedback');
+      
+      if (typeof supabase === 'undefined' || !window.SUPABASE_URL) {
+        feedbackEl.textContent = "Supabase client not initialized in config.js!";
+        return;
+      }
+
+      try {
+        feedbackEl.textContent = "Saving game history...";
+        
+        const moveHistoryText = document.getElementById('move-history').textContent;
+        const difficulty = document.getElementById('ai-difficulty').value;
+
+        const client = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+        
+        const { error } = await client
+          .from('chess_games')
+          .insert([
+            { 
+              difficulty: difficulty, 
+              move_history: moveHistoryText, 
+              pgn: game.history().join(' '),
+              created_at: new Date().toISOString() 
+            }
+          ]);
+
+        if (error) throw error;
+
+        feedbackEl.textContent = "Game saved successfully! ✅";
+        setTimeout(() => { feedbackEl.textContent = ''; }, 4000);
+      } catch (err) {
+        console.error(err);
+        feedbackEl.textContent = "Failed to save game to cloud.";
+      }
+    }
+
     function resetGame() {
       game.reset();
       selectedSquare = null;
       possibleMoves = [];
-      document.getElementById('move-history').textContent = 'Game started. Make your move!';
+      document.getElementById('move-history').textContent = 'Game started. Make your move against Justin!';
+      document.getElementById('save-feedback').textContent = '';
       renderBoard();
     }
 

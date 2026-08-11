@@ -9,27 +9,55 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="styles.css">
   <script src="config.js" defer></script>
   <script src="theme.js" defer></script>
 
-  <!-- Route Guard: Restrict access to signed-in users only -->
-  <script>
-    window.addEventListener('DOMContentLoaded', async () => {
-      // Give a tiny moment for config.js to establish the global supabase instance
-      setTimeout(async () => {
-        if (typeof supabase !== 'undefined') {
-          const { data: { session } } = await supabase.auth.getSession();
-          if (!session) {
-            alert("Access restricted. Please sign in to view your dashboard.");
-            window.location.href = '../index.html';
-          }
-        }
-      }, 100);
-    });
-  </script>
+  <style>
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .module-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      text-decoration: none;
+      color: var(--text-main);
+    }
+    .module-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent-purple);
+      box-shadow: 0 12px 30px -10px rgba(168, 85, 247, 0.25);
+    }
+    .module-icon {
+      font-size: 2.5rem;
+    }
+    .module-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .module-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+    @media (max-width: 640px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -61,65 +89,57 @@
   <main class="main-content">
     <div class="container">
       
-      <section class="hero" style="margin-bottom: 3rem;">
+      <section class="hero" style="margin-bottom: 2rem;">
         <div class="hero-badge">
           <span class="pulse-dot"></span> Control Center
         </div>
         <h1 class="hero-title">
-          Your Developer & <span class="gradient-text">STEM Studio</span>
+          Your Learning <span class="gradient-text">Dashboard</span>
         </h1>
         <p class="hero-subtitle">
-          Manage your modules, check command block scripts, and track your learning progress across web tools, math, and code.
+          Quick access to all your interactive modules, labs, and tools.
         </p>
       </section>
 
-      <section class="modules-section">
-        <div class="grid">
-          
-          <div class="card">
-            <div class="card-top">
-              <div class="card-icon icon-purple">⚡</div>
-              <span class="badge badge-purple">Active Status</span>
-            </div>
-            <h3 class="card-title">Project Workspace</h3>
-            <p class="card-description">Quick access to your deployed modules, databases, and configuration settings.</p>
-            <div class="tag-group">
-              <span class="tag">Supabase DB</span>
-              <span class="tag">HTML5 / CSS</span>
-            </div>
-            <a href="../index.html" class="btn btn-card">Back to Home &rarr;</a>
-          </div>
+      <div class="dashboard-grid">
+        
+        <a href="chess.html" class="module-card">
+          <div class="module-icon">♟️</div>
+          <h2 class="module-title">Chess Lab</h2>
+          <p class="module-desc">Play against Justin AI across multiple difficulty tiers, analyze moves, and save match history to the cloud.</p>
+        </a>
 
-          <div class="card">
-            <div class="card-top">
-              <div class="card-icon icon-emerald">📦</div>
-              <span class="badge badge-emerald">Bedrock 1.21</span>
-            </div>
-            <h3 class="card-title">Minecraft Engineering</h3>
-            <p class="card-description">Command block string tools, death-tracking setups, and custom loot table builders.</p>
-            <div class="tag-group">
-              <span class="tag">Command Blocks</span>
-              <span class="tag">Scoreboards</span>
-            </div>
-            <a href="chess.html" class="btn btn-card-secondary">Launch Chess AI</a>
-          </div>
+        <a href="french.html" class="module-card">
+          <div class="module-icon">🇫🇷</div>
+          <h2 class="module-title">French Lab</h2>
+          <p class="module-desc">Master French grammar rules, verb conjugations, vocabulary drills, and language practice.</p>
+        </a>
 
-          <div class="card">
-            <div class="card-top">
-              <div class="card-icon icon-blue">📐</div>
-              <span class="badge badge-blue">Competition Prep</span>
-            </div>
-            <h3 class="card-title">UNB Math Lab</h3>
-            <p class="card-description">Review competitive math problems, advanced algebra, and practice sets.</p>
-            <div class="tag-group">
-              <span class="tag">Algebra</span>
-              <span class="tag">Modular Math</span>
-            </div>
-            <a href="math.html" class="btn btn-card-secondary">Open Math Lab</a>
-          </div>
+        <a href="music.html" class="module-card">
+          <div class="module-icon">🎵</div>
+          <h2 class="module-title">Music Lab</h2>
+          <p class="module-desc">Explore rhythmic patterns, audio elements, instrument tools, and interactive melodies.</p>
+        </a>
 
-        </div>
-      </section>
+        <a href="math.html" class="module-card">
+          <div class="module-icon">📐</div>
+          <h2 class="module-title">Math Lab</h2>
+          <p class="module-desc">Practice advanced problem-solving, equations, algebra, and competition math concepts.</p>
+        </a>
+
+        <a href="coding.html" class="module-card">
+          <div class="module-icon">💻</div>
+          <h2 class="module-title">Coding Lab</h2>
+          <p class="module-desc">Work with HTML, CSS, JavaScript, TypeScript, and Supabase database integration projects.</p>
+        </a>
+
+        <a href="robotics.html" class="module-card">
+          <div class="module-icon">🤖</div>
+          <h2 class="module-title">Robotics Lab</h2>
+          <p class="module-desc">Experiment with hardware prototyping, electronic components, microcontrollers, and logic control.</p>
+        </a>
+
+      </div>
 
     </div>
   </main>

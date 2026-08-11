@@ -9,7 +9,7 @@
   <!-- Supabase Client SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <!-- Link to your Master Stylesheet -->
-  <link rel="stylesheet" href="src/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -77,7 +77,7 @@
     </div>
   </main>
 
-  <!-- Auth Modal Overlay (Hidden by default until .active is added) -->
+  <!-- Auth Modal Overlay -->
   <div id="auth-modal" class="modal-overlay">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
@@ -126,10 +126,16 @@
 
   <!-- Core JavaScript & Supabase Auth Integration -->
   <script>
-    // Initialize Supabase Client (Replace with your actual project URL and anon public key)
-    const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Supabase Credentials Integration
+    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5OSwKZXhwIjoyMDk5NjQwOTA1fQ.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+    
+    let supabase = null;
+    try {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    } catch (err) {
+      console.warn('Supabase initialization error:', err);
+    }
 
     // 1. Modal Toggle Logic
     const loginBtn = document.getElementById('login-btn');
@@ -160,44 +166,42 @@
     const themeToggleBtn = document.getElementById('theme-toggle');
     const htmlElement = document.documentElement;
 
-    themeToggleBtn.addEventListener('click', () => {
-      const currentTheme = htmlElement.getAttribute('data-theme');
-      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-      htmlElement.setAttribute('data-theme', newTheme);
-      themeToggleBtn.innerHTML = newTheme === 'light' ? '<span>☀️</span> Theme' : '<span>🌙</span> Theme';
-    });
+    if (themeToggleBtn) {
+      themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = htmlElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        htmlElement.setAttribute('data-theme', newTheme);
+        themeToggleBtn.innerHTML = newTheme === 'light' ? '<span>☀️</span> Theme' : '<span>🌙</span> Theme';
+      });
+    }
 
     // 3. Supabase Auth: Google Sign-In
     const googleLoginBtn = document.getElementById('google-login-btn');
-    if (googleLoginBtn) {
+    if (googleLoginBtn && supabase) {
       googleLoginBtn.addEventListener('click', async () => {
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'google',
           options: { redirectTo: window.location.origin }
         });
-        if (error) {
-          alert('Google Sign-In Error: ' + error.message);
-        }
+        if (error) alert('Google Sign-In Error: ' + error.message);
       });
     }
 
     // 4. Supabase Auth: GitHub Sign-In
     const githubLoginBtn = document.getElementById('github-login-btn');
-    if (githubLoginBtn) {
+    if (githubLoginBtn && supabase) {
       githubLoginBtn.addEventListener('click', async () => {
         const { error } = await supabase.auth.signInWithOAuth({
           provider: 'github',
           options: { redirectTo: window.location.origin }
         });
-        if (error) {
-          alert('GitHub Sign-In Error: ' + error.message);
-        }
+        if (error) alert('GitHub Sign-In Error: ' + error.message);
       });
     }
 
     // 5. Supabase Auth: Email & Password Sign-In
     const signinForm = document.getElementById('signin-form');
-    if (signinForm) {
+    if (signinForm && supabase) {
       signinForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const email = document.getElementById('email-input').value;

@@ -135,7 +135,6 @@
       min-height: 1.2rem;
     }
 
-    /* Mobile Responsiveness Adjustments */
     @media (max-width: 640px) {
       .board-container {
         padding: 1rem;
@@ -190,7 +189,7 @@
           Justin's <span class="gradient-text">Chess Arena</span>
         </h1>
         <p class="hero-subtitle">
-          Test your tactical skills against Justin AI and save your match history to Supabase.
+          Test your tactical skills against upgraded AI difficulties and save matches to the cloud.
         </p>
       </section>
 
@@ -206,9 +205,10 @@
           <div class="settings-group">
             <label for="ai-difficulty">Justin AI Difficulty</label>
             <select id="ai-difficulty">
-              <option value="easy">Casual Justin (Random Moves)</option>
-              <option value="medium" selected>Smart Justin (Capture Focused)</option>
-              <option value="smart">Grandmaster Justin (Minimax Depth 2)</option>
+              <option value="easy">Casual Justin (Random)</option>
+              <option value="medium">Tactical Justin (Capture Focused)</option>
+              <option value="hard">Grandmaster Justin (Minimax Depth 2)</option>
+              <option value="legendary" selected>Legendary Justin (Minimax Depth 3 + Positional AI)</option>
             </select>
           </div>
 
@@ -249,6 +249,73 @@
       'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚',
       'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔'
     };
+
+    // Piece-Square Tables for Positional Evaluation
+    const pawnEvalBlack = [
+      [0,  0,  0,  0,  0,  0,  0,  0],
+      [50, 50, 50, 50, 50, 50, 50, 50],
+      [10, 10, 20, 30, 30, 20, 10, 10],
+      [ 5,  5, 10, 25, 25, 10,  5,  5],
+      [ 0,  0,  0, 20, 20,  0,  0,  0],
+      [ 5, -5,-10,  0,  0,-10, -5,  5],
+      [ 5, 10, 10,-20,-20, 10, 10,  5],
+      [ 0,  0,  0,  0,  0,  0,  0,  0]
+    ];
+
+    const knightEval = [
+      [-50,-40,-30,-30,-30,-30,-40,-50],
+      [-40,-20,  0,  0,  0,  0,-20,-40],
+      [-30,  0, 10, 15, 15, 10,  0,-30],
+      [-30,  5, 15, 20, 20, 15,  5,-30],
+      [-30,  0, 15, 20, 20, 15,  0,-30],
+      [-30,  5, 10, 15, 15, 10,  5,-30],
+      [-40,-20,  0,  5,  5,  0,-20,-40],
+      [-50,-40,-30,-30,-30,-30,-40,-50],
+    ];
+
+    const bishopEval = [
+      [-20,-10,-10,-10,-10,-10,-10,-20],
+      [-10,  0,  0,  0,  0,  0,  0,-10],
+      [-10,  0,  5, 10, 10,  5,  0,-10],
+      [-10,  5,  5, 10, 10,  5,  5,-10],
+      [-10,  0, 10, 10, 10, 10,  0,-10],
+      [-10, 10, 10, 10, 10, 10, 10,-10],
+      [-10,  5,  0,  0,  0,  0,  5,-10],
+      [-20,-10,-10,-10,-10,-10,-10,-20],
+    ];
+
+    const rookEval = [
+      [ 0,  0,  0,  0,  0,  0,  0,  0],
+      [ 5, 10, 10, 10, 10, 10, 10,  5],
+      [-5,  0,  0,  0,  0,  0,  0, -5],
+      [-5,  0,  0,  0,  0,  0,  0, -5],
+      [-5,  0,  0,  0,  0,  0,  0, -5],
+      [-5,  0,  0,  0,  0,  0,  0, -5],
+      [-5,  0,  0,  0,  0,  0,  0, -5],
+      [ 0,  0,  0,  5,  5,  0,  0,  0]
+    ];
+
+    const queenEval = [
+      [-20,-10,-10, -5, -5,-10,-10,-20],
+      [-10,  0,  0,  0,  0,  0,  0,-10],
+      [-10,  0,  5,  5,  5,  5,  0,-10],
+      [ -5,  0,  5,  5,  5,  5,  0, -5],
+      [  0,  0,  5,  5,  5,  5,  0, -5],
+      [-10,  5,  5,  5,  5,  5,  0,-10],
+      [-10,  0,  5,  0,  0,  0,  0,-10],
+      [-20,-10,-10, -5, -5,-10,-10,-20]
+    ];
+
+    const kingEval = [
+      [-30,-40,-40,-50,-50,-40,-40,-30],
+      [-30,-40,-40,-50,-50,-40,-40,-30],
+      [-30,-40,-40,-50,-50,-40,-40,-30],
+      [-30,-40,-40,-50,-50,-40,-40,-30],
+      [-20,-30,-30,-40,-40,-30,-30,-20],
+      [-10,-20,-20,-20,-20,-20,-20,-10],
+      [ 20, 20,  0,  0,  0,  0, 20, 20],
+      [ 20, 30, 10,  0,  0, 10, 30, 20]
+    ];
 
     function initGame() {
       if (typeof Chess === 'undefined') {
@@ -317,7 +384,7 @@
           renderBoard();
           if (!game.game_over() && game.turn() === 'b') {
             document.getElementById('game-status').textContent = "Justin AI is thinking...";
-            setTimeout(makeAiMove, 400);
+            setTimeout(makeAiMove, 300);
           }
         } else {
           const piece = game.get(square);
@@ -342,12 +409,29 @@
       } else if (difficulty === 'medium') {
         const captures = moves.filter(m => m.captured);
         chosenMove = captures.length > 0 ? captures[Math.floor(Math.random() * captures.length)] : moves[Math.floor(Math.random() * moves.length)];
-      } else {
-        let bestScore = -9999;
+      } else if (difficulty === 'hard') {
+        // Minimax Depth 2
+        let bestScore = -99999;
         let bestMoves = [];
         for (let m of moves) {
           game.move(m);
-          let score = evaluateBoard();
+          let score = minimax(1, false, -100000, 100000);
+          game.undo();
+          if (score > bestScore) {
+            bestScore = score;
+            bestMoves = [m];
+          } else if (score === bestScore) {
+            bestMoves.push(m);
+          }
+        }
+        chosenMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+      } else {
+        // Legendary: Minimax Depth 3 with Alpha-Beta Pruning
+        let bestScore = -99999;
+        let bestMoves = [];
+        for (let m of moves) {
+          game.move(m);
+          let score = minimax(2, false, -100000, 100000);
           game.undo();
           if (score > bestScore) {
             bestScore = score;
@@ -366,19 +450,79 @@
       }
     }
 
+    function minimax(depth, isMaximizing, alpha, beta) {
+      if (depth === 0 || game.game_over()) {
+        return evaluateBoard();
+      }
+
+      const moves = game.moves({ verbose: true });
+
+      if (isMaximizing) {
+        let maxEval = -100000;
+        for (let m of moves) {
+          game.move(m);
+          let evaluation = minimax(depth - 1, false, alpha, beta);
+          game.undo();
+          maxEval = Math.max(maxEval, evaluation);
+          alpha = Math.max(alpha, evaluation);
+          if (beta <= alpha) break;
+        }
+        return maxEval;
+      } else {
+        let minEval = 100000;
+        for (let m of moves) {
+          game.move(m);
+          let evaluation = minimax(depth - 1, true, alpha, beta);
+          game.undo();
+          minEval = Math.min(minEval, evaluation);
+          beta = Math.min(beta, evaluation);
+          if (beta <= alpha) break;
+        }
+        return minEval;
+      }
+    }
+
     function evaluateBoard() {
-      const pieceValues = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
       let totalEvaluation = 0;
       const board = game.board();
-      for (let row of board) {
-        for (let piece of row) {
+
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const piece = board[r][c];
           if (piece) {
-            const val = pieceValues[piece.type];
-            totalEvaluation += (piece.color === 'b' ? val : -val);
+            totalEvaluation += getPieceValue(piece, r, c);
           }
         }
       }
       return totalEvaluation;
+    }
+
+    function getPieceValue(piece, r, c) {
+      const absRow = piece.color === 'b' ? r : (7 - r);
+      let value = 0;
+
+      switch (piece.type) {
+        case 'p':
+          value = 100 + pawnEvalBlack[absRow][c];
+          break;
+        case 'n':
+          value = 320 + knightEval[absRow][c];
+          break;
+        case 'b':
+          value = 330 + bishopEval[absRow][c];
+          break;
+        case 'r':
+          value = 500 + rookEval[absRow][c];
+          break;
+        case 'q':
+          value = 900 + queenEval[absRow][c];
+          break;
+        case 'k':
+          value = 20000 + kingEval[absRow][c];
+          break;
+      }
+
+      return piece.color === 'b' ? value : -value;
     }
 
     function updateStatus() {
@@ -404,7 +548,10 @@
     async function saveGameToSupabase() {
       const feedbackEl = document.getElementById('save-feedback');
       
-      if (typeof supabase === 'undefined' || !window.SUPABASE_URL) {
+      const sbUrl = window.SUPABASE_URL || (typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : null);
+      const sbKey = window.SUPABASE_ANON_KEY || (typeof SUPABASE_ANON_KEY !== 'undefined' ? SUPABASE_ANON_KEY : null);
+
+      if (typeof supabase === 'undefined' || !sbUrl || !sbKey) {
         feedbackEl.textContent = "Supabase client not initialized in config.js!";
         return;
       }
@@ -415,7 +562,7 @@
         const moveHistoryText = document.getElementById('move-history').textContent;
         const difficulty = document.getElementById('ai-difficulty').value;
 
-        const client = supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+        const client = supabase.createClient(sbUrl, sbKey);
         
         const { error } = await client
           .from('chess_games')

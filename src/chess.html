@@ -1,105 +1,56 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chess AI Engine - Justin's Skillz</title>
-  
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-
-  <link rel="stylesheet" href="styles.css">
-  
-  <script src="theme.js" defer></script>
-  <script src="config.js" defer></script>
-  <script src="auth-index.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chess AI - Justin's Skillz</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
-
-  <header class="app-header">
-    <div class="header-container">
-      <a href="../index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
-        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
-      </a>
-
-      <nav class="nav-menu">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="chess.html" class="nav-link active">Chess AI</a>
-      </nav>
-
-      <div class="nav-actions">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main class="main-content">
-    <div class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
-      
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-        <div>
-          <h2>♟️ Chess AI Engine</h2>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
-            Play against a Minimax AI with positional piece-square evaluation.
-          </p>
-        </div>
-        <a href="../index.html" class="btn btn-secondary">&larr; Back to Hub</a>
-      </div>
-
-      <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-          
-          <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-            <div>
-              <label for="ai-difficulty" style="font-weight: 600; font-size: 0.85rem; margin-right: 0.5rem;">Difficulty:</label>
-              <select id="ai-difficulty" style="padding: 0.4rem 0.6rem; background: var(--bg-pill); border: 1px solid var(--border-subtle); color: var(--text-main); border-radius: var(--radius-sm); font-family: inherit; font-weight: 600;">
-                <option value="1">Easy (Depth 1)</option>
-                <option value="2" selected>Medium (Depth 2)</option>
-                <option value="3">Hard (Depth 3)</option>
-              </select>
+    <!-- App Header -->
+    <header class="app-header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">♟️</span>
+                <span>Justin's Skillz</span>
+            </a>
+            <nav class="nav-menu">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="chess.html" class="nav-link active">Chess Arena</a>
+            </nav>
+            <div class="nav-actions">
+                <button class="theme-toggle-btn" id="themeToggle">
+                    <span>🌙</span> <span id="themeText">Dark</span>
+                </button>
             </div>
-
-            <div>
-              <label for="player-color" style="font-weight: 600; font-size: 0.85rem; margin-right: 0.5rem;">Play as:</label>
-              <select id="player-color" style="padding: 0.4rem 0.6rem; background: var(--bg-pill); border: 1px solid var(--border-subtle); color: var(--text-main); border-radius: var(--radius-sm); font-family: inherit; font-weight: 600;">
-                <option value="w" selected>White</option>
-                <option value="b">Black</option>
-              </select>
-            </div>
-          </div>
-
-          <div id="game-status" style="font-weight: 700; color: var(--accent-cyan); font-size: 0.95rem;">
-            Your Turn (White)
-          </div>
-
-          <button id="reset-game-btn" class="btn btn-secondary" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
-            🔄 New Game
-          </button>
         </div>
-      </div>
+    </header>
 
-      <div class="chess-layout">
-        <div class="board-frame" id="chessboard"></div>
-      </div>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1 class="dashboard-title">Chess Arena</h1>
+            <p class="dashboard-subtitle">Test your strategy, analyze openings, and sharpen your tactical thinking.</p>
+            
+            <div class="card">
+                <div class="chess-layout">
+                    <div class="board-frame" id="board">
+                        <div style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                            <p style="font-size: 1.25rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem;">Board Initialized</p>
+                            <p style="font-size: 0.9rem;">Ready for your chess engine or interactive move logic script.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
 
-    </div>
-  </main>
-
-  <footer class="app-footer">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz.</p>
-    </div>
-  </footer>
-
-  <script src="chess.js" defer></script>
+    <!-- App Footer -->
+    <footer class="app-footer">
+        <div class="container">
+            <p class="footer-text">&copy; 2026 Justin's Skillz. Built for peak performance.</p>
+        </div>
+    </footer>
 </body>
 </html>

@@ -134,6 +134,62 @@
       min-height: 1.2rem;
     }
 
+    /* Modal styling */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      width: 100%;
+      max-width: 550px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .close-modal-btn {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+    .saved-game-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.15s ease;
+    }
+    .saved-game-item:hover {
+      border-color: var(--accent-purple);
+      transform: translateY(-2px);
+    }
+
     @media (max-width: 640px) {
       .board-container {
         padding: 1rem;
@@ -188,7 +244,7 @@
           Justin's <span class="gradient-text">Chess Arena</span>
         </h1>
         <p class="hero-subtitle">
-          Test your tactical skills against upgraded AI difficulties and save matches to the cloud.
+          Test your tactical skills against upgraded AI difficulties and save or load matches from the cloud.
         </p>
       </section>
 
@@ -222,6 +278,9 @@
             <button type="button" onclick="saveGameToSupabase()" class="btn btn-secondary" style="width: 100%;">
               💾 Save Game to Cloud
             </button>
+            <button type="button" onclick="openLoadModal()" class="btn btn-secondary" style="width: 100%;">
+              📂 Load Game from Cloud
+            </button>
             <button type="button" onclick="resetGame()" class="btn btn-primary" style="width: 100%;">
               Reset Game 🔄
             </button>
@@ -232,6 +291,19 @@
 
     </div>
   </main>
+
+  <!-- Load Game Modal -->
+  <div id="load-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Load Saved Game from Cloud</h3>
+        <button type="button" class="close-modal-btn" onclick="closeLoadModal()">&times;</button>
+      </div>
+      <div id="saved-games-list" style="overflow-y: auto; max-height: 50vh; display: flex; flex-direction: column; gap: 0.75rem;">
+        <p style="color: var(--text-muted); text-align: center;">Fetching saved games...</p>
+      </div>
+    </div>
+  </div>
 
   <footer class="app-footer">
     <div class="container footer-content">
@@ -413,7 +485,6 @@
         const captures = moves.filter(m => m.captured);
         chosenMove = captures.length > 0 ? captures[Math.floor(Math.random() * captures.length)] : moves[Math.floor(Math.random() * moves.length)];
       } else if (difficulty === 'hard') {
-        // Minimax Depth 2
         let bestScore = -99999;
         let bestMoves = [];
         for (let m of moves) {
@@ -429,7 +500,6 @@
         }
         chosenMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
       } else {
-        // Legendary: Minimax Depth 3 with Alpha-Beta Pruning
         let bestScore = -99999;
         let bestMoves = [];
         for (let m of moves) {
@@ -505,26 +575,13 @@
       let value = 0;
 
       switch (piece.type) {
-        case 'p':
-          value = 100 + pawnEvalBlack[absRow][c];
-          break;
-        case 'n':
-          value = 320 + knightEval[absRow][c];
-          break;
-        case 'b':
-          value = 330 + bishopEval[absRow][c];
-          break;
-        case 'r':
-          value = 500 + rookEval[absRow][c];
-          break;
-        case 'q':
-          value = 900 + queenEval[absRow][c];
-          break;
-        case 'k':
-          value = 20000 + kingEval[absRow][c];
-          break;
+        case 'p': value = 100 + pawnEvalBlack[absRow][c]; break;
+        case 'n': value = 320 + knightEval[absRow][c]; break;
+        case 'b': value = 330 + bishopEval[absRow][c]; break;
+        case 'r': value = 500 + rookEval[absRow][c]; break;
+        case 'q': value = 900 + queenEval[absRow][c]; break;
+        case 'k': value = 20000 + kingEval[absRow][c]; break;
       }
-
       return piece.color === 'b' ? value : -value;
     }
 
@@ -570,7 +627,7 @@
             { 
               difficulty: difficulty, 
               move_history: moveHistoryText, 
-              pgn: game.history().join(' '),
+              pgn: game.pgn(),
               created_at: new Date().toISOString() 
             }
           ]);
@@ -583,6 +640,86 @@
         console.error(err);
         feedbackEl.textContent = "Failed to save game to cloud.";
       }
+    }
+
+    async function openLoadModal() {
+      const modal = document.getElementById('load-modal');
+      const listEl = document.getElementById('saved-games-list');
+      modal.style.display = 'flex';
+      listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Fetching saved games...</p>';
+
+      if (typeof supabase === 'undefined' || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+        listEl.innerHTML = '<p style="color: #ef4444; text-align: center;">Supabase client not initialized!</p>';
+        return;
+      }
+
+      try {
+        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { data, error } = await client
+          .from('chess_games')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(10);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+          listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No saved games found in cloud.</p>';
+          return;
+        }
+
+        listEl.innerHTML = '';
+        data.forEach(item => {
+          const dateStr = new Date(item.created_at).toLocaleString();
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'saved-game-item';
+          itemDiv.innerHTML = `
+            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+              <span style="color: var(--accent-purple); text-transform: uppercase;">Difficulty: ${item.difficulty}</span>
+              <span style="color: var(--text-muted); font-weight: 400; font-size: 0.8rem;">${dateStr}</span>
+            </div>
+            <div style="font-family: monospace; font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+              ${item.move_history || 'No move history'}
+            </div>
+          `;
+          itemDiv.addEventListener('click', () => {
+            loadSavedGameData(item);
+          });
+          listEl.appendChild(itemDiv);
+        });
+      } catch (err) {
+        console.error(err);
+        listEl.innerHTML = '<p style="color: #ef4444; text-align: center;">Failed to load saved games.</p>';
+      }
+    }
+
+    function closeLoadModal() {
+      document.getElementById('load-modal').style.display = 'none';
+    }
+
+    function loadSavedGameData(item) {
+      game.reset();
+      selectedSquare = null;
+      possibleMoves = [];
+
+      if (item.pgn) {
+        game.load_pgn(item.pgn);
+      }
+
+      if (item.difficulty) {
+        const diffSelect = document.getElementById('ai-difficulty');
+        diffSelect.value = item.difficulty;
+      }
+
+      const historyEl = document.getElementById('move-history');
+      historyEl.textContent = item.move_history || 'Loaded game.';
+
+      renderBoard();
+      closeLoadModal();
+
+      const feedbackEl = document.getElementById('save-feedback');
+      feedbackEl.textContent = "Game loaded successfully! 📂";
+      setTimeout(() => { feedbackEl.textContent = ''; }, 4000);
     }
 
     function resetGame() {

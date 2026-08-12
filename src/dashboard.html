@@ -67,9 +67,11 @@
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
 
+      <!-- Navigation Menu with Live Stream visible to all members -->
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="live.html" class="nav-link" style="color: #10b981; font-weight: 700;">🔴 Live Stream</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
         <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
@@ -95,7 +97,7 @@
           <p style="color: var(--text-muted); font-size: 1rem;" id="welcome-subtitle">Central command for all your skill labs, interactive modules, and projects.</p>
         </div>
         <div id="user-role-badge" style="background: rgba(168, 85, 247, 0.1); border: 1px solid var(--accent-purple); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">
-          Student Scholar
+          Member Scholar
         </div>
       </div>
 
@@ -226,6 +228,8 @@
         if (ADMIN_EMAILS.includes(userEmail)) {
           document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
           document.getElementById('user-role-badge').textContent = 'Administrator / Creator';
+        } else {
+          document.getElementById('user-role-badge').textContent = 'Member Scholar';
         }
 
         if (user.email) {

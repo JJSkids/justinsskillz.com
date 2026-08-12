@@ -4,14 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Justin's Skillz - Home</title>
-
+  
   <link rel="icon" type="image/jpeg" href="src/Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+  
   <link rel="stylesheet" href="src/styles.css">
   <script src="src/theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     .hero-section {
@@ -107,7 +108,7 @@
         <a href="src/math.html" class="nav-link">Math Lab</a>
       </nav>
 
-      <div class="nav-actions">
+      <div class="nav-actions" id="auth-actions" style="display: flex; gap: 0.75rem; align-items: center;">
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
           <span class="theme-icon">🌙</span> Dark Mode
         </button>
@@ -136,13 +137,11 @@
           <h3>Live Dashboard</h3>
           <p style="color: var(--text-muted); font-size: 0.95rem;">Monitor real-time admin live feeds, status broadcasts, and shortcut hubs.</p>
         </a>
-
         <a href="src/chess.html" class="feature-card">
           <div class="feature-icon">♟️</div>
           <h3>Justin Chess Arena</h3>
           <p style="color: var(--text-muted); font-size: 0.95rem;">Play against custom minimax AI difficulties and save/load games from the cloud.</p>
         </a>
-
         <a href="src/math.html" class="feature-card">
           <div class="feature-icon">📐</div>
           <h3>Math Lab</h3>
@@ -165,5 +164,41 @@
       <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
     </div>
   </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function checkAuthStatus() {
+      const authContainer = document.getElementById('auth-actions');
+      if (!authContainer) return;
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      const themeBtnHTML = `
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+      `;
+
+      if (user) {
+        authContainer.innerHTML = themeBtnHTML + `
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+        `;
+      } else {
+        authContainer.innerHTML = themeBtnHTML + `
+          <a href="src/login.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        `;
+      }
+    }
+
+    async function handleSignOut() {
+      await supabase.auth.signOut();
+      window.location.reload();
+    }
+
+    window.addEventListener('DOMContentLoaded', checkAuthStatus);
+  </script>
 </body>
 </html>

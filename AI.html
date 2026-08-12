@@ -33,6 +33,7 @@
       border-bottom: 2px solid var(--border-subtle);
       display: flex;
       align-items: center;
+      justify-content: space-between;
     }
     .chat-title-area {
       display: flex;
@@ -133,6 +134,16 @@
       transform: scale(1.05);
       opacity: 0.9;
     }
+    .config-btn {
+      background: var(--bg-primary);
+      border: 2px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.5rem 0.85rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
     .typing-indicator span {
       height: 8px;
       width: 8px;
@@ -166,8 +177,10 @@
       <nav class="nav-menu">
         <a href="index.html" class="nav-link">Home</a>
         <a href="src/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="AI.html" class="nav-link active">AI Assistant</a>
         <a href="src/chess.html" class="nav-link">Chess AI</a>
         <a href="src/math.html" class="nav-link">Math Lab</a>
+        <a href="src/admin.html" class="nav-link">Admin</a>
       </nav>
 
       <div class="nav-actions">
@@ -190,13 +203,14 @@
               <p style="font-size: 0.8rem; color: var(--text-muted);">Ready to chat instantly</p>
             </div>
           </div>
+          <button type="button" class="config-btn" onclick="configureApiKey()">⚙️ API Key</button>
         </div>
 
         <div id="chat-messages" class="chat-messages">
           <div class="message assistant">
             <div class="ai-avatar" style="width: 32px; height: 32px; font-size: 0.9rem;">🤖</div>
             <div class="message-bubble">
-              Hello! I'm your custom AI collaborator. Type your message below to chat!
+              Hello! I'm your custom AI collaborator. Click the ⚙️ API Key button above to set your OpenAI API key, then start chatting!
             </div>
           </div>
         </div>
@@ -211,13 +225,24 @@
   </main>
 
   <script>
-    // Type/paste your fresh OpenAI API key directly inside the quotes below:
-    const OPENAI_API_KEY = "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"; 
     const OPENAI_MODEL = "gpt-4o-mini";
 
     let chatHistory = [
       { role: "system", content: "You are Justin's personal AI collaborator, integrated into Justin's Skillz web app. Be warm, highly capable, concise, and helpful with programming, math, and daily learning." }
     ];
+
+    function getApiKey() {
+      return localStorage.getItem('openai_api_key') || '';
+    }
+
+    function configureApiKey() {
+      const currentKey = getApiKey();
+      const newKey = prompt("Enter your OpenAI API Key (stored securely in your browser's localStorage):", currentKey);
+      if (newKey !== null) {
+        localStorage.setItem('openai_api_key', newKey.trim());
+        alert("API Key saved successfully!");
+      }
+    }
 
     function handleKeydown(event) {
       if (event.key === 'Enter' && !event.shiftKey) {
@@ -231,8 +256,9 @@
       const text = inputEl.value.trim();
       if (!text) return;
 
-      if (!OPENAI_API_KEY || OPENAI_API_KEY.includes("YOUR_API_KEY")) {
-        appendMessage('assistant', '⚠️ Please edit AI.html and replace "sk-YOUR_API_KEY_HERE" with your actual OpenAI API key.');
+      const apiKey = getApiKey();
+      if (!apiKey) {
+        appendMessage('assistant', '⚠️ Please click the ⚙️ API Key button in the top right to configure your OpenAI API key before chatting.');
         return;
       }
 
@@ -247,7 +273,7 @@
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`
+            'Authorization': `Bearer ${apiKey}`
           },
           body: JSON.stringify({
             model: OPENAI_MODEL,
@@ -270,7 +296,7 @@
 
       } catch (err) {
         removeTypingIndicator(typingId);
-        appendMessage('assistant', `⚠️ Error: ${err.message}. Please check your API key.`);
+        appendMessage('assistant', `⚠️ Error: ${err.message}. Please verify your API key.`);
       }
     }
 

@@ -3,122 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Justin's Skillz</title>
+  <title>Justin's Skillz - Dashboard</title>
 
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
-
-  <style>
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
-      align-items: start;
-    }
-    @media (max-width: 1024px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    .card {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.3);
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      margin-bottom: 2rem;
-    }
-    .live-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(239, 68, 68, 0.15);
-      color: #ef4444;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      border: 1px solid rgba(239, 68, 68, 0.3);
-    }
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      background-color: #ef4444;
-      border-radius: 50%;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px #ef4444; }
-      100% { transform: scale(0.95); opacity: 0.8; }
-    }
-    .stream-container {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: var(--bg-primary);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      overflow: hidden;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    .stream-container iframe, .stream-container video {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-    .admin-form input, .admin-form textarea {
-      width: 100%;
-      padding: 0.75rem;
-      background: var(--bg-primary);
-      border: 2px solid var(--border-subtle);
-      color: var(--text-main);
-      border-radius: var(--radius-md);
-      font-family: inherit;
-      font-weight: 500;
-    }
-    .admin-form textarea {
-      resize: vertical;
-      min-height: 80px;
-    }
-    .quick-links {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
-    }
-    .quick-link-btn {
-      background: var(--bg-primary);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-      text-align: center;
-      font-weight: 700;
-      color: var(--text-main);
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-    }
-    .quick-link-btn:hover {
-      border-color: var(--accent-purple);
-      transform: translateY(-2px);
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -135,249 +29,82 @@
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="../AI.html" class="nav-link">AI Assistant</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
+        <a href="admin.html" class="nav-link">Admin</a>
       </nav>
 
-      <div class="nav-actions">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
-        </button>
+      <div class="nav-actions" id="auth-actions">
+        <!-- Dynamically loaded -->
       </div>
     </div>
   </header>
 
   <main class="main-content">
-    <div class="container">
-      
-      <section class="hero" style="margin-bottom: 2.5rem;">
-        <div class="hero-badge">
-          <span class="pulse-dot"></span> Student & Admin Hub
-        </div>
-        <h1 class="hero-title">
-          Justin's <span class="gradient-text">Live Dashboard</span>
-        </h1>
-        <p class="hero-subtitle">
-          Monitor live broadcasts, launch learning tools, and manage your skill modules in real time.
-        </p>
-      </section>
-
-      <div class="dashboard-grid">
-        
-        <!-- Left Column: Live Feed & Stream Viewer -->
-        <div>
-          <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3>Admin Live Broadcast</h3>
-              <div id="live-status-badge" class="live-badge">
-                <span class="live-dot"></span> <span id="badge-text">OFFLINE</span>
-              </div>
-            </div>
-
-            <div id="stream-box" class="stream-container">
-              <div style="padding: 2rem; color: var(--text-muted);">
-                <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📡</span>
-                <p id="stream-placeholder-text">No active live stream right now. Check back when admin goes live!</p>
-              </div>
-            </div>
-
-            <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-              <h4 id="feed-title" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Welcome to Justin's Skillz Feed</h4>
-              <p id="feed-message" style="color: var(--text-muted); font-size: 0.95rem;">Real-time broadcasts from admin will appear here instantly.</p>
-            </div>
-          </div>
-
-          <div class="card">
-            <h3>Quick Launch Labs</h3>
-            <div class="quick-links">
-              <a href="chess.html" class="quick-link-btn">
-                <span style="font-size: 1.75rem;">♟️</span> Chess AI
-              </a>
-              <a href="math.html" class="quick-link-btn">
-                <span style="font-size: 1.75rem;">📐</span> Math Lab
-              </a>
-              <a href="dashboard.html" class="quick-link-btn">
-                <span style="font-size: 1.75rem;">⚡</span> Skillz Hub
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column: Admin Broadcast Control Panel -->
-        <div>
-          <div class="card" style="border-color: var(--accent-purple);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3>Admin Control Panel</h3>
-              <span style="font-size: 0.75rem; background: var(--bg-pill); padding: 0.25rem 0.5rem; border-radius: 4px; font-weight: 700; color: var(--accent-purple);">BROADCASTER</span>
-            </div>
-            <p style="font-size: 0.85rem; color: var(--text-muted);">Broadcast updates, announcements, or stream links to all connected dashboards instantly.</p>
-
-            <form id="admin-broadcast-form" class="admin-form" onsubmit="handleBroadcast(event)">
-              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Broadcast Title</label>
-                <input type="text" id="admin-title" placeholder="e.g. Coding Livestream / Math Review" required>
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Announcement Message</label>
-                <textarea id="admin-message" placeholder="Type your live message or instructions here..." required></textarea>
-              </div>
-
-              <div style="display: flex; flex-direction: column; gap: 0.4rem;">
-                <label style="font-size: 0.85rem; font-weight: 700; color: var(--text-muted);">Video / Stream Embed URL (Optional)</label>
-                <input type="url" id="admin-stream-url" placeholder="https://www.youtube.com/embed/... or mp4 link">
-              </div>
-
-              <div style="display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem;">
-                <input type="checkbox" id="admin-is-live" checked style="width: 20px; height: 20px; accent-color: var(--accent-purple);">
-                <label for="admin-is-live" style="font-weight: 700; font-size: 0.9rem; cursor: pointer;">Set Status to LIVE 🔴</label>
-              </div>
-
-              <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
-                🚀 Broadcast Live Update
-              </button>
-              <div id="broadcast-feedback" style="font-size: 0.85rem; text-align: center; font-weight: 600; color: var(--accent-purple); min-height: 1.2rem;"></div>
-            </form>
-          </div>
-        </div>
-
+    <div class="container" style="padding: 2rem 1rem;">
+      <div style="margin-bottom: 2rem;">
+        <h1 id="greeting-header" style="font-size: 2.25rem; font-weight: 800;">👋 user!</h1>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0.5rem;">Welcome back to your central command center.</p>
       </div>
 
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div class="card" style="padding: 1.5rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">📐 Math Lab</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Practice advanced algebra, quadratic equations, and competition problem solving.</p>
+          <a href="math.html" class="btn btn-primary" style="display: inline-block; background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Open Lab</a>
+        </div>
+
+        <div class="card" style="padding: 1.5rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">♟️ Chess AI</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Test your tactical skills against the built-in chess engine during your free time.</p>
+          <a href="chess.html" class="btn btn-primary" style="display: inline-block; background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Play Chess</a>
+        </div>
+
+        <div class="card" style="padding: 1.5rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem;">🤖 AI Collaborator</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Chat directly with your personal assistant powered by OpenAI API.</p>
+          <a href="../AI.html" class="btn btn-primary" style="display: inline-block; background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Open AI Chat</a>
+        </div>
+      </div>
     </div>
   </main>
 
-  <footer class="app-footer">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
-    </div>
-  </footer>
-
   <script>
-    // Supabase Configuration
     const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY)
-      ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
-
-    async function fetchLatestLiveFeed() {
-      if (!supabaseClient) return;
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('live_feed')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (error) throw error;
-
-        if (data && data.length > 0) {
-          updateFeedUI(data[0]);
-        }
-      } catch (err) {
-        console.error('Error fetching live feed:', err);
-      }
-    }
-
-    function updateFeedUI(feed) {
-      const badgeEl = document.getElementById('live-status-badge');
-      const badgeText = document.getElementById('badge-text');
-      const titleEl = document.getElementById('feed-title');
-      const msgEl = document.getElementById('feed-message');
-      const streamBox = document.getElementById('stream-box');
-
-      titleEl.textContent = feed.title || "Justin's Live Stream";
-      msgEl.textContent = feed.message || "";
-
-      if (feed.is_live) {
-        badgeEl.style.background = 'rgba(239, 68, 68, 0.15)';
-        badgeEl.style.color = '#ef4444';
-        badgeEl.style.borderColor = 'rgba(239, 68, 68, 0.3)';
-        badgeText.textContent = 'LIVE NOW';
-
-        if (feed.stream_url) {
-          // Check if it's a YouTube link or generic iframe/video
-          let embedUrl = feed.stream_url;
-          if (embedUrl.includes('youtube.com/watch?v=')) {
-            embedUrl = embedUrl.replace('watch?v=', 'embed/');
-          } else if (embedUrl.includes('youtu.be/')) {
-            embedUrl = embedUrl.replace('youtu.be/', 'www.youtube.com/embed/');
-          }
-
-          streamBox.innerHTML = `<iframe src="${embedUrl}" allowfullscreen></iframe>`;
-        } else {
-          streamBox.innerHTML = `
-            <div style="padding: 2rem; color: var(--accent-purple); font-weight: 700;">
-              <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">🔴</span>
-              <p>Admin is currently broadcasting a live text announcement!</p>
-            </div>
+    async function initDashboard() {
+      const authContainer = document.getElementById('auth-actions');
+      const greetingHeader = document.getElementById('greeting-header');
+      
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const emailName = user.email ? user.email.split('@')[0] : 'user';
+        greetingHeader.textContent = `👋 ${emailName}!`;
+        if (authContainer) {
+          authContainer.innerHTML = `
+            <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
           `;
         }
       } else {
-        badgeEl.style.background = 'rgba(148, 163, 184, 0.15)';
-        badgeEl.style.color = 'var(--text-muted)';
-        badgeEl.style.borderColor = 'var(--border-subtle)';
-        badgeText.textContent = 'OFFLINE';
-
-        streamBox.innerHTML = `
-          <div style="padding: 2rem; color: var(--text-muted);">
-            <span style="font-size: 2.5rem; display: block; margin-bottom: 0.5rem;">📡</span>
-            <p>Stream is currently offline. Check back later!</p>
-          </div>
-        `;
+        greetingHeader.textContent = `👋 user!`;
+        if (authContainer) {
+          authContainer.innerHTML = `
+            <a href="login.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          `;
+        }
       }
     }
 
-    async function handleBroadcast(event) {
-      event.preventDefault();
-      const feedbackEl = document.getElementById('broadcast-feedback');
-
-      if (!supabaseClient) {
-        feedbackEl.textContent = "Supabase client not initialized!";
-        return;
-      }
-
-      try {
-        feedbackEl.textContent = "Broadcasting update...";
-
-        const title = document.getElementById('admin-title').value;
-        const message = document.getElementById('admin-message').value;
-        const stream_url = document.getElementById('admin-stream-url').value;
-        const is_live = document.getElementById('admin-is-live').checked;
-
-        const { error } = await supabaseClient
-          .from('live_feed')
-          .insert([
-            { title, message, stream_url, is_live, created_at: new Date().toISOString() }
-          ]);
-
-        if (error) throw error;
-
-        feedbackEl.textContent = "Broadcast sent successfully! 🚀";
-        setTimeout(() => { feedbackEl.textContent = ''; }, 4000);
-      } catch (err) {
-        console.error(err);
-        feedbackEl.textContent = "Failed to broadcast update.";
-      }
+    async function handleSignOut() {
+      await supabase.auth.signOut();
+      window.location.href = '../index.html';
     }
 
-    // Initialize & Subscribe to Supabase Realtime
-    window.addEventListener('DOMContentLoaded', () => {
-      fetchLatestLiveFeed();
-
-      if (supabaseClient) {
-        supabaseClient
-          .channel('public:live_feed')
-          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_feed' }, payload => {
-            if (payload.new) {
-              updateFeedUI(payload.new);
-            }
-          })
-          .subscribe();
-      }
-    });
+    window.addEventListener('DOMContentLoaded', initDashboard);
   </script>
 </body>
 </html>

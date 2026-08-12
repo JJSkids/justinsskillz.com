@@ -124,7 +124,7 @@
         </div>
 
         <div style="border-top: 1px solid var(--border-subtle); padding-top: 1rem; margin-top: 0.5rem;">
-          <a href="../index.html" style="color: var(--text-muted); font-size: 0.85rem; text-distance: none; text-decoration: none;">&larr; Back to Home</a>
+          <a href="../index.html" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">&larr; Back to Home</a>
         </div>
       </div>
 
@@ -138,9 +138,13 @@
   </footer>
 
   <script>
-    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    if (!window.supabaseClient) {
+      window.supabaseClient = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
+    }
+    const supabase = window.supabaseClient;
 
     async function signInWithGoogle() {
       try {

@@ -3,16 +3,75 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Sign In / Register</title>
-
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <title>Justin's Skillz - Sign In</title>
+  
+  <link rel="icon" type="image/jpeg" href="src/Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
-  <script src="theme.js" defer></script>
+  
+  <link rel="stylesheet" href="src/styles.css">
+  <script src="src/theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    .login-container {
+      max-width: 450px;
+      margin: 4rem auto;
+      padding: 0 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .login-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2rem;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      text-align: center;
+    }
+    .social-btn {
+      width: 100%;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      transition: transform 0.2s, background 0.2s;
+      border: 2px solid var(--border-subtle);
+      background: var(--bg-primary);
+      color: var(--text-main);
+      text-decoration: none;
+    }
+    .social-btn:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-purple);
+    }
+    .social-btn.google {
+      background: #ffffff;
+      color: #1f2937;
+      border-color: #e5e7eb;
+    }
+    .social-btn.google:hover {
+      background: #f3f4f6;
+    }
+    .social-btn.github {
+      background: #24292e;
+      color: #ffffff;
+      border-color: #24292e;
+    }
+    .social-btn.github:hover {
+      background: #1f2328;
+    }
+  </style>
 </head>
 <body>
 
@@ -21,155 +80,89 @@
 
   <header class="app-header">
     <div class="header-container">
-      <a href="../index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+      <a href="index.html" class="logo">
+        <img src="src/Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
+
+      <nav class="nav-menu">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="src/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="src/chess.html" class="nav-link">Chess AI</a>
+        <a href="src/math.html" class="nav-link">Math Lab</a>
+      </nav>
+
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+      </div>
     </div>
   </header>
 
   <main class="main-content">
-    <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 75vh; padding: 1rem;">
-      <div class="card" style="width: 100%; max-width: 420px; padding: 2.5rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);">
-        
-        <h1 id="form-title" style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;">Welcome Back</h1>
-        <p id="form-subtitle" style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 1.5rem;">Sign in to your Justin's Skillz account</p>
+    <div class="login-container">
+      
+      <div class="login-card">
+        <div>
+          <h1 style="font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem;">Welcome <span class="gradient-text">Back</span></h1>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Sign in to access your Justin's Skillz dashboard</p>
+        </div>
 
-        <div id="error-alert" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
-        <div id="success-alert" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
-
-        <!-- Social Auth Buttons -->
-        <div style="display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 1.25rem;">
-          <button type="button" onclick="signInWithProvider('google')" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: border-color 0.2s;">
-            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.4 1 3.5 3.6 1.6 7.4l3.7 2.9C6.2 7.1 8.9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.3 14.7c-.2-.7-.4-1.5-.4-2.7s.2-2 .4-2.7L1.6 6.4C.6 8.4 0 10.6 0 13s.6 4.6 1.6 6.6l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3.1 0-5.8-2.1-6.7-5.3L1.6 15.6C3.5 19.4 7.4 23 12 23z"/></svg>
+        <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 0.5rem;">
+          <!-- Google Sign In Button -->
+          <button type="button" onclick="signInWithGoogle()" class="social-btn google">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.4l3.7 2.9C6.5 7.2 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.6 14.7c-.2-.7-.4-1.5-.4-2.7s.2-2 .4-2.7L1.9 6.4C.7 8.8 0 10.3 0 12s.7 3.2 1.9 5.6l3.7-2.9z"/><path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.2-6.4-5.2L1.9 16c1.8 3.8 5.6 7 10.1 7z"/></svg>
             Sign in with Google
           </button>
 
-          <button type="button" onclick="signInWithProvider('github')" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.75rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.75rem; transition: border-color 0.2s;">
+          <!-- GitHub Sign In Button -->
+          <button type="button" onclick="signInWithGithub()" class="social-btn github">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
             Sign in with GitHub
           </button>
         </div>
 
-        <div style="display: flex; align-items: center; text-align: center; margin: 1.25rem 0; color: var(--text-muted); font-size: 0.8rem;">
-          <div style="flex: 1; border-bottom: 1px solid var(--border-subtle);"></div>
-          <span style="padding: 0 0.75rem;">OR EMAIL</span>
-          <div style="flex: 1; border-bottom: 1px solid var(--border-subtle);"></div>
-        </div>
-
-        <form id="auth-form" onsubmit="handleAuth(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Email Address</label>
-            <input type="email" id="email" required class="chat-input" placeholder="you@example.com" style="width: 100%; background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.85rem; border-radius: var(--radius-md); font-family: inherit;">
-          </div>
-
-          <div>
-            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Password</label>
-            <input type="password" id="password" required class="chat-input" placeholder="••••••••" style="width: 100%; background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.85rem; border-radius: var(--radius-md); font-family: inherit;">
-          </div>
-
-          <button type="submit" id="submit-btn" class="btn btn-primary" style="background: var(--accent-purple); color: white; border: none; padding: 0.85rem; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; margin-top: 0.5rem;">Sign In</button>
-        </form>
-
-        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
-          <span id="toggle-text">Don't have an account?</span> 
-          <button type="button" onclick="toggleAuthMode()" style="background: none; border: none; color: var(--accent-purple); font-weight: 700; cursor: pointer; text-decoration: underline; margin-left: 0.25rem;" id="toggle-btn">Sign Up</button>
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1rem; margin-top: 0.5rem;">
+          <a href="index.html" style="color: var(--text-muted); font-size: 0.85rem; text-decoration: none;">&larr; Back to Home</a>
         </div>
       </div>
+
     </div>
   </main>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
+    </div>
+  </footer>
 
   <script>
     const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    let isSignUpMode = false;
-
-    function toggleAuthMode() {
-      isSignUpMode = !isSignUpMode;
-      const titleEl = document.getElementById('form-title');
-      const subtitleEl = document.getElementById('form-subtitle');
-      const submitBtn = document.getElementById('submit-btn');
-      const toggleText = document.getElementById('toggle-text');
-      const toggleBtn = document.getElementById('toggle-btn');
-      
-      document.getElementById('error-alert').style.display = 'none';
-      document.getElementById('success-alert').style.display = 'none';
-
-      if (isSignUpMode) {
-        titleEl.textContent = 'Create Account';
-        subtitleEl.textContent = 'Sign up for a new Justin\'s Skillz account';
-        submitBtn.textContent = 'Sign Up';
-        toggleText.textContent = 'Already have an account?';
-        toggleBtn.textContent = 'Sign In';
-      } else {
-        titleEl.textContent = 'Welcome Back';
-        subtitleEl.textContent = 'Sign in to your Justin\'s Skillz account';
-        submitBtn.textContent = 'Sign In';
-        toggleText.textContent = 'Don\'t have an account?';
-        toggleBtn.textContent = 'Sign Up';
-      }
-    }
-
-    async function signInWithProvider(provider) {
-      const errorAlert = document.getElementById('error-alert');
-      errorAlert.style.display = 'none';
-
-      try {
-        const { data, error } = await supabase.auth.signInWithOAuth({
-          provider: provider,
-          options: {
-            redirectTo: window.location.origin + '/src/dashboard.html'
-          }
-        });
-        if (error) throw error;
-      } catch (err) {
-        errorAlert.textContent = err.message;
-        errorAlert.style.display = 'block';
-      }
-    }
-
-    async function handleAuth(event) {
-      event.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const errorAlert = document.getElementById('error-alert');
-      const successAlert = document.getElementById('success-alert');
-      const submitBtn = document.getElementById('submit-btn');
-
-      errorAlert.style.display = 'none';
-      successAlert.style.display = 'none';
-      submitBtn.textContent = isSignUpMode ? 'Signing up...' : 'Signing in...';
-      submitBtn.disabled = true;
-
-      try {
-        if (isSignUpMode) {
-          const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-          });
-          if (error) throw error;
-          
-          successAlert.textContent = 'Account created successfully! You can now sign in.';
-          successAlert.style.display = 'block';
-          submitBtn.textContent = 'Sign Up';
-          submitBtn.disabled = false;
-          toggleAuthMode();
-        } else {
-          const { data, error } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-          });
-          if (error) throw error;
-          
-          window.location.href = 'dashboard.html';
+    async function signInWithGoogle() {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: window.location.origin + '/src/dashboard.html'
         }
-      } catch (err) {
-        errorAlert.textContent = err.message;
-        errorAlert.style.display = 'block';
-        submitBtn.textContent = isSignUpMode ? 'Sign Up' : 'Sign In';
-        submitBtn.disabled = false;
+      });
+      if (error) {
+        alert('Google Sign-In Error: ' + error.message);
+      }
+    }
+
+    async function signInWithGithub() {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: window.location.origin + '/src/dashboard.html'
+        }
+      });
+      if (error) {
+        alert('GitHub Sign-In Error: ' + error.message);
       }
     }
   </script>

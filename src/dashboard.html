@@ -13,33 +13,45 @@
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  
   <style>
-    body {
-      visibility: hidden;
-    }
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 1.5rem;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
     .card {
       background: var(--bg-card);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 2rem;
+      padding: 1.75rem;
       box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
-    }
-    .broadcast-banner {
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid var(--accent-purple);
-      border-radius: var(--radius-md);
-      padding: 1rem 1.25rem;
-      margin-top: 1.5rem;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .card:hover {
+      border-color: var(--accent-purple);
+      transform: translateY(-2px);
+    }
+    .announcement-banner {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(59, 130, 246, 0.15));
+      border: 2px solid var(--accent-purple);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .stat-badge {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
     }
   </style>
 </head>
@@ -67,45 +79,124 @@
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
           <span class="theme-icon">🌙</span> Dark Mode
         </button>
-        <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+        <div id="auth-action-container">
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        </div>
       </div>
     </div>
   </header>
 
   <main class="main-content">
-    <div class="container">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 1rem 0;">
       
-      <div style="margin-top: 2rem;">
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">User <span class="gradient-text">Dashboard</span></h1>
-        <p id="user-welcome" style="color: var(--text-muted); font-size: 1rem;">Welcome back to your control center.</p>
+      <div style="margin-top: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Your Learning <span class="gradient-text">Dashboard</span></h1>
+          <p style="color: var(--text-muted); font-size: 1rem;" id="welcome-subtitle">Central command for all your skill labs, interactive modules, and projects.</p>
+        </div>
+        <div id="user-role-badge" style="background: rgba(168, 85, 247, 0.1); border: 1px solid var(--accent-purple); padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">
+          Student Scholar
+        </div>
       </div>
 
-      <!-- Broadcasts Feed Container -->
-      <div id="broadcasts-container"></div>
+      <!-- Broadcast Announcement Feed -->
+      <div id="announcement-section" style="display: none;">
+        <div class="announcement-banner">
+          <div style="font-size: 1.5rem;">📢</div>
+          <div style="flex: 1;">
+            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.25rem; color: var(--text-main);" id="announcement-title">System Announcement</h4>
+            <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;" id="announcement-content">Loading broadcast message...</p>
+          </div>
+        </div>
+      </div>
 
+      <!-- Quick Stats Row -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+        <div class="stat-badge">
+          <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent-purple);" id="stat-labs-count">6</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem;">Active Labs</div>
+        </div>
+        <div class="stat-badge">
+          <div style="font-size: 1.5rem; font-weight: 800; color: #3b82f6;" id="stat-sync-status">Connected</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem;">Cloud Database</div>
+        </div>
+        <div class="stat-badge">
+          <div style="font-size: 1.5rem; font-weight: 800; color: #10b981;" id="stat-theme-mode">Dark Mode</div>
+          <div style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600; margin-top: 0.25rem;">Interface Theme</div>
+        </div>
+      </div>
+
+      <!-- Subject & Labs Grid -->
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem;">Skill Labs & Modules</h2>
+      
       <div class="dashboard-grid">
+        
+        <!-- Music Card -->
         <div class="card">
-          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">⚡ Quick Shortcuts</h3>
-          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">Jump directly into your interactive math modules or chess arena.</p>
-          <div style="display: flex; gap: 0.75rem;">
-            <a href="math.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">Math Lab</a>
-            <a href="chess.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">Chess AI</a>
+          <div>
+            <div style="font-size: 2.25rem; margin-bottom: 0.75rem;">🎹</div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Music Lab</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Practice classical and seasonal piano compositions, rhythm tools, and song arrangements.</p>
           </div>
+          <a href="music.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; text-decoration: none; text-align: center; border: none; display: inline-block;">Open Music Lab</a>
         </div>
 
-        <div class="card admin-only-section" style="display: none; border-color: var(--accent-purple);">
-          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">👑 Admin Control Panel</h3>
-          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">Hello admin! You have exclusive privileges to manage site broadcasts and logs.</p>
-          <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
-            <a href="admin.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">Open Admin Portal</a>
+        <!-- Math Card -->
+        <div class="card">
+          <div>
+            <div style="font-size: 2.25rem; margin-bottom: 0.75rem;">📐</div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Math Lab</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Tackle advanced algebra, quadratic equations, competition problem sets, and interactive problem solving.</p>
           </div>
+          <a href="math.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; text-decoration: none; text-align: center; border: none; display: inline-block;">Open Math Lab</a>
         </div>
+
+        <!-- French Card -->
+        <div class="card">
+          <div>
+            <div style="font-size: 2.25rem; margin-bottom: 0.75rem;">⚜️</div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">French Studies</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Access French language learning modules, vocabulary building exercises, and reading resources.</p>
+          </div>
+          <a href="french.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; text-decoration: none; text-align: center; border: none; display: inline-block;">Open French Lab</a>
+        </div>
+
+        <!-- Chess Card -->
+        <div class="card">
+          <div>
+            <div style="font-size: 2.25rem; margin-bottom: 0.75rem;">♟️</div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Chess AI & Lab</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Challenge adaptive ELO chess bots, analyze positions with minimax evaluation, and save games to the cloud.</p>
+          </div>
+          <a href="chess.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; text-decoration: none; text-align: center; border: none; display: inline-block;">Open Chess AI</a>
+        </div>
+
+        <!-- Coding Card -->
+        <div class="card">
+          <div>
+            <div style="font-size: 2.25rem; margin-bottom: 0.75rem;">💻</div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Coding Hub</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Manage web projects, HTML/CSS/TypeScript tools, Supabase integrations, and Minecraft server mechanics.</p>
+          </div>
+          <a href="coding.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; text-decoration: none; text-align: center; border: none; display: inline-block;">Open Coding Hub</a>
+        </div>
+
+        <!-- Robotics Card -->
+        <div class="card">
+          <div>
+            <div style="font-size: 2.25rem; margin-bottom: 0.75rem;">🤖</div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Robotics & IoT Lab</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">Explore Arduino Uno starter kits, RFID learning sets, smart car IoT projects, and PTC Creo 3D models.</p>
+          </div>
+          <a href="robotics.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; text-decoration: none; text-align: center; border: none; display: inline-block;">Open Robotics Lab</a>
+        </div>
+
       </div>
 
     </div>
   </main>
 
-  <footer class="app-footer">
+  <footer class="app-footer" style="margin-top: 4rem;">
     <div class="container footer-content">
       <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
     </div>
@@ -121,77 +212,51 @@
 
     const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
 
-    async function loadBroadcasts() {
-      const container = document.getElementById('broadcasts-container');
+    async function checkAuthAndLoadData() {
+      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+      const authContainer = document.getElementById('auth-action-container');
+
+      if (session && session.user) {
+        const user = session.user;
+        authContainer.innerHTML = `
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+        `;
+
+        const userEmail = user.email ? user.email.toLowerCase() : '';
+        if (ADMIN_EMAILS.includes(userEmail)) {
+          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+          document.getElementById('user-role-badge').textContent = 'Administrator / Creator';
+        }
+
+        if (user.email) {
+          const username = user.email.split('@')[0];
+          document.getElementById('welcome-subtitle').textContent = `Welcome back, ${username}! Central command for your skill labs and modules.`;
+        }
+
+        fetchAnnouncements();
+      } else {
+        authContainer.innerHTML = `
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        `;
+      }
+    }
+
+    async function fetchAnnouncements() {
       try {
         const { data, error } = await window.mySupabaseInstance
-          .from('broadcasts')
+          .from('announcements')
           .select('*')
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .limit(1);
 
         if (!error && data && data.length > 0) {
-          let html = '';
-          data.forEach(item => {
-            const dateStr = new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            html += `
-              <div class="broadcast-banner">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                  <span style="font-weight: 700; font-size: 0.85rem; color: var(--accent-purple);">📢 Announcement</span>
-                  <span style="font-size: 0.75rem; color: var(--text-muted);">${dateStr}</span>
-                </div>
-                <p style="font-size: 0.95rem; color: var(--text-main); margin: 0;">${escapeHtml(item.message)}</p>
-              </div>
-            `;
-          });
-          container.innerHTML = html;
-        } else {
-          container.innerHTML = '';
+          document.getElementById('announcement-title').textContent = data[0].title || 'System Announcement';
+          document.getElementById('announcement-content').textContent = data[0].content || data[0].message || '';
+          document.getElementById('announcement-section').style.display = 'block';
         }
       } catch (err) {
-        console.error('Error fetching broadcasts:', err);
+        console.log('No announcements table or error fetching announcements:', err);
       }
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
-
-    async function protectDashboard() {
-      const hash = window.location.hash.substring(1);
-      if (hash) {
-        const params = new URLSearchParams(hash);
-        const access_token = params.get('access_token');
-        const refresh_token = params.get('refresh_token');
-
-        if (access_token) {
-          await window.mySupabaseInstance.auth.setSession({ access_token, refresh_token });
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-      }
-
-      const { data: { session }, error } = await window.mySupabaseInstance.auth.getSession();
-
-      if (error || !session || !session.user) {
-        window.location.href = 'login.html';
-        return;
-      }
-
-      const user = session.user;
-      document.body.style.visibility = 'visible';
-      document.getElementById('user-welcome').textContent = `Logged in as: ${user.email}`;
-
-      const userEmail = user.email ? user.email.toLowerCase() : '';
-      const isAdmin = ADMIN_EMAILS.includes(userEmail);
-
-      if (isAdmin) {
-        document.querySelectorAll('.admin-only-section').forEach(el => el.style.display = 'block');
-        document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
-      } else {
-        document.querySelectorAll('.admin-only-section').forEach(el => el.style.display = 'none');
-        document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'none');
-      }
-
-      loadBroadcasts();
     }
 
     async function handleSignOut() {
@@ -199,7 +264,11 @@
       window.location.href = '../index.html';
     }
 
-    window.addEventListener('DOMContentLoaded', protectDashboard);
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuthAndLoadData();
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      document.getElementById('stat-theme-mode').textContent = isDark ? 'Dark Mode' : 'Light Mode';
+    });
   </script>
 </body>
 </html>

@@ -251,7 +251,7 @@
           if (data.error) throw new Error(data.error.message);
           loadingDiv.textContent = data.choices[0].message.content;
         } else {
-          // Google / Gemini API Endpoint (Supports both AQ... and AIzaSy... keys)
+          // Fixed Gemini API Endpoint using correct model name format
           response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: {

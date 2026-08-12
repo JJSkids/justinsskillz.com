@@ -3,206 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin AI - Chess Lab</title>
-
+  <title>Justin's Skillz - Chess Lab & AI</title>
+  
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <!-- Chessboard.js & Chess.js CDN -->
+  <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
+  
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Chess.js for game logic -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Chessboard.js -->
+  <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 
   <style>
+    .chess-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem 0;
+    }
     .chess-layout {
       display: grid;
-      grid-template-columns: 1fr 380px;
-      gap: 2.5rem;
+      grid-template-columns: minmax(340px, 480px) 1fr;
+      gap: 2rem;
+      margin-top: 2rem;
       align-items: start;
     }
-    @media (max-width: 1024px) {
+    @media (max-width: 950px) {
       .chess-layout {
         grid-template-columns: 1fr;
+        justify-items: center;
       }
     }
-    .board-container {
+    .card {
       background: var(--bg-card);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 2rem;
-      box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.3);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .chessboard-grid {
-      display: grid;
-      grid-template-columns: repeat(8, 1fr);
-      grid-template-rows: repeat(8, 1fr);
+      padding: 1.75rem;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
       width: 100%;
-      max-width: 480px;
-      aspect-ratio: 1 / 1;
-      border: 3px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.4);
     }
-    .square {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2.5rem;
-      cursor: pointer;
-      user-select: none;
-      transition: background 0.15s ease;
+    .control-group {
+      margin-bottom: 1.25rem;
     }
-    .square.light {
-      background-color: #334155;
-      color: #f8fafc;
-    }
-    .square.dark {
-      background-color: #1e293b;
-      color: #cbd5e1;
-    }
-    .square.selected {
-      background-color: rgba(168, 85, 247, 0.4) !important;
-      box-shadow: inset 0 0 10px var(--accent-purple);
-    }
-    .square.highlight {
-      background-color: rgba(34, 211, 238, 0.3) !important;
-    }
-    .control-panel {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
-    .status-box {
-      padding: 1rem;
-      background: var(--bg-pill);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      font-weight: 700;
-      text-align: center;
-      font-size: 1rem;
-    }
-    .move-history {
-      height: 150px;
-      overflow-y: auto;
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 0.75rem;
-      font-family: monospace;
-      font-size: 0.9rem;
-      color: var(--text-muted);
-    }
-    .settings-group label {
+    .control-label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.9rem;
       font-weight: 700;
-      margin-bottom: 0.4rem;
-      color: var(--text-muted);
+      color: var(--text-main);
+      margin-bottom: 0.5rem;
     }
-    .settings-group select {
+    .form-select {
       width: 100%;
-      padding: 0.75rem;
       background: var(--bg-primary);
       border: 2px solid var(--border-subtle);
-      color: var(--text-main);
       border-radius: var(--radius-md);
-      font-weight: 600;
+      padding: 0.75rem;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.95kr;
+      cursor: pointer;
     }
-    .action-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
+    .form-select:focus {
+      outline: none;
+      border-color: var(--accent-purple);
     }
-    .save-feedback {
-      font-size: 0.85rem;
-      text-align: center;
-      font-weight: 600;
-      color: var(--accent-purple, #a855f7);
-      min-height: 1.2rem;
-    }
-
-    /* Modal styling */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-    }
-    .modal-card {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      width: 100%;
-      max-width: 550px;
-      max-height: 80vh;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-    }
-    .modal-header {
+    .saved-game-item {
+      background: rgba(168, 85, 247, 0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-    }
-    .modal-header h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-    .close-modal-btn {
-      background: none;
-      border: none;
-      color: var(--text-main);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-    .saved-game-item {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      cursor: pointer;
-      transition: border-color 0.2s ease, transform 0.15s ease;
+      gap: 1rem;
+      transition: all 0.2s ease;
     }
     .saved-game-item:hover {
       border-color: var(--accent-purple);
-      transform: translateY(-2px);
     }
-
-    @media (max-width: 640px) {
-      .board-container {
-        padding: 1rem;
-      }
-      .control-panel {
-        padding: 1.25rem;
-      }
-      .square {
-        font-size: 1.85rem;
-      }
-      .hero-title {
-        font-size: 2rem;
-      }
+    .eval-bar-container {
+      width: 100%;
+      height: 12px;
+      background: #2d3748;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-top: 0.75rem;
+      border: 1px solid var(--border-subtle);
+    }
+    .eval-bar-fill {
+      height: 100%;
+      width: 50%;
+      background: linear-gradient(90deg, #a855f7, #3b82f6);
+      transition: width 0.3s ease;
     }
   </style>
 </head>
@@ -223,114 +124,125 @@
         <a href="dashboard.html" class="nav-link">Dashboard</a>
         <a href="chess.html" class="nav-link active">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
+        <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
       </nav>
 
-      <div class="nav-actions">
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
           <span class="theme-icon">🌙</span> Dark Mode
         </button>
+        <div id="auth-action-container">
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        </div>
       </div>
     </div>
   </header>
 
   <main class="main-content">
-    <div class="container">
+    <div class="container chess-container">
       
-      <section class="hero" style="margin-bottom: 2.5rem;">
-        <div class="hero-badge">
-          <span class="pulse-dot"></span> Play vs Justin AI
+      <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Chess <span class="gradient-text">Lab & AI Engine</span></h1>
+          <p style="color: var(--text-muted); font-size: 1rem;">Challenge intelligent ELO bots, test Adaptive Mode, and save games to the cloud.</p>
         </div>
-        <h1 class="hero-title">
-          Justin's <span class="gradient-text">Chess Arena</span>
-        </h1>
-        <p class="hero-subtitle">
-          Test your tactical skills against upgraded AI difficulties and save or load matches from the cloud.
-        </p>
-      </section>
+      </div>
 
       <div class="chess-layout">
-        
-        <div class="board-container">
-          <div id="chessboard" class="chessboard-grid"></div>
-        </div>
-
-        <div class="control-panel">
-          <div class="status-box" id="game-status">Your Turn (White)</div>
-
-          <div class="settings-group">
-            <label for="ai-difficulty">Justin AI Difficulty</label>
-            <select id="ai-difficulty">
-              <option value="easy">Casual Justin (Random)</option>
-              <option value="medium">Tactical Justin (Capture Focused)</option>
-              <option value="hard">Grandmaster Justin (Minimax Depth 2)</option>
-              <option value="legendary" selected>Legendary Justin (Minimax Depth 3 + Positional AI)</option>
-            </select>
-          </div>
-
-          <div class="settings-group">
-            <label>Move History</label>
-            <div id="move-history" class="move-history">Game started. Make your move against Justin!</div>
-          </div>
-
-          <div class="save-feedback" id="save-feedback"></div>
-
-          <div class="action-buttons">
-            <button type="button" onclick="saveGameToSupabase()" class="btn btn-secondary" style="width: 100%;">
-              💾 Save Game to Cloud
-            </button>
-            <button type="button" onclick="openLoadModal()" class="btn btn-secondary" style="width: 100%;">
-              📂 Load Game from Cloud
-            </button>
-            <button type="button" onclick="resetGame()" class="btn btn-primary" style="width: 100%;">
-              Reset Game 🔄
-            </button>
+        <!-- Board Column -->
+        <div>
+          <div class="card" style="padding: 1rem; display: flex; flex-direction: column; align-items: center;">
+            <div id="chess-board" style="width: 100%; max-width: 440px;"></div>
+            
+            <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem; width: 100%; justify-content: center; flex-wrap: wrap;">
+              <button type="button" onclick="resetGame()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">New Game</button>
+              <button type="button" onclick="undoMove()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Undo Move</button>
+              <button type="button" onclick="openSaveModal()" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer;">Save Game</button>
+            </div>
           </div>
         </div>
 
+        <!-- Controls & Status Column -->
+        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+          
+          <!-- AI Settings Card -->
+          <div class="card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">⚙️ AI Configuration</h3>
+            
+            <div class="control-group">
+              <label class="control-label" for="elo-select">Difficulty / ELO Level</label>
+              <select id="elo-select" class="form-select" onchange="onDifficultyChange()">
+                <option value="800">Novice (~800 ELO) - Depth 1</option>
+                <option value="1200">Casual (~1200 ELO) - Depth 2</option>
+                <option value="1600" selected>Intermediate (~1600 ELO) - Depth 3</option>
+                <option value="2000">Advanced Expert (~2000 ELO) - Depth 4</option>
+                <option value="2400">Grandmaster (~2400 ELO) - Depth 5</option>
+                <option value="adaptive">🔥 Adaptive Mode (Auto-adjusts to you)</option>
+              </select>
+            </div>
+
+            <div class="control-group" style="margin-bottom: 0;">
+              <label class="control-label" for="player-color">Play As</label>
+              <select id="player-color" class="form-select" onchange="onColorChange()">
+                <option value="white" selected>White (You go first)</option>
+                <option value="black">Black (AI goes first)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Game Status & Evaluation Card -->
+          <div class="card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">📊 Match Analysis</h3>
+            <div id="game-status" style="font-size: 0.95rem; color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem;">White to move.</div>
+            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;" id="ai-info-text">Active Bot: Intermediate (1600 ELO)</div>
+            
+            <div class="eval-bar-container">
+              <div id="eval-fill" class="eval-bar-fill"></div>
+            </div>
+
+            <div style="margin-top: 1rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: var(--radius-md); max-height: 120px; overflow-y: auto; font-family: monospace; font-size: 0.85rem;" id="game-pgn">
+              1. e4 e5
+            </div>
+          </div>
+
+          <!-- Saved Games Cloud Card -->
+          <div class="card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">📂 Cloud Saved Games</h3>
+            <div id="saved-games-list" style="max-height: 180px; overflow-y: auto;">
+              <p style="color: var(--text-muted); font-size: 0.85rem;">Sign in to view saved matches.</p>
+            </div>
+          </div>
+
+        </div>
       </div>
 
     </div>
   </main>
 
-  <!-- Load Game Modal -->
-  <div id="load-modal" class="modal-overlay">
-    <div class="modal-card">
-      <div class="modal-header">
-        <h3>Load Saved Game from Cloud</h3>
-        <button type="button" class="close-modal-btn" onclick="closeLoadModal()">&times;</button>
-      </div>
-      <div id="saved-games-list" style="overflow-y: auto; max-height: 50vh; display: flex; flex-direction: column; gap: 0.75rem;">
-        <p style="color: var(--text-muted); text-align: center;">Fetching saved games...</p>
-      </div>
-    </div>
-  </div>
-
-  <footer class="app-footer">
+  <footer class="app-footer" style="margin-top: 4rem;">
     <div class="container footer-content">
       <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
     </div>
   </footer>
 
   <script>
-    // Single Global Supabase Client Instance
-    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
+    }
 
-    const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY)
-      ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      : null;
+    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
+    let board = null;
+    let game = new Chess();
+    let currentUser = null;
+    let aiDifficulty = 1600;
+    let isAdaptive = false;
+    let playerSide = 'white'; // 'white' or 'black'
 
-    let game;
-    let selectedSquare = null;
-    let possibleMoves = [];
-
-    const pieceUnicode = {
-      'p': '♟', 'r': '♜', 'n': '♞', 'b': '♝', 'q': '♛', 'k': '♚',
-      'P': '♙', 'R': '♖', 'N': '♘', 'B': '♗', 'Q': '♕', 'K': '♔'
-    };
-
-    // Piece-Square Tables for Positional Evaluation
-    const pawnEvalBlack = [
+    // --- PIECE-SQUARE TABLES FOR EVALUATION ---
+    const pawnEvalWhite = [
       [0,  0,  0,  0,  0,  0,  0,  0],
       [50, 50, 50, 50, 50, 50, 50, 50],
       [10, 10, 20, 30, 30, 20, 10, 10],
@@ -340,7 +252,6 @@
       [ 5, 10, 10,-20,-20, 10, 10,  5],
       [ 0,  0,  0,  0,  0,  0,  0,  0]
     ];
-
     const knightEval = [
       [-50,-40,-30,-30,-30,-30,-40,-50],
       [-40,-20,  0,  0,  0,  0,-20,-40],
@@ -351,8 +262,7 @@
       [-40,-20,  0,  5,  5,  0,-20,-40],
       [-50,-40,-30,-30,-30,-30,-40,-50],
     ];
-
-    const bishopEval = [
+    const bishopEvalWhite = [
       [-20,-10,-10,-10,-10,-10,-10,-20],
       [-10,  0,  0,  0,  0,  0,  0,-10],
       [-10,  0,  5, 10, 10,  5,  0,-10],
@@ -362,8 +272,7 @@
       [-10,  5,  0,  0,  0,  0,  5,-10],
       [-20,-10,-10,-10,-10,-10,-10,-20],
     ];
-
-    const rookEval = [
+    const rookEvalWhite = [
       [ 0,  0,  0,  0,  0,  0,  0,  0],
       [ 5, 10, 10, 10, 10, 10, 10,  5],
       [-5,  0,  0,  0,  0,  0,  0, -5],
@@ -373,7 +282,6 @@
       [-5,  0,  0,  0,  0,  0,  0, -5],
       [ 0,  0,  0,  5,  5,  0,  0,  0]
     ];
-
     const queenEval = [
       [-20,-10,-10, -5, -5,-10,-10,-20],
       [-10,  0,  0,  0,  0,  0,  0,-10],
@@ -384,8 +292,7 @@
       [-10,  0,  5,  0,  0,  0,  0,-10],
       [-20,-10,-10, -5, -5,-10,-10,-20]
     ];
-
-    const kingEval = [
+    const kingEvalWhite = [
       [-30,-40,-40,-50,-50,-40,-40,-30],
       [-30,-40,-40,-50,-50,-40,-40,-30],
       [-30,-40,-40,-50,-50,-40,-40,-30],
@@ -396,161 +303,83 @@
       [ 20, 30, 10,  0,  0, 10, 30, 20]
     ];
 
-    function initGame() {
-      if (typeof Chess === 'undefined') {
-        document.getElementById('game-status').textContent = 'Error loading chess engine!';
-        return;
+    function getPieceValue(piece, x, y) {
+      if (piece === null) return 0;
+      let absoluteValue = 0;
+      let tableVal = 0;
+      let isWhite = piece.color === 'w';
+
+      switch (piece.type) {
+        case 'p':
+          absoluteValue = 10;
+          tableVal = isWhite ? pawnEvalWhite[y][x] : pawnEvalWhite[7 - y][x];
+          break;
+        case 'n':
+          absoluteValue = 30;
+          tableVal = knightEval[y][x];
+          break;
+        case 'b':
+          absoluteValue = 35;
+          tableVal = isWhite ? bishopEvalWhite[y][x] : bishopEvalWhite[7 - y][x];
+          break;
+        case 'r':
+          absoluteValue = 50;
+          tableVal = isWhite ? rookEvalWhite[y][x] : rookEvalWhite[7 - y][x];
+          break;
+        case 'q':
+          absoluteValue = 90;
+          tableVal = queenEval[y][x];
+          break;
+        case 'k':
+          absoluteValue = 900;
+          tableVal = isWhite ? kingEvalWhite[y][x] : kingEvalWhite[7 - y][x];
+          break;
       }
-      game = new Chess();
-      renderBoard();
+      return absoluteValue + (tableVal / 10);
     }
 
-    function renderBoard() {
-      const boardElement = document.getElementById('chessboard');
-      boardElement.innerHTML = '';
-      const board = game.board();
-
+    function evaluateBoard(boardState) {
+      let totalEval = 0;
       for (let r = 0; r < 8; r++) {
         for (let c = 0; c < 8; c++) {
-          const squareDiv = document.createElement('div');
-          const isDark = (r + c) % 2 === 1;
-          squareDiv.className = `square ${isDark ? 'dark' : 'light'}`;
-          
-          const squareCoord = 'abcdefgh'[c] + (8 - r);
-          squareDiv.dataset.square = squareCoord;
-
-          if (selectedSquare === squareCoord) {
-            squareDiv.classList.add('selected');
-          }
-          if (possibleMoves.includes(squareCoord)) {
-            squareDiv.classList.add('highlight');
-          }
-
-          const piece = board[r][c];
+          let piece = boardState[r][c];
           if (piece) {
-            squareDiv.textContent = pieceUnicode[piece.color === 'w' ? piece.type.toUpperCase() : piece.type];
+            let val = getPieceValue(piece, c, r);
+            if (piece.color === 'w') {
+              totalEval += val;
+            } else {
+              totalEval -= val;
+            }
           }
-
-          squareDiv.addEventListener('click', () => handleSquareClick(squareCoord));
-          boardElement.appendChild(squareDiv);
         }
       }
-      updateStatus();
+      return totalEval;
     }
 
-    function handleSquareClick(square) {
-      if (game.game_over()) return;
-
-      if (selectedSquare === null) {
-        const piece = game.get(square);
-        if (piece && piece.color === game.turn()) {
-          selectedSquare = square;
-          possibleMoves = game.moves({ square, verbose: true }).map(m => m.to);
-          renderBoard();
-        }
-      } else {
-        const move = game.move({
-          from: selectedSquare,
-          to: square,
-          promotion: 'q'
-        });
-
-        selectedSquare = null;
-        possibleMoves = [];
-
-        if (move) {
-          appendHistory(move.san);
-          renderBoard();
-          if (!game.game_over() && game.turn() === 'b') {
-            document.getElementById('game-status').textContent = "Justin AI is thinking...";
-            setTimeout(makeAiMove, 300);
-          }
-        } else {
-          const piece = game.get(square);
-          if (piece && piece.color === game.turn()) {
-            selectedSquare = square;
-            possibleMoves = game.moves({ square, verbose: true }).map(m => m.to);
-          }
-          renderBoard();
-        }
-      }
-    }
-
-    function makeAiMove() {
-      const difficulty = document.getElementById('ai-difficulty').value;
-      const moves = game.moves({ verbose: true });
-      if (moves.length === 0) return;
-
-      let chosenMove;
-
-      if (difficulty === 'easy') {
-        chosenMove = moves[Math.floor(Math.random() * moves.length)];
-      } else if (difficulty === 'medium') {
-        const captures = moves.filter(m => m.captured);
-        chosenMove = captures.length > 0 ? captures[Math.floor(Math.random() * captures.length)] : moves[Math.floor(Math.random() * moves.length)];
-      } else if (difficulty === 'hard') {
-        let bestScore = -99999;
-        let bestMoves = [];
-        for (let m of moves) {
-          game.move(m);
-          let score = minimax(1, false, -100000, 100000);
-          game.undo();
-          if (score > bestScore) {
-            bestScore = score;
-            bestMoves = [m];
-          } else if (score === bestScore) {
-            bestMoves.push(m);
-          }
-        }
-        chosenMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
-      } else {
-        let bestScore = -99999;
-        let bestMoves = [];
-        for (let m of moves) {
-          game.move(m);
-          let score = minimax(2, false, -100000, 100000);
-          game.undo();
-          if (score > bestScore) {
-            bestScore = score;
-            bestMoves = [m];
-          } else if (score === bestScore) {
-            bestMoves.push(m);
-          }
-        }
-        chosenMove = bestMoves[Math.floor(Math.random() * bestMoves.length)];
+    // --- MINIMAX WITH ALPHA-BETA PRUNING ---
+    function minimax(gameInstance, depth, alpha, beta, isMaximizing) {
+      if (depth === 0 || gameInstance.game_over()) {
+        return evaluateBoard(gameInstance.board());
       }
 
-      const moveResult = game.move(chosenMove);
-      if (moveResult) {
-        appendHistory(moveResult.san);
-        renderBoard();
-      }
-    }
-
-    function minimax(depth, isMaximizing, alpha, beta) {
-      if (depth === 0 || game.game_over()) {
-        return evaluateBoard();
-      }
-
-      const moves = game.moves({ verbose: true });
-
+      let possibleMoves = gameInstance.ugly_moves();
       if (isMaximizing) {
-        let maxEval = -100000;
-        for (let m of moves) {
-          game.move(m);
-          let evaluation = minimax(depth - 1, false, alpha, beta);
-          game.undo();
+        let maxEval = -99999;
+        for (let i = 0; i < possibleMoves.length; i++) {
+          gameInstance.ugly_move(possibleMoves[i]);
+          let evaluation = minimax(gameInstance, depth - 1, alpha, beta, false);
+          gameInstance.undo();
           maxEval = Math.max(maxEval, evaluation);
           alpha = Math.max(alpha, evaluation);
           if (beta <= alpha) break;
         }
         return maxEval;
       } else {
-        let minEval = 100000;
-        for (let m of moves) {
-          game.move(m);
-          let evaluation = minimax(depth - 1, true, alpha, beta);
-          game.undo();
+        let minEval = 99999;
+        for (let i = 0; i < possibleMoves.length; i++) {
+          gameInstance.ugly_move(possibleMoves[i]);
+          let evaluation = minimax(gameInstance, depth - 1, alpha, beta, true);
+          gameInstance.undo();
           minEval = Math.min(minEval, evaluation);
           beta = Math.min(beta, evaluation);
           if (beta <= alpha) break;
@@ -559,181 +388,296 @@
       }
     }
 
-    function evaluateBoard() {
-      let totalEvaluation = 0;
-      const board = game.board();
+    function calculateAIMove() {
+      if (game.game_over()) return;
 
-      for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) {
-          const piece = board[r][c];
-          if (piece) {
-            totalEvaluation += getPieceValue(piece, r, c);
+      let moves = game.ugly_moves();
+      if (moves.length === 0) return;
+
+      // Determine search depth based on ELO / Adaptive mode
+      let depth = 3;
+      let currentEloLabel = 'Intermediate (1600)';
+
+      if (isAdaptive) {
+        // Adaptive mode: evaluates current board balance and adjusts depth
+        let currentEval = evaluateBoard(game.board());
+        let moveCount = game.history().length;
+        if (Math.abs(currentEval) > 15 || moveCount > 30) {
+          depth = 4;
+          currentEloLabel = 'Adaptive (Expert ~2000)';
+        } else {
+          depth = 2;
+          currentEloLabel = 'Adaptive (Casual ~1200)';
+        }
+      } else {
+        if (aiDifficulty <= 800) { depth = 1; currentEloLabel = 'Novice (800)'; }
+        else if (aiDifficulty <= 1200) { depth = 2; currentEloLabel = 'Casual (1200)'; }
+        else if (aiDifficulty <= 1600) { depth = 3; currentEloLabel = 'Intermediate (1600)'; }
+        else if (aiDifficulty <= 2000) { depth = 4; currentEloLabel = 'Advanced (2000)'; }
+        else { depth = 5; currentEloLabel = 'Grandmaster (2400)'; }
+      }
+
+      document.getElementById('ai-info-text').textContent = `Active Bot: ${currentEloLabel}`;
+
+      // For lowest novice level, introduce random move chance
+      if (!isAdaptive && aiDifficulty <= 800 && Math.random() < 0.4) {
+        let randomMove = moves[Math.floor(Math.random() * moves.length)];
+        game.ugly_move(randomMove);
+        board.position(game.fen());
+        updateStatus();
+        return;
+      }
+
+      let bestMove = null;
+      let bestValue = game.turn() === 'w' ? -99999 : 99999;
+      let isMaximizing = game.turn() === 'w';
+
+      // Shuffle moves to add variety
+      moves.sort(() => Math.random() - 0.5);
+
+      for (let i = 0; i < moves.length; i++) {
+        game.ugly_move(moves[i]);
+        let value = minimax(gameInstance = game, depth - 1, -100000, 100000, !isMaximizing);
+        game.undo();
+
+        if (isMaximizing) {
+          if (value > bestValue) {
+            bestValue = value;
+            bestMove = moves[i];
+          }
+        } else {
+          if (value < bestValue) {
+            bestValue = value;
+            bestMove = moves[i];
           }
         }
       }
-      return totalEvaluation;
-    }
 
-    function getPieceValue(piece, r, c) {
-      const absRow = piece.color === 'b' ? r : (7 - r);
-      let value = 0;
-
-      switch (piece.type) {
-        case 'p': value = 100 + pawnEvalBlack[absRow][c]; break;
-        case 'n': value = 320 + knightEval[absRow][c]; break;
-        case 'b': value = 330 + bishopEval[absRow][c]; break;
-        case 'r': value = 500 + rookEval[absRow][c]; break;
-        case 'q': value = 900 + queenEval[absRow][c]; break;
-        case 'k': value = 20000 + kingEval[absRow][c]; break;
+      if (bestMove) {
+        game.ugly_move(bestMove);
+        board.position(game.fen());
+        updateStatus();
       }
-      return piece.color === 'b' ? value : -value;
     }
 
-    function updateStatus() {
-      const statusEl = document.getElementById('game-status');
+    // --- BOARD INTERACTION ---
+    function onDragStart (source, piece, position, orientation) {
+      if (game.game_over()) return false;
+      // Prevent moving opponent pieces
+      if ((playerSide === 'white' && piece.search(/^b/) !== -1) ||
+          (playerSide === 'black' && piece.search(/^w/) !== -1)) {
+        return false;
+      }
+      if ((game.turn() === 'w' && playerSide === 'black') ||
+          (game.turn() === 'b' && playerSide === 'white')) {
+        return false;
+      }
+    }
+
+    function onDrop (source, target) {
+      let move = game.move({
+        from: source,
+        to: target,
+        promotion: 'q'
+      });
+
+      if (move === null) return 'snapback';
+
+      updateStatus();
+
+      // Trigger AI response after short delay if game is ongoing
+      if (!game.game_over()) {
+        setTimeout(calculateAIMove, 250);
+      }
+    }
+
+    function onSnapEnd () {
+      board.position(game.fen());
+    }
+
+    function updateStatus () {
+      let status = '';
+      let turnColor = game.turn() === 'w' ? 'White' : 'Black';
+
       if (game.in_checkmate()) {
-        statusEl.textContent = `Checkmate! ${game.turn() === 'w' ? 'Justin AI' : 'You'} wins! 🏆`;
+        status = `Checkmate! ${turnColor === 'White' ? 'Black' : 'White'} wins.`;
       } else if (game.in_draw()) {
-        statusEl.textContent = "It's a draw! 🤝";
+        status = 'Game drawn.';
       } else {
-        statusEl.textContent = `${game.turn() === 'w' ? "Your Turn (White)" : "Justin AI's Turn (Black)"}`;
-      }
-    }
-
-    function appendHistory(san) {
-      const historyEl = document.getElementById('move-history');
-      if (historyEl.textContent.includes('Game started')) {
-        historyEl.textContent = '';
-      }
-      historyEl.textContent += `${san} `;
-      historyEl.scrollTop = historyEl.scrollHeight;
-    }
-
-    async function saveGameToSupabase() {
-      const feedbackEl = document.getElementById('save-feedback');
-
-      if (!supabaseClient) {
-        feedbackEl.textContent = "Supabase client not initialized!";
-        return;
-      }
-
-      try {
-        feedbackEl.textContent = "Saving game history...";
-        
-        const moveHistoryText = document.getElementById('move-history').textContent;
-        const difficulty = document.getElementById('ai-difficulty').value;
-        
-        const { error } = await supabaseClient
-          .from('chess_games')
-          .insert([
-            { 
-              difficulty: difficulty, 
-              move_history: moveHistoryText, 
-              pgn: game.pgn(),
-              created_at: new Date().toISOString() 
-            }
-          ]);
-
-        if (error) throw error;
-
-        feedbackEl.textContent = "Game saved successfully! ✅";
-        setTimeout(() => { feedbackEl.textContent = ''; }, 4000);
-      } catch (err) {
-        console.error(err);
-        feedbackEl.textContent = "Failed to save game to cloud.";
-      }
-    }
-
-    async function openLoadModal() {
-      const modal = document.getElementById('load-modal');
-      const listEl = document.getElementById('saved-games-list');
-      modal.style.display = 'flex';
-      listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Fetching saved games...</p>';
-
-      if (!supabaseClient) {
-        listEl.innerHTML = '<p style="color: #ef4444; text-align: center;">Supabase client not initialized!</p>';
-        return;
-      }
-
-      try {
-        const { data, error } = await supabaseClient
-          .from('chess_games')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(10);
-
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center;">No saved games found in cloud.</p>';
-          return;
+        status = `${turnColor} to move.`;
+        if (game.in_check()) {
+          status += ' (Check!)';
         }
-
-        listEl.innerHTML = '';
-        data.forEach(item => {
-          const dateStr = new Date(item.created_at).toLocaleString();
-          const itemDiv = document.createElement('div');
-          itemDiv.className = 'saved-game-item';
-          itemDiv.innerHTML = `
-            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
-              <span style="color: var(--accent-purple); text-transform: uppercase;">Difficulty: ${item.difficulty}</span>
-              <span style="color: var(--text-muted); font-weight: 400; font-size: 0.8rem;">${dateStr}</span>
-            </div>
-            <div style="font-family: monospace; font-size: 0.85rem; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-              ${item.move_history || 'No move history'}
-            </div>
-          `;
-          itemDiv.addEventListener('click', () => {
-            loadSavedGameData(item);
-          });
-          listEl.appendChild(itemDiv);
-        });
-      } catch (err) {
-        console.error(err);
-        listEl.innerHTML = '<p style="color: #ef4444; text-align: center;">Failed to load saved games.</p>';
-      }
-    }
-
-    function closeLoadModal() {
-      document.getElementById('load-modal').style.display = 'none';
-    }
-
-    function loadSavedGameData(item) {
-      game.reset();
-      selectedSquare = null;
-      possibleMoves = [];
-
-      if (item.pgn) {
-        game.load_pgn(item.pgn);
       }
 
-      if (item.difficulty) {
-        const diffSelect = document.getElementById('ai-difficulty');
-        diffSelect.value = item.difficulty;
-      }
+      document.getElementById('game-status').textContent = status;
+      document.getElementById('game-pgn').textContent = game.pgn() || 'No moves yet.';
 
-      const historyEl = document.getElementById('move-history');
-      historyEl.textContent = item.move_history || 'Loaded game.';
-
-      renderBoard();
-      closeLoadModal();
-
-      const feedbackEl = document.getElementById('save-feedback');
-      feedbackEl.textContent = "Game loaded successfully! 📂";
-      setTimeout(() => { feedbackEl.textContent = ''; }, 4000);
+      // Update evaluation bar percentage (visual estimation)
+      let evalScore = evaluateBoard(game.board());
+      let percentage = 50 + (evalScore * 3);
+      percentage = Math.max(5, Math.min(95, percentage));
+      document.getElementById('eval-fill').style.width = percentage + '%';
     }
 
     function resetGame() {
       game.reset();
-      selectedSquare = null;
-      possibleMoves = [];
-      document.getElementById('move-history').textContent = 'Game started. Make your move against Justin!';
-      document.getElementById('save-feedback').textContent = '';
-      renderBoard();
+      board.orientation(playerSide);
+      board.start();
+      updateStatus();
+      if (playerSide === 'black') {
+        setTimeout(calculateAIMove, 300);
+      }
     }
 
+    function undoMove() {
+      game.undo();
+      game.undo(); // Undo both player and AI move
+      board.position(game.fen());
+      updateStatus();
+    }
+
+    function onDifficultyChange() {
+      let val = document.getElementById('elo-select').value;
+      if (val === 'adaptive') {
+        isAdaptive = true;
+      } else {
+        isAdaptive = false;
+        aiDifficulty = parseInt(val, 10);
+      }
+      updateStatus();
+    }
+
+    function onColorChange() {
+      playerSide = document.getElementById('player-color').value;
+      resetGame();
+    }
+
+    // --- SUPABASE CLOUD SAVE / LOAD ---
+    async function checkAuthAndLoadSavedGames() {
+      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+      const authContainer = document.getElementById('auth-action-container');
+
+      if (session && session.user) {
+        currentUser = session.user;
+        authContainer.innerHTML = `
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+        `;
+
+        const userEmail = currentUser.email ? currentUser.email.toLowerCase() : '';
+        if (ADMIN_EMAILS.includes(userEmail)) {
+          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+        }
+
+        fetchUserSavedGames();
+      } else {
+        authContainer.innerHTML = `
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        `;
+        document.getElementById('saved-games-list').innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">Sign in to save and load your chess matches.</p>`;
+      }
+    }
+
+    async function fetchUserSavedGames() {
+      if (!currentUser) return;
+      const listContainer = document.getElementById('saved-games-list');
+      
+      const { data, error } = await window.mySupabaseInstance
+        .from('chess_games')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        listContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem;">Error loading saved games.</p>`;
+        return;
+      }
+
+      if (data && data.length > 0) {
+        let html = '';
+        data.forEach(item => {
+          let dateStr = new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+          html += `
+            <div class="saved-game-item">
+              <div>
+                <strong style="font-size: 0.9rem; color: var(--text-main); display: block;">${escapeHtml(item.game_name)}</strong>
+                <span style="font-size: 0.75rem; color: var(--text-muted);">${dateStr}</span>
+              </div>
+              <button onclick="loadSavedGameData('${escapeHtml(item.pgn).replace(/'/g, "\\'")}')" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; border: none; cursor: pointer;">Load</button>
+            </div>
+          `;
+        });
+        listContainer.innerHTML = html;
+      } else {
+        listContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">No saved games found yet.</p>`;
+      }
+    }
+
+    async function openSaveModal() {
+      if (!currentUser) {
+        alert('Please sign in to save your chess game.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      let gameName = prompt('Enter a name for your saved game:', 'Chess Match ' + new Date().toLocaleDateString());
+      if (!gameName) return;
+
+      let pgnData = game.pgn();
+      if (!pgnData) {
+        alert('No moves have been made yet to save!');
+        return;
+      }
+
+      const { error } = await window.mySupabaseInstance
+        .from('chess_games')
+        .insert([{ user_id: currentUser.id, game_name: gameName, pgn: pgnData }]);
+
+      if (error) {
+        alert('Error saving game: ' + error.message);
+      } else {
+        alert('Game successfully saved to the cloud!');
+        fetchUserSavedGames();
+      }
+    }
+
+    function loadSavedGameData(pgnString) {
+      try {
+        let success = game.load_pgn(pgnString);
+        if (!success) {
+          alert('Failed to load PGN string.');
+          return;
+        }
+        board.position(game.fen());
+        updateStatus();
+        alert('Game successfully loaded!');
+      } catch (err) {
+        console.error('Error loading game:', err);
+        alert('An error occurred while loading the game.');
+      }
+    }
+
+    async function handleSignOut() {
+      await window.mySupabaseInstance.auth.signOut();
+      window.location.href = '../index.html';
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    // Initialize board on DOM ready
     window.addEventListener('DOMContentLoaded', () => {
-      initGame();
+      let config = {
+        draggable: true,
+        position: 'start',
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onSnapEnd: onSnapEnd
+      };
+      board = Chessboard('chess-board', config);
+      updateStatus();
+      checkAuthAndLoadSavedGames();
     });
   </script>
 </body>

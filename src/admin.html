@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Admin Portal</title>
+  <title>Justin's Skillz - Admin Control Panel</title>
   
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,49 +15,42 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    body {
-      visibility: hidden;
-    }
     .admin-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
       gap: 1.5rem;
-      margin-top: 2rem;
+      margin-top: 1.5rem;
     }
-    .card {
+    .admin-card {
       background: var(--bg-card);
-      border: 2px solid var(--accent-purple);
+      border: 2px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 2rem;
+      padding: 1.75rem;
       box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
     }
-    .form-input {
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    .form-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 0.4rem;
+    }
+    .form-input, .form-textarea {
       width: 100%;
       background: var(--bg-primary);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 0.75rem;
+      padding: 0.75rem 1rem;
       color: var(--text-main);
       font-family: inherit;
       font-size: 0.95rem;
-      resize: vertical;
-      min-height: 100px;
-      margin-bottom: 1rem;
     }
-    .form-input:focus {
+    .form-input:focus, .form-textarea:focus {
       outline: none;
       border-color: var(--accent-purple);
-    }
-    .broadcast-item {
-      background: rgba(168, 85, 247, 0.05);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1rem;
-      margin-bottom: 0.75rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
     }
   </style>
 </head>
@@ -76,55 +69,91 @@
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="live.html" class="nav-link">Live Stream</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="admin.html" class="nav-link active" style="color: var(--accent-purple);">Admin</a>
+        <a href="admin.html" class="nav-link active admin-nav-item" style="color: var(--accent-purple);">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
           <span class="theme-icon">🌙</span> Dark Mode
         </button>
-        <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+        <div id="auth-action-container">
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        </div>
       </div>
     </div>
   </header>
 
   <main class="main-content">
-    <div class="container">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 1rem 0;">
       
-      <div style="margin-top: 2rem;">
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Admin <span class="gradient-text">Portal</span></h1>
-        <p id="admin-welcome" style="color: var(--text-muted); font-size: 1rem;">Exclusive management zone for site controllers.</p>
+      <div style="margin-top: 1rem; margin-bottom: 1.5rem;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Admin <span class="gradient-text">Command Center</span></h1>
+        <p style="color: var(--text-muted); font-size: 1rem;">Manage live broadcasts, create stream events, and publish system announcements.</p>
       </div>
 
-      <div class="admin-grid">
-        <!-- Create Broadcast Card -->
-        <div class="card">
-          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">📢 Post New Broadcast</h3>
-          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Send an announcement to all user dashboards.</p>
-          
-          <form id="broadcast-form" onsubmit="postBroadcast(event)">
-            <textarea id="broadcast-message" class="form-input" placeholder="Type your announcement here..." required></textarea>
-            <button type="submit" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.65rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer;">Publish Broadcast</button>
-          </form>
-        </div>
+      <!-- Access Denied Banner (Hidden by default) -->
+      <div id="access-denied" style="display: none; background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: var(--radius-lg); padding: 2rem; text-align: center; margin-top: 2rem;">
+        <h3 style="color: #ef4444; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">Access Restricted</h3>
+        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You must be signed in as an administrator (hellojjskids@gmail.com) to access this control panel.</p>
+        <a href="login.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 700; text-decoration: none;">Sign In to Admin Account</a>
+      </div>
 
-        <!-- Manage Active Broadcasts Card -->
-        <div class="card">
-          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">📋 Active Broadcasts</h3>
-          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1rem;">Review or remove current site announcements.</p>
+      <!-- Admin Controls Container -->
+      <div id="admin-controls" style="display: none;">
+        <div class="admin-grid">
           
-          <div id="admin-broadcasts-list" style="max-height: 300px; overflow-y: auto;">
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Loading broadcasts...</p>
+          <!-- Broadcast Announcement Creator -->
+          <div class="admin-card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>📢</span> Publish Dashboard Announcement
+            </h3>
+            <form onsubmit="handlePublishAnnouncement(event)">
+              <div class="form-group">
+                <label class="form-label">Announcement Title</label>
+                <input type="text" id="ann-title" class="form-input" placeholder="e.g. Live Math Q&A Tonight" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Message Content</label>
+                <textarea id="ann-content" class="form-textarea" rows="4" placeholder="Enter broadcast details..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%; background: var(--accent-purple); color: white; padding: 0.85rem; border-radius: var(--radius-md); font-weight: 700; border: none; cursor: pointer;">Broadcast to Dashboard</button>
+            </form>
+            <div id="ann-status" style="margin-top: 0.75rem; font-size: 0.85rem; font-weight: 600; text-align: center;"></div>
           </div>
+
+          <!-- Schedule & Live Stream Creator -->
+          <div class="admin-card">
+            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+              <span>🎥</span> Create Live Stream Event
+            </h3>
+            <form onsubmit="handleCreateEvent(event)">
+              <div class="form-group">
+                <label class="form-label">Event Title</label>
+                <input type="text" id="ev-title" class="form-input" placeholder="e.g. Advanced Calculus Session" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Jitsi Room Name (Unique ID)</label>
+                <input type="text" id="ev-room" class="form-input" placeholder="e.g. MathLabLiveRoom" required>
+              </div>
+              <div class="form-group" style="display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem;">
+                <input type="checkbox" id="ev-islive" style="width: 1.2rem; height: 1.2rem; accent-color: var(--accent-purple);">
+                <label class="form-label" style="margin: 0; cursor: pointer;" for="ev-islive">Mark as LIVE NOW (Active Stream)</label>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width: 100%; background: var(--accent-purple); color: white; padding: 0.85rem; border-radius: var(--radius-md); font-weight: 700; border: none; cursor: pointer; margin-top: 1rem;">Save & Launch Event</button>
+            </form>
+            <div id="ev-status" style="margin-top: 0.75rem; font-size: 0.85rem; font-weight: 600; text-align: center;"></div>
+          </div>
+
         </div>
       </div>
 
     </div>
   </main>
 
-  <footer class="app-footer">
+  <footer class="app-footer" style="margin-top: 4rem;">
     <div class="container footer-content">
       <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
     </div>
@@ -140,99 +169,86 @@
 
     const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
 
-    async function protectAdminPortal() {
-      const { data: { session }, error } = await window.mySupabaseInstance.auth.getSession();
+    async function checkAdminAuth() {
+      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+      const authContainer = document.getElementById('auth-action-container');
 
-      if (error || !session || !session.user) {
-        window.location.href = 'login.html';
-        return;
-      }
+      if (session && session.user) {
+        authContainer.innerHTML = `
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+        `;
 
-      const user = session.user;
-      const userEmail = user.email ? user.email.toLowerCase() : '';
-      const isAdmin = ADMIN_EMAILS.includes(userEmail);
-
-      if (!isAdmin) {
-        window.location.href = 'dashboard.html';
-        return;
-      }
-
-      document.body.style.visibility = 'visible';
-      document.getElementById('admin-welcome').textContent = `Welcome, Admin: ${user.email}`;
-      fetchAdminBroadcasts();
-    }
-
-    async function fetchAdminBroadcasts() {
-      const listContainer = document.getElementById('admin-broadcasts-list');
-      try {
-        const { data, error } = await window.mySupabaseInstance
-          .from('broadcasts')
-          .select('*')
-          .order('created_at', { ascending: false });
-
-        if (error) {
-          listContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem;">Error loading broadcasts. Make sure the table 'broadcasts' exists.</p>`;
-          return;
-        }
-
-        if (data && data.length > 0) {
-          let html = '';
-          data.forEach(item => {
-            const dateStr = new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
-            html += `
-              <div class="broadcast-item">
-                <div>
-                  <p style="font-size: 0.95rem; color: var(--text-main); margin: 0 0 0.25rem 0;">${escapeHtml(item.message)}</p>
-                  <span style="font-size: 0.75rem; color: var(--text-muted);">${dateStr}</span>
-                </div>
-                <button onclick="deleteBroadcast(${item.id})" class="btn" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.75rem; cursor: pointer;">Delete</button>
-              </div>
-            `;
-          });
-          listContainer.innerHTML = html;
+        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+        if (ADMIN_EMAILS.includes(userEmail)) {
+          document.getElementById('admin-controls').style.display = 'block';
+          document.getElementById('access-denied').style.display = 'none';
         } else {
-          listContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">No active broadcasts found.</p>`;
+          document.getElementById('admin-controls').style.display = 'none';
+          document.getElementById('access-denied').style.display = 'block';
         }
+      } else {
+        authContainer.innerHTML = `
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        `;
+        document.getElementById('admin-controls').style.display = 'none';
+        document.getElementById('access-denied').style.display = 'block';
+      }
+    }
+
+    async function handlePublishAnnouncement(e) {
+      e.preventDefault();
+      const title = document.getElementById('ann-title').value;
+      const content = document.getElementById('ann-content').value;
+      const statusEl = document.getElementById('ann-status');
+
+      statusEl.style.color = 'var(--text-muted)';
+      statusEl.textContent = 'Publishing announcement...';
+
+      try {
+        const { error } = await window.mySupabaseInstance
+          .from('announcements')
+          .insert([{ title, content, created_at: new Date() }]);
+
+        if (error) throw error;
+
+        statusEl.style.color = '#10b981';
+        statusEl.textContent = 'Announcement successfully published!';
+        document.getElementById('ann-title').value = '';
+        document.getElementById('ann-content').value = '';
       } catch (err) {
-        listContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem;">Failed to connect to database.</p>`;
+        statusEl.style.color = '#ef4444';
+        statusEl.textContent = 'Error publishing (Ensure announcements table exists).';
+        console.error(err);
       }
     }
 
-    async function postBroadcast(event) {
-      event.preventDefault();
-      const messageInput = document.getElementById('broadcast-message');
-      const message = messageInput.value.trim();
-      if (!message) return;
+    async function handleCreateEvent(e) {
+      e.preventDefault();
+      const title = document.getElementById('ev-title').value;
+      const room_name = document.getElementById('ev-room').value;
+      const is_live = document.getElementById('ev-islive').checked;
+      const statusEl = document.getElementById('ev-status');
 
-      const { error } = await window.mySupabaseInstance
-        .from('broadcasts')
-        .insert([{ message }]);
+      statusEl.style.color = 'var(--text-muted)';
+      statusEl.textContent = 'Creating stream event...';
 
-      if (error) {
-        alert('Error posting broadcast: ' + error.message);
-      } else {
-        messageInput.value = '';
-        fetchAdminBroadcasts();
+      try {
+        const { error } = await window.mySupabaseInstance
+          .from('events')
+          .insert([{ title, room_name, is_live, start_time: new Date() }]);
+
+        if (error) throw error;
+
+        statusEl.style.color = '#10b981';
+        statusEl.textContent = 'Live stream event created successfully!';
+        document.getElementById('ev-title').value = '';
+        document.getElementById('ev-room').value = '';
+        document.getElementById('ev-islive').checked = false;
+      } catch (err) {
+        statusEl.style.color = '#ef4444';
+        statusEl.textContent = 'Error creating event (Ensure events table exists).';
+        console.error(err);
       }
-    }
-
-    async function deleteBroadcast(id) {
-      if (!confirm('Are you sure you want to delete this broadcast?')) return;
-
-      const { error } = await window.mySupabaseInstance
-        .from('broadcasts')
-        .delete()
-        .eq('id', id);
-
-      if (error) {
-        alert('Error deleting broadcast: ' + error.message);
-      } else {
-        fetchAdminBroadcasts();
-      }
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     async function handleSignOut() {
@@ -240,7 +256,9 @@
       window.location.href = '../index.html';
     }
 
-    window.addEventListener('DOMContentLoaded', protectAdminPortal);
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAdminAuth();
+    });
   </script>
 </body>
 </html>

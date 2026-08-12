@@ -105,11 +105,12 @@
       background: linear-gradient(90deg, #a855f7, #3b82f6);
       transition: width 0.3s ease;
     }
-    /* Ensure chess pieces render correctly */
+    /* Ensure chess pieces render correctly and stay visible on top */
     .piece-417db {
       position: absolute;
       width: 100%;
       height: 100%;
+      z-index: 10;
     }
   </style>
 </head>
@@ -740,6 +741,11 @@
       board = Chessboard('chess-board', config);
       updateStatus();
       checkAuthAndLoadSavedGames();
+
+      // Ensure grid/flex container dimensions settle before rendering pieces
+      setTimeout(() => {
+        board.resize();
+      }, 150);
     });
   </script>
 </body>

@@ -138,45 +138,47 @@
   </footer>
 
   <script>
-    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // Safe initialization avoiding name collision
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
+    }
 
-    async function signInWithGoogle() {
-      if (window.location.protocol === 'file:') {
-        alert('⚠️ OAuth cannot run on local file:// links. Please use a local web server (like VS Code Live Server).');
-        return;
-      }
+    const getRedirectUrl = () => {
+      const pathname = window.location.pathname;
+      const parentDir = pathname.substring(0, pathname.lastIndexOf('/'));
+      return window.location.origin + parentDir + '/dashboard.html';
+    };
+
+    window.signInWithGoogle = async function() {
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const { error } = await window.mySupabaseInstance.auth.signInWithOAuth({
           provider: 'google',
           options: {
-            redirectTo: window.location.origin + '/src/dashboard.html'
+            redirectTo: getRedirectUrl()
           }
         });
         if (error) alert('Google Sign-In Error: ' + error.message);
       } catch (err) {
         alert('Unexpected error: ' + err.message);
       }
-    }
+    };
 
-    async function signInWithGithub() {
-      if (window.location.protocol === 'file:') {
-        alert('⚠️ OAuth cannot run on local file:// links. Please use a local web server (like VS Code Live Server).');
-        return;
-      }
+    window.signInWithGithub = async function() {
       try {
-        const { error } = await supabase.auth.signInWithOAuth({
+        const { error } = await window.mySupabaseInstance.auth.signInWithOAuth({
           provider: 'github',
           options: {
-            redirectTo: window.location.origin + '/src/dashboard.html'
+            redirectTo: getRedirectUrl()
           }
         });
         if (error) alert('GitHub Sign-In Error: ' + error.message);
       } catch (err) {
         alert('Unexpected error: ' + err.message);
       }
-    }
+    };
   </script>
 </body>
 </html>

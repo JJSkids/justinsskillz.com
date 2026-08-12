@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Justin's Skillz - Live Stream & Events</title>
+  
+  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Jitsi Meet External API Script -->
+  <script src="https://meet.jit.si/external_api.js"></script>
+
+  <style>
+    .stream-layout {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 900px) {
+      .stream-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    .video-container {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      min-height: 500px;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
+    }
+    #jitsi-container {
+      width: 100%;
+      height: 550px;
+      background: #000;
+    }
+    .feed-panel {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      height: 550px;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
+    }
+    .feed-messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      padding-right: 0.25rem;
+    }
+    .feed-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+    }
+    .feed-item .author {
+      font-weight: 700;
+      color: var(--accent-purple);
+      margin-bottom: 0.2rem;
+    }
+    .event-selector-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-glow glow-top-left"></div>
+  <div class="bg-glow glow-bottom-right"></div>
+
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="live.html" class="nav-link active">Live Stream</a>
+        <a href="chess.html" class="nav-link">Chess AI</a>
+        <a href="math.html" class="nav-link">Math Lab</a>
+        <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
+      </nav>
+
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+        <div id="auth-action-container">
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 1rem 0;">
+      
+      <div style="margin-top: 1rem; margin-bottom: 1.5rem;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Live <span class="gradient-text">Broadcast Center</span></h1>
+        <p style="color: var(--text-muted); font-size: 1rem;">Stream live video sessions, tune into active events, and interact via the live feed.</p>
+      </div>
+
+      <!-- Active Events Selector -->
+      <div class="event-selector-card">
+        <h3 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.75rem;">Select Active Event / Room</h3>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
+          <select id="event-dropdown" class="chat-input" style="flex: 1; min-width: 250px; background: var(--bg-primary);">
+            <option value="JustinsSkillzMainRoom">Default Main Stream Room</option>
+          </select>
+          <button type="button" onclick="joinSelectedRoom()" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.85rem 1.5rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer;">Tune In / Stream</button>
+        </div>
+      </div>
+
+      <!-- Stream & Live Feed Layout -->
+      <div class="stream-layout">
+        
+        <!-- Video Stream Column -->
+        <div class="video-container">
+          <div style="padding: 1rem 1.25rem; border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center;">
+            <h3 id="current-room-title" style="font-size: 1.1rem; font-weight: 700; margin: 0;">Room: Main Stream</h3>
+            <span id="live-indicator" style="background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid #10b981; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">LIVE</span>
+          </div>
+          <div id="jitsi-container"></div>
+        </div>
+
+        <!-- AliveFeed Chat / Ticker Column -->
+        <div class="feed-panel">
+          <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Live Feed & Chat</h3>
+          <div id="feed-messages" class="feed-messages">
+            <div class="feed-item">
+              <div class="author">System</div>
+              <div>Welcome to Justin's Skillz live stream! Chat messages and event updates will appear here in real time.</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="feed-input" class="chat-input" placeholder="Type feed message..." onkeypress="handleFeedKeyPress(event)" style="font-size: 0.85rem; padding: 0.6rem 0.8rem;">
+            <button type="button" onclick="sendFeedMessage()" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.6rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer;">Post</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+
+  <footer class="app-footer" style="margin-top: 4rem;">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
+    }
+
+    let jitsiApi = null;
+    let currentRoom = 'JustinsSkillzMainRoom';
+    let currentUser = 'Viewer';
+
+    async function initAuthAndData() {
+      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+      if (session && session.user) {
+        currentUser = session.user.email.split('@')[0];
+        const userEmail = session.user.email.toLowerCase();
+        if (userEmail === 'hellojjskids@gmail.com') {
+          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+        }
+      }
+      loadEventsFromDB();
+      loadFeedMessages();
+      startJitsiRoom(currentRoom);
+    }
+
+    function startJitsiRoom(roomName) {
+      if (jitsiApi) {
+        jitsiApi.dispose();
+      }
+      const domain = 'meet.jit.si';
+      const options = {
+        roomName: roomName,
+        width: '100%',
+        height: '100%',
+        parentNode: document.querySelector('#jitsi-container'),
+        userInfo: {
+          displayName: currentUser
+        },
+        configOverwrite: {
+          startWithAudioMuted: false,
+          startWithVideoMuted: false,
+          disableModeratorIndicator: true
+        },
+        interfaceConfigOverwrite: {
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'desktop', 'fullscreen',
+            'fittowindow', 'hangup', 'chat', 'settings'
+          ]
+        }
+      };
+      jitsiApi = new JitsiMeetExternalAPI(domain, options);
+      document.getElementById('current-room-title').textContent = `Room: ${roomName}`;
+    }
+
+    async function loadEventsFromDB() {
+      try {
+        const { data, error } = await window.mySupabaseInstance
+          .from('events')
+          .select('*')
+          .order('start_time', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          const dropdown = document.getElementById('event-dropdown');
+          dropdown.innerHTML = '';
+          data.forEach(ev => {
+            const opt = document.createElement('option');
+            opt.value = ev.room_name || `event-${ev.id}`;
+            opt.textContent = `${ev.title} (${ev.is_live ? 'LIVE NOW' : 'Scheduled'})`;
+            dropdown.appendChild(opt);
+          });
+        }
+      } catch (err) {
+        console.log('Events table query note:', err);
+      }
+    }
+
+    function joinSelectedRoom() {
+      const dropdown = document.getElementById('event-dropdown');
+      currentRoom = dropdown.value;
+      startJitsiRoom(currentRoom);
+    }
+
+    async function loadFeedMessages() {
+      try {
+        const { data, error } = await window.mySupabaseInstance
+          .from('alivefeed')
+          .select('*')
+          .order('created_at', { ascending: true })
+          .limit(50);
+
+        if (!error && data && data.length > 0) {
+          const container = document.getElementById('feed-messages');
+          container.innerHTML = '';
+          data.forEach(item => {
+            appendFeedUI(item.username, item.message);
+          });
+        }
+      } catch (err) {
+        console.log('Alivefeed table query note:', err);
+      }
+    }
+
+    async function sendFeedMessage() {
+      const input = document.getElementById('feed-input');
+      const text = input.value.trim();
+      if (!text) return;
+
+      appendFeedUI(currentUser, text);
+      input.value = '';
+
+      try {
+        await window.mySupabaseInstance
+          .from('alivefeed')
+          .insert([{ username: currentUser, message: text, created_at: new Date() }]);
+      } catch (err) {
+        console.log('Error inserting feed message:', err);
+      }
+    }
+
+    function appendFeedUI(author, message) {
+      const container = document.getElementById('feed-messages');
+      const div = document.createElement('div');
+      div.className = 'feed-item';
+      div.innerHTML = `<div class="author">${escapeHtml(author)}</div><div>${escapeHtml(message)}</div>`;
+      container.appendChild(div);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function handleFeedKeyPress(event) {
+      if (event.key === 'Enter') {
+        sendFeedMessage();
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initAuthAndData();
+    });
+  </script>
+</body>
+</html>

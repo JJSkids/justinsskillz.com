@@ -5,17 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Justin's Skillz - Home & Creator Portal</title>
   
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="icon" type="image/jpeg" href="src/Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css">
-  <script src="theme.js" defer></script>
+  <link rel="stylesheet" href="src/styles.css">
+  <script src="src/theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Robust fallback styles to guarantee clean layout and eliminate weird styling */
     :root {
       --bg-primary: #0f1117;
       --bg-card: #181b25;
@@ -133,6 +132,7 @@
       border-radius: var(--radius-lg);
       padding: 1.75rem;
       transition: transform 0.2s ease, border-color 0.2s ease;
+      text-align: center;
     }
     .feature-card:hover {
       border-color: var(--accent-purple);
@@ -166,17 +166,17 @@
   <header class="app-header">
     <div class="header-container">
       <a href="index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <img src="src/Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
 
       <nav class="nav-menu">
         <a href="index.html" class="nav-link active">Home</a>
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="live.html" class="nav-link" style="color: #10b981; font-weight: 700;">🔴 Live Stream</a>
-        <a href="chess.html" class="nav-link">Chess AI</a>
-        <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
+        <a href="src/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="src/live.html" class="nav-link" style="color: #10b981; font-weight: 700;">🔴 Live Stream</a>
+        <a href="src/chess.html" class="nav-link">Chess AI</a>
+        <a href="src/math.html" class="nav-link">Math Lab</a>
+        <a href="src/admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
@@ -184,7 +184,7 @@
           🌙
         </button>
         <div id="auth-action-container">
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem;">Sign In</a>
+          <a href="src/login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         </div>
       </div>
     </div>
@@ -192,20 +192,20 @@
 
   <main style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem 1.5rem;">
     
-    <!-- Hero Section -->
+    <!-- Hero Section (Text Aligned Center) -->
     <div class="hero-section">
-      <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2;">Welcome to Justin's <span class="gradient-text">Skillz</span></h1>
-      <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto 2rem auto;">Your central command hub for advanced mathematics, chess AI, live streaming, coding labs, and interactive skill modules.</p>
+      <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; text-align: center;">Justin's <span class="gradient-text">Skillz</span></h1>
+      <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto 2rem auto; text-align: center;">Your central command hub for advanced mathematics, chess AI, live streaming, coding labs, and interactive skill modules.</p>
       
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="dashboard.html" class="btn" style="background: var(--accent-purple); color: white; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);">Open Dashboard</a>
-        <a href="live.html" class="btn" style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; color: #10b981;">🔴 Join Live Stream</a>
+        <a href="src/dashboard.html" class="btn" style="background: var(--accent-purple); color: white; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);">Open Dashboard</a>
+        <a href="src/live.html" class="btn" style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; color: #10b981;">🔴 Join Live Stream</a>
       </div>
     </div>
 
     <!-- Meet the Creator Section -->
     <div class="creator-card">
-      <img src="Justin's Skillz.jpg" alt="Justin Emuekhare" class="creator-avatar">
+      <img src="src/Justin's Skillz.jpg" alt="Justin Emuekhare" class="creator-avatar">
       <div>
         <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">Founder & Developer</div>
         <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.75rem; color: var(--text-main);">Justin Emuekhare</h2>
@@ -220,21 +220,21 @@
     
     <div class="features-grid">
       <div class="feature-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📐</div>
-        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Math & Algebra Lab</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Practice advanced algebra, quadratic equations, and competition problem sets.</p>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">📐</div>
+        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); text-align: center;">Math & Algebra Lab</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0; text-align: center;">Practice advanced algebra, quadratic equations, and competition problem sets.</p>
       </div>
 
       <div class="feature-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">♟️</div>
-        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Chess AI Engine</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Play against adaptive ELO bots and analyze board positions with cloud saves.</p>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">♟️</div>
+        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); text-align: center;">Chess AI Engine</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0; text-align: center;">Play against adaptive ELO bots and analyze board positions with cloud saves.</p>
       </div>
 
       <div class="feature-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤖</div>
-        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Live Stream & Feed</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Tune into live video sessions and connect with participants in real time.</p>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">🤖</div>
+        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); text-align: center;">Live Stream & Feed</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0; text-align: center;">Tune into live video sessions and connect with participants in real time.</p>
       </div>
     </div>
 
@@ -269,7 +269,7 @@
         }
       } else {
         authContainer.innerHTML = `
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="src/login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         `;
       }
     }

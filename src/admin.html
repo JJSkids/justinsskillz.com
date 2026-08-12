@@ -3,16 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Admin Panel</title>
-
+  <title>Justin's Skillz - Admin Portal</title>
+  
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+  
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      visibility: hidden;
+    }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 2px solid var(--accent-purple);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
+    }
+  </style>
 </head>
 <body>
 
@@ -23,135 +42,99 @@
     <div class="header-container">
       <a href="../index.html" class="logo">
         <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
-        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span> ADMIN</span>
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
 
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="../AI.html" class="nav-link">AI Assistant</a>
-        <a href="admin.html" class="nav-link active">Admin Panel</a>
+        <a href="chess.html" class="nav-link">Chess AI</a>
+        <a href="math.html" class="nav-link">Math Lab</a>
+        <a href="admin.html" class="nav-link active" style="color: var(--accent-purple);">Admin</a>
       </nav>
 
-      <div class="nav-actions" id="auth-actions">
-        <!-- Dynamically loaded -->
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
+          <span class="theme-icon">🌙</span> Dark Mode
+        </button>
+        <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
       </div>
     </div>
   </header>
 
   <main class="main-content">
-    <div class="container" style="padding: 2rem 1rem; max-width: 800px;">
-      <div style="margin-bottom: 2rem;">
-        <h1 style="font-size: 2rem; font-weight: 800;">Admin Control Panel</h1>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">Manage broadcasts and system announcements.</p>
+    <div class="container">
+      
+      <div style="margin-top: 2rem;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Admin <span class="gradient-text">Portal</span></h1>
+        <p id="admin-welcome" style="color: var(--text-muted); font-size: 1rem;">Exclusive management zone for site controllers.</p>
       </div>
 
-      <div class="card" style="padding: 2rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); margin-bottom: 1.5rem;">
-        <h2 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">📢 Broadcast Stream Control</h2>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">Send a live announcement stream update to all connected users instantly.</p>
-        
-        <div style="display: flex; flex-direction: column; gap: 1rem;">
-          <textarea id="broadcast-message" class="chat-input" placeholder="Type your broadcast announcement here..." rows="4" style="width: 100%; background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.85rem; border-radius: var(--radius-md); font-family: inherit; resize: none;"></textarea>
-          
-          <div style="display: flex; justify-content: flex-end;">
-            <button type="button" onclick="publishBroadcast()" class="btn btn-primary" style="background: var(--accent-purple); color: white; border: none; padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 700; cursor: pointer;">Publish Broadcast</button>
+      <div class="admin-grid">
+        <div class="card">
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">🛡️ Security & Access Control</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">You are securely authenticated as the site administrator.</p>
+          <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid var(--accent-purple); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">
+            Role: Super Administrator (Verified)
           </div>
         </div>
-      </div>
 
-      <div class="card" style="padding: 2rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg);">
-        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Active Broadcast History</h3>
-        <div id="broadcast-history" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 250px; overflow-y: auto;">
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Loading broadcasts...</p>
+        <div class="card">
+          <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">⚙️ Quick Actions</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">Return to your user dashboard or manage tools.</p>
+          <a href="dashboard.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem; display: inline-block;">Back to Dashboard</a>
         </div>
       </div>
+
     </div>
   </main>
 
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
+    </div>
+  </footer>
+
   <script>
-    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    async function checkAdminAuth() {
-      const authContainer = document.getElementById('auth-actions');
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        if (authContainer) {
-          authContainer.innerHTML = `
-            <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
-          `;
-        }
-      } else {
-        if (authContainer) {
-          authContainer.innerHTML = `
-            <a href="login.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
-          `;
-        }
-      }
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
     }
 
-    async function publishBroadcast() {
-      const messageInput = document.getElementById('broadcast-message');
-      const content = messageInput.value.trim();
-      if (!content) return;
+    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
 
-      try {
-        const { error } = await supabase
-          .from('broadcasts')
-          .insert([{ content: content, created_at: new Date() }]);
+    async function protectAdminPortal() {
+      const { data: { session }, error } = await window.mySupabaseInstance.auth.getSession();
 
-        if (error) throw error;
-
-        messageInput.value = '';
-        alert('Broadcast published successfully!');
-        loadBroadcastHistory();
-      } catch (err) {
-        alert('Error publishing broadcast: ' + err.message);
+      // If not signed in at all, redirect to login
+      if (error || !session || !session.user) {
+        window.location.href = 'login.html';
+        return;
       }
-    }
 
-    async function loadBroadcastHistory() {
-      const historyContainer = document.getElementById('broadcast-history');
-      try {
-        const { data, error } = await supabase
-          .from('broadcasts')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(10);
+      const user = session.user;
+      const userEmail = user.email ? user.email.toLowerCase() : '';
+      const isAdmin = ADMIN_EMAILS.includes(userEmail);
 
-        if (error) throw error;
-
-        if (!data || data.length === 0) {
-          historyContainer.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No broadcasts sent yet.</p>';
-          return;
-        }
-
-        historyContainer.innerHTML = data.map(item => `
-          <div style="padding: 0.75rem 1rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); font-size: 0.9rem;">
-            <p style="margin-bottom: 0.25rem;">${escapeHtml(item.content)}</p>
-            <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(item.created_at).toLocaleString()}</span>
-          </div>
-        `).join('');
-      } catch (err) {
-        historyContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.9rem;">Failed to load history.</p>`;
+      // If signed in but NOT an admin, silently redirect them back to the normal dashboard
+      if (!isAdmin) {
+        window.location.href = 'dashboard.html';
+        return;
       }
-    }
 
-    function escapeHtml(text) {
-      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
-      return text.replace(/[&<>"']/g, m => map[m]);
+      // Authorized as Admin -> Reveal Page
+      document.body.style.visibility = 'visible';
+      document.getElementById('admin-welcome').textContent = `Welcome, Admin: ${user.email}`;
     }
 
     async function handleSignOut() {
-      await supabase.auth.signOut();
-      window.location.href = '../index.html';
+      await window.mySupabaseInstance.auth.signOut();
+      window.location.href = 'login.html';
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      checkAdminAuth();
-      loadBroadcastHistory();
-    });
+    window.addEventListener('DOMContentLoaded', protectAdminPortal);
   </script>
 </body>
 </html>

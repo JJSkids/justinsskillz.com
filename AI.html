@@ -251,8 +251,8 @@
           if (data.error) throw new Error(data.error.message);
           loadingDiv.textContent = data.choices[0].message.content;
         } else {
-          // Fixed Gemini API Endpoint using correct model name format
-          response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+          // Updated to Gemini 3.6 Flash endpoint
+          response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

@@ -10,16 +10,16 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Chessboard.js & Chess.js CDN -->
+  <!-- Chessboard.js CSS -->
   <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
   
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- jQuery (Must be loaded before chessboard.js) -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Chess.js for game logic -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <!-- Chessboard.js -->
   <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 
@@ -104,6 +104,12 @@
       width: 50%;
       background: linear-gradient(90deg, #a855f7, #3b82f6);
       transition: width 0.3s ease;
+    }
+    /* Ensure chess pieces render correctly */
+    .piece-417db {
+      position: absolute;
+      width: 100%;
+      height: 100%;
     }
   </style>
 </head>
@@ -240,6 +246,7 @@
     let aiDifficulty = 1600;
     let isAdaptive = false;
     let playerSide = 'white'; // 'white' or 'black'
+    let selectedSquare = null;
 
     // --- PIECE-SQUARE TABLES FOR EVALUATION ---
     const pawnEvalWhite = [
@@ -456,7 +463,7 @@
       }
     }
 
-    // --- BOARD INTERACTION ---
+    // --- BOARD INTERACTION (Drag & Drop + Click-to-Move) ---
     function onDragStart (source, piece, position, orientation) {
       if (game.game_over()) return false;
       if ((playerSide === 'white' && piece.search(/^b/) !== -1) ||
@@ -467,6 +474,8 @@
           (game.turn() === 'b' && playerSide === 'white')) {
         return false;
       }
+      clearHighlights();
+      selectedSquare = null;
     }
 
     function onDrop (source, target) {
@@ -479,7 +488,6 @@
       if (move === null) return 'snapback';
 
       updateStatus();
-
       if (!game.game_over()) {
         setTimeout(calculateAIMove, 250);
       }
@@ -487,6 +495,64 @@
 
     function onSnapEnd () {
       board.position(game.fen());
+    }
+
+    // Click-to-Move Event Listener
+    $(document).on('click', '#chess-board .square-55d63', function() {
+      if (game.game_over()) return;
+
+      let classList = $(this).attr('class').split(/\s+/);
+      let squareClass = classList.find(c => c.startsWith('square-') && c !== 'square-55d63');
+      if (!squareClass) return;
+      let clickedSquare = squareClass.replace('square-', '');
+
+      let piece = game.get(clickedSquare);
+
+      if (selectedSquare === null) {
+        // Select piece if it belongs to current player's turn
+        if (piece !== null && piece.color === game.turn()) {
+          if ((playerSide === 'white' && piece.color === 'w') || (playerSide === 'black' && piece.color === 'b')) {
+            selectedSquare = clickedSquare;
+            highlightSquare(selectedSquare);
+          }
+        }
+      } else {
+        // Attempt move from selectedSquare to clickedSquare
+        let move = game.move({
+          from: selectedSquare,
+          to: clickedSquare,
+          promotion: 'q'
+        });
+
+        clearHighlights();
+        let prevSelected = selectedSquare;
+        selectedSquare = null;
+
+        if (move === null) {
+          // If invalid move, check if user clicked another of their own pieces to switch selection
+          if (piece !== null && piece.color === game.turn()) {
+            if ((playerSide === 'white' && piece.color === 'w') || (playerSide === 'black' && piece.color === 'b')) {
+              selectedSquare = clickedSquare;
+              highlightSquare(selectedSquare);
+            }
+          }
+        } else {
+          board.position(game.fen());
+          updateStatus();
+          if (!game.game_over()) {
+            setTimeout(calculateAIMove, 250);
+          }
+        }
+      }
+    });
+
+    function highlightSquare(square) {
+      clearHighlights();
+      $(`#chess-board .square-${square}`).css('box-shadow', 'inset 0 0 0 4px #a855f7');
+    }
+
+    function clearHighlights() {
+      $('#chess-board .square-55d63').css('box-shadow', '');
     }
 
     function updateStatus () {
@@ -515,6 +581,8 @@
 
     function resetGame() {
       game.reset();
+      clearHighlights();
+      selectedSquare = null;
       board.orientation(playerSide);
       board.start();
       updateStatus();
@@ -526,6 +594,8 @@
     function undoMove() {
       game.undo();
       game.undo();
+      clearHighlights();
+      selectedSquare = null;
       board.position(game.fen());
       updateStatus();
     }
@@ -641,6 +711,8 @@
           alert('Failed to load PGN string.');
           return;
         }
+        clearHighlights();
+        selectedSquare = null;
         board.position(game.fen());
         updateStatus();
         alert('Game successfully loaded!');
@@ -659,7 +731,7 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Initialize board on DOM ready with pieceTheme CDN configured
+    // Initialize board on DOM ready
     window.addEventListener('DOMContentLoaded', () => {
       let config = {
         draggable: true,

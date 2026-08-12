@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Home</title>
+  <title>Justin's Skillz</title>
   
   <link rel="icon" type="image/jpeg" href="src/Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,81 +13,6 @@
   <link rel="stylesheet" href="src/styles.css">
   <script src="src/theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    .hero-section {
-      text-align: center;
-      padding: 4rem 1rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-    }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
-      margin-top: 3rem;
-    }
-    .feature-card {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 2.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      text-decoration: none;
-      color: var(--text-main);
-      transition: all 0.25s ease;
-      box-shadow: 0 12px 35px -10px rgba(0, 0, 0, 0.3);
-    }
-    .feature-card:hover {
-      border-color: var(--accent-purple);
-      transform: translateY(-5px);
-      box-shadow: 0 18px 40px -10px rgba(168, 85, 247, 0.25);
-    }
-    .feature-icon {
-      font-size: 2.5rem;
-    }
-
-    /* Floating AI Assistant Button */
-    .floating-ai-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 9999;
-      background: linear-gradient(135deg, var(--accent-purple, #a855f7), #3b82f6);
-      color: white;
-      padding: 0.9rem 1.35rem;
-      border-radius: 999px;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 10px 25px rgba(168, 85, 247, 0.45);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    .floating-ai-btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 15px 35px rgba(168, 85, 247, 0.65);
-    }
-    .ai-pulse {
-      width: 10px;
-      height: 10px;
-      background-color: #22d3ee;
-      border-radius: 50%;
-      box-shadow: 0 0 10px #22d3ee;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(0.95); opacity: 0.8; }
-      50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #22d3ee; }
-      100% { transform: scale(0.95); opacity: 0.8; }
-    }
-  </style>
 </head>
 <body>
 
@@ -106,100 +31,74 @@
         <a href="src/dashboard.html" class="nav-link">Dashboard</a>
         <a href="src/chess.html" class="nav-link">Chess AI</a>
         <a href="src/math.html" class="nav-link">Math Lab</a>
+        <a href="src/admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
       </nav>
 
-      <div class="nav-actions" id="auth-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
           <span class="theme-icon">🌙</span> Dark Mode
         </button>
-        <a href="src/login.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        
+        <div id="auth-btn-container">
+          <a href="src/login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        </div>
       </div>
     </div>
   </header>
 
   <main class="main-content">
-    <div class="container">
+    <div class="container" style="margin-top: 3rem; text-align: center;">
+      <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">Welcome to <span class="gradient-text">Justin's Skillz</span></h1>
+      <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">Explore coding projects, interactive math tools, and chess AI built with passion.</p>
       
-      <section class="hero-section">
-        <div class="hero-badge">
-          <span class="pulse-dot"></span> Welcome to Justin's Skillz
-        </div>
-        <h1 class="hero-title" style="font-size: 3rem; max-width: 800px;">
-          Master Coding, Math, Gaming & More with <span class="gradient-text">Justin's Skillz</span>
-        </h1>
-        <p class="hero-subtitle" style="max-width: 600px;">
-          Explore interactive learning modules, challenge AI in chess, monitor live admin broadcasts, and level up your skills.
-        </p>
-      </section>
-
-      <div class="features-grid">
-        <a href="src/dashboard.html" class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Live Dashboard</h3>
-          <p style="color: var(--text-muted); font-size: 0.95rem;">Monitor real-time admin live feeds, status broadcasts, and shortcut hubs.</p>
-        </a>
-        <a href="src/chess.html" class="feature-card">
-          <div class="feature-icon">♟️</div>
-          <h3>Justin Chess Arena</h3>
-          <p style="color: var(--text-muted); font-size: 0.95rem;">Play against custom minimax AI difficulties and save/load games from the cloud.</p>
-        </a>
-        <a href="src/math.html" class="feature-card">
-          <div class="feature-icon">📐</div>
-          <h3>Math Lab</h3>
-          <p style="color: var(--text-muted); font-size: 0.95rem;">Practice advanced mathematics, algebra, problem sets, and competition prep.</p>
-        </a>
+      <div style="display: flex; justify-content: center; gap: 1rem;">
+        <a href="src/dashboard.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.5rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700;">Go to Dashboard</a>
       </div>
-
     </div>
   </main>
 
-  <!-- Floating AI Widget -->
-  <a href="AI.html" class="floating-ai-btn">
-    <span class="ai-pulse"></span>
-    <span style="font-size: 1.25rem;">🤖</span>
-    <span>Try our AI!</span>
-  </a>
-
-  <footer class="app-footer">
+  <footer class="app-footer" style="margin-top: 5rem;">
     <div class="container footer-content">
       <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
     </div>
   </footer>
 
   <script>
-    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lB1i16OVrl-6fHZStv_V_y19izQJZT088';
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
+    }
 
-    async function checkAuthStatus() {
-      const authContainer = document.getElementById('auth-actions');
-      if (!authContainer) return;
-      
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      const themeBtnHTML = `
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
-        </button>
-      `;
+    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
 
-      if (user) {
-        authContainer.innerHTML = themeBtnHTML + `
+    async function checkUserStatus() {
+      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+      const authContainer = document.getElementById('auth-btn-container');
+
+      if (session && session.user) {
+        authContainer.innerHTML = `
           <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
         `;
+
+        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+        if (ADMIN_EMAILS.includes(userEmail)) {
+          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+        }
       } else {
-        authContainer.innerHTML = themeBtnHTML + `
-          <a href="src/login.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        authContainer.innerHTML = `
+          <a href="src/login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         `;
       }
     }
 
     async function handleSignOut() {
-      await supabase.auth.signOut();
+      await window.mySupabaseInstance.auth.signOut();
       window.location.reload();
     }
 
-    window.addEventListener('DOMContentLoaded', checkAuthStatus);
+    window.addEventListener('DOMContentLoaded', checkUserStatus);
   </script>
 </body>
 </html>

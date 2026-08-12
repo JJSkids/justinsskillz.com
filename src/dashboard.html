@@ -31,6 +31,16 @@
       padding: 2rem;
       box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
     }
+    .broadcast-banner {
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid var(--accent-purple);
+      border-radius: var(--radius-md);
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
   </style>
 </head>
 <body>
@@ -50,7 +60,6 @@
         <a href="dashboard.html" class="nav-link active">Dashboard</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
-        <!-- Dynamic Admin Nav Link (Hidden by default) -->
         <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
       </nav>
 
@@ -71,8 +80,10 @@
         <p id="user-welcome" style="color: var(--text-muted); font-size: 1rem;">Welcome back to your control center.</p>
       </div>
 
+      <!-- Broadcasts Feed Container -->
+      <div id="broadcasts-container"></div>
+
       <div class="dashboard-grid">
-        <!-- Regular User Card -->
         <div class="card">
           <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">⚡ Quick Shortcuts</h3>
           <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">Jump directly into your interactive math modules or chess arena.</p>
@@ -82,15 +93,11 @@
           </div>
         </div>
 
-        <!-- Admin Only Card -->
         <div class="card admin-only-section" style="display: none; border-color: var(--accent-purple);">
           <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">👑 Admin Control Panel</h3>
           <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.25rem;">Hello admin! You have exclusive privileges to manage site broadcasts and logs.</p>
           <div style="display: flex; gap: 0.75rem; margin-bottom: 1rem;">
             <a href="admin.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.5rem 1rem; border-radius: var(--radius-md); text-decoration: none; font-weight: 700; font-size: 0.85rem;">Open Admin Portal</a>
-          </div>
-          <div style="background: rgba(168, 85, 247, 0.1); border: 1px solid var(--accent-purple); padding: 0.75rem; border-radius: var(--radius-md); font-size: 0.85rem; color: var(--accent-purple); font-weight: 600;">
-            Status: Admin Access Verified (hellojjskids@gmail.com)
           </div>
         </div>
       </div>
@@ -114,6 +121,41 @@
 
     const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
 
+    async function loadBroadcasts() {
+      const container = document.getElementById('broadcasts-container');
+      try {
+        const { data, error } = await window.mySupabaseInstance
+          .from('broadcasts')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (!error && data && data.length > 0) {
+          let html = '';
+          data.forEach(item => {
+            const dateStr = new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+            html += `
+              <div class="broadcast-banner">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="font-weight: 700; font-size: 0.85rem; color: var(--accent-purple);">📢 Announcement</span>
+                  <span style="font-size: 0.75rem; color: var(--text-muted);">${dateStr}</span>
+                </div>
+                <p style="font-size: 0.95rem; color: var(--text-main); margin: 0;">${escapeHtml(item.message)}</p>
+              </div>
+            `;
+          });
+          container.innerHTML = html;
+        } else {
+          container.innerHTML = '';
+        }
+      } catch (err) {
+        console.error('Error fetching broadcasts:', err);
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
     async function protectDashboard() {
       const hash = window.location.hash.substring(1);
       if (hash) {
@@ -122,10 +164,7 @@
         const refresh_token = params.get('refresh_token');
 
         if (access_token) {
-          await window.mySupabaseInstance.auth.setSession({
-            access_token,
-            refresh_token
-          });
+          await window.mySupabaseInstance.auth.setSession({ access_token, refresh_token });
           window.history.replaceState({}, document.title, window.location.pathname);
         }
       }
@@ -144,7 +183,6 @@
       const userEmail = user.email ? user.email.toLowerCase() : '';
       const isAdmin = ADMIN_EMAILS.includes(userEmail);
 
-      // Show admin-only elements and the admin navigation link
       if (isAdmin) {
         document.querySelectorAll('.admin-only-section').forEach(el => el.style.display = 'block');
         document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
@@ -152,11 +190,13 @@
         document.querySelectorAll('.admin-only-section').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'none');
       }
+
+      loadBroadcasts();
     }
 
     async function handleSignOut() {
       await window.mySupabaseInstance.auth.signOut();
-      window.location.href = 'login.html';
+      window.location.href = '../index.html';
     }
 
     window.addEventListener('DOMContentLoaded', protectDashboard);

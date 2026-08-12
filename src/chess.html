@@ -312,9 +312,13 @@
   </footer>
 
   <script>
-    // Direct Supabase Configuration Credentials
+    // Single Global Supabase Client Instance
     const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+
+    const supabaseClient = (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY)
+      ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      : null;
 
     let game;
     let selectedSquare = null;
@@ -608,7 +612,7 @@
     async function saveGameToSupabase() {
       const feedbackEl = document.getElementById('save-feedback');
 
-      if (typeof supabase === 'undefined' || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      if (!supabaseClient) {
         feedbackEl.textContent = "Supabase client not initialized!";
         return;
       }
@@ -618,10 +622,8 @@
         
         const moveHistoryText = document.getElementById('move-history').textContent;
         const difficulty = document.getElementById('ai-difficulty').value;
-
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
         
-        const { error } = await client
+        const { error } = await supabaseClient
           .from('chess_games')
           .insert([
             { 
@@ -648,14 +650,13 @@
       modal.style.display = 'flex';
       listEl.innerHTML = '<p style="color: var(--text-muted); text-align: center;">Fetching saved games...</p>';
 
-      if (typeof supabase === 'undefined' || !SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      if (!supabaseClient) {
         listEl.innerHTML = '<p style="color: #ef4444; text-align: center;">Supabase client not initialized!</p>';
         return;
       }
 
       try {
-        const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        const { data, error } = await client
+        const { data, error } = await supabaseClient
           .from('chess_games')
           .select('*')
           .order('created_at', { ascending: false })

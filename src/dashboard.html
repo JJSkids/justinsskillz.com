@@ -15,7 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Hide body until auth check completes to prevent flashing */
     body {
       visibility: hidden;
     }
@@ -111,20 +110,15 @@
       const { data: { session }, error } = await supabase.auth.getSession();
 
       if (error || !session || !session.user) {
-        alert('You are not signed in. Try signing in');
-        window.location.href = '../index.html';
+        alert('NOT SIGNED IN SIGN IN');
+        window.location.href = 'login.html';
         return;
       }
 
       const user = session.user;
-
-      // Reveal page once session is verified
       document.body.style.visibility = 'visible';
-
-      // Display user email
       document.getElementById('user-welcome').textContent = `Logged in as: ${user.email}`;
 
-      // Check Admin status
       const userEmail = user.email ? user.email.toLowerCase() : '';
       const isAdmin = ADMIN_EMAILS.includes(userEmail);
       const adminElements = document.querySelectorAll('.admin-only-section');
@@ -138,7 +132,7 @@
 
     async function handleSignOut() {
       await supabase.auth.signOut();
-      window.location.href = '../index.html';
+      window.location.href = 'login.html';
     }
 
     window.addEventListener('DOMContentLoaded', protectDashboard);

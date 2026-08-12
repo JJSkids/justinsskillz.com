@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Sign In</title>
+  <title>Justin's Skillz - Sign In / Register</title>
 
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -29,15 +29,16 @@
   </header>
 
   <main class="main-content">
-    <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 1rem;">
+    <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 75vh; padding: 1rem;">
       <div class="card" style="width: 100%; max-width: 420px; padding: 2.5rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);">
         
-        <h1 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;">Welcome Back</h1>
-        <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 2rem;">Sign in to your Justin's Skillz account</p>
+        <h1 id="form-title" style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;">Welcome Back</h1>
+        <p id="form-subtitle" style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 1.5rem;">Sign in to your Justin's Skillz account</p>
 
         <div id="error-alert" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
+        <div id="success-alert" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
 
-        <form id="login-form" onsubmit="handleSignIn(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <form id="auth-form" onsubmit="handleAuth(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
           <div>
             <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Email Address</label>
             <input type="email" id="email" required class="chat-input" placeholder="you@example.com" style="width: 100%; background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.85rem; border-radius: var(--radius-md); font-family: inherit;">
@@ -52,7 +53,8 @@
         </form>
 
         <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
-          Don't have an account? Contact admin or sign up via Supabase dashboard.
+          <span id="toggle-text">Don't have an account?</span> 
+          <button type="button" onclick="toggleAuthMode()" style="background: none; border: none; color: var(--accent-purple); font-weight: 700; cursor: pointer; text-decoration: underline; margin-left: 0.25rem;" id="toggle-btn">Sign Up</button>
         </div>
       </div>
     </div>
@@ -60,34 +62,76 @@
 
   <script>
     const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lB1i16OVrl-6fHZStv_V_y19izQJZT088';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    async function handleSignIn(event) {
+    let isSignUpMode = false;
+
+    function toggleAuthMode() {
+      isSignUpMode = !isSignUpMode;
+      const titleEl = document.getElementById('form-title');
+      const subtitleEl = document.getElementById('form-subtitle');
+      const submitBtn = document.getElementById('submit-btn');
+      const toggleText = document.getElementById('toggle-text');
+      const toggleBtn = document.getElementById('toggle-btn');
+      
+      document.getElementById('error-alert').style.display = 'none';
+      document.getElementById('success-alert').style.display = 'none';
+
+      if (isSignUpMode) {
+        titleEl.textContent = 'Create Account';
+        subtitleEl.textContent = 'Sign up for a new Justin\'s Skillz account';
+        submitBtn.textContent = 'Sign Up';
+        toggleText.textContent = 'Already have an account?';
+        toggleBtn.textContent = 'Sign In';
+      } else {
+        titleEl.textContent = 'Welcome Back';
+        subtitleEl.textContent = 'Sign in to your Justin\'s Skillz account';
+        submitBtn.textContent = 'Sign In';
+        toggleText.textContent = 'Don\'t have an account?';
+        toggleBtn.textContent = 'Sign Up';
+      }
+    }
+
+    async function handleAuth(event) {
       event.preventDefault();
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       const errorAlert = document.getElementById('error-alert');
+      const successAlert = document.getElementById('success-alert');
       const submitBtn = document.getElementById('submit-btn');
 
       errorAlert.style.display = 'none';
-      submitBtn.textContent = 'Signing in...';
+      successAlert.style.display = 'none';
+      submitBtn.textContent = isSignUpMode ? 'Signing up...' : 'Signing in...';
       submitBtn.disabled = true;
 
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email,
-          password: password,
-        });
-
-        if (error) throw error;
-
-        // Redirect back to dashboard on success
-        window.location.href = 'dashboard.html';
+        if (isSignUpMode) {
+          const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password,
+          });
+          if (error) throw error;
+          
+          successAlert.textContent = 'Account created successfully! You can now sign in.';
+          successAlert.style.display = 'block';
+          submitBtn.textContent = 'Sign Up';
+          submitBtn.disabled = false;
+          toggleAuthMode();
+        } else {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: password,
+          });
+          if (error) throw error;
+          
+          window.location.href = 'dashboard.html';
+        }
       } catch (err) {
         errorAlert.textContent = err.message;
         errorAlert.style.display = 'block';
-        submitBtn.textContent = 'Sign In';
+        submitBtn.textContent = isSignUpMode ? 'Sign Up' : 'Sign In';
         submitBtn.disabled = false;
       }
     }

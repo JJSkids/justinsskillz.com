@@ -369,11 +369,11 @@
         return evaluateBoard(gameInstance.board());
       }
 
-      let possibleMoves = gameInstance.ugly_moves();
+      let possibleMoves = gameInstance.moves({ verbose: true });
       if (isMaximizing) {
         let maxEval = -99999;
         for (let i = 0; i < possibleMoves.length; i++) {
-          gameInstance.ugly_move(possibleMoves[i]);
+          gameInstance.move(possibleMoves[i]);
           let evaluation = minimax(gameInstance, depth - 1, alpha, beta, false);
           gameInstance.undo();
           maxEval = Math.max(maxEval, evaluation);
@@ -384,7 +384,7 @@
       } else {
         let minEval = 99999;
         for (let i = 0; i < possibleMoves.length; i++) {
-          gameInstance.ugly_move(possibleMoves[i]);
+          gameInstance.move(possibleMoves[i]);
           let evaluation = minimax(gameInstance, depth - 1, alpha, beta, true);
           gameInstance.undo();
           minEval = Math.min(minEval, evaluation);
@@ -398,7 +398,7 @@
     function calculateAIMove() {
       if (game.game_over()) return;
 
-      let moves = game.ugly_moves();
+      let moves = game.moves({ verbose: true });
       if (moves.length === 0) return;
 
       let depth = 3;
@@ -426,7 +426,7 @@
 
       if (!isAdaptive && aiDifficulty <= 800 && Math.random() < 0.4) {
         let randomMove = moves[Math.floor(Math.random() * moves.length)];
-        game.ugly_move(randomMove);
+        game.move(randomMove);
         board.position(game.fen());
         updateStatus();
         return;
@@ -439,7 +439,7 @@
       moves.sort(() => Math.random() - 0.5);
 
       for (let i = 0; i < moves.length; i++) {
-        game.ugly_move(moves[i]);
+        game.move(moves[i]);
         let value = minimax(gameInstance = game, depth - 1, -100000, 100000, !isMaximizing);
         game.undo();
 
@@ -457,7 +457,7 @@
       }
 
       if (bestMove) {
-        game.ugly_move(bestMove);
+        game.move(bestMove);
         board.position(game.fen());
         updateStatus();
       }
@@ -509,7 +509,6 @@
       let piece = game.get(clickedSquare);
 
       if (selectedSquare === null) {
-        // Select piece if it belongs to current player's turn
         if (piece !== null && piece.color === game.turn()) {
           if ((playerSide === 'white' && piece.color === 'w') || (playerSide === 'black' && piece.color === 'b')) {
             selectedSquare = clickedSquare;
@@ -517,7 +516,6 @@
           }
         }
       } else {
-        // Attempt move from selectedSquare to clickedSquare
         let move = game.move({
           from: selectedSquare,
           to: clickedSquare,
@@ -525,11 +523,9 @@
         });
 
         clearHighlights();
-        let prevSelected = selectedSquare;
         selectedSquare = null;
 
         if (move === null) {
-          // If invalid move, check if user clicked another of their own pieces to switch selection
           if (piece !== null && piece.color === game.turn()) {
             if ((playerSide === 'white' && piece.color === 'w') || (playerSide === 'black' && piece.color === 'b')) {
               selectedSquare = clickedSquare;

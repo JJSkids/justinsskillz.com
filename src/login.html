@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Justin's Skillz - Sign In</title>
+
+  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+
+  <div class="bg-glow glow-top-left"></div>
+  <div class="bg-glow glow-bottom-right"></div>
+
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container" style="display: flex; justify-content: center; align-items: center; min-height: 70vh; padding: 1rem;">
+      <div class="card" style="width: 100%; max-width: 420px; padding: 2.5rem; background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: var(--radius-lg); box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);">
+        
+        <h1 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; text-align: center;">Welcome Back</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 2rem;">Sign in to your Justin's Skillz account</p>
+
+        <div id="error-alert" style="display: none; background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 0.75rem 1rem; border-radius: var(--radius-md); font-size: 0.85rem; margin-bottom: 1.25rem;"></div>
+
+        <form id="login-form" onsubmit="handleSignIn(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Email Address</label>
+            <input type="email" id="email" required class="chat-input" placeholder="you@example.com" style="width: 100%; background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.85rem; border-radius: var(--radius-md); font-family: inherit;">
+          </div>
+
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem;">Password</label>
+            <input type="password" id="password" required class="chat-input" placeholder="••••••••" style="width: 100%; background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.85rem; border-radius: var(--radius-md); font-family: inherit;">
+          </div>
+
+          <button type="submit" id="submit-btn" class="btn btn-primary" style="background: var(--accent-purple); color: white; border: none; padding: 0.85rem; border-radius: var(--radius-md); font-weight: 700; cursor: pointer; margin-top: 0.5rem;">Sign In</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+          Don't have an account? Contact admin or sign up via Supabase dashboard.
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lB1i16OVrl-6fHZStv_V_y19izQJZT088';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function handleSignIn(event) {
+      event.preventDefault();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const errorAlert = document.getElementById('error-alert');
+      const submitBtn = document.getElementById('submit-btn');
+
+      errorAlert.style.display = 'none';
+      submitBtn.textContent = 'Signing in...';
+      submitBtn.disabled = true;
+
+      try {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: email,
+          password: password,
+        });
+
+        if (error) throw error;
+
+        // Redirect back to dashboard on success
+        window.location.href = 'dashboard.html';
+      } catch (err) {
+        errorAlert.textContent = err.message;
+        errorAlert.style.display = 'block';
+        submitBtn.textContent = 'Sign In';
+        submitBtn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>

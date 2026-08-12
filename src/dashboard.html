@@ -15,6 +15,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    /* Hide body until auth check completes to prevent flashing */
+    body {
+      visibility: hidden;
+    }
     .dashboard-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -104,13 +108,18 @@
     const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
 
     async function protectDashboard() {
-      const { data: { user }, error } = await supabase.auth.getUser();
+      const { data: { session }, error } = await supabase.auth.getSession();
 
-      if (error || !user) {
-        alert('⚠️ Access Denied: You must sign in to access the dashboard.');
+      if (error || !session || !session.user) {
+        alert('You are not signed in. Try signing in');
         window.location.href = '../index.html';
         return;
       }
+
+      const user = session.user;
+
+      // Reveal page once session is verified
+      document.body.style.visibility = 'visible';
 
       // Display user email
       document.getElementById('user-welcome').textContent = `Logged in as: ${user.email}`;

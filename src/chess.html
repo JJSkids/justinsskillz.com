@@ -68,7 +68,7 @@
       padding: 0.75rem;
       color: var(--text-main);
       font-family: inherit;
-      font-size: 0.95kr;
+      font-size: 0.95rem;
       cursor: pointer;
     }
     .form-select:focus {
@@ -394,12 +394,10 @@
       let moves = game.ugly_moves();
       if (moves.length === 0) return;
 
-      // Determine search depth based on ELO / Adaptive mode
       let depth = 3;
       let currentEloLabel = 'Intermediate (1600)';
 
       if (isAdaptive) {
-        // Adaptive mode: evaluates current board balance and adjusts depth
         let currentEval = evaluateBoard(game.board());
         let moveCount = game.history().length;
         if (Math.abs(currentEval) > 15 || moveCount > 30) {
@@ -419,7 +417,6 @@
 
       document.getElementById('ai-info-text').textContent = `Active Bot: ${currentEloLabel}`;
 
-      // For lowest novice level, introduce random move chance
       if (!isAdaptive && aiDifficulty <= 800 && Math.random() < 0.4) {
         let randomMove = moves[Math.floor(Math.random() * moves.length)];
         game.ugly_move(randomMove);
@@ -432,7 +429,6 @@
       let bestValue = game.turn() === 'w' ? -99999 : 99999;
       let isMaximizing = game.turn() === 'w';
 
-      // Shuffle moves to add variety
       moves.sort(() => Math.random() - 0.5);
 
       for (let i = 0; i < moves.length; i++) {
@@ -463,7 +459,6 @@
     // --- BOARD INTERACTION ---
     function onDragStart (source, piece, position, orientation) {
       if (game.game_over()) return false;
-      // Prevent moving opponent pieces
       if ((playerSide === 'white' && piece.search(/^b/) !== -1) ||
           (playerSide === 'black' && piece.search(/^w/) !== -1)) {
         return false;
@@ -485,7 +480,6 @@
 
       updateStatus();
 
-      // Trigger AI response after short delay if game is ongoing
       if (!game.game_over()) {
         setTimeout(calculateAIMove, 250);
       }
@@ -513,7 +507,6 @@
       document.getElementById('game-status').textContent = status;
       document.getElementById('game-pgn').textContent = game.pgn() || 'No moves yet.';
 
-      // Update evaluation bar percentage (visual estimation)
       let evalScore = evaluateBoard(game.board());
       let percentage = 50 + (evalScore * 3);
       percentage = Math.max(5, Math.min(95, percentage));
@@ -532,7 +525,7 @@
 
     function undoMove() {
       game.undo();
-      game.undo(); // Undo both player and AI move
+      game.undo();
       board.position(game.fen());
       updateStatus();
     }
@@ -666,11 +659,12 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    // Initialize board on DOM ready
+    // Initialize board on DOM ready with pieceTheme CDN configured
     window.addEventListener('DOMContentLoaded', () => {
       let config = {
         draggable: true,
         position: 'start',
+        pieceTheme: 'https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png',
         onDragStart: onDragStart,
         onDrop: onDrop,
         onSnapEnd: onSnapEnd

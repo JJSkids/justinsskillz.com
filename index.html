@@ -15,6 +15,77 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
+    /* Robust fallback styles to guarantee clean layout and eliminate weird styling */
+    :root {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .app-header {
+      background: rgba(15, 17, 23, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #a855f7, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
     .hero-section {
       text-align: center;
       padding: 4rem 1rem 3rem 1rem;
@@ -27,7 +98,6 @@
       max-width: 800px;
       margin: 3rem auto;
       box-shadow: 0 20px 50px -15px rgba(168, 85, 247, 0.25);
-      text-align: left;
       display: flex;
       align-items: center;
       gap: 2rem;
@@ -38,6 +108,9 @@
         text-align: center;
         padding: 1.75rem;
       }
+      .nav-menu {
+        display: none;
+      }
     }
     .creator-avatar {
       width: 110px;
@@ -46,6 +119,7 @@
       border: 3px solid var(--accent-purple);
       object-fit: cover;
       box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
+      flex-shrink: 0;
     }
     .features-grid {
       display: grid;
@@ -64,12 +138,30 @@
       border-color: var(--accent-purple);
       transform: translateY(-2px);
     }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .app-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
-
-  <div class="bg-glow glow-top-left"></div>
-  <div class="bg-glow glow-bottom-right"></div>
 
   <header class="app-header">
     <div class="header-container">
@@ -84,77 +176,72 @@
         <a href="live.html" class="nav-link" style="color: #10b981; font-weight: 700;">🔴 Live Stream</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="ai.html" class="nav-link">AI Assistant</a>
         <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
+          🌙
         </button>
         <div id="auth-action-container">
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem;">Sign In</a>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="main-content">
-    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 1rem 0;">
+  <main style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem 1.5rem;">
+    
+    <!-- Hero Section -->
+    <div class="hero-section">
+      <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2;">Welcome to Justin's <span class="gradient-text">Skillz</span></h1>
+      <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto 2rem auto;">Your central command hub for advanced mathematics, chess AI, live streaming, coding labs, and interactive skill modules.</p>
       
-      <!-- Hero Section -->
-      <div class="hero-section">
-        <h1 style="font-size: 3.25rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2;">Welcome to Justin's <span class="gradient-text">Skillz</span></h1>
-        <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto 2rem auto;">Your central command hub for advanced mathematics, chess AI, live streaming, coding labs, and interactive skill modules.</p>
-        
-        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-          <a href="dashboard.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.85rem 2rem; border-radius: var(--radius-md); font-weight: 700; font-size: 1rem; text-decoration: none; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);">Open Dashboard</a>
-          <a href="live.html" class="btn" style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; color: #10b981; padding: 0.85rem 2rem; border-radius: var(--radius-md); font-weight: 700; font-size: 1rem; text-decoration: none;">🔴 Join Live Stream</a>
-        </div>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="dashboard.html" class="btn" style="background: var(--accent-purple); color: white; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);">Open Dashboard</a>
+        <a href="live.html" class="btn" style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; color: #10b981;">🔴 Join Live Stream</a>
       </div>
-
-      <!-- Meet the Creator Section -->
-      <div class="creator-card">
-        <img src="Justin's Skillz.jpg" alt="Justin Emuekhare" class="creator-avatar">
-        <div>
-          <div style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">Founder & Developer</div>
-          <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.75rem; color: var(--text-main);">Justin Emuekhare</h2>
-          <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">
-            Hi! I am <strong>Justin Emuekhare</strong>, and I own and operate this website. I designed and built Justin's Skillz as a complete hub for learning, coding projects, live broadcasting, and interactive labs. Explore the modules, tune into live sessions, and test out the tools!
-          </p>
-        </div>
-      </div>
-
-      <!-- Quick Feature Highlights -->
-      <h3 style="font-size: 1.5rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; text-align: center;">Explore Platform Labs</h3>
-      
-      <div class="features-grid">
-        <div class="feature-card">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">📐</div>
-          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">Math & Algebra Lab</h4>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Practice advanced algebra, quadratic equations, and competition problem sets.</p>
-        </div>
-
-        <div class="feature-card">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">♟️</div>
-          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">Chess AI Engine</h4>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Play against adaptive ELO bots and analyze board positions with cloud saves.</p>
-        </div>
-
-        <div class="feature-card">
-          <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤖</div>
-          <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem;">Live Stream & Feed</h4>
-          <p style="color: var(--text-muted); font-size: 0.9rem;">Tune into live video sessions and connect with participants in real time.</p>
-        </div>
-      </div>
-
     </div>
+
+    <!-- Meet the Creator Section -->
+    <div class="creator-card">
+      <img src="Justin's Skillz.jpg" alt="Justin Emuekhare" class="creator-avatar">
+      <div>
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">Founder & Developer</div>
+        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.75rem; color: var(--text-main);">Justin Emuekhare</h2>
+        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">
+          Hi! I am <strong>Justin Emuekhare</strong>, and I own and operate this website. I designed and built Justin's Skillz as a complete hub for learning, coding projects, live broadcasting, and interactive labs. Explore the modules, tune into live sessions, and test out the tools!
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Feature Highlights -->
+    <h3 style="font-size: 1.5rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; text-align: center;">Explore Platform Labs</h3>
+    
+    <div class="features-grid">
+      <div class="feature-card">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📐</div>
+        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Math & Algebra Lab</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Practice advanced algebra, quadratic equations, and competition problem sets.</p>
+      </div>
+
+      <div class="feature-card">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">♟️</div>
+        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Chess AI Engine</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Play against adaptive ELO bots and analyze board positions with cloud saves.</p>
+      </div>
+
+      <div class="feature-card">
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;">🤖</div>
+        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main);">Live Stream & Feed</h4>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0;">Tune into live video sessions and connect with participants in real time.</p>
+      </div>
+    </div>
+
   </main>
 
-  <footer class="app-footer" style="margin-top: 4rem;">
-    <div class="container footer-content" style="text-align: center;">
-      <p class="footer-text">&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
-    </div>
+  <footer class="app-footer">
+    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
   </footer>
 
   <script>
@@ -173,7 +260,7 @@
 
       if (session && session.user) {
         authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
         `;
 
         const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
@@ -182,7 +269,7 @@
         }
       } else {
         authContainer.innerHTML = `
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         `;
       }
     }

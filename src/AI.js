@@ -1,3 +1,5 @@
+const OPENAI_MODEL = "gpt-4o-mini";
+
 let chatHistory = [
   { role: "system", content: "You are Justin's personal AI collaborator, integrated into Justin's Skillz web app. Be warm, highly capable, concise, and helpful with programming, math, and daily learning." }
 ];
@@ -21,6 +23,7 @@ function saveSettings() {
     localStorage.setItem('openai_api_key', key);
     localStorage.setItem('openai_model', model);
     closeSettings();
+    appendMessage('assistant', '✅ API key saved successfully in your browser!');
   } else {
     alert('Please enter a valid OpenAI API key.');
   }

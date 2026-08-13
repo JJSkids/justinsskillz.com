@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Home & Creator Portal</title>
+  <title>Justin's Skillz - Official Hub</title>
   
   <link rel="icon" type="image/jpeg" href="src/Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,7 +15,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Theme Color Variables */
     :root, [data-theme="dark"] {
       --bg-primary: #0f1117;
       --bg-card: #181b25;
@@ -23,6 +22,7 @@
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --accent-purple: #a855f7;
+      --accent-green: #10b981;
       --header-bg: rgba(15, 17, 23, 0.85);
       --radius-lg: 16px;
       --radius-md: 10px;
@@ -35,6 +35,7 @@
       --text-main: #1e293b;
       --text-muted: #64748b;
       --accent-purple: #9333ea;
+      --accent-green: #059669;
       --header-bg: rgba(248, 250, 252, 0.85);
     }
 
@@ -99,57 +100,46 @@
     .nav-link:hover, .nav-link.active {
       color: var(--text-main);
     }
-    .hero-section {
-      text-align: center;
-      padding: 4rem 1rem 3rem 1rem;
-    }
-    .creator-card {
-      background: var(--bg-card);
-      border: 2px solid var(--accent-purple);
-      border-radius: var(--radius-lg);
-      padding: 2.5rem;
-      max-width: 800px;
+    .main-container {
+      max-width: 1000px;
       margin: 3rem auto;
-      box-shadow: 0 20px 50px -15px rgba(168, 85, 247, 0.25);
-      display: flex;
-      align-items: center;
-      gap: 2rem;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
+      padding: 0 1.5rem;
     }
-    @media (max-width: 768px) {
-      .creator-card {
-        flex-direction: column;
-        text-align: center;
-        padding: 1.75rem;
-      }
-      .nav-menu {
-        display: none;
-      }
-    }
-    .creator-avatar {
-      width: 110px;
-      height: 110px;
-      border-radius: 50%;
-      border: 3px solid var(--accent-purple);
-      object-fit: cover;
-      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.4);
-      flex-shrink: 0;
-    }
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 3rem;
-    }
-    .feature-card {
+    .hero-card {
       background: var(--bg-card);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.3s ease;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
       text-align: center;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
-    .feature-card:hover {
+    .section-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .action-tile {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-decoration: none;
+      color: var(--text-main);
+      display: block;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .action-tile:hover {
       border-color: var(--accent-purple);
       transform: translateY(-2px);
     }
@@ -162,10 +152,39 @@
       text-decoration: none;
       cursor: pointer;
       border: none;
-      transition: opacity 0.2s;
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent-purple);
+      color: white;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
     }
     .btn:hover {
       opacity: 0.9;
+    }
+    .floating-ai-btn {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 999;
+      background: var(--accent-purple);
+      color: white;
+      padding: 0.85rem 1.35rem;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .floating-ai-btn:hover {
+      transform: scale(1.05);
+      opacity: 0.95;
+      color: white;
     }
     .app-footer {
       border-top: 1px solid var(--border-subtle);
@@ -173,11 +192,13 @@
       text-align: center;
       color: var(--text-muted);
       font-size: 0.9rem;
+      margin-top: 4rem;
     }
   </style>
 </head>
 <body>
 
+  <!-- Header -->
   <header class="app-header">
     <div class="header-container">
       <a href="index.html" class="logo">
@@ -186,12 +207,12 @@
       </a>
 
       <nav class="nav-menu">
-        <a href="index.html" class="nav-link active">Home</a>
+        <a href="index.html" class="nav-link active" style="color: var(--accent-purple);">Home</a>
         <a href="src/dashboard.html" class="nav-link">Dashboard</a>
-        <a href="src/live.html" class="nav-link" style="color: #10b981; font-weight: 700;">🔴 Live Stream</a>
+        <a href="src/live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
         <a href="src/chess.html" class="nav-link">Chess AI</a>
         <a href="src/math.html" class="nav-link">Math Lab</a>
-        <a href="src/admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
+        <a id="nav-admin-link" href="src/admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
@@ -205,59 +226,71 @@
     </div>
   </header>
 
-  <main style="max-width: 1200px; margin: 0 auto; padding: 0 1.5rem 4rem 1.5rem;">
+  <!-- Main Content -->
+  <main class="main-container">
     
-    <!-- Hero Section (Text Aligned Center) -->
-    <div class="hero-section">
-      <h1 style="font-size: 3rem; font-weight: 800; margin-bottom: 1rem; line-height: 1.2; text-align: center; color: var(--text-main);">Justin's <span class="gradient-text">Skillz</span></h1>
-      <p style="color: var(--text-muted); font-size: 1.15rem; max-width: 700px; margin: 0 auto 2rem auto; text-align: center;">Your central command hub for advanced mathematics, chess AI, live streaming, coding labs, and interactive skill modules.</p>
-      
+    <!-- Hero Section -->
+    <div class="hero-card">
+      <h1 style="font-size: 2.5rem; font-weight: 800; margin: 0 0 1rem 0;">Welcome to Justin's <span class="gradient-text">Skillz</span></h1>
+      <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 1.75rem auto; line-height: 1.5;">
+        Explore active courses, interactive labs, chess strategy bots, mathematics competitions, and AI-powered learning modules created and owned by Justin Emuekhare.
+      </p>
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="src/dashboard.html" class="btn" style="background: var(--accent-purple); color: white; box-shadow: 0 10px 25px rgba(168, 85, 247, 0.3);">Open Dashboard</a>
-        <a href="src/live.html" class="btn" style="background: rgba(16, 185, 129, 0.15); border: 2px solid #10b981; color: #10b981;">🔴 Join Live Stream</a>
+        <a href="src/dashboard.html" class="btn btn-primary">Go to Dashboard</a>
+        <a href="src/chess.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main);">Try Chess AI</a>
       </div>
     </div>
 
-    <!-- Meet the Creator Section -->
-    <div class="creator-card">
-      <img src="src/Justin's Skillz.jpg" alt="Justin Emuekhare" class="creator-avatar">
-      <div>
-        <div style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.3rem;">Founder & Developer</div>
-        <h2 style="font-size: 1.75rem; font-weight: 800; margin-bottom: 0.75rem; color: var(--text-main);">Justin Emuekhare</h2>
-        <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0;">
-          Hi! I am <strong>Justin Emuekhare</strong>, and I own and operate this website. I designed and built Justin's Skillz as a complete hub for learning, coding projects, live broadcasting, and interactive labs. Explore the modules, tune into live sessions, and test out the tools!
-        </p>
-      </div>
-    </div>
+    <!-- Features & Labs Grid (Includes Try our AI) -->
+    <div class="section-card">
+      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 0.5rem;">🚀 Explore Features & Labs</h2>
+      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0; margin-bottom: 1.5rem;">Access interactive tools and educational resources instantly.</p>
 
-    <!-- Quick Feature Highlights -->
-    <h3 style="font-size: 1.5rem; font-weight: 700; margin-top: 3rem; margin-bottom: 1rem; text-align: center; color: var(--text-main);">Explore Platform Labs</h3>
-    
-    <div class="features-grid">
-      <div class="feature-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">📐</div>
-        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); text-align: center;">Math & Algebra Lab</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0; text-align: center;">Practice advanced algebra, quadratic equations, and competition problem sets.</p>
-      </div>
+      <div class="grid-3">
+        <!-- Try our AI (Added to Features Grid) -->
+        <a href="src/chess.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-purple); font-size: 1.1rem;">🤖 Try our AI</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Interact with intelligent strategy bots and equation solvers.</p>
+        </a>
 
-      <div class="feature-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">♟️</div>
-        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); text-align: center;">Chess AI Engine</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0; text-align: center;">Play against adaptive ELO bots and analyze board positions with cloud saves.</p>
-      </div>
+        <a href="src/math.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">📊 Math & Algebra Lab</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Solve 4th degree polynomials and polar coordinate problems.</p>
+        </a>
 
-      <div class="feature-card">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">🤖</div>
-        <h4 style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.5rem; color: var(--text-main); text-align: center;">Live Stream & Feed</h4>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0; text-align: center;">Tune into live video sessions and connect with participants in real time.</p>
+        <a href="src/chess.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">♟️ Chess Strategy Bot</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Test your tactical openings and sharpen your game against AI.</p>
+        </a>
+
+        <a href="src/live.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-green); font-size: 1.1rem;">🔴 Live Broadcasts</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Catch live streams, announcements, and community updates.</p>
+        </a>
+
+        <a href="src/dashboard.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">📚 Student Dashboard</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">View active course modules and ongoing lab projects.</p>
+        </a>
+
+        <a href="src/admin.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">⚙️ Creator Control</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Admin panel for publishing courses, labs, and announcements.</p>
+        </a>
       </div>
     </div>
 
   </main>
 
-  <footer class="app-footer">
+  <!-- Floating Bottom-Right "Try our AI" Widget -->
+  <a href="src/chess.html" class="floating-ai-btn" aria-label="Try our AI">
+    <span>🤖</span> Try our AI
+  </a>
+
+  <!-- Footer -->
+  <main class="app-footer">
     <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
-  </footer>
+  </main>
 
   <script>
     if (!window.mySupabaseInstance) {
@@ -267,20 +300,20 @@
       );
     }
 
-    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    async function checkAuth() {
+    async function checkAuthSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
+      const navAdminLink = document.getElementById('nav-admin-link');
 
       if (session && session.user) {
         authContainer.innerHTML = `
           <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
         `;
-
         const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-        if (ADMIN_EMAILS.includes(userEmail)) {
-          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+        if (userEmail === ADMIN_EMAIL && navAdminLink) {
+          navAdminLink.style.display = 'block';
         }
       } else {
         authContainer.innerHTML = `
@@ -291,11 +324,11 @@
 
     async function handleSignOut() {
       await window.mySupabaseInstance.auth.signOut();
-      window.location.href = 'index.html';
+      window.location.reload();
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      checkAuth();
+      checkAuthSession();
     });
   </script>
 </body>

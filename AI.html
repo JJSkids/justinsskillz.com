@@ -254,7 +254,7 @@
   <main class="ai-container">
     <div style="margin-bottom: 1.5rem;">
       <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">🤖 Justin's Skillz AI</h1>
-      <p style="color: var(--text-muted); margin: 0;">Your intelligent hub assistant. If OpenAI credits run out, built-in smart fallback mode takes over automatically.</p>
+      <p style="color: var(--text-muted); margin: 0;">Your intelligent hub assistant. Smart fallback mode is active and ready.</p>
     </div>
 
     <!-- API Key Settings Bar -->
@@ -350,19 +350,22 @@
       window.location.href = '../index.html';
     }
 
-    // Smart fallback generator when OpenAI credits run out or no key is provided
+    // Enhanced smart fallback generator
     function generateSmartFallback(query) {
-      const q = query.toLowerCase();
-      if (q.includes('math') || q.includes('solve') || q.includes('equation') || q.includes('x^4') || q.includes('polynomial')) {
-        return "To solve 4th degree equations like x^4 + 1 = 0, you can express -1 in polar form: $e^{i\\pi}$, and then find its 4th roots using De Moivre's theorem: $x = e^{i(\\pi + 2k\\pi)/4}$ for $k = 0, 1, 2, 3$.";
+      const q = query.toLowerCase().trim();
+      
+      if (q === 'test' || q === 'hello' || q === 'hi' || q === 'hey') {
+        return "Test successful! Your local fallback assistant is up and running smoothly. What would you like to explore today on Justin's Skillz—math equations, web development, or chess strategy?";
+      } else if (q.includes('math') || q.includes('solve') || q.includes('equation') || q.includes('x^4') || q.includes('polynomial')) {
+        return "To solve 4th degree equations like x^4 + 1 = 0, express -1 in polar form as e^(i*pi), then find its 4th roots using De Moivre's theorem: x = e^(i*(pi + 2k*pi)/4) for k = 0, 1, 2, 3.";
       } else if (q.includes('code') || q.includes('html') || q.includes('supabase') || q.includes('javascript')) {
-        return "Justin's Skillz uses HTML, CSS, JavaScript, and Supabase backend integration, hosted on GitHub Pages. Make sure your script tags and database keys are properly initialized!";
+        return "Justin's Skillz uses HTML, CSS, JavaScript, and Supabase backend integration, hosted on GitHub Pages. Make sure your script tags and database keys are properly configured!";
       } else if (q.includes('chess') || q.includes('mate') || q.includes('opening')) {
         return "Controlling the center and developing your minor pieces early is key. Try practicing tactical puzzles in the Chess AI lab!";
       } else if (q.includes('owner') || q.includes('creator') || q.includes('justin')) {
         return "Justin's Skillz was created and is owned by Justin Emuekhare!";
       } else {
-        return `I received your message about "${query}". Since your OpenAI account currently has no remaining credits, I've switched to local assistant mode to help keep your hub running smoothly!`;
+        return `Test received! Since your OpenAI account currently has no remaining credits, local assistant mode is handling your request: "${query}". How can I help you with your labs or projects today?`;
       }
     }
 
@@ -406,7 +409,7 @@
           chatBox.appendChild(fallbackDiv);
           chatBox.scrollTop = chatBox.scrollHeight;
           sendBtn.disabled = false;
-        }, 500);
+        }, 400);
         return;
       }
 
@@ -430,7 +433,6 @@
         chatBox.removeChild(loadingDiv);
 
         if (!response.ok) {
-          // If quota / credits exhausted or rate limited, fallback gracefully
           if (response.status === 429 || data.error?.code === 'insufficient_quota' || (data.error?.message && data.error.message.includes('credits'))) {
             const fallbackReply = generateSmartFallback(message);
             const fallbackDiv = document.createElement('div');
@@ -456,7 +458,6 @@
         const loadingCheck = document.getElementById('loading-msg');
         if (loadingCheck) chatBox.removeChild(loadingCheck);
 
-        // Fallback on any network/quota error
         const fallbackReply = generateSmartFallback(message);
         const fallbackDiv = document.createElement('div');
         fallbackDiv.className = 'chat-message fallback';

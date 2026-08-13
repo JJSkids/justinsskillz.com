@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Admin Control Panel</title>
+  <title>Justin's Skillz - Admin Panel</title>
   
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,49 +15,158 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    .admin-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #a855f7, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+    .admin-container {
+      max-width: 800px;
+      margin: 3rem auto;
+      padding: 0 1.5rem;
     }
     .admin-card {
       background: var(--bg-card);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
     .form-group {
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
     }
-    .form-label {
+    label {
       display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
       color: var(--text-main);
-      margin-bottom: 0.4rem;
     }
-    .form-input, .form-textarea {
+    textarea {
       width: 100%;
+      padding: 0.85rem;
       background: var(--bg-primary);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
       color: var(--text-main);
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 1rem;
+      resize: vertical;
+      min-height: 120px;
+      box-sizing: border-box;
     }
-    .form-input:focus, .form-textarea:focus {
+    textarea:focus {
       outline: none;
       border-color: var(--accent-purple);
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent-purple);
+      color: white;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .app-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4rem;
     }
   </style>
 </head>
 <body>
-
-  <div class="bg-glow glow-top-left"></div>
-  <div class="bg-glow glow-bottom-right"></div>
 
   <header class="app-header">
     <div class="header-container">
@@ -69,94 +178,51 @@
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="live.html" class="nav-link">Live Stream</a>
+        <a href="live.html" class="nav-link" style="color: #10b981; font-weight: 700;">🔴 Live Stream</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="admin.html" class="nav-link active admin-nav-item" style="color: var(--accent-purple);">Admin</a>
+        <a href="admin.html" class="nav-link active" style="color: var(--accent-purple);">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
+          🌙
         </button>
         <div id="auth-action-container">
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="main-content">
-    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 1rem 0;">
-      
-      <div style="margin-top: 1rem; margin-bottom: 1.5rem;">
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Admin <span class="gradient-text">Command Center</span></h1>
-        <p style="color: var(--text-muted); font-size: 1rem;">Manage live broadcasts, create stream events, and publish system announcements.</p>
-      </div>
-
-      <!-- Access Denied Banner (Hidden by default) -->
-      <div id="access-denied" style="display: none; background: rgba(239, 68, 68, 0.1); border: 2px solid #ef4444; border-radius: var(--radius-lg); padding: 2rem; text-align: center; margin-top: 2rem;">
-        <h3 style="color: #ef4444; font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem;">Access Restricted</h3>
-        <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You must be signed in as an administrator (hellojjskids@gmail.com) to access this control panel.</p>
-        <a href="login.html" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.75rem 1.5rem; border-radius: var(--radius-md); font-weight: 700; text-decoration: none;">Sign In to Admin Account</a>
-      </div>
-
-      <!-- Admin Controls Container -->
-      <div id="admin-controls" style="display: none;">
-        <div class="admin-grid">
-          
-          <!-- Broadcast Announcement Creator -->
-          <div class="admin-card">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>📢</span> Publish Dashboard Announcement
-            </h3>
-            <form onsubmit="handlePublishAnnouncement(event)">
-              <div class="form-group">
-                <label class="form-label">Announcement Title</label>
-                <input type="text" id="ann-title" class="form-input" placeholder="e.g. Live Math Q&A Tonight" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Message Content</label>
-                <textarea id="ann-content" class="form-textarea" rows="4" placeholder="Enter broadcast details..." required></textarea>
-              </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%; background: var(--accent-purple); color: white; padding: 0.85rem; border-radius: var(--radius-md); font-weight: 700; border: none; cursor: pointer;">Broadcast to Dashboard</button>
-            </form>
-            <div id="ann-status" style="margin-top: 0.75rem; font-size: 0.85rem; font-weight: 600; text-align: center;"></div>
-          </div>
-
-          <!-- Schedule & Live Stream Creator -->
-          <div class="admin-card">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
-              <span>🎥</span> Create Live Stream Event
-            </h3>
-            <form onsubmit="handleCreateEvent(event)">
-              <div class="form-group">
-                <label class="form-label">Event Title</label>
-                <input type="text" id="ev-title" class="form-input" placeholder="e.g. Advanced Calculus Session" required>
-              </div>
-              <div class="form-group">
-                <label class="form-label">Jitsi Room Name (Unique ID)</label>
-                <input type="text" id="ev-room" class="form-input" placeholder="e.g. MathLabLiveRoom" required>
-              </div>
-              <div class="form-group" style="display: flex; align-items: center; gap: 0.75rem; margin-top: 1rem;">
-                <input type="checkbox" id="ev-islive" style="width: 1.2rem; height: 1.2rem; accent-color: var(--accent-purple);">
-                <label class="form-label" style="margin: 0; cursor: pointer;" for="ev-islive">Mark as LIVE NOW (Active Stream)</label>
-              </div>
-              <button type="submit" class="btn btn-primary" style="width: 100%; background: var(--accent-purple); color: white; padding: 0.85rem; border-radius: var(--radius-md); font-weight: 700; border: none; cursor: pointer; margin-top: 1rem;">Save & Launch Event</button>
-            </form>
-            <div id="ev-status" style="margin-top: 0.75rem; font-size: 0.85rem; font-weight: 600; text-align: center;"></div>
-          </div>
-
-        </div>
-      </div>
-
+  <main class="admin-container">
+    
+    <div id="access-denied-view" class="admin-card" style="text-align: center; display: none;">
+      <h1 style="color: #ef4444; margin-bottom: 1rem;">Access Denied</h1>
+      <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You must be signed in as the authorized administrator to access this page.</p>
+      <a href="login.html" class="btn btn-primary">Sign In with Admin Account</a>
     </div>
+
+    <div id="admin-dashboard-view" style="display: none;">
+      <h1 style="font-size: 2.25rem; font-weight: 800; margin-bottom: 0.5rem;">Admin Control Center</h1>
+      <p style="color: var(--text-muted); margin-bottom: 2rem;">Publish global broadcasts and manage site updates.</p>
+
+      <div class="admin-card">
+        <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1.25rem;">Publish Broadcast Message</h2>
+        
+        <div class="form-group">
+          <label for="broadcast-message-input">Announcement / Broadcast Text</label>
+          <textarea id="broadcast-message-input" placeholder="Type your announcement or update here..."></textarea>
+        </div>
+
+        <button type="button" onclick="publishAnnouncement()" class="btn btn-primary">Publish Announcement</button>
+      </div>
+    </div>
+
   </main>
 
-  <footer class="app-footer" style="margin-top: 4rem;">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
-    </div>
+  <footer class="app-footer">
+    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
   </footer>
 
   <script>
@@ -167,87 +233,55 @@
       );
     }
 
-    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
     async function checkAdminAuth() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
+      const accessDeniedView = document.getElementById('access-denied-view');
+      const adminDashboardView = document.getElementById('admin-dashboard-view');
 
       if (session && session.user) {
         authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
         `;
 
         const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-        if (ADMIN_EMAILS.includes(userEmail)) {
-          document.getElementById('admin-controls').style.display = 'block';
-          document.getElementById('access-denied').style.display = 'none';
+        if (userEmail === ADMIN_EMAIL) {
+          adminDashboardView.style.display = 'block';
+          accessDeniedView.style.display = 'none';
         } else {
-          document.getElementById('admin-controls').style.display = 'none';
-          document.getElementById('access-denied').style.display = 'block';
+          adminDashboardView.style.display = 'none';
+          accessDeniedView.style.display = 'block';
         }
       } else {
         authContainer.innerHTML = `
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         `;
-        document.getElementById('admin-controls').style.display = 'none';
-        document.getElementById('access-denied').style.display = 'block';
+        adminDashboardView.style.display = 'none';
+        accessDeniedView.style.display = 'block';
       }
     }
 
-    async function handlePublishAnnouncement(e) {
-      e.preventDefault();
-      const title = document.getElementById('ann-title').value;
-      const content = document.getElementById('ann-content').value;
-      const statusEl = document.getElementById('ann-status');
+    async function publishAnnouncement() {
+      const messageInput = document.getElementById('broadcast-message-input');
+      const messageText = messageInput.value.trim();
 
-      statusEl.style.color = 'var(--text-muted)';
-      statusEl.textContent = 'Publishing announcement...';
-
-      try {
-        const { error } = await window.mySupabaseInstance
-          .from('announcements')
-          .insert([{ title, content, created_at: new Date() }]);
-
-        if (error) throw error;
-
-        statusEl.style.color = '#10b981';
-        statusEl.textContent = 'Announcement successfully published!';
-        document.getElementById('ann-title').value = '';
-        document.getElementById('ann-content').value = '';
-      } catch (err) {
-        statusEl.style.color = '#ef4444';
-        statusEl.textContent = 'Error publishing (Ensure announcements table exists).';
-        console.error(err);
+      if (!messageText) {
+        alert('Please enter a message to publish.');
+        return;
       }
-    }
 
-    async function handleCreateEvent(e) {
-      e.preventDefault();
-      const title = document.getElementById('ev-title').value;
-      const room_name = document.getElementById('ev-room').value;
-      const is_live = document.getElementById('ev-islive').checked;
-      const statusEl = document.getElementById('ev-status');
+      // Successfully targets your 'broadcasts' table
+      const { data, error } = await window.mySupabaseInstance
+        .from('broadcasts')
+        .insert([{ message: messageText }]);
 
-      statusEl.style.color = 'var(--text-muted)';
-      statusEl.textContent = 'Creating stream event...';
-
-      try {
-        const { error } = await window.mySupabaseInstance
-          .from('events')
-          .insert([{ title, room_name, is_live, start_time: new Date() }]);
-
-        if (error) throw error;
-
-        statusEl.style.color = '#10b981';
-        statusEl.textContent = 'Live stream event created successfully!';
-        document.getElementById('ev-title').value = '';
-        document.getElementById('ev-room').value = '';
-        document.getElementById('ev-islive').checked = false;
-      } catch (err) {
-        statusEl.style.color = '#ef4444';
-        statusEl.textContent = 'Error creating event (Ensure events table exists).';
-        console.error(err);
+      if (error) {
+        alert('Error publishing: ' + error.message);
+      } else {
+        alert('Successfully published!');
+        messageInput.value = '';
       }
     }
 

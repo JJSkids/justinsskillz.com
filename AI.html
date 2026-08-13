@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - AI Assistant & Lab</title>
+  <title>Justin's Skillz - AI Assistant</title>
   
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,49 +13,136 @@
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   <style>
-    .ai-container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 1rem 0;
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --accent-green: #10b981;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
     }
-    .chat-card {
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-green: #059669;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #a855f7, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+    .ai-container {
+      max-width: 850px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+    .ai-card {
       background: var(--bg-card);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
       display: flex;
       flex-direction: column;
-      height: 650px;
+      height: 600px;
     }
-    .chat-messages {
+    .chat-box {
       flex: 1;
       overflow-y: auto;
-      padding-right: 0.5rem;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
       display: flex;
       flex-direction: column;
       gap: 1rem;
-      margin-bottom: 1.25rem;
     }
-    .message {
-      max-width: 80%;
-      padding: 1rem 1.25rem;
+    .chat-message {
+      padding: 0.85rem 1.1rem;
       border-radius: var(--radius-md);
+      max-width: 80%;
       font-size: 0.95rem;
       line-height: 1.5;
-      word-break: break-word;
     }
-    .message.user {
+    .chat-message.user {
       background: var(--accent-purple);
       color: white;
       align-self: flex-end;
       border-bottom-right-radius: 4px;
     }
-    .message.assistant {
-      background: var(--bg-primary);
+    .chat-message.assistant {
+      background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
       align-self: flex-start;
@@ -64,49 +151,53 @@
     .chat-input-area {
       display: flex;
       gap: 0.75rem;
-      align-items: center;
     }
-    .chat-input {
+    input[type="text"] {
       flex: 1;
+      padding: 0.85rem 1rem;
       background: var(--bg-primary);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 0.85rem 1rem;
       color: var(--text-main);
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 1rem;
     }
-    .chat-input:focus {
+    input[type="text"]:focus {
       outline: none;
       border-color: var(--accent-purple);
     }
-    .quick-prompts {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
-    }
-    .prompt-chip {
-      background: rgba(168, 85, 247, 0.1);
-      border: 1px solid var(--border-subtle);
-      color: var(--accent-purple);
-      padding: 0.4rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 600;
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
       cursor: pointer;
-      transition: all 0.2s ease;
+      border: none;
+      transition: opacity 0.2s;
     }
-    .prompt-chip:hover {
-      border-color: var(--accent-purple);
-      background: rgba(168, 85, 247, 0.2);
+    .btn-primary {
+      background: var(--accent-purple);
+      color: white;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+    }
+    .btn:hover {
+      opacity: 0.9;
+    }
+    .app-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4rem;
     }
   </style>
 </head>
 <body>
-
-  <div class="bg-glow glow-top-left"></div>
-  <div class="bg-glow glow-bottom-right"></div>
 
   <header class="app-header">
     <div class="header-container">
@@ -118,61 +209,46 @@
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="ai.html" class="nav-link active">AI Assistant</a>
-        <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
+        <a href="ai.html" class="nav-link active" style="color: var(--accent-purple);">AI Assistant</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
+          🌙
         </button>
         <div id="auth-action-container">
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="main-content">
-    <div class="container ai-container">
-      
-      <div style="margin-top: 1rem; margin-bottom: 1.5rem;">
-        <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">AI <span class="gradient-text">Assistant & Study Lab</span></h1>
-        <p style="color: var(--text-muted); font-size: 1rem;">Ask questions about advanced mathematics, coding, science constants (like 6.022 &times; 10<sup>24</sup>), chess strategies, and more.</p>
-      </div>
+  <main class="ai-container">
+    <div style="margin-bottom: 1.5rem;">
+      <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">🤖 Justin's Skillz AI</h1>
+      <p style="color: var(--text-muted); margin: 0;">Ask questions, solve equations, or get instant help with your active courses and labs.</p>
+    </div>
 
-      <div class="chat-card">
-        <!-- Chat Message History -->
-        <div id="chat-messages" class="chat-messages">
-          <div class="message assistant">
-            Hello! I am your AI collaborator. How can I help you with your math equations, coding projects, or science inquiries today?
-          </div>
-        </div>
-
-        <!-- Quick Prompt Chips -->
-        <div class="quick-prompts">
-          <button class="prompt-chip" onclick="sendPresetPrompt('Explain Avogadro constant and scientific notation')">Scientific Notation</button>
-          <button class="prompt-chip" onclick="sendPresetPrompt('Help me solve a quadratic equation')">Quadratic Equations</button>
-          <button class="prompt-chip" onclick="sendPresetPrompt('Review my Minecraft Bedrock command block script')">Minecraft Scripting</button>
-          <button class="prompt-chip" onclick="sendPresetPrompt('Give me a chess opening strategy tip')">Chess Strategy</button>
-        </div>
-
-        <!-- Input Area -->
-        <div class="chat-input-area">
-          <input type="text" id="user-input" class="chat-input" placeholder="Type your message or math question here..." onkeypress="handleKeyPress(event)">
-          <button type="button" onclick="sendMessage()" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.85rem 1.5rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer;">Send</button>
+    <div class="ai-card">
+      <div id="chat-messages" class="chat-box">
+        <div class="chat-message assistant">
+          Hello! I am your AI assistant built into Justin's Skillz. How can I help you with your math, coding, or projects today?
         </div>
       </div>
 
+      <form id="chat-form" class="chat-input-area" onsubmit="handleChatSubmit(event)">
+        <input type="text" id="chat-input" placeholder="Type your message or question here..." autocomplete="off">
+        <button type="submit" class="btn btn-primary">Send</button>
+      </form>
     </div>
   </main>
 
-  <footer class="app-footer" style="margin-top: 4rem;">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
-    </div>
+  <footer class="app-footer">
+    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
   </footer>
 
   <script>
@@ -183,25 +259,24 @@
       );
     }
 
-    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    async function checkAuth() {
+    async function checkUserSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
+      const navAdminLink = document.getElementById('nav-admin-link');
 
       if (session && session.user) {
-        const user = session.user;
         authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
         `;
-
-        const userEmail = user.email ? user.email.toLowerCase() : '';
-        if (ADMIN_EMAILS.includes(userEmail)) {
-          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+        if (userEmail === ADMIN_EMAIL && navAdminLink) {
+          navAdminLink.style.display = 'block';
         }
       } else {
         authContainer.innerHTML = `
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         `;
       }
     }
@@ -211,62 +286,35 @@
       window.location.href = '../index.html';
     }
 
-    function appendMessage(text, sender) {
-      const chatMessages = document.getElementById('chat-messages');
-      const messageDiv = document.createElement('div');
-      messageDiv.className = `message ${sender}`;
-      messageDiv.innerHTML = text;
-      chatMessages.appendChild(messageDiv);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+    function handleChatSubmit(event) {
+      event.preventDefault();
+      const input = document.getElementById('chat-input');
+      const message = input.value.trim();
+      if (!message) return;
 
-    function sendMessage() {
-      const input = document.getElementById('user-input');
-      const text = input.value.trim();
-      if (!text) return;
+      const chatBox = document.getElementById('chat-messages');
 
-      appendMessage(escapeHtml(text), 'user');
+      // Append User Message
+      const userMsgDiv = document.createElement('div');
+      userMsgDiv.className = 'chat-message user';
+      userMsgDiv.textContent = message;
+      chatBox.appendChild(userMsgDiv);
+
       input.value = '';
+      chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Simulated intelligent assistant response with clean notation
+      // Simulate AI Assistant Response
       setTimeout(() => {
-        let reply = generateAssistantResponse(text);
-        appendMessage(reply, 'assistant');
-      }, 500);
-    }
-
-    function sendPresetPrompt(promptText) {
-      document.getElementById('user-input').value = promptText;
-      sendMessage();
-    }
-
-    function handleKeyPress(event) {
-      if (event.key === 'Enter') {
-        sendMessage();
-      }
-    }
-
-    function generateAssistantResponse(query) {
-      const q = query.toLowerCase();
-      if (q.includes('scientific notation') || q.includes('constant') || q.includes('10')) {
-        return `Scientific notation is used to express very large or very small numbers compactly. For example, large quantities often appear in physics and chemistry as <strong>6.022 &times; 10<sup>23</sup></strong> or higher values like <strong>1.5 &times; 10<sup>24</sup></strong>. In HTML and standard text, use <code>&times; 10<sup>24</sup></code> rather than raw LaTeX syntax.`;
-      } else if (q.includes('quadratic') || q.includes('equation')) {
-        return `To solve quadratic equations of the form <strong>ax<sup>2</sup> + bx + c = 0</strong>, you can use the quadratic formula: <br><br><strong>x = (-b &plusmn; &radic;(b<sup>2</sup> - 4ac)) / 2a</strong>.<br><br>Alternatively, you can complete the square or factor the polynomial!`;
-      } else if (q.includes('minecraft') || q.includes('command')) {
-        return `For Minecraft Bedrock Edition servers, make sure your command block chains use correct syntax for scoreboards and selectors like <code>@a[scores={kills=1..}]</code> with no template restrictions.`;
-      } else if (q.includes('chess')) {
-        return `A great chess opening principle is to control the center with your e4 or d4 pawns, develop your knights before bishops, and castle early to ensure king safety.`;
-      } else {
-        return `That's a great question about <strong>${escapeHtml(query)}</strong>! Feel free to test math formulas, check code snippets, or explore the Math Lab and Chess AI labs on your dashboard.`;
-      }
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+        const aiMsgDiv = document.createElement('div');
+        aiMsgDiv.className = 'chat-message assistant';
+        aiMsgDiv.textContent = "Thanks for your question! I'm processing your request regarding '" + message + "'. Let's dive into the solution!";
+        chatBox.appendChild(aiMsgDiv);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 600);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      checkAuth();
+      checkUserSession();
     });
   </script>
 </body>

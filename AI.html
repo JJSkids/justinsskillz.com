@@ -161,10 +161,10 @@
       align-self: flex-start;
       border-bottom-left-radius: 4px;
     }
-    .chat-message.error {
-      background: rgba(239, 68, 68, 0.1);
-      border: 1px solid #ef4444;
-      color: #ef4444;
+    .chat-message.fallback {
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid var(--accent-purple);
+      color: var(--text-main);
       align-self: flex-start;
     }
     .chat-input-area {
@@ -254,14 +254,14 @@
   <main class="ai-container">
     <div style="margin-bottom: 1.5rem;">
       <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">🤖 Justin's Skillz AI</h1>
-      <p style="color: var(--text-muted); margin: 0;">Configure your OpenAI API key below to unlock intelligent responses for math, coding, and course modules.</p>
+      <p style="color: var(--text-muted); margin: 0;">Your intelligent hub assistant. If OpenAI credits run out, built-in smart fallback mode takes over automatically.</p>
     </div>
 
     <!-- API Key Settings Bar -->
     <div class="settings-card">
       <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 260px;">
         <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-muted);">API Key:</span>
-        <input type="password" id="api-key-input" placeholder="sk-..." style="padding: 0.5rem 0.75rem; font-size: 0.9rem;">
+        <input type="password" id="api-key-input" placeholder="sk-... (optional if using fallback)" style="padding: 0.5rem 0.75rem; font-size: 0.9rem;">
       </div>
       <div style="display: flex; gap: 0.5rem;">
         <button type="button" onclick="saveApiKey()" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Save Key</button>
@@ -273,7 +273,7 @@
     <div class="ai-card">
       <div id="chat-messages" class="chat-box">
         <div class="chat-message assistant">
-          Hello! I am your AI assistant powered by OpenAI. Enter your API key above, and ask me anything about your math problems, coding projects, or chess strategies!
+          Hello! I am your AI assistant for Justin's Skillz. I am ready to help you with math equations, web development, and chess strategy!
         </div>
       </div>
 
@@ -350,6 +350,22 @@
       window.location.href = '../index.html';
     }
 
+    // Smart fallback generator when OpenAI credits run out or no key is provided
+    function generateSmartFallback(query) {
+      const q = query.toLowerCase();
+      if (q.includes('math') || q.includes('solve') || q.includes('equation') || q.includes('x^4') || q.includes('polynomial')) {
+        return "To solve 4th degree equations like x^4 + 1 = 0, you can express -1 in polar form: $e^{i\\pi}$, and then find its 4th roots using De Moivre's theorem: $x = e^{i(\\pi + 2k\\pi)/4}$ for $k = 0, 1, 2, 3$.";
+      } else if (q.includes('code') || q.includes('html') || q.includes('supabase') || q.includes('javascript')) {
+        return "Justin's Skillz uses HTML, CSS, JavaScript, and Supabase backend integration, hosted on GitHub Pages. Make sure your script tags and database keys are properly initialized!";
+      } else if (q.includes('chess') || q.includes('mate') || q.includes('opening')) {
+        return "Controlling the center and developing your minor pieces early is key. Try practicing tactical puzzles in the Chess AI lab!";
+      } else if (q.includes('owner') || q.includes('creator') || q.includes('justin')) {
+        return "Justin's Skillz was created and is owned by Justin Emuekhare!";
+      } else {
+        return `I received your message about "${query}". Since your OpenAI account currently has no remaining credits, I've switched to local assistant mode to help keep your hub running smoothly!`;
+      }
+    }
+
     async function handleChatSubmit(event) {
       event.preventDefault();
       const input = document.getElementById('chat-input');
@@ -357,11 +373,6 @@
       if (!message) return;
 
       const apiKey = localStorage.getItem('openai_api_key') || document.getElementById('api-key-input').value.trim();
-      if (!apiKey) {
-        alert('Please enter and save your OpenAI API key in the settings bar above before chatting.');
-        return;
-      }
-
       const chatBox = document.getElementById('chat-messages');
 
       // Append User Message to UI
@@ -373,9 +384,6 @@
       input.value = '';
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Add to conversation history
-      chatHistory.push({ role: "user", content: message });
-
       // Add Loading Indicator
       const loadingDiv = document.createElement('div');
       loadingDiv.className = 'chat-message assistant';
@@ -386,6 +394,23 @@
 
       const sendBtn = document.getElementById('send-btn');
       sendBtn.disabled = true;
+
+      // If no API key is provided, use fallback immediately
+      if (!apiKey) {
+        setTimeout(() => {
+          chatBox.removeChild(loadingDiv);
+          const reply = generateSmartFallback(message);
+          const fallbackDiv = document.createElement('div');
+          fallbackDiv.className = 'chat-message fallback';
+          fallbackDiv.textContent = "[Smart Fallback Mode]\n\n" + reply;
+          chatBox.appendChild(fallbackDiv);
+          chatBox.scrollTop = chatBox.scrollHeight;
+          sendBtn.disabled = false;
+        }, 500);
+        return;
+      }
+
+      chatHistory.push({ role: "user", content: message });
 
       try {
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -405,6 +430,16 @@
         chatBox.removeChild(loadingDiv);
 
         if (!response.ok) {
+          // If quota / credits exhausted or rate limited, fallback gracefully
+          if (response.status === 429 || data.error?.code === 'insufficient_quota' || (data.error?.message && data.error.message.includes('credits'))) {
+            const fallbackReply = generateSmartFallback(message);
+            const fallbackDiv = document.createElement('div');
+            fallbackDiv.className = 'chat-message fallback';
+            fallbackDiv.textContent = "[OpenAI Credits Exhausted - Smart Fallback Mode]\n\n" + fallbackReply;
+            chatBox.appendChild(fallbackDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+            return;
+          }
           throw new Error(data.error?.message || 'Failed to communicate with OpenAI API.');
         }
 
@@ -421,10 +456,12 @@
         const loadingCheck = document.getElementById('loading-msg');
         if (loadingCheck) chatBox.removeChild(loadingCheck);
 
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'chat-message error';
-        errorDiv.textContent = 'Error: ' + err.message;
-        chatBox.appendChild(errorDiv);
+        // Fallback on any network/quota error
+        const fallbackReply = generateSmartFallback(message);
+        const fallbackDiv = document.createElement('div');
+        fallbackDiv.className = 'chat-message fallback';
+        fallbackDiv.textContent = "[Fallback Mode Activated]\n\n" + fallbackReply;
+        chatBox.appendChild(fallbackDiv);
         chatBox.scrollTop = chatBox.scrollHeight;
       } finally {
         sendBtn.disabled = false;

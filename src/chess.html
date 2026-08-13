@@ -3,233 +3,256 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Chess Lab & AI</title>
+  <title>Chess AI - Justin's Skillz</title>
   
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Chessboard.js CSS -->
+  <!-- Preload all online chess piece images BEFORE DOMContentLoaded so they are instantly cached and ready -->
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wP.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wN.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wB.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wR.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wQ.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wK.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bP.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bN.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bB.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bR.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bQ.png">
+  <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bK.png">
+
+  <!-- Chessboard.js & Chess.js Dependencies -->
   <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
-  
-  <link rel="stylesheet" href="styles.css">
-  <script src="theme.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- jQuery (Must be loaded before chessboard.js) -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <!-- Chess.js for game logic -->
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
-  <!-- Chessboard.js -->
   <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
 
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    .chess-container {
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+    .header-container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 1rem 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+    .main-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .chess-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
     .chess-layout {
-      display: grid;
-      grid-template-columns: minmax(340px, 480px) 1fr;
-      gap: 2rem;
-      margin-top: 2rem;
-      align-items: start;
-    }
-    @media (max-width: 950px) {
-      .chess-layout {
-        grid-template-columns: 1fr;
-        justify-items: center;
-      }
-    }
-    .card {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.4);
-      width: 100%;
-    }
-    .control-group {
-      margin-bottom: 1.25rem;
-    }
-    .control-label {
-      display: block;
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 0.5rem;
-    }
-    .form-select {
-      width: 100%;
-      background: var(--bg-primary);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 0.75rem;
-      color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.95rem;
-      cursor: pointer;
-    }
-    .form-select:focus {
-      outline: none;
-      border-color: var(--accent-purple);
-    }
-    .saved-game-item {
-      background: rgba(168, 85, 247, 0.05);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.5rem;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+    }
+    #myBoard {
+      width: 400px;
+      max-width: 100%;
+    }
+    .chess-sidebar {
+      flex: 1;
+      min-width: 250px;
+      display: flex;
+      flex-direction: column;
       gap: 1rem;
-      transition: all 0.2s ease;
     }
-    .saved-game-item:hover {
-      border-color: var(--accent-purple);
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.2s;
+      text-decoration: none;
     }
-    .eval-bar-container {
-      width: 100%;
-      height: 12px;
-      background: #2d3748;
-      border-radius: 6px;
-      overflow: hidden;
-      margin-top: 0.75rem;
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: var(--accent-purple);
+      color: white;
+    }
+    .btn-secondary {
+      background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
+      color: var(--text-main);
     }
-    .eval-bar-fill {
-      height: 100%;
-      width: 50%;
-      background: linear-gradient(90deg, #a855f7, #3b82f6);
-      transition: width 0.3s ease;
+    .status-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.95rem;
+      line-height: 1.5;
     }
-    /* Ensure chess pieces render correctly and stay visible on top */
-    .piece-417db {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
+    .app-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4rem;
     }
   </style>
 </head>
 <body>
 
-  <div class="bg-glow glow-top-left"></div>
-  <div class="bg-glow glow-bottom-right"></div>
-
   <header class="app-header">
     <div class="header-container">
       <a href="../index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <img src="../Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
 
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="chess.html" class="nav-link active">Chess AI</a>
+        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
+        <a href="chess.html" class="nav-link active" style="color: var(--accent-purple);">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
+        <a href="../AI.html" class="nav-link">AI Assistant</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
+          🌙
         </button>
         <div id="auth-action-container">
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         </div>
       </div>
     </div>
   </header>
 
-  <main class="main-content">
-    <div class="container chess-container">
+  <main class="main-container">
+    <div class="chess-card">
+      <h2 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.75rem;">Chess AI Training Lab</h2>
       
-      <div style="margin-top: 1rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
-        <div>
-          <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Chess <span class="gradient-text">Lab & AI Engine</span></h1>
-          <p style="color: var(--text-muted); font-size: 1rem;">Challenge intelligent ELO bots, test Adaptive Mode, and save games to the cloud.</p>
-        </div>
-      </div>
-
       <div class="chess-layout">
-        <!-- Board Column -->
-        <div>
-          <div class="card" style="padding: 1rem; display: flex; flex-direction: column; align-items: center;">
-            <div id="chess-board" style="width: 100%; max-width: 440px;"></div>
-            
-            <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem; width: 100%; justify-content: center; flex-wrap: wrap;">
-              <button type="button" onclick="resetGame()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">New Game</button>
-              <button type="button" onclick="undoMove()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Undo Move</button>
-              <button type="button" onclick="openSaveModal()" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.6rem 1.25rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; border: none; cursor: pointer;">Save Game</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Controls & Status Column -->
-        <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-          
-          <!-- AI Settings Card -->
-          <div class="card">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1rem;">⚙️ AI Configuration</h3>
-            
-            <div class="control-group">
-              <label class="control-label" for="elo-select">Difficulty / ELO Level</label>
-              <select id="elo-select" class="form-select" onchange="onDifficultyChange()">
-                <option value="800">Novice (~800 ELO) - Depth 1</option>
-                <option value="1200">Casual (~1200 ELO) - Depth 2</option>
-                <option value="1600" selected>Intermediate (~1600 ELO) - Depth 3</option>
-                <option value="2000">Advanced Expert (~2000 ELO) - Depth 4</option>
-                <option value="2400">Grandmaster (~2400 ELO) - Depth 5</option>
-                <option value="adaptive">🔥 Adaptive Mode (Auto-adjusts to you)</option>
-              </select>
-            </div>
-
-            <div class="control-group" style="margin-bottom: 0;">
-              <label class="control-label" for="player-color">Play As</label>
-              <select id="player-color" class="form-select" onchange="onColorChange()">
-                <option value="white" selected>White (You go first)</option>
-                <option value="black">Black (AI goes first)</option>
-              </select>
-            </div>
+        <div id="myBoard"></div>
+        
+        <div class="chess-sidebar">
+          <div class="status-box">
+            <strong>Game Status:</strong><br>
+            <span id="status">Turn: White</span><br>
+            <span id="fen" style="font-size: 0.75rem; color: var(--text-muted); word-break: break-all;"></span>
           </div>
 
-          <!-- Game Status & Evaluation Card -->
-          <div class="card">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">📊 Match Analysis</h3>
-            <div id="game-status" style="font-size: 0.95rem; color: var(--text-main); font-weight: 600; margin-bottom: 0.5rem;">White to move.</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 0.5rem;" id="ai-info-text">Active Bot: Intermediate (1600 ELO)</div>
-            
-            <div class="eval-bar-container">
-              <div id="eval-fill" class="eval-bar-fill"></div>
-            </div>
-
-            <div style="margin-top: 1rem; background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 0.75rem; border-radius: var(--radius-md); max-height: 120px; overflow-y: auto; font-family: monospace; font-size: 0.85rem;" id="game-pgn">
-              1. e4 e5
-            </div>
-          </div>
-
-          <!-- Saved Games Cloud Card -->
-          <div class="card">
-            <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem;">📂 Cloud Saved Games</h3>
-            <div id="saved-games-list" style="max-height: 180px; overflow-y: auto;">
-              <p style="color: var(--text-muted); font-size: 0.85rem;">Sign in to view saved matches.</p>
-            </div>
-          </div>
-
+          <button type="button" id="startBtn" class="btn btn-primary">New Game</button>
+          <button type="button" id="undoBtn" class="btn btn-secondary">Undo Move</button>
         </div>
       </div>
-
     </div>
   </main>
 
-  <footer class="app-footer" style="margin-top: 4rem;">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz. All rights reserved.</p>
-    </div>
+  <footer class="app-footer">
+    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
   </footer>
 
   <script>
@@ -240,513 +263,129 @@
       );
     }
 
-    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
-    let board = null;
-    let game = new Chess();
-    let currentUser = null;
-    let aiDifficulty = 1600;
-    let isAdaptive = false;
-    let playerSide = 'white'; // 'white' or 'black'
-    let selectedSquare = null;
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    // --- PIECE-SQUARE TABLES FOR EVALUATION ---
-    const pawnEvalWhite = [
-      [0,  0,  0,  0,  0,  0,  0,  0],
-      [50, 50, 50, 50, 50, 50, 50, 50],
-      [10, 10, 20, 30, 30, 20, 10, 10],
-      [ 5,  5, 10, 25, 25, 10,  5,  5],
-      [ 0,  0,  0, 20, 20,  0,  0,  0],
-      [ 5, -5,-10,  0,  0,-10, -5,  5],
-      [ 5, 10, 10,-20,-20, 10, 10,  5],
-      [ 0,  0,  0,  0,  0,  0,  0,  0]
-    ];
-    const knightEval = [
-      [-50,-40,-30,-30,-30,-30,-40,-50],
-      [-40,-20,  0,  0,  0,  0,-20,-40],
-      [-30,  0, 10, 15, 15, 10,  0,-30],
-      [-30,  5, 15, 20, 20, 15,  5,-30],
-      [-30,  0, 15, 20, 20, 15,  0,-30],
-      [-30,  5, 10, 15, 15, 10,  5,-30],
-      [-40,-20,  0,  5,  5,  0,-20,-40],
-      [-50,-40,-30,-30,-30,-30,-40,-50],
-    ];
-    const bishopEvalWhite = [
-      [-20,-10,-10,-10,-10,-10,-10,-20],
-      [-10,  0,  0,  0,  0,  0,  0,-10],
-      [-10,  0,  5, 10, 10,  5,  0,-10],
-      [-10,  5,  5, 10, 10,  5,  5,-10],
-      [-10,  0, 10, 10, 10, 10,  0,-10],
-      [-10, 10, 10, 10, 10, 10, 10,-10],
-      [-10,  5,  0,  0,  0,  0,  5,-10],
-      [-20,-10,-10,-10,-10,-10,-10,-20],
-    ];
-    const rookEvalWhite = [
-      [ 0,  0,  0,  0,  0,  0,  0,  0],
-      [ 5, 10, 10, 10, 10, 10, 10,  5],
-      [-5,  0,  0,  0,  0,  0,  0, -5],
-      [-5,  0,  0,  0,  0,  0,  0, -5],
-      [-5,  0,  0,  0,  0,  0,  0, -5],
-      [-5,  0,  0,  0,  0,  0,  0, -5],
-      [-5,  0,  0,  0,  0,  0,  0, -5],
-      [ 0,  0,  0,  5,  5,  0,  0,  0]
-    ];
-    const queenEval = [
-      [-20,-10,-10, -5, -5,-10,-10,-20],
-      [-10,  0,  0,  0,  0,  0,  0,-10],
-      [-10,  0,  5,  5,  5,  5,  0,-10],
-      [ -5,  0,  5,  5,  5,  5,  0, -5],
-      [  0,  0,  5,  5,  5,  5,  0, -5],
-      [-10,  5,  5,  5,  5,  5,  0,-10],
-      [-10,  0,  5,  0,  0,  0,  0,-10],
-      [-20,-10,-10, -5, -5,-10,-10,-20]
-    ];
-    const kingEvalWhite = [
-      [-30,-40,-40,-50,-50,-40,-40,-30],
-      [-30,-40,-40,-50,-50,-40,-40,-30],
-      [-30,-40,-40,-50,-50,-40,-40,-30],
-      [-30,-40,-40,-50,-50,-40,-40,-30],
-      [-20,-30,-30,-40,-40,-30,-30,-20],
-      [-10,-20,-20,-20,-20,-20,-20,-10],
-      [ 20, 20,  0,  0,  0,  0, 20, 20],
-      [ 20, 30, 10,  0,  0, 10, 30, 20]
-    ];
-
-    function getPieceValue(piece, x, y) {
-      if (piece === null) return 0;
-      let absoluteValue = 0;
-      let tableVal = 0;
-      let isWhite = piece.color === 'w';
-
-      switch (piece.type) {
-        case 'p':
-          absoluteValue = 10;
-          tableVal = isWhite ? pawnEvalWhite[y][x] : pawnEvalWhite[7 - y][x];
-          break;
-        case 'n':
-          absoluteValue = 30;
-          tableVal = knightEval[y][x];
-          break;
-        case 'b':
-          absoluteValue = 35;
-          tableVal = isWhite ? bishopEvalWhite[y][x] : bishopEvalWhite[7 - y][x];
-          break;
-        case 'r':
-          absoluteValue = 50;
-          tableVal = isWhite ? rookEvalWhite[y][x] : rookEvalWhite[7 - y][x];
-          break;
-        case 'q':
-          absoluteValue = 90;
-          tableVal = queenEval[y][x];
-          break;
-        case 'k':
-          absoluteValue = 900;
-          tableVal = isWhite ? kingEvalWhite[y][x] : kingEvalWhite[7 - y][x];
-          break;
-      }
-      return absoluteValue + (tableVal / 10);
-    }
-
-    function evaluateBoard(boardState) {
-      let totalEval = 0;
-      for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) {
-          let piece = boardState[r][c];
-          if (piece) {
-            let val = getPieceValue(piece, c, r);
-            if (piece.color === 'w') {
-              totalEval += val;
-            } else {
-              totalEval -= val;
-            }
-          }
-        }
-      }
-      return totalEval;
-    }
-
-    // --- MINIMAX WITH ALPHA-BETA PRUNING ---
-    function minimax(gameInstance, depth, alpha, beta, isMaximizing) {
-      if (depth === 0 || gameInstance.game_over()) {
-        return evaluateBoard(gameInstance.board());
-      }
-
-      let possibleMoves = gameInstance.moves({ verbose: true });
-      if (isMaximizing) {
-        let maxEval = -99999;
-        for (let i = 0; i < possibleMoves.length; i++) {
-          gameInstance.move(possibleMoves[i]);
-          let evaluation = minimax(gameInstance, depth - 1, alpha, beta, false);
-          gameInstance.undo();
-          maxEval = Math.max(maxEval, evaluation);
-          alpha = Math.max(alpha, evaluation);
-          if (beta <= alpha) break;
-        }
-        return maxEval;
-      } else {
-        let minEval = 99999;
-        for (let i = 0; i < possibleMoves.length; i++) {
-          gameInstance.move(possibleMoves[i]);
-          let evaluation = minimax(gameInstance, depth - 1, alpha, beta, true);
-          gameInstance.undo();
-          minEval = Math.min(minEval, evaluation);
-          beta = Math.min(beta, evaluation);
-          if (beta <= alpha) break;
-        }
-        return minEval;
-      }
-    }
-
-    function calculateAIMove() {
-      if (game.game_over()) return;
-
-      let moves = game.moves({ verbose: true });
-      if (moves.length === 0) return;
-
-      let depth = 3;
-      let currentEloLabel = 'Intermediate (1600)';
-
-      if (isAdaptive) {
-        let currentEval = evaluateBoard(game.board());
-        let moveCount = game.history().length;
-        if (Math.abs(currentEval) > 15 || moveCount > 30) {
-          depth = 4;
-          currentEloLabel = 'Adaptive (Expert ~2000)';
-        } else {
-          depth = 2;
-          currentEloLabel = 'Adaptive (Casual ~1200)';
-        }
-      } else {
-        if (aiDifficulty <= 800) { depth = 1; currentEloLabel = 'Novice (800)'; }
-        else if (aiDifficulty <= 1200) { depth = 2; currentEloLabel = 'Casual (1200)'; }
-        else if (aiDifficulty <= 1600) { depth = 3; currentEloLabel = 'Intermediate (1600)'; }
-        else if (aiDifficulty <= 2000) { depth = 4; currentEloLabel = 'Advanced (2000)'; }
-        else { depth = 5; currentEloLabel = 'Grandmaster (2400)'; }
-      }
-
-      document.getElementById('ai-info-text').textContent = `Active Bot: ${currentEloLabel}`;
-
-      if (!isAdaptive && aiDifficulty <= 800 && Math.random() < 0.4) {
-        let randomMove = moves[Math.floor(Math.random() * moves.length)];
-        game.move(randomMove);
-        board.position(game.fen());
-        updateStatus();
-        return;
-      }
-
-      let bestMove = null;
-      let bestValue = game.turn() === 'w' ? -99999 : 99999;
-      let isMaximizing = game.turn() === 'w';
-
-      moves.sort(() => Math.random() - 0.5);
-
-      for (let i = 0; i < moves.length; i++) {
-        game.move(moves[i]);
-        let value = minimax(gameInstance = game, depth - 1, -100000, 100000, !isMaximizing);
-        game.undo();
-
-        if (isMaximizing) {
-          if (value > bestValue) {
-            bestValue = value;
-            bestMove = moves[i];
-          }
-        } else {
-          if (value < bestValue) {
-            bestValue = value;
-            bestMove = moves[i];
-          }
-        }
-      }
-
-      if (bestMove) {
-        game.move(bestMove);
-        board.position(game.fen());
-        updateStatus();
-      }
-    }
-
-    // --- BOARD INTERACTION (Drag & Drop + Click-to-Move) ---
-    function onDragStart (source, piece, position, orientation) {
-      if (game.game_over()) return false;
-      if ((playerSide === 'white' && piece.search(/^b/) !== -1) ||
-          (playerSide === 'black' && piece.search(/^w/) !== -1)) {
-        return false;
-      }
-      if ((game.turn() === 'w' && playerSide === 'black') ||
-          (game.turn() === 'b' && playerSide === 'white')) {
-        return false;
-      }
-      clearHighlights();
-      selectedSquare = null;
-    }
-
-    function onDrop (source, target) {
-      let move = game.move({
-        from: source,
-        to: target,
-        promotion: 'q'
-      });
-
-      if (move === null) return 'snapback';
-
-      updateStatus();
-      if (!game.game_over()) {
-        setTimeout(calculateAIMove, 250);
-      }
-    }
-
-    function onSnapEnd () {
-      board.position(game.fen());
-    }
-
-    // Click-to-Move Event Listener
-    $(document).on('click', '#chess-board .square-55d63', function() {
-      if (game.game_over()) return;
-
-      let classList = $(this).attr('class').split(/\s+/);
-      let squareClass = classList.find(c => c.startsWith('square-') && c !== 'square-55d63');
-      if (!squareClass) return;
-      let clickedSquare = squareClass.replace('square-', '');
-
-      let piece = game.get(clickedSquare);
-
-      if (selectedSquare === null) {
-        if (piece !== null && piece.color === game.turn()) {
-          if ((playerSide === 'white' && piece.color === 'w') || (playerSide === 'black' && piece.color === 'b')) {
-            selectedSquare = clickedSquare;
-            highlightSquare(selectedSquare);
-          }
-        }
-      } else {
-        let move = game.move({
-          from: selectedSquare,
-          to: clickedSquare,
-          promotion: 'q'
-        });
-
-        clearHighlights();
-        selectedSquare = null;
-
-        if (move === null) {
-          if (piece !== null && piece.color === game.turn()) {
-            if ((playerSide === 'white' && piece.color === 'w') || (playerSide === 'black' && piece.color === 'b')) {
-              selectedSquare = clickedSquare;
-              highlightSquare(selectedSquare);
-            }
-          }
-        } else {
-          board.position(game.fen());
-          updateStatus();
-          if (!game.game_over()) {
-            setTimeout(calculateAIMove, 250);
-          }
-        }
-      }
+    window.addEventListener('DOMContentLoaded', () => {
+      checkUserSession();
+      initChessGame();
     });
 
-    function highlightSquare(square) {
-      clearHighlights();
-      $(`#chess-board .square-${square}`).css('box-shadow', 'inset 0 0 0 4px #a855f7');
-    }
-
-    function clearHighlights() {
-      $('#chess-board .square-55d63').css('box-shadow', '');
-    }
-
-    function updateStatus () {
-      let status = '';
-      let turnColor = game.turn() === 'w' ? 'White' : 'Black';
-
-      if (game.in_checkmate()) {
-        status = `Checkmate! ${turnColor === 'White' ? 'Black' : 'White'} wins.`;
-      } else if (game.in_draw()) {
-        status = 'Game drawn.';
-      } else {
-        status = `${turnColor} to move.`;
-        if (game.in_check()) {
-          status += ' (Check!)';
-        }
-      }
-
-      document.getElementById('game-status').textContent = status;
-      document.getElementById('game-pgn').textContent = game.pgn() || 'No moves yet.';
-
-      let evalScore = evaluateBoard(game.board());
-      let percentage = 50 + (evalScore * 3);
-      percentage = Math.max(5, Math.min(95, percentage));
-      document.getElementById('eval-fill').style.width = percentage + '%';
-    }
-
-    function resetGame() {
-      game.reset();
-      clearHighlights();
-      selectedSquare = null;
-      board.orientation(playerSide);
-      board.start();
-      updateStatus();
-      if (playerSide === 'black') {
-        setTimeout(calculateAIMove, 300);
-      }
-    }
-
-    function undoMove() {
-      game.undo();
-      game.undo();
-      clearHighlights();
-      selectedSquare = null;
-      board.position(game.fen());
-      updateStatus();
-    }
-
-    function onDifficultyChange() {
-      let val = document.getElementById('elo-select').value;
-      if (val === 'adaptive') {
-        isAdaptive = true;
-      } else {
-        isAdaptive = false;
-        aiDifficulty = parseInt(val, 10);
-      }
-      updateStatus();
-    }
-
-    function onColorChange() {
-      playerSide = document.getElementById('player-color').value;
-      resetGame();
-    }
-
-    // --- SUPABASE CLOUD SAVE / LOAD ---
-    async function checkAuthAndLoadSavedGames() {
+    async function checkUserSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
+      const navAdminLink = document.getElementById('nav-admin-link');
 
       if (session && session.user) {
-        currentUser = session.user;
         authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+          <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Sign Out</button>
         `;
-
-        const userEmail = currentUser.email ? currentUser.email.toLowerCase() : '';
-        if (ADMIN_EMAILS.includes(userEmail)) {
-          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+        if (userEmail === ADMIN_EMAIL && navAdminLink) {
+          navAdminLink.style.display = 'block';
         }
-
-        fetchUserSavedGames();
       } else {
         authContainer.innerHTML = `
-          <a href="login.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; border-radius: var(--radius-md); font-weight: 700; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         `;
-        document.getElementById('saved-games-list').innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">Sign in to save and load your chess matches.</p>`;
-      }
-    }
-
-    async function fetchUserSavedGames() {
-      if (!currentUser) return;
-      const listContainer = document.getElementById('saved-games-list');
-      
-      const { data, error } = await window.mySupabaseInstance
-        .from('chess_games')
-        .select('*')
-        .eq('user_id', currentUser.id)
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        listContainer.innerHTML = `<p style="color: #ef4444; font-size: 0.85rem;">Error loading saved games.</p>`;
-        return;
-      }
-
-      if (data && data.length > 0) {
-        let html = '';
-        data.forEach(item => {
-          let dateStr = new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-          html += `
-            <div class="saved-game-item">
-              <div>
-                <strong style="font-size: 0.9rem; color: var(--text-main); display: block;">${escapeHtml(item.game_name)}</strong>
-                <span style="font-size: 0.75rem; color: var(--text-muted);">${dateStr}</span>
-              </div>
-              <button onclick="loadSavedGameData('${escapeHtml(item.pgn).replace(/'/g, "\\'")}')" class="btn btn-primary" style="background: var(--accent-purple); color: white; padding: 0.25rem 0.75rem; border-radius: 4px; font-size: 0.75rem; border: none; cursor: pointer;">Load</button>
-            </div>
-          `;
-        });
-        listContainer.innerHTML = html;
-      } else {
-        listContainer.innerHTML = `<p style="color: var(--text-muted); font-size: 0.85rem;">No saved games found yet.</p>`;
-      }
-    }
-
-    async function openSaveModal() {
-      if (!currentUser) {
-        alert('Please sign in to save your chess game.');
-        window.location.href = 'login.html';
-        return;
-      }
-
-      let gameName = prompt('Enter a name for your saved game:', 'Chess Match ' + new Date().toLocaleDateString());
-      if (!gameName) return;
-
-      let pgnData = game.pgn();
-      if (!pgnData) {
-        alert('No moves have been made yet to save!');
-        return;
-      }
-
-      const { error } = await window.mySupabaseInstance
-        .from('chess_games')
-        .insert([{ user_id: currentUser.id, game_name: gameName, pgn: pgnData }]);
-
-      if (error) {
-        alert('Error saving game: ' + error.message);
-      } else {
-        alert('Game successfully saved to the cloud!');
-        fetchUserSavedGames();
-      }
-    }
-
-    function loadSavedGameData(pgnString) {
-      try {
-        let success = game.load_pgn(pgnString);
-        if (!success) {
-          alert('Failed to load PGN string.');
-          return;
-        }
-        clearHighlights();
-        selectedSquare = null;
-        board.position(game.fen());
-        updateStatus();
-        alert('Game successfully loaded!');
-      } catch (err) {
-        console.error('Error loading game:', err);
-        alert('An error occurred while loading the game.');
       }
     }
 
     async function handleSignOut() {
       await window.mySupabaseInstance.auth.signOut();
-      window.location.href = '../index.html';
+      window.location.reload();
     }
 
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
+    function initChessGame() {
+      var board = null;
+      var game = new Chess();
+      var statusEl = $('#status');
+      var fenEl = $('#fen');
 
-    // Initialize board on DOM ready
-    window.addEventListener('DOMContentLoaded', () => {
-      let config = {
-        draggable: true,
+      function onDragStart (source, piece, position, orientation) {
+        if (game.game_over()) return false;
+        if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+            (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+          return false;
+        }
+      }
+
+      function makeRandomMove() {
+        var possibleMoves = game.moves();
+        if (possibleMoves.length === 0) return;
+
+        var randomIdx = Math.floor(Math.random() * possibleMoves.length);
+        game.move(possibleMoves[randomIdx]);
+        board.position(game.fen());
+        updateStatus();
+      }
+
+      function onDrop (source, target) {
+        var move = game.move({
+          from: source,
+          to: target,
+          promotion: 'q'
+        });
+
+        if (move === null) return 'snapback';
+
+        updateStatus();
+
+        if (!game.game_over()) {
+          window.setTimeout(makeRandomMove, 250);
+        }
+      }
+
+      function onSnapEnd () {
+        board.position(game.fen());
+      }
+
+      function updateStatus () {
+        var status = '';
+        var moveColor = 'White';
+        if (game.turn() === 'b') {
+          moveColor = 'Black';
+        }
+
+        if (game.in_checkmate()) {
+          status = 'Game over, ' + moveColor + ' is in checkmate.';
+        } else if (game.in_draw()) {
+          status = 'Game over, drawn position';
+        } else {
+          status = moveColor + ' to move';
+          if (game.in_check()) {
+            status += ', ' + moveColor + ' is in check';
+          }
+        }
+
+        statusEl.html(status);
+        fenEl.html(game.fen());
+      }
+
+      var config = {
         position: 'start',
-        pieceTheme: 'https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/img/chesspieces/wikipedia/{piece}.png',
+        draggable: true,
+        pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png',
         onDragStart: onDragStart,
         onDrop: onDrop,
         onSnapEnd: onSnapEnd
       };
-      board = Chessboard('chess-board', config);
-      updateStatus();
-      checkAuthAndLoadSavedGames();
 
-      // Ensure grid/flex container dimensions settle before rendering pieces
-      setTimeout(() => {
-        board.resize();
-      }, 150);
-    });
+      board = Chessboard('myBoard', config);
+      updateStatus();
+
+      $('#startBtn').on('click', function () {
+        game.reset();
+        board.start();
+        updateStatus();
+      });
+
+      $('#undoBtn').on('click', function () {
+        game.undo();
+        game.undo();
+        board.position(game.fen());
+        updateStatus();
+      });
+    }
   </script>
 </body>
 </html>

@@ -158,6 +158,11 @@
       color: white;
       box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
     }
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid #ef4444;
+      color: #ef4444;
+    }
     .btn:hover {
       opacity: 0.9;
     }
@@ -226,7 +231,7 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <div>
           <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">Admin Control Center</h1>
-          <p style="color: var(--text-muted); margin: 0;">Publish live announcements and broadcast platform updates.</p>
+          <p style="color: var(--text-muted); margin: 0;">Publish live announcements and manage broadcast updates.</p>
         </div>
         <div>
           <span class="version-badge">Admin Mode Active</span>
@@ -243,6 +248,14 @@
         </div>
 
         <button type="button" onclick="publishAnnouncement()" class="btn btn-primary">Publish to Broadcasts</button>
+      </div>
+
+      <!-- Published Announcements Feed Card -->
+      <div class="admin-card">
+        <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1.25rem;">Published Announcements</h2>
+        <div id="broadcasts-list-container">
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Loading announcements...</p>
+        </div>
       </div>
 
     </div>
@@ -278,6 +291,7 @@
         if (userEmail === ADMIN_EMAIL) {
           adminDashboardView.style.display = 'block';
           accessDeniedView.style.display = 'none';
+          loadBroadcasts();
         } else {
           adminDashboardView.style.display = 'none';
           accessDeniedView.style.display = 'block';
@@ -300,8 +314,7 @@
         return;
       }
 
-      // Inserts into your existing 'broadcasts' table
-      const { data, error } = await window.mySupabaseInstance
+      const { error } = await window.mySupabaseInstance
         .from('broadcasts')
         .insert([{ message: messageText }]);
 
@@ -310,7 +323,54 @@
       } else {
         alert('Successfully published!');
         messageInput.value = '';
+        loadBroadcasts();
       }
+    }
+
+    async function loadBroadcasts() {
+      const container = document.getElementById('broadcasts-list-container');
+      const { data, error } = await window.mySupabaseInstance
+        .from('broadcasts')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        container.innerHTML = `<p style="color: #ef4444; font-size: 0.9rem;">Error loading announcements: ${error.message}</p>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">No announcements published yet.</p>`;
+        return;
+      }
+
+      container.innerHTML = data.map(item => `
+        <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+          <div>
+            <p style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">${escapeHtml(item.message)}</p>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(item.created_at || Date.now()).toLocaleString()}</span>
+          </div>
+          <button type="button" onclick="deleteBroadcast('${item.id}')" class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    async function deleteBroadcast(id) {
+      if (!confirm('Are you sure you want to delete this announcement?')) return;
+      const { error } = await window.mySupabaseInstance
+        .from('broadcasts')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        alert('Error deleting: ' + error.message);
+      } else {
+        loadBroadcasts();
+      }
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     async function handleSignOut() {

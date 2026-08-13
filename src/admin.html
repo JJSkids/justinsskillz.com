@@ -244,7 +244,7 @@
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;">
         <div>
           <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">Creator Control Center</h1>
-          <p style="color: var(--text-muted); margin: 0;">Manage active courses, active labs, and live broadcast announcements.</p>
+          <p style="color: var(--text-muted); margin: 0;">Manage active courses, modules, active labs, and live broadcast announcements.</p>
         </div>
         <div>
           <span class="version-badge">Admin Access Verified</span>
@@ -267,23 +267,23 @@
         </div>
       </div>
 
-      <!-- 2. Active Courses Management -->
+      <!-- 2. Active Courses & Modules Management -->
       <div class="admin-card">
-        <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1.25rem;">📚 Active Courses</h2>
+        <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1.25rem;">📚 Active Courses & Modules</h2>
         
         <div id="admin-courses-container">
           <!-- Populated dynamically -->
         </div>
 
         <div style="margin-top: 1.5rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Add New Course</h3>
+          <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 1rem;">Add New Course / Module</h3>
           <div class="form-group">
-            <input type="text" id="new-course-title" placeholder="Course Title (e.g., Advanced Polynomials)">
+            <input type="text" id="new-course-title" placeholder="Course / Module Title (e.g., Advanced Polynomials)">
           </div>
           <div class="form-group">
-            <input type="text" id="new-course-desc" placeholder="Course Description...">
+            <input type="text" id="new-course-desc" placeholder="Description & details...">
           </div>
-          <button type="button" onclick="addCourse()" class="btn btn-primary">Add Course</button>
+          <button type="button" onclick="addCourse()" class="btn btn-primary">Add Course Module</button>
         </div>
       </div>
 
@@ -325,7 +325,6 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    // State for Courses and Labs
     let courses = JSON.parse(localStorage.getItem('jjs_admin_courses')) || [
       { id: 1, title: 'Math & Algebra Competition Set', desc: 'Polynomials, 4th degree equations, and polar forms.' },
       { id: 2, title: 'Chess Strategy & ELO Bot Training', desc: 'Opening theory and tactical pattern matching.' }
@@ -367,7 +366,6 @@
       }
     }
 
-    // --- BROADCAST FUNCTIONS ---
     async function publishAnnouncement() {
       const messageInput = document.getElementById('broadcast-message-input');
       const messageText = messageInput.value.trim();
@@ -432,11 +430,10 @@
       }
     }
 
-    // --- COURSES FUNCTIONS ---
     function renderCourses() {
       const container = document.getElementById('admin-courses-container');
       if (courses.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No active courses found.</p>';
+        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No active courses. Add one below!</p>';
         return;
       }
       container.innerHTML = courses.map((course, index) => `
@@ -458,7 +455,7 @@
       const desc = descInput.value.trim();
 
       if (!title) {
-        alert('Please enter a course title.');
+        alert('Please enter a course or module title.');
         return;
       }
 
@@ -469,12 +466,11 @@
     }
 
     function removeCourse(index) {
-      if (!confirm('Are you sure you want to delete this course?')) return;
+      if (!confirm('Are you sure you want to delete this course module?')) return;
       courses.splice(index, 1);
       renderCourses();
     }
 
-    // --- LABS FUNCTIONS ---
     function renderLabs() {
       const container = document.getElementById('admin-labs-container');
       if (labs.length === 0) {

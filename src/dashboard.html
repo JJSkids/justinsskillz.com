@@ -134,6 +134,13 @@
       border-color: var(--accent-purple);
       transform: translateY(-2px);
     }
+    .view-row {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 1rem 1.25rem;
+      border-radius: var(--radius-md);
+      margin-bottom: 0.75rem;
+    }
     .btn {
       display: inline-block;
       padding: 0.65rem 1.25rem;
@@ -200,6 +207,22 @@
       <p id="welcome-subtext" style="color: var(--text-muted); margin: 0;">Welcome back! Access your active learning modules, labs, and interactive practice tools below.</p>
     </div>
 
+    <!-- Active Courses & Modules View -->
+    <div class="dashboard-card">
+      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">📚 Active Courses & Modules</h2>
+      <div id="student-courses-container">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">No active courses. Check back soon!</p>
+      </div>
+    </div>
+
+    <!-- Active Labs View -->
+    <div class="dashboard-card">
+      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">🧪 Active Labs</h2>
+      <div id="student-labs-container">
+        <p style="color: var(--text-muted); font-size: 0.9rem;">No active labs. Check back soon!</p>
+      </div>
+    </div>
+
     <!-- Quick Access Hub -->
     <div class="dashboard-card">
       <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">🚀 Quick Learning Hub</h2>
@@ -243,6 +266,44 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
+    function renderStudentCourses() {
+      const container = document.getElementById('student-courses-container');
+      const courses = JSON.parse(localStorage.getItem('jjs_admin_courses')) || [];
+      
+      if (courses.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No active courses. Check back soon!</p>';
+        return;
+      }
+
+      container.innerHTML = courses.map(course => `
+        <div class="view-row">
+          <div style="font-weight: 700; color: var(--text-main); font-size: 1.05rem;">${escapeHtml(course.title)}</div>
+          <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.3rem;">${escapeHtml(course.desc)}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderStudentLabs() {
+      const container = document.getElementById('student-labs-container');
+      const labs = JSON.parse(localStorage.getItem('jjs_admin_labs')) || [];
+      
+      if (labs.length === 0) {
+        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No active labs. Check back soon!</p>';
+        return;
+      }
+
+      container.innerHTML = labs.map(lab => `
+        <div class="view-row">
+          <div style="font-weight: 700; color: var(--text-main); font-size: 1.05rem;">${escapeHtml(lab.title)}</div>
+          <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.3rem;">${escapeHtml(lab.desc)}</div>
+        </div>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
     async function checkUserSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
@@ -259,7 +320,6 @@
           <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
         `;
 
-        // Only reveal the admin nav link in the header if the signed-in user is the admin
         if (userEmail === ADMIN_EMAIL && navAdminLink) {
           navAdminLink.style.display = 'block';
         }
@@ -277,6 +337,8 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       checkUserSession();
+      renderStudentCourses();
+      renderStudentLabs();
     });
   </script>
 </body>

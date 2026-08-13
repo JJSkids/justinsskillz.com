@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Dashboard & Control Hub</title>
+  <title>Justin's Skillz - Student Dashboard</title>
   
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,98 +101,38 @@
       color: var(--text-main);
     }
     .dashboard-container {
-      max-width: 1200px;
-      margin: 2.5rem auto;
+      max-width: 1000px;
+      margin: 3rem auto;
       padding: 0 1.5rem;
     }
-    .top-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-bottom: 2rem;
-    }
-    .version-badge {
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid var(--accent-purple);
-      color: var(--accent-purple);
-      padding: 0.35rem 0.85rem;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .dashboard-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 2rem;
-    }
-    @media (max-width: 900px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-    .dash-card {
+    .dashboard-card {
       background: var(--bg-card);
       border: 2px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 2rem;
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
       margin-bottom: 2rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
       transition: background-color 0.3s ease, border-color 0.3s ease;
     }
-    .command-bar-wrapper {
-      background: var(--bg-primary);
-      border: 2px solid var(--accent-purple);
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      padding: 0.5rem 1rem;
-      margin-bottom: 1.5rem;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
     }
-    .command-input {
-      background: transparent;
-      border: none;
-      color: var(--text-main);
-      font-family: monospace;
-      font-size: 0.95rem;
-      width: 100%;
-      outline: none;
-    }
-    .command-prefix {
-      color: var(--accent-purple);
-      font-weight: 800;
-      font-family: monospace;
-      margin-right: 0.5rem;
-    }
-    .course-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .action-tile {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
-      padding: 1rem;
       border-radius: var(--radius-md);
-      margin-bottom: 0.75rem;
-    }
-    .form-control {
-      width: 100%;
-      padding: 0.75rem;
-      background: var(--bg-primary);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      text-decoration: none;
       color: var(--text-main);
-      font-family: inherit;
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-      box-sizing: border-box;
+      display: block;
+      transition: border-color 0.2s, transform 0.2s;
     }
-    .form-control:focus {
-      outline: none;
+    .action-tile:hover {
       border-color: var(--accent-purple);
+      transform: translateY(-2px);
     }
     .btn {
       display: inline-block;
@@ -208,13 +148,7 @@
     .btn-primary {
       background: var(--accent-purple);
       color: white;
-    }
-    .btn-danger {
-      background: rgba(239, 68, 68, 0.15);
-      border: 1px solid #ef4444;
-      color: #ef4444;
-      padding: 0.4rem 0.8rem;
-      font-size: 0.8rem;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
     }
     .btn:hover {
       opacity: 0.9;
@@ -240,11 +174,11 @@
 
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link">Home</a>
-        <a href="dashboard.html" class="nav-link active">Dashboard</a>
+        <a href="dashboard.html" class="nav-link active" style="color: var(--accent-purple);">Dashboard</a>
         <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
         <a href="chess.html" class="nav-link">Chess AI</a>
         <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="admin.html" class="nav-link admin-nav-item" style="display: none; color: var(--accent-purple);">Admin</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
@@ -260,72 +194,37 @@
 
   <main class="dashboard-container">
     
-    <div class="top-bar">
-      <div>
-        <h1 style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">Creator Control Dashboard</h1>
-        <p style="color: var(--text-muted); margin: 0;">Manage your active courses, interactive modules, and run quick commands.</p>
-      </div>
-      <div>
-        <span class="version-badge">v2.5 PRO • Stable Build</span>
-      </div>
+    <!-- Welcome Card -->
+    <div class="dashboard-card">
+      <h1 id="welcome-heading" style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">Student Dashboard</h1>
+      <p id="welcome-subtext" style="color: var(--text-muted); margin: 0;">Welcome back! Access your active learning modules, labs, and interactive practice tools below.</p>
     </div>
 
-    <!-- Sleek Command Palette Bar -->
-    <div class="command-bar-wrapper">
-      <span class="command-prefix">jjs$</span>
-      <input type="text" id="command-input" class="command-input" placeholder="Type a command (e.g., /math, /chess, /live, /help)..." autocomplete="off" onkeydown="handleCommand(event)">
-    </div>
-
-    <div class="dashboard-grid">
+    <!-- Quick Access Hub -->
+    <div class="dashboard-card">
+      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">🚀 Quick Learning Hub</h2>
       
-      <!-- Left Column: Course & Lab Management + Announcements Feed -->
-      <div>
-        <div class="dash-card">
-          <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1.25rem;">Active Courses & Labs</h2>
-          
-          <div id="course-list-container">
-            <!-- Dynamically populated courses -->
-          </div>
+      <div class="grid-2">
+        <a href="math.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">Math & Algebra Lab</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Practice polynomials, 4th degree equations, and polar coordinate problem solving.</p>
+        </a>
 
-          <div style="margin-top: 2rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
-            <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem;">Add New Course / Module</h3>
-            <input type="text" id="new-course-title" class="form-control" placeholder="Course or Lab Title (e.g., Advanced Trigonometry)">
-            <input type="text" id="new-course-desc" class="form-control" placeholder="Short description...">
-            <button type="button" onclick="addCourse()" class="btn btn-primary">Add Course Module</button>
-          </div>
-        </div>
+        <a href="chess.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">Chess Strategy Bot</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Test your tactical openings and sharpen your game against the embedded chess AI.</p>
+        </a>
 
-        <div class="dash-card">
-          <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1.25rem;">Live Broadcast Announcements</h2>
-          <div id="dashboard-broadcasts-container">
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Loading announcements...</p>
-          </div>
-        </div>
+        <a href="live.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-green); font-size: 1.1rem;">🔴 Live Broadcasts</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Catch live streams, announcements, and community updates.</p>
+        </a>
+
+        <a href="../index.html" class="action-tile">
+          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-purple); font-size: 1.1rem;">Main Hub & Projects</h3>
+          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Explore community builds like Arduino Snacky Bot and Minecraft educational resources.</p>
+        </a>
       </div>
-
-      <!-- Right Column: Quick Stats & Navigation -->
-      <div>
-        <div class="dash-card">
-          <h2 style="font-size: 1.25rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">Quick Navigation</h2>
-          <div style="display: flex; flex-direction: column; gap: 0.75rem;">
-            <a href="math.html" class="btn" style="background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-main); text-align: left;">📐 Open Math Lab</a>
-            <a href="chess.html" class="btn" style="background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-main); text-align: left;">♟️ Open Chess AI</a>
-            <a href="live.html" class="btn" style="background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--accent-green); text-align: left;">🔴 Join Live Stream</a>
-          </div>
-        </div>
-
-        <div class="dash-card">
-          <h2 style="font-size: 1.25rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">Command Hints</h2>
-          <ul style="color: var(--text-muted); font-size: 0.9rem; padding-left: 1.2rem; margin: 0; line-height: 1.6;">
-            <li><code>/math</code> - Go to Math Lab</li>
-            <li><code>/chess</code> - Go to Chess AI</li>
-            <li><code>/live</code> - Go to Live Stream</li>
-            <li><code>/home</code> - Return to Homepage</li>
-            <li><code>/clear</code> - Clear command bar</li>
-          </ul>
-        </div>
-      </div>
-
     </div>
 
   </main>
@@ -342,117 +241,27 @@
       );
     }
 
-    const ADMIN_EMAILS = ['hellojjskids@gmail.com'];
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    let courses = JSON.parse(localStorage.getItem('jjs_courses')) || [
-      { id: 1, title: 'Math & Algebra Competition Set', desc: 'Polynomials, 4th degree equations, and polar forms.' },
-      { id: 2, title: 'Chess Strategy & ELO Bot Training', desc: 'Opening theory and tactical pattern matching.' },
-      { id: 3, title: 'Web Development & Supabase Hub', desc: 'Building responsive apps with GitHub Pages and database syncing.' }
-    ];
-
-    function renderCourses() {
-      const container = document.getElementById('course-list-container');
-      if (courses.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No active courses. Add one below!</p>';
-        return;
-      }
-      container.innerHTML = courses.map((course, index) => `
-        <div class="course-item">
-          <div>
-            <div style="font-weight: 700; color: var(--text-main);">${course.title}</div>
-            <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.2rem;">${course.desc}</div>
-          </div>
-          <button type="button" onclick="removeCourse(${index})" class="btn btn-danger">Remove</button>
-        </div>
-      `).join('');
-      localStorage.setItem('jjs_courses', JSON.stringify(courses));
-    }
-
-    function addCourse() {
-      const titleInput = document.getElementById('new-course-title');
-      const descInput = document.getElementById('new-course-desc');
-      const title = titleInput.value.trim();
-      const desc = descInput.value.trim();
-
-      if (!title) {
-        alert('Please enter a course title.');
-        return;
-      }
-
-      courses.push({ id: Date.now(), title, desc: desc || 'No description provided.' });
-      titleInput.value = '';
-      descInput.value = '';
-      renderCourses();
-    }
-
-    function removeCourse(index) {
-      courses.splice(index, 1);
-      renderCourses();
-    }
-
-    async function loadDashboardBroadcasts() {
-      const container = document.getElementById('dashboard-broadcasts-container');
-      const { data, error } = await window.mySupabaseInstance
-        .from('broadcasts')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) {
-        container.innerHTML = `<p style="color: #ef4444; font-size: 0.9rem;">Error loading announcements: ${error.message}</p>`;
-        return;
-      }
-
-      if (!data || data.length === 0) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">No public announcements right now.</p>`;
-        return;
-      }
-
-      container.innerHTML = data.map(item => `
-        <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 1rem; border-radius: var(--radius-md); margin-bottom: 0.75rem;">
-          <p style="margin: 0 0 0.4rem 0; color: var(--text-main); font-size: 0.95rem; line-height: 1.5;">${escapeHtml(item.message)}</p>
-          <span style="font-size: 0.75rem; color: var(--text-muted);">${new Date(item.created_at || Date.now()).toLocaleString()}</span>
-        </div>
-      `).join('');
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
-
-    function handleCommand(event) {
-      if (event.key === 'Enter') {
-        const input = document.getElementById('command-input');
-        const cmd = input.value.trim().toLowerCase();
-        input.value = '';
-
-        if (cmd === '/math') {
-          window.location.href = 'math.html';
-        } else if (cmd === '/chess') {
-          window.location.href = 'chess.html';
-        } else if (cmd === '/live') {
-          window.location.href = 'live.html';
-        } else if (cmd === '/home' || cmd === '/index') {
-          window.location.href = '../index.html';
-        } else if (cmd === '/clear') {
-          // cleared
-        } else {
-          alert(`Unknown command: "${cmd}".`);
-        }
-      }
-    }
-
-    async function checkAuth() {
+    async function checkUserSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
+      const welcomeHeading = document.getElementById('welcome-heading');
+      const navAdminLink = document.getElementById('nav-admin-link');
 
       if (session && session.user) {
+        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+        const displayName = session.user.user_metadata?.full_name || userEmail.split('@')[0];
+        
+        welcomeHeading.textContent = `Welcome back, ${displayName}!`;
+
         authContainer.innerHTML = `
           <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
         `;
 
-        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-        if (ADMIN_EMAILS.includes(userEmail)) {
-          document.querySelectorAll('.admin-nav-item').forEach(el => el.style.display = 'inline-block');
+        // Only reveal the admin nav link in the header if the signed-in user is the admin
+        if (userEmail === ADMIN_EMAIL && navAdminLink) {
+          navAdminLink.style.display = 'block';
         }
       } else {
         authContainer.innerHTML = `
@@ -467,9 +276,7 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      renderCourses();
-      loadDashboardBroadcasts();
-      checkAuth();
+      checkUserSession();
     });
   </script>
 </body>

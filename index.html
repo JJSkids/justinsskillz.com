@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Official Hub</title>
+  <title>Justin's Skillz - Software Development Hub</title>
   
-  <link rel="icon" type="image/jpeg" href="src/Justin's Skillz.jpg">
+  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="src/styles.css">
-  <script src="src/theme.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -22,6 +22,7 @@
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
       --accent-green: #10b981;
       --header-bg: rgba(15, 17, 23, 0.85);
       --radius-lg: 16px;
@@ -35,6 +36,7 @@
       --text-main: #1e293b;
       --text-muted: #64748b;
       --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
       --accent-green: #059669;
       --header-bg: rgba(248, 250, 252, 0.85);
     }
@@ -81,7 +83,7 @@
       border: 2px solid var(--accent-purple);
     }
     .gradient-text {
-      background: linear-gradient(135deg, #a855f7, #3b82f6);
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -101,90 +103,101 @@
       color: var(--text-main);
     }
     .main-container {
-      max-width: 1000px;
+      max-width: 1100px;
       margin: 3rem auto;
       padding: 0 1.5rem;
     }
-    .hero-card {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 3rem 2.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
+    .hero-section {
       text-align: center;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-    }
-    .section-card {
+      padding: 3rem 1rem;
       background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 2.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-    }
-    .grid-3 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-    .action-tile {
-      background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1.5rem;
-      text-decoration: none;
-      color: var(--text-main);
-      display: block;
-      transition: border-color 0.2s, transform 0.2s;
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin-bottom: 3rem;
     }
-    .action-tile:hover {
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 700px;
+      margin: 0 auto 2rem auto;
+      line-height: 1.6;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+    .feature-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: transform 0.2s, border-color 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .feature-card:hover {
+      transform: translateY(-3px);
       border-color: var(--accent-purple);
-      transform: translateY(-2px);
+    }
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin: 0;
+    }
+    .feature-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
     }
     .btn {
-      display: inline-block;
-      padding: 0.75rem 1.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.25rem;
       border-radius: var(--radius-md);
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
       border: none;
       transition: opacity 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
     .btn-primary {
       background: var(--accent-purple);
       color: white;
-      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
     }
-    .btn:hover {
-      opacity: 0.9;
+    .btn-secondary {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
     }
-    .floating-ai-btn {
-      position: fixed;
-      bottom: 2rem;
-      right: 2rem;
-      z-index: 999;
-      background: var(--accent-purple);
-      color: white;
-      padding: 0.85rem 1.35rem;
-      border-radius: 50px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      transition: transform 0.2s ease, opacity 0.2s ease;
+    .lang-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-family: inherit;
     }
-    .floating-ai-btn:hover {
-      transform: scale(1.05);
-      opacity: 0.95;
-      color: white;
+    .lang-select:focus {
+      outline: none;
+      border-color: var(--accent-purple);
     }
     .app-footer {
       border-top: 1px solid var(--border-subtle);
@@ -198,99 +211,80 @@
 </head>
 <body>
 
-  <!-- Header -->
   <header class="app-header">
     <div class="header-container">
       <a href="index.html" class="logo">
-        <img src="src/Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
 
       <nav class="nav-menu">
-        <a href="index.html" class="nav-link active" style="color: var(--accent-purple);">Home</a>
-        <a href="src/dashboard.html" class="nav-link">Dashboard</a>
-        <a href="src/live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
-        <a href="src/chess.html" class="nav-link">Chess AI</a>
-        <a href="src/math.html" class="nav-link">Math Lab</a>
+        <a href="index.html" class="nav-link active" id="nav-home">Home</a>
+        <a href="src/dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+        <a href="src/live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;" id="nav-live">🔴 Live Stream</a>
+        <a href="src/chess.html" class="nav-link" id="nav-chess">Chess AI</a>
+        <a href="src/math.html" class="nav-link" id="nav-math">Math Lab</a>
+        <a href="AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
         <a id="nav-admin-link" href="src/admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+        </select>
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
           🌙
         </button>
         <div id="auth-action-container">
-          <a href="src/login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="src/login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- Main Content -->
   <main class="main-container">
-    
-    <!-- Hero Section -->
-    <div class="hero-card">
-      <h1 style="font-size: 2.5rem; font-weight: 800; margin: 0 0 1rem 0;">Welcome to Justin's <span class="gradient-text">Skillz</span></h1>
-      <p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 1.75rem auto; line-height: 1.5;">
-        Explore active courses, interactive labs, chess strategy bots, mathematics competitions, and AI-powered learning modules created and owned by Justin Emuekhare.
-      </p>
+    <section class="hero-section">
+      <h1 class="hero-title" id="hero-title">Welcome to Justin's Skillz</h1>
+      <p class="hero-subtitle" id="hero-subtitle">A personal software development portfolio, coding playground, and interactive educational hub featuring custom JavaScript web applications, front-end tools, and developer utilities.</p>
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-        <a href="src/dashboard.html" class="btn btn-primary">Go to Dashboard</a>
-        <a href="src/chess.html" class="btn" style="background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main);">Try Chess AI</a>
+        <a href="AI.html" class="btn btn-primary" id="btn-explore-ai">Explore AI Assistant</a>
+        <a href="src/chess.html" class="btn btn-secondary" id="btn-play-chess">Play Chess AI</a>
       </div>
+    </section>
+
+    <div class="features-grid">
+      <a href="AI.html" class="feature-card">
+        <h3 class="feature-title" id="card-ai-title">🤖 Gemini AI Assistant</h3>
+        <p class="feature-desc" id="card-ai-desc">Chat with a Gemini-powered educational assistant configured to help with programming, math, and puzzles.</p>
+      </a>
+
+      <a href="src/chess.html" class="feature-card">
+        <h3 class="feature-title" id="card-chess-title">♟️ Chess AI Training Lab</h3>
+        <p class="feature-desc" id="card-chess-desc">Interactive chessboard with custom game mechanics, move tracking, and AI training controls.</p>
+      </a>
+
+      <a href="src/math.html" class="feature-card">
+        <h3 class="feature-title" id="card-math-title">📐 Math Lab</h3>
+        <p class="feature-desc" id="card-math-desc">Advanced mathematics practice platform for algebra, polynomials, and competition problems.</p>
+      </a>
+
+      <a href="src/live.html" class="feature-card">
+        <h3 class="feature-title" id="card-live-title">🔴 Live Stream</h3>
+        <p class="feature-desc" id="card-live-desc">Watch live coding sessions, robotics builds, and project walkthroughs in real-time.</p>
+      </a>
+
+      <a href="src/dashboard.html" class="feature-card">
+        <h3 class="feature-title" id="card-dash-title">📊 User Dashboard</h3>
+        <p class="feature-desc" id="card-dash-desc">Manage your account session, track project stats, and view your interactive profile settings.</p>
+      </a>
     </div>
-
-    <!-- Features & Labs Grid (Includes Try our AI) -->
-    <div class="section-card">
-      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 0.5rem;">🚀 Explore Features & Labs</h2>
-      <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 0; margin-bottom: 1.5rem;">Access interactive tools and educational resources instantly.</p>
-
-      <div class="grid-3">
-        <!-- Try our AI (Added to Features Grid) -->
-        <a href="AI.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-purple); font-size: 1.1rem;">🤖 Try our AI</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Interact with intelligent strategy bots and equation solvers.</p>
-        </a>
-
-        <a href="src/math.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">📊 Math & Algebra Lab</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Solve 4th degree polynomials and polar coordinate problems.</p>
-        </a>
-
-        <a href="src/chess.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">♟️ Chess Strategy Bot</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Test your tactical openings and sharpen your game against AI.</p>
-        </a>
-
-        <a href="src/live.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-green); font-size: 1.1rem;">🔴 Live Broadcasts</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Catch live streams, announcements, and community updates.</p>
-        </a>
-
-        <a href="src/dashboard.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">📚 Student Dashboard</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">View active course modules and ongoing lab projects.</p>
-        </a>
-
-        <a href="src/admin.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">⚙️ Creator Control</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Admin panel for publishing courses, labs, and announcements.</p>
-        </a>
-      </div>
-    </div>
-
   </main>
 
-  <!-- Floating Bottom-Right "Try our AI" Widget -->
-  <a href="AI.html" class="floating-ai-btn" aria-label="Try our AI">
-    <span>🤖</span> Try our AI
-  </a>
-
-  <!-- Footer -->
-  <main class="app-footer">
+  <footer class="app-footer">
     <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
-  </main>
+  </footer>
 
   <script>
     if (!window.mySupabaseInstance) {
@@ -302,14 +296,136 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    async function checkAuthSession() {
+    const translations = {
+      en: {
+        navHome: "Home",
+        navDashboard: "Dashboard",
+        navLive: "🔴 Live Stream",
+        navChess: "Chess AI",
+        navMath: "Math Lab",
+        navAI: "AI Assistant",
+        signIn: "Sign In",
+        signOut: "Sign Out",
+        heroTitle: "Welcome to Justin's Skillz",
+        heroSubtitle: "A personal software development portfolio, coding playground, and interactive educational hub featuring custom JavaScript web applications, front-end tools, and developer utilities.",
+        btnExploreAI: "Explore AI Assistant",
+        btnPlayChess: "Play Chess AI",
+        cardAiTitle: "🤖 Gemini AI Assistant",
+        cardAiDesc: "Chat with a Gemini-powered educational assistant configured to help with programming, math, and puzzles.",
+        cardChessTitle: "♟️ Chess AI Training Lab",
+        cardChessDesc: "Interactive chessboard with custom game mechanics, move tracking, and AI training controls.",
+        cardMathTitle: "📐 Math Lab",
+        cardMathDesc: "Advanced mathematics practice platform for algebra, polynomials, and competition problems.",
+        cardLiveTitle: "🔴 Live Stream",
+        cardLiveDesc: "Watch live coding sessions, robotics builds, and project walkthroughs in real-time.",
+        cardDashTitle: "📊 User Dashboard",
+        cardDashDesc: "Manage your account session, track project stats, and view your interactive profile settings."
+      },
+      fr: {
+        navHome: "Accueil",
+        navDashboard: "Tableau de bord",
+        navLive: "🔴 Diffusion en direct",
+        navChess: "IA d'Échecs",
+        navMath: "Labo de Math",
+        navAI: "Assistant IA",
+        signIn: "Se connecter",
+        signOut: "Se déconnecter",
+        heroTitle: "Bienvenue sur Justin's Skillz",
+        heroSubtitle: "Un portfolio de développement logiciel personnel, un terrain de jeu de code et un centre éducatif interactif proposant des applications Web JavaScript personnalisées et des outils de développement.",
+        btnExploreAI: "Explorer l'Assistant IA",
+        btnPlayChess: "Jouer contre l'IA d'Échecs",
+        cardAiTitle: "🤖 Assistant IA Gemini",
+        cardAiDesc: "Discutez avec un assistant pédagogique alimenté par Gemini configuré pour aider en programmation et en mathématiques.",
+        cardChessTitle: "♟️ Labo d'Entraînement IA d'Échecs",
+        cardChessDesc: "Échiquier interactif avec des mécaniques de jeu personnalisées et des contrôles d'entraînement IA.",
+        cardMathTitle: "📐 Labo de Math",
+        cardMathDesc: "Plateforme de pratique mathématique avancée pour l'algèbre, les polynômes et les problèmes de compétition.",
+        cardLiveTitle: "🔴 Diffusion en direct",
+        cardLiveDesc: "Regardez des sessions de codage en direct, des constructions de robots et des présentations de projets en temps réel.",
+        cardDashTitle: "📊 Tableau de bord utilisateur",
+        cardDashDesc: "Gérez votre session de compte, suivez vos statistiques de projet et consultez vos paramètres de profil."
+      },
+      es: {
+        navHome: "Inicio",
+        navDashboard: "Panel",
+        navLive: "🔴 Transmisión en vivo",
+        navChess: "IA de Ajedrez",
+        navMath: "Lab de Matemáticas",
+        navAI: "Asistente IA",
+        signIn: "Iniciar Sesión",
+        signOut: "Cerrar Sesión",
+        heroTitle: "Bienvenido a Justin's Skillz",
+        heroSubtitle: "Un portafolio personal de desarrollo de software, un patio de recreo de código y un centro educativo interactivo con aplicaciones web de JavaScript personalizadas y herramientas de desarrollo.",
+        btnExploreAI: "Explorar Asistente IA",
+        btnPlayChess: "Jugar IA de Ajedrez",
+        cardAiTitle: "🤖 Asistente IA Gemini",
+        cardAiDesc: "Chatea con un asistente educativo impulsado por Gemini configurado para ayudar con programación y matemáticas.",
+        cardChessTitle: "♟️ Laboratorio de IA de Ajedrez",
+        cardChessDesc: "Tablero de ajedrez interactivo con mecánicas de juego personalizadas y controles de entrenamiento de IA.",
+        cardMathTitle: "📐 Lab de Matemáticas",
+        cardMathDesc: "Plataforma avanzada de práctica matemática para álgebra, polinomios y problemas de competencia.",
+        cardLiveTitle: "🔴 Transmisión en vivo",
+        cardLiveDesc: "Mira sesiones de codificación en vivo, construcciones de robótica y tutoriales de proyectos en tiempo real.",
+        cardDashTitle: "📊 Panel de Usuario",
+        cardDashDesc: "Administra tu sesión de cuenta, rastrea estadísticas de proyectos y consulta la configuración de tu perfil."
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      checkUserSession();
+      const savedLang = localStorage.getItem('site_lang') || 'en';
+      document.getElementById('langSelect').value = savedLang;
+      applyLanguage(savedLang);
+    });
+
+    function changeLanguage(lang) {
+      localStorage.setItem('site_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.getElementById('nav-home').textContent = t.navHome;
+      document.getElementById('nav-dashboard').textContent = t.navDashboard;
+      document.getElementById('nav-live').textContent = t.navLive;
+      document.getElementById('nav-chess').textContent = t.navChess;
+      document.getElementById('nav-math').textContent = t.navMath;
+      document.getElementById('nav-ai').textContent = t.navAI;
+      document.getElementById('hero-title').textContent = t.heroTitle;
+      document.getElementById('hero-subtitle').textContent = t.heroSubtitle;
+      document.getElementById('btn-explore-ai').textContent = t.btnExploreAI;
+      document.getElementById('btn-play-chess').textContent = t.btnPlayChess;
+      document.getElementById('card-ai-title').textContent = t.cardAiTitle;
+      document.getElementById('card-ai-desc').textContent = t.cardAiDesc;
+      document.getElementById('card-chess-title').textContent = t.cardChessTitle;
+      document.getElementById('card-chess-desc').textContent = t.cardChessDesc;
+      document.getElementById('card-math-title').textContent = t.cardMathTitle;
+      document.getElementById('card-math-desc').textContent = t.cardMathDesc;
+      document.getElementById('card-live-title').textContent = t.cardLiveTitle;
+      document.getElementById('card-live-desc').textContent = t.cardLiveDesc;
+      document.getElementById('card-dash-title').textContent = t.cardDashTitle;
+      document.getElementById('card-dash-desc').textContent = t.cardDashDesc;
+
+      const authContainer = document.getElementById('auth-action-container');
+      window.mySupabaseInstance.auth.getSession().then(({ data: { session } }) => {
+        if (!session) {
+          authContainer.innerHTML = `<a href="src/login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>`;
+        } else {
+          authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">${t.signOut}</button>`;
+        }
+      });
+    }
+
+    async function checkUserSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
       const navAdminLink = document.getElementById('nav-admin-link');
+      const lang = localStorage.getItem('site_lang') || 'en';
+      const t = translations[lang];
 
       if (session && session.user) {
         authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+          <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">${t.signOut}</button>
         `;
         const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
         if (userEmail === ADMIN_EMAIL && navAdminLink) {
@@ -317,7 +433,7 @@
         }
       } else {
         authContainer.innerHTML = `
-          <a href="src/login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="src/login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>
         `;
       }
     }
@@ -326,10 +442,6 @@
       await window.mySupabaseInstance.auth.signOut();
       window.location.reload();
     }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      checkAuthSession();
-    });
   </script>
 </body>
 </html>

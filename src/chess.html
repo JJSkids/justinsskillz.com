@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Preload all online chess piece images BEFORE DOMContentLoaded so they are instantly cached and ready -->
+  <!-- Preload all online chess piece images BEFORE DOMContentLoaded -->
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wP.png">
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wN.png">
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wB.png">
@@ -182,6 +182,10 @@
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
     }
+    .btn-blue {
+      background: var(--accent-blue);
+      color: white;
+    }
     .status-box {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
@@ -245,6 +249,7 @@
           </div>
 
           <button type="button" id="startBtn" class="btn btn-primary">New Game</button>
+          <button type="button" id="buttonA" class="btn btn-blue">Button A (AI Move)</button>
           <button type="button" id="undoBtn" class="btn btn-secondary">Undo Move</button>
         </div>
       </div>
@@ -329,10 +334,7 @@
         if (move === null) return 'snapback';
 
         updateStatus();
-
-        if (!game.game_over()) {
-          window.setTimeout(makeRandomMove, 250);
-        }
+        // AI does not move automatically anymore. It waits for Button A!
       }
 
       function onSnapEnd () {
@@ -377,6 +379,15 @@
         game.reset();
         board.start();
         updateStatus();
+      });
+
+      $('#buttonA').on('click', function () {
+        if (game.game_over()) return;
+        if (game.turn() === 'b') {
+          makeRandomMove();
+        } else {
+          alert("It's White's turn! Make your move on the board first.");
+        }
       });
 
       $('#undoBtn').on('click', function () {

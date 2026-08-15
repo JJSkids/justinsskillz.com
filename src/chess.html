@@ -182,10 +182,6 @@
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
     }
-    .btn-blue {
-      background: var(--accent-blue);
-      color: white;
-    }
     .status-box {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
@@ -193,6 +189,28 @@
       border-radius: var(--radius-md);
       font-size: 0.95rem;
       line-height: 1.5;
+    }
+    .lang-select-group {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .lang-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
+    .lang-select:focus {
+      outline: none;
+      border-color: var(--accent-purple);
     }
     .app-footer {
       border-top: 1px solid var(--border-subtle);
@@ -214,12 +232,12 @@
       </a>
 
       <nav class="nav-menu">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="../index.html" class="nav-link" id="nav-home">Home</a>
+        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
         <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
-        <a href="chess.html" class="nav-link active" style="color: var(--accent-purple);">Chess AI</a>
-        <a href="math.html" class="nav-link">Math Lab</a>
-        <a href="../AI.html" class="nav-link">AI Assistant</a>
+        <a href="chess.html" class="nav-link active" style="color: var(--accent-purple);" id="nav-chess">Chess AI</a>
+        <a href="math.html" class="nav-link" id="nav-math">Math Lab</a>
+        <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
         <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
@@ -236,20 +254,28 @@
 
   <main class="main-container">
     <div class="chess-card">
-      <h2 style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.75rem;">Chess AI Training Lab</h2>
+      <h2 id="chess-title" style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.75rem; text-align: center;">Chess AI Training Lab</h2>
       
       <div class="chess-layout">
         <div id="myBoard"></div>
         
         <div class="chess-sidebar">
+          <div class="lang-select-group">
+            <label for="langSelect" id="lang-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">Language / Langue / Idioma</label>
+            <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+              <option value="en">English</option>
+              <option value="fr">Français</option>
+              <option value="es">Español</option>
+            </select>
+          </div>
+
           <div class="status-box">
-            <strong>Game Status:</strong><br>
+            <strong id="status-label">Game Status:</strong><br>
             <span id="status">Turn: White</span><br>
             <span id="fen" style="font-size: 0.75rem; color: var(--text-muted); word-break: break-all;"></span>
           </div>
 
           <button type="button" id="startBtn" class="btn btn-primary">New Game</button>
-          <button type="button" id="buttonA" class="btn btn-blue">Button A (AI Move)</button>
           <button type="button" id="undoBtn" class="btn btn-secondary">Undo Move</button>
         </div>
       </div>
@@ -270,19 +296,93 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
+    const translations = {
+      en: {
+        title: "Chess AI Training Lab",
+        statusGame: "Game Status:",
+        newGame: "New Game",
+        undoBtn: "Undo Move",
+        navHome: "Home",
+        navDashboard: "Dashboard",
+        navChess: "Chess AI",
+        navMath: "Math Lab",
+        navAI: "AI Assistant",
+        signIn: "Sign In",
+        signOut: "Sign Out",
+        langLabel: "Language / Langue / Idioma"
+      },
+      fr: {
+        title: "Laboratoire d'Entraînement IA d'Échecs",
+        statusGame: "État du Jeu :",
+        newGame: "Nouvelle Partie",
+        undoBtn: "Annuler le Coup",
+        navHome: "Accueil",
+        navDashboard: "Tableau de bord",
+        navChess: "IA d'Échecs",
+        navMath: "Labo de Math",
+        navAI: "Assistant IA",
+        signIn: "Se connecter",
+        signOut: "Se déconnecter",
+        langLabel: "Langue / Language / Idioma"
+      },
+      es: {
+        title: "Laboratorio de IA de Ajedrez",
+        statusGame: "Estado del Juego:",
+        newGame: "Nueva Partida",
+        undoBtn: "Deshacer Movimiento",
+        navHome: "Inicio",
+        navDashboard: "Panel",
+        navChess: "IA de Ajedrez",
+        navMath: "Lab de Matemáticas",
+        navAI: "Asistente IA",
+        signIn: "Iniciar Sesión",
+        signOut: "Cerrar Sesión",
+        langLabel: "Idioma / Language / Langue"
+      }
+    };
+
+    let currentGameInstance = null;
+
     window.addEventListener('DOMContentLoaded', () => {
       checkUserSession();
-      initChessGame();
+      const savedLang = localStorage.getItem('site_lang') || 'en';
+      document.getElementById('langSelect').value = savedLang;
+      applyLanguage(savedLang);
+      currentGameInstance = initChessGame();
     });
+
+    function changeLanguage(lang) {
+      localStorage.setItem('site_lang', lang);
+      applyLanguage(lang);
+      if (currentGameInstance && typeof currentGameInstance.updateStatus === 'function') {
+        currentGameInstance.updateStatus();
+      }
+    }
+
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.getElementById('chess-title').textContent = t.title;
+      document.getElementById('status-label').textContent = t.statusGame;
+      document.getElementById('startBtn').textContent = t.newGame;
+      document.getElementById('undoBtn').textContent = t.undoBtn;
+      document.getElementById('nav-home').textContent = t.navHome;
+      document.getElementById('nav-dashboard').textContent = t.navDashboard;
+      document.getElementById('nav-chess').textContent = t.navChess;
+      document.getElementById('nav-math').textContent = t.navMath;
+      document.getElementById('nav-ai').textContent = t.navAI;
+      document.getElementById('lang-label').textContent = t.langLabel;
+    }
 
     async function checkUserSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
       const navAdminLink = document.getElementById('nav-admin-link');
+      const lang = localStorage.getItem('site_lang') || 'en';
+      const t = translations[lang];
 
       if (session && session.user) {
         authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Sign Out</button>
+          <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">${t.signOut}</button>
         `;
         const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
         if (userEmail === ADMIN_EMAIL && navAdminLink) {
@@ -290,7 +390,7 @@
         }
       } else {
         authContainer.innerHTML = `
-          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>
         `;
       }
     }
@@ -334,7 +434,11 @@
         if (move === null) return 'snapback';
 
         updateStatus();
-        // AI does not move automatically anymore. It waits for Button A!
+
+        // Automatically trigger AI move after a brief delay
+        if (!game.game_over()) {
+          window.setTimeout(makeRandomMove, 250);
+        }
       }
 
       function onSnapEnd () {
@@ -342,20 +446,30 @@
       }
 
       function updateStatus () {
+        var currentLang = localStorage.getItem('site_lang') || 'en';
         var status = '';
-        var moveColor = 'White';
-        if (game.turn() === 'b') {
-          moveColor = 'Black';
-        }
+        var whiteLabel = currentLang === 'fr' ? 'les Blancs' : currentLang === 'es' ? 'Blancas' : 'White';
+        var blackLabel = currentLang === 'fr' ? 'les Noirs' : currentLang === 'es' ? 'Negras' : 'Black';
+        var colorKey = game.turn() === 'b' ? blackLabel : whiteLabel;
 
         if (game.in_checkmate()) {
-          status = 'Game over, ' + moveColor + ' is in checkmate.';
+          if (currentLang === 'fr') status = `Partie terminée, ${colorKey} est en échec et mat.`;
+          else if (currentLang === 'es') status = `Fin del juego, ${colorKey} está en jaque mate.`;
+          else status = `Game over, ${colorKey} is in checkmate.`;
         } else if (game.in_draw()) {
-          status = 'Game over, drawn position';
+          if (currentLang === 'fr') status = "Partie terminée, position nulle.";
+          else if (currentLang === 'es') status = "Fin del juego, tablas.";
+          else status = "Game over, drawn position.";
         } else {
-          status = moveColor + ' to move';
-          if (game.in_check()) {
-            status += ', ' + moveColor + ' is in check';
+          if (currentLang === 'fr') {
+            status = game.turn() === 'w' ? "Aux Blancs de jouer" : "Aux Noirs de jouer";
+            if (game.in_check()) status += " (en échec)";
+          } else if (currentLang === 'es') {
+            status = game.turn() === 'w' ? "Turno de Blancas" : "Turno de Negras";
+            if (game.in_check()) status += " (en jaque)";
+          } else {
+            status = (game.turn() === 'w' ? 'White' : 'Black') + ' to move';
+            if (game.in_check()) status += ', check';
           }
         }
 
@@ -375,27 +489,22 @@
       board = Chessboard('myBoard', config);
       updateStatus();
 
-      $('#startBtn').on('click', function () {
+      $('#startBtn').off('click').on('click', function () {
         game.reset();
         board.start();
         updateStatus();
       });
 
-      $('#buttonA').on('click', function () {
-        if (game.game_over()) return;
-        if (game.turn() === 'b') {
-          makeRandomMove();
-        } else {
-          alert("It's White's turn! Make your move on the board first.");
-        }
-      });
-
-      $('#undoBtn').on('click', function () {
+      $('#undoBtn').off('click').on('click', function () {
         game.undo();
         game.undo();
         board.position(game.fen());
         updateStatus();
       });
+
+      return {
+        updateStatus: updateStatus
+      };
     }
   </script>
 </body>

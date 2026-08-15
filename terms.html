@@ -3,47 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms of Service | Justin's Skillz</title>
+    <title id="page-title">Terms of Service | Justin's Skillz</title>
 
     <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
     <link rel="stylesheet" href="src/styles.css">
     <style>
+        :root, [data-theme="dark"] {
+          --bg-primary: #0f1117;
+          --bg-surface: #181b25;
+          --border-subtle: #2d3242;
+          --text-main: #f3f4f6;
+          --text-muted: #9ca3af;
+          --accent-cyan: #38bdf8;
+          --header-bg: rgba(15, 17, 23, 0.85);
+        }
+        [data-theme="light"] {
+          --bg-primary: #f8fafc;
+          --bg-surface: #ffffff;
+          --border-subtle: #e2e8f0;
+          --text-main: #1e293b;
+          --text-muted: #64748b;
+          --accent-cyan: #0284c7;
+          --header-bg: rgba(248, 250, 252, 0.85);
+        }
+        body { background-color: var(--bg-primary); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        .app-header { background: var(--header-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 100; padding: 0.75rem 1.5rem; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
         .policy-container { max-width: 800px; margin: 3rem auto; padding: 2.5rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; }
-        .header-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; margin-bottom: 2rem; }
-        .header-brand img { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--accent-cyan); }
+        .header-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; }
+        .header-brand img { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--accent-cyan); object-fit: cover; }
         .header-brand span { font-weight: 700; font-size: 1.25rem; }
         h1 { font-size: 2rem; color: var(--text-main); margin-top: 0; margin-bottom: 0.5rem; }
         .last-updated { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; }
         h2 { font-size: 1.25rem; color: var(--accent-cyan); margin-top: 1.75rem; margin-bottom: 0.5rem; }
         p, ul { color: var(--text-muted); font-size: 0.95rem; }
         .back-link { display: inline-block; margin-top: 2rem; color: var(--accent-cyan); text-decoration: none; font-weight: 600; }
+        .lang-select { background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-main); padding: 0.4rem 0.6rem; border-radius: 8px; font-size: 0.85rem; font-family: inherit; }
+
+        @media (max-width: 768px) {
+          .header-container { flex-direction: column; gap: 0.75rem; align-items: center; }
+          .policy-container { margin: 1.5rem 1rem; padding: 1.5rem; }
+        }
     </style>
 </head>
 <body>
+    <header class="app-header">
+        <div class="header-container">
+            <a href="index.html" class="header-brand">
+                <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" onerror="this.style.display='none'">
+                <span>Justin's Skillz</span>
+            </a>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
     <main class="policy-container">
-        <a href="index.html" class="header-brand">
-            <img src="src/Justin's Skillz.jpg" alt="Justin's Skillz Logo" onerror="this.style.display='none'">
-            <span>Justin's Skillz</span>
-        </a>
-        <h1>Terms of Service</h1>
-        <p class="last-updated">Last Updated: August 2026</p>
+        <h1 id="h-title">Terms of Service</h1>
+        <p class="last-updated" id="h-updated">Last Updated: August 2026</p>
         <section>
-            <h2>1. Agreement to Terms</h2>
-            <p>By using <strong>Justin's Skillz</strong>, you agree to be bound by these Terms of Service.</p>
+            <h2 id="s1-title">1. Agreement to Terms</h2>
+            <p id="s1-desc">By using <strong>Justin's Skillz</strong>, you agree to be bound by these Terms of Service.</p>
         </section>
         <section>
-            <h2>2. User Accounts</h2>
-            <p>You may authenticate using Google or Email. You remain responsible for activities occurring under your session.</p>
+            <h2 id="s2-title">2. User Accounts</h2>
+            <p id="s2-desc">You may authenticate using Google or Email. You remain responsible for activities occurring under your session.</p>
         </section>
         <section>
-            <h2>3. Service Availability</h2>
-            <p>The platform is provided "as is". We reserve the right to modify or update features at any time without prior notice.</p>
+            <h2 id="s3-title">3. Service Availability</h2>
+            <p id="s3-desc">The platform is provided "as is". We reserve the right to modify or update features at any time without prior notice.</p>
         </section>
         <section>
-            <h2>4. Contact Information</h2>
-            <p>For questions regarding terms, reach out to <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.</p>
+            <h2 id="s4-title">4. Contact Information</h2>
+            <p id="s4-desc">For questions regarding terms, reach out to <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.</p>
         </section>
-        <a href="index.html" class="back-link">&larr; Return to Main Page</a>
+        <a href="index.html" class="back-link" id="back-link">&larr; Return to Main Page</a>
     </main>
+
+    <script>
+        const translations = {
+            en: {
+                pageTitle: "Terms of Service | Justin's Skillz",
+                title: "Terms of Service",
+                updated: "Last Updated: August 2026",
+                s1Title: "1. Agreement to Terms",
+                s1Desc: 'By using <strong>Justin\'s Skillz</strong>, you agree to be bound by these Terms of Service.',
+                s2Title: "2. User Accounts",
+                s2Desc: "You may authenticate using Google or Email. You remain responsible for activities occurring under your session.",
+                s3Title: "3. Service Availability",
+                s3Desc: 'The platform is provided "as is". We reserve the right to modify or update features at any time without prior notice.',
+                s4Title: "4. Contact Information",
+                s4Desc: 'For questions regarding terms, reach out to <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.',
+                backLink: "&larr; Return to Main Page"
+            },
+            fr: {
+                pageTitle: "Conditions d'Utilisation | Justin's Skillz",
+                title: "Conditions d'Utilisation",
+                updated: "Dernière mise à jour : Août 2026",
+                s1Title: "1. Acceptation des conditions",
+                s1Desc: 'En utilisant <strong>Justin\'s Skillz</strong>, vous acceptez d\'être lié par ces conditions d\'utilisation.',
+                s2Title: "2. Comptes utilisateurs",
+                s2Desc: "Vous pouvez vous authentifier via Google ou par e-mail. Vous restez responsable des activités se déroulant sous votre session.",
+                s3Title: "3. Disponibilité du service",
+                s3Desc: 'La plateforme est fournnie "telle quelle". Nous nous réservons le droit de modifier ou de mettre à jour les fonctionnalités à tout moment sans préavis.',
+                s4Title: "4. Informations de contact",
+                s4Desc: 'Pour toute question concernant les conditions, contactez <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.',
+                backLink: "&larr; Retour à la page principale"
+            },
+            es: {
+                pageTitle: "Términos de Servicio | Justin's Skillz",
+                title: "Términos de Servicio",
+                updated: "Última actualización: Agosto de 2026",
+                s1Title: "1. Acuerdo de Términos",
+                s1Desc: 'Al usar <strong>Justin\'s Skillz</strong>, aceptas estar sujeto a estos Términos de Servicio.',
+                s2Title: "2. Cuentas de Usuario",
+                s2Desc: "Puedes autenticarte usando Google o correo electrónico. Sigues siendo responsable de las actividades que ocurran bajo tu sesión.",
+                s3Title: "3. Disponibilidad del Servicio",
+                s3Desc: 'La plataforma se proporciona "tal cual". Nos reservamos el derecho de modificar o actualizar funciones en cualquier momento sin previo aviso.',
+                s4Title: "4. Información de Contacto",
+                s4Desc: 'Si tienes preguntas sobre los términos, comunícate a <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.',
+                backLink: "&larr; Volver a la página principal"
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('site_lang') || 'en';
+            document.getElementById('langSelect').value = savedLang;
+            applyLanguage(savedLang);
+        });
+
+        function changeLanguage(lang) {
+            localStorage.setItem('site_lang', lang);
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            const t = translations[lang];
+            document.getElementById('page-title').textContent = t.pageTitle;
+            document.getElementById('h-title').textContent = t.title;
+            document.getElementById('h-updated').textContent = t.updated;
+            document.getElementById('s1-title').textContent = t.s1Title;
+            document.getElementById('s1-desc').innerHTML = t.s1Desc;
+            document.getElementById('s2-title').textContent = t.s2Title;
+            document.getElementById('s2-desc').textContent = t.s2Desc;
+            document.getElementById('s3-title').textContent = t.s3Title;
+            document.getElementById('s3-desc').textContent = t.s3Desc;
+            document.getElementById('s4-title').textContent = t.s4Title;
+            document.getElementById('s4-desc').innerHTML = t.s4Desc;
+            document.getElementById('back-link').innerHTML = t.backLink;
+        }
+    </script>
 </body>
 </html>

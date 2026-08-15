@@ -3,14 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy | Justin's Skillz</title>
+    <title id="page-title">Privacy Policy | Justin's Skillz</title>
 
     <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
     <link rel="stylesheet" href="src/styles.css">
     <style>
+        :root, [data-theme="dark"] {
+          --bg-primary: #0f1117;
+          --bg-surface: #181b25;
+          --border-subtle: #2d3242;
+          --text-main: #f3f4f6;
+          --text-muted: #9ca3af;
+          --accent-cyan: #38bdf8;
+          --header-bg: rgba(15, 17, 23, 0.85);
+        }
+        [data-theme="light"] {
+          --bg-primary: #f8fafc;
+          --bg-surface: #ffffff;
+          --border-subtle: #e2e8f0;
+          --text-main: #1e293b;
+          --text-muted: #64748b;
+          --accent-cyan: #0284c7;
+          --header-bg: rgba(248, 250, 252, 0.85);
+        }
+        body { background-color: var(--bg-primary); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; overflow-x: hidden; }
+        .app-header { background: var(--header-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 100; padding: 0.75rem 1.5rem; }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
         .policy-container { max-width: 800px; margin: 3rem auto; padding: 2.5rem; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; }
-        .header-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; margin-bottom: 2rem; }
-        .header-brand img { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--accent-cyan); }
+        .header-brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: inherit; }
+        .header-brand img { width: 36px; height: 36px; border-radius: 8px; border: 1px solid var(--accent-cyan); object-fit: cover; }
         .header-brand span { font-weight: 700; font-size: 1.25rem; }
         h1 { font-size: 2rem; color: var(--text-main); margin-top: 0; margin-bottom: 0.5rem; }
         .last-updated { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 2rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 1rem; }
@@ -18,37 +39,137 @@
         p, ul { color: var(--text-muted); font-size: 0.95rem; }
         ul { padding-left: 1.25rem; }
         .back-link { display: inline-block; margin-top: 2rem; color: var(--accent-cyan); text-decoration: none; font-weight: 600; }
+        .lang-select { background: var(--bg-surface); border: 1px solid var(--border-subtle); color: var(--text-main); padding: 0.4rem 0.6rem; border-radius: 8px; font-size: 0.85rem; font-family: inherit; }
+        
+        @media (max-width: 768px) {
+          .header-container { flex-direction: column; gap: 0.75rem; align-items: center; }
+          .policy-container { margin: 1.5rem 1rem; padding: 1.5rem; }
+        }
     </style>
 </head>
 <body>
+    <header class="app-header">
+        <div class="header-container">
+            <a href="index.html" class="header-brand">
+                <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" onerror="this.style.display='none'">
+                <span>Justin's Skillz</span>
+            </a>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
     <main class="policy-container">
-        <a href="index.html" class="header-brand">
-            <img src="src/Justin's Skillz.jpg" alt="Justin's Skillz Logo" onerror="this.style.display='none'">
-            <span>Justin's Skillz</span>
-        </a>
-        <h1>Privacy Policy</h1>
-        <p class="last-updated">Last Updated: August 2026</p>
+        <h1 id="h-title">Privacy Policy</h1>
+        <p class="last-updated" id="h-updated">Last Updated: August 2026</p>
         <section>
-            <h2>1. Information We Collect</h2>
-            <p>When you sign in using Google or email authentication, we receive basic identity information permitted by your provider:</p>
+            <h2 id="s1-title">1. Information We Collect</h2>
+            <p id="s1-desc">When you sign in using Google or email authentication, we receive basic identity information permitted by your provider:</p>
             <ul>
-                <li>Your email address</li>
-                <li>Your full name or account display name</li>
+                <li id="li1">Your email address</li>
+                <li id="li2">Your full name or account display name</li>
             </ul>
         </section>
         <section>
-            <h2>2. How We Use Information</h2>
-            <p>We use this data solely to create your session identity on the site and verify administrative access.</p>
+            <h2 id="s2-title">2. How We Use Information</h2>
+            <p id="s2-desc">We use this data solely to create your session identity on the site and verify administrative access.</p>
         </section>
         <section>
-            <h2>3. Third-Party Authentication</h2>
-            <p>Authentication is managed via Supabase OAuth. Tokens are maintained inside your browser session storage. We never sell or share data.</p>
+            <h2 id="s3-title">3. Third-Party Authentication</h2>
+            <p id="s3-desc">Authentication is managed via Supabase OAuth. Tokens are maintained inside your browser session storage. We never sell or share data.</p>
         </section>
         <section>
-            <h2>4. Contact Us</h2>
-            <p>For questions, contact <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.</p>
+            <h2 id="s4-title">4. Contact Us</h2>
+            <p id="s4-desc">For questions, contact <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.</p>
         </section>
-        <a href="index.html" class="back-link">&larr; Return to Main Page</a>
+        <a href="index.html" class="back-link" id="back-link">&larr; Return to Main Page</a>
     </main>
+
+    <script>
+        const translations = {
+            en: {
+                pageTitle: "Privacy Policy | Justin's Skillz",
+                title: "Privacy Policy",
+                updated: "Last Updated: August 2026",
+                s1Title: "1. Information We Collect",
+                s1Desc: "When you sign in using Google or email authentication, we receive basic identity information permitted by your provider:",
+                li1: "Your email address",
+                li2: "Your full name or account display name",
+                s2Title: "2. How We Use Information",
+                s2Desc: "We use this data solely to create your session identity on the site and verify administrative access.",
+                s3Title: "3. Third-Party Authentication",
+                s3Desc: "Authentication is managed via Supabase OAuth. Tokens are maintained inside your browser session storage. We never sell or share data.",
+                s4Title: "4. Contact Us",
+                s4Desc: 'For questions, contact <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.',
+                backLink: "&larr; Return to Main Page"
+            },
+            fr: {
+                pageTitle: "Politique de Confidentialité | Justin's Skillz",
+                title: "Politique de Confidentialité",
+                updated: "Dernière mise à jour : Août 2026",
+                s1Title: "1. Informations que nous collectons",
+                s1Desc: "Lorsque vous vous connectez via Google ou par authentification par e-mail, nous recevons les informations d'identité de base autorisées par votre fournisseur :",
+                li1: "Votre adresse e-mail",
+                li2: "Votre nom complet ou nom d'affichage de compte",
+                s2Title: "2. Comment nous utilisons les informations",
+                s2Desc: "Nous utilisons ces données uniquement pour créer l'identité de votre session sur le site et vérifier l'accès administrateur.",
+                s3Title: "3. Authentification tierce",
+                s3Desc: "L'authentification est gérée via Supabase OAuth. Les jetons sont conservés dans le stockage de session de votre navigateur. Nous ne vendons ni ne partageons jamais de données.",
+                s4Title: "4. Contactez-nous",
+                s4Desc: 'Pour toute question, contactez <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.',
+                backLink: "&larr; Retour à la page principale"
+            },
+            es: {
+                pageTitle: "Política de Privacidad | Justin's Skillz",
+                title: "Política de Privacidad",
+                updated: "Última actualización: Agosto de 2026",
+                s1Title: "1. Información que Recopilamos",
+                s1Desc: "Cuando inicias sesión con Google o autenticación por correo electrónico, recibimos información básica de identidad permitida por tu proveedor:",
+                li1: "Tu dirección de correo electrónico",
+                li2: "Tu nombre completo o nombre de visualización de cuenta",
+                s2Title: "2. Cómo Usamos la Información",
+                s2Desc: "Utilizamos estos datos únicamente para crear tu identidad de sesión en el sitio y verificar el acceso administrativo.",
+                s3Title: "3. Autenticación de Terceros",
+                s3Desc: "La autenticación se administra a través de Supabase OAuth. Los tokens se mantienen en el almacenamiento de sesión de tu navegador. Nunca vendemos ni compartimos datos.",
+                s4Title: "4. Contáctanos",
+                s4Desc: 'Si tienes preguntas, contacta a <a href="mailto:hellojjskids@gmail.com" style="color: var(--accent-cyan);">hellojjskids@gmail.com</a>.',
+                backLink: "&larr; Volver a la página principal"
+            }
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('site_lang') || 'en';
+            document.getElementById('langSelect').value = savedLang;
+            applyLanguage(savedLang);
+        });
+
+        function changeLanguage(lang) {
+            localStorage.setItem('site_lang', lang);
+            applyLanguage(lang);
+        }
+
+        function applyLanguage(lang) {
+            const t = translations[lang];
+            document.getElementById('page-title').textContent = t.pageTitle;
+            document.getElementById('h-title').textContent = t.title;
+            document.getElementById('h-updated').textContent = t.updated;
+            document.getElementById('s1-title').textContent = t.s1Title;
+            document.getElementById('s1-desc').textContent = t.s1Desc;
+            document.getElementById('li1').textContent = t.li1;
+            document.getElementById('li2').textContent = t.li2;
+            document.getElementById('s2-title').textContent = t.s2Title;
+            document.getElementById('s2-desc').textContent = t.s2Desc;
+            document.getElementById('s3-title').textContent = t.s3Title;
+            document.getElementById('s3-desc').textContent = t.s3Desc;
+            document.getElementById('s4-title').textContent = t.s4Title;
+            document.getElementById('s4-desc').innerHTML = t.s4Desc;
+            document.getElementById('back-link').innerHTML = t.backLink;
+        }
+    </script>
 </body>
 </html>

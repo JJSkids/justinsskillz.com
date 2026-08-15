@@ -100,6 +100,15 @@
     .nav-link:hover, .nav-link.active {
       color: var(--text-main);
     }
+    .lang-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.3rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
     .dashboard-container {
       max-width: 1000px;
       margin: 3rem auto;
@@ -152,11 +161,6 @@
       border: none;
       transition: opacity 0.2s;
     }
-    .btn-primary {
-      background: var(--accent-purple);
-      color: white;
-      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
-    }
     .btn:hover {
       opacity: 0.9;
     }
@@ -180,20 +184,28 @@
       </a>
 
       <nav class="nav-menu">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="dashboard.html" class="nav-link active" style="color: var(--accent-purple);">Dashboard</a>
-        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
-        <a href="chess.html" class="nav-link">Chess AI</a>
-        <a href="math.html" class="nav-link">Math Lab</a>
-        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
+        <a href="../index.html" class="nav-link" data-translate="navHome">Home</a>
+        <a href="dashboard.html" class="nav-link active" style="color: var(--accent-purple);" data-translate="navDashboard">Dashboard</a>
+        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;" data-translate="navLive">🔴 Live Stream</a>
+        <a href="chess.html" class="nav-link" data-translate="navChess">Chess AI</a>
+        <a href="math.html" class="nav-link" data-translate="navMath">Math Lab</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;" data-translate="navAdmin">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <div style="display: flex; align-items: center; gap: 0.3rem;">
+          <label for="langSelect" style="font-size: 0.8rem; cursor: pointer;">🌐</label>
+          <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="es">Español</option>
+          </select>
+        </div>
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
           🌙
         </button>
         <div id="auth-action-container">
-          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;" data-translate="signIn">Sign In</a>
         </div>
       </div>
     </div>
@@ -203,49 +215,49 @@
     
     <!-- Welcome Card -->
     <div class="dashboard-card">
-      <h1 id="welcome-heading" style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;">Student Dashboard</h1>
-      <p id="welcome-subtext" style="color: var(--text-muted); margin: 0;">Welcome back! Access your active learning modules, labs, and interactive practice tools below.</p>
+      <h1 id="welcome-heading" style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;" data-translate="title">Student Dashboard</h1>
+      <p id="welcome-subtext" style="color: var(--text-muted); margin: 0;" data-translate="welcome">Welcome back! Access your active learning modules, labs, and interactive practice tools below.</p>
     </div>
 
     <!-- Active Courses & Modules View -->
     <div class="dashboard-card">
-      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">📚 Active Courses & Modules</h2>
+      <h2 id="active-courses-title" style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;" data-translate="activeCourses">📚 Active Courses & Modules</h2>
       <div id="student-courses-container">
-        <p style="color: var(--text-muted); font-size: 0.9rem;">No active courses. Check back soon!</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem;" data-translate="noCourses">No active courses. Check back soon!</p>
       </div>
     </div>
 
     <!-- Active Labs View -->
     <div class="dashboard-card">
-      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">🧪 Active Labs</h2>
+      <h2 id="active-labs-title" style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;" data-translate="activeLabs">🧪 Active Labs</h2>
       <div id="student-labs-container">
-        <p style="color: var(--text-muted); font-size: 0.9rem;">No active labs. Check back soon!</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem;" data-translate="noLabs">No active labs. Check back soon!</p>
       </div>
     </div>
 
     <!-- Quick Access Hub -->
     <div class="dashboard-card">
-      <h2 style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;">🚀 Quick Learning Hub</h2>
+      <h2 id="quick-hub-title" style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;" data-translate="quickHub">🚀 Quick Learning Hub</h2>
       
       <div class="grid-2">
         <a href="math.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">Math & Algebra Lab</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Practice polynomials, 4th degree equations, and polar coordinate problem solving.</p>
+          <h3 id="dash-mathTitle" style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;" data-translate="mathTitle">Math & Algebra Lab</h3>
+          <p id="dash-mathDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="mathDesc">Practice polynomials, 4th degree equations, and polar coordinate problem solving.</p>
         </a>
 
         <a href="chess.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;">Chess Strategy Bot</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Test your tactical openings and sharpen your game against the embedded chess AI.</p>
+          <h3 id="dash-chessTitle" style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;" data-translate="chessTitle">Chess Strategy Bot</h3>
+          <p id="dash-chessDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="chessDesc">Test your tactical openings and sharpen your game against the embedded chess AI.</p>
         </a>
 
         <a href="live.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-green); font-size: 1.1rem;">🔴 Live Broadcasts</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Catch live streams, announcements, and community updates.</p>
+          <h3 id="dash-liveTitle" style="margin: 0 0 0.5rem 0; color: var(--accent-green); font-size: 1.1rem;" data-translate="liveTitle">🔴 Live Broadcasts</h3>
+          <p id="dash-liveDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="liveDesc">Catch live streams, announcements, and community updates.</p>
         </a>
 
         <a href="../index.html" class="action-tile">
-          <h3 style="margin: 0 0 0.5rem 0; color: var(--accent-purple); font-size: 1.1rem;">Main Hub & Projects</h3>
-          <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">Explore community builds like Arduino Snacky Bot and Minecraft educational resources.</p>
+          <h3 id="dash-mainHubTitle" style="margin: 0 0 0.5rem 0; color: var(--accent-purple); font-size: 1.1rem;" data-translate="mainHubTitle">Main Hub & Projects</h3>
+          <p id="dash-mainHubDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="mainHubDesc">Explore community builds like Arduino Snacky Bot and Minecraft educational resources.</p>
         </a>
       </div>
     </div>
@@ -265,13 +277,117 @@
     }
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
+    let currentDisplayName = null;
+
+    const dashboardTranslations = {
+      en: {
+        navHome: "Home",
+        navDashboard: "Dashboard",
+        navLive: "🔴 Live Stream",
+        navChess: "Chess AI",
+        navMath: "Math Lab",
+        navAdmin: "Admin",
+        signIn: "Sign In",
+        signOut: "Sign Out",
+        title: "Student Dashboard",
+        welcome: "Welcome back! Access your active learning modules, labs, and interactive practice tools below.",
+        activeCourses: "📚 Active Courses & Modules",
+        noCourses: "No active courses. Check back soon!",
+        activeLabs: "🧪 Active Labs",
+        noLabs: "No active labs. Check back soon!",
+        quickHub: "🚀 Quick Learning Hub",
+        mathTitle: "Math & Algebra Lab",
+        mathDesc: "Practice polynomials, 4th degree equations, and polar coordinate problem solving.",
+        chessTitle: "Chess Strategy Bot",
+        chessDesc: "Test your tactical openings and sharpen your game against the embedded chess AI.",
+        liveTitle: "🔴 Live Broadcasts",
+        liveDesc: "Catch live streams, announcements, and community updates.",
+        mainHubTitle: "Main Hub & Projects",
+        mainHubDesc: "Explore community builds like Arduino Snacky Bot and Minecraft educational resources."
+      },
+      fr: {
+        navHome: "Accueil",
+        navDashboard: "Tableau de bord",
+        navLive: "🔴 Diffusion en direct",
+        navChess: "IA d'échecs",
+        navMath: "Labo de maths",
+        navAdmin: "Admin",
+        signIn: "Se connecter",
+        signOut: "Se déconnecter",
+        title: "Tableau de Bord Étudiant",
+        welcome: "Bon retour! Accédez à vos modules d'apprentissage actifs, laboratoires et outils de pratique interactifs ci-dessous.",
+        activeCourses: "📚 Cours et Modules Actifs",
+        noCourses: "Aucun cours actif. Revenez bientôt !",
+        activeLabs: "🧪 Laboratoires Actifs",
+        noLabs: "Aucun laboratoire actif. Revenez bientôt !",
+        quickHub: "🚀 Centre d'Apprentissage Rapide",
+        mathTitle: "Laboratoire de Math & Algèbre",
+        mathDesc: "Pratiquez les polynômes, les équations du 4e degré et la résolution de coordonnées polaires.",
+        chessTitle: "Bot de Stratégie d'Échecs",
+        chessDesc: "Testez vos ouvertures tactiques et affûtez votre jeu contre l'IA d'échecs intégrée.",
+        liveTitle: "🔴 Diffusions en direct",
+        liveDesc: "Retrouvez les flux en direct, annonces et mises à jour de la communauté.",
+        mainHubTitle: "Hub Principal & Projets",
+        mainHubDesc: "Explorez les projets communautaires comme Arduino Snacky Bot et les ressources éducatives Minecraft."
+      },
+      es: {
+        navHome: "Inicio",
+        navDashboard: "Panel",
+        navLive: "🔴 Transmisión en vivo",
+        navChess: "IA de Ajedrez",
+        navMath: "Laboratorio de Matemáticas",
+        navAdmin: "Admin",
+        signIn: "Iniciar sesión",
+        signOut: "Cerrar sesión",
+        title: "Panel de Estudiante",
+        welcome: "¡Bienvenido de nuevo! Accede a tus módulos de aprendizaje activos, laboratorios y herramientas interactivas abajo.",
+        activeCourses: "📚 Cursos y Módulos Activos",
+        noCourses: "No hay cursos activos. ¡Vuelve pronto!",
+        activeLabs: "🧪 Laboratorios Activos",
+        noLabs: "No hay laboratorios activos. ¡Vuelve pronto!",
+        quickHub: "🚀 Centro de Aprendizaje Rápido",
+        mathTitle: "Laboratorio de Matemáticas y Álgebra",
+        mathDesc: "Practica polinomios, ecuaciones de 4º grado y resolución de problemas de coordenadas polares.",
+        chessTitle: "Bot de Estrategia de Ajedrez",
+        chessDesc: "Prueba tus aperturas tácticas y agudiza tu juego contra la IA de ajedrez integrada.",
+        liveTitle: "🔴 Transmisiones en vivo",
+        liveDesc: "Disfruta de transmisiones en vivo, anuncios y actualizaciones de la comunidad.",
+        mainHubTitle: "Centro Principal y Proyectos",
+        mainHubDesc: "Explora construcciones comunitarias como Arduino Snacky Bot y recursos educativos de Minecraft."
+      }
+    };
+
+    function changeLanguage(lang) {
+      localStorage.setItem('site_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      const t = dashboardTranslations[lang] || dashboardTranslations.en;
+      
+      document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (t[key]) {
+          el.textContent = t[key];
+        }
+      });
+
+      const welcomeHeading = document.getElementById('welcome-heading');
+      if (currentDisplayName) {
+        welcomeHeading.textContent = (lang === 'fr' ? `Bon retour, ${currentDisplayName}!` : lang === 'es' ? `¡Bienvenido de nuevo, ${currentDisplayName}!` : `Welcome back, ${currentDisplayName}!`);
+      } else {
+        welcomeHeading.textContent = t.title;
+      }
+    }
 
     function renderStudentCourses() {
       const container = document.getElementById('student-courses-container');
       const courses = JSON.parse(localStorage.getItem('jjs_admin_courses')) || [];
+      const lang = localStorage.getItem('site_lang') || 'en';
+      const t = dashboardTranslations[lang] || dashboardTranslations.en;
       
       if (courses.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No active courses. Check back soon!</p>';
+        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">${t.noCourses}</p>`;
         return;
       }
 
@@ -286,9 +402,11 @@
     function renderStudentLabs() {
       const container = document.getElementById('student-labs-container');
       const labs = JSON.parse(localStorage.getItem('jjs_admin_labs')) || [];
+      const lang = localStorage.getItem('site_lang') || 'en';
+      const t = dashboardTranslations[lang] || dashboardTranslations.en;
       
       if (labs.length === 0) {
-        container.innerHTML = '<p style="color: var(--text-muted); font-size: 0.9rem;">No active labs. Check back soon!</p>';
+        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">${t.noLabs}</p>`;
         return;
       }
 
@@ -307,25 +425,27 @@
     async function checkUserSession() {
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
       const authContainer = document.getElementById('auth-action-container');
-      const welcomeHeading = document.getElementById('welcome-heading');
       const navAdminLink = document.getElementById('nav-admin-link');
+      const lang = localStorage.getItem('site_lang') || 'en';
+      const t = dashboardTranslations[lang] || dashboardTranslations.en;
 
       if (session && session.user) {
         const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-        const displayName = session.user.user_metadata?.full_name || userEmail.split('@')[0];
+        currentDisplayName = session.user.user_metadata?.full_name || userEmail.split('@')[0];
         
-        welcomeHeading.textContent = `Welcome back, ${displayName}!`;
+        applyLanguage(lang);
 
         authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">Sign Out</button>
+          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">${t.signOut}</button>
         `;
 
         if (userEmail === ADMIN_EMAIL && navAdminLink) {
           navAdminLink.style.display = 'block';
         }
       } else {
+        currentDisplayName = null;
         authContainer.innerHTML = `
-          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>
         `;
       }
     }
@@ -336,6 +456,9 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+      const savedLang = localStorage.getItem('site_lang') || 'en';
+      document.getElementById('langSelect').value = savedLang;
+      applyLanguage(savedLang);
       checkUserSession();
       renderStudentCourses();
       renderStudentLabs();

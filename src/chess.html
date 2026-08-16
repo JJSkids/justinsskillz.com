@@ -299,6 +299,17 @@
             </select>
           </div>
 
+          <div class="lang-select-group">
+            <label for="difficultySelect" id="difficulty-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">AI Level / Niveau / Nivel</label>
+            <select id="difficultySelect" class="lang-select" onchange="changeDifficulty(this.value)">
+              <option value="casual" id="opt-casual">Casual Justin</option>
+              <option value="intermediate" id="opt-intermediate">Intermediate Justin</option>
+              <option value="advanced" id="opt-advanced">Advanced Justin</option>
+              <option value="elite" id="opt-elite">ELITE Grandmaster</option>
+              <option value="adaptive" id="opt-adaptive">Adaptive Justin ⚡</option>
+            </select>
+          </div>
+
           <div class="status-box">
             <strong id="status-label">Game Status:</strong><br>
             <span id="status">Turn: White</span><br>
@@ -354,7 +365,13 @@
         navAI: "AI Assistant",
         signIn: "Sign In",
         signOut: "Sign Out",
-        langLabel: "Language / Langue / Idioma"
+        langLabel: "Language / Langue / Idioma",
+        difficultyLabel: "AI Level / Niveau / Nivel",
+        casual: "Casual Justin",
+        intermediate: "Intermediate Justin",
+        advanced: "Advanced Justin",
+        elite: "ELITE Grandmaster",
+        adaptive: "Adaptive Justin ⚡"
       },
       fr: {
         title: "Laboratoire d'Entraînement IA d'Échecs",
@@ -369,7 +386,13 @@
         navAI: "Assistant IA",
         signIn: "Se connecter",
         signOut: "Se déconnecter",
-        langLabel: "Langue / Language / Idioma"
+        langLabel: "Langue / Language / Idioma",
+        difficultyLabel: "Niveau de l'IA",
+        casual: "Justin Décontracté",
+        intermediate: "Justin Intermédiaire",
+        advanced: "Justin Avancé",
+        elite: "Grand Maître ÉLITE",
+        adaptive: "Justin Adaptatif ⚡"
       },
       es: {
         title: "Laboratorio de IA de Ajedrez",
@@ -384,7 +407,13 @@
         navAI: "Asistente IA",
         signIn: "Iniciar Sesión",
         signOut: "Cerrar Sesión",
-        langLabel: "Idioma / Language / Langue"
+        langLabel: "Idioma / Language / Langue",
+        difficultyLabel: "Nivel de la IA",
+        casual: "Justin Casual",
+        intermediate: "Justin Intermedio",
+        advanced: "Justin Avanzado",
+        elite: "Gran Maestro ÉLITE",
+        adaptive: "Justin Adaptativo ⚡"
       }
     };
 
@@ -392,11 +421,17 @@
     let chessBoardObj = null;
     let currentUserId = null;
     let stats = { wins: 0, losses: 0, draws: 0, total: 0 };
+    let currentDifficulty = 'casual';
 
     window.addEventListener('DOMContentLoaded', () => {
       checkUserSession();
       const savedLang = localStorage.getItem('site_lang') || 'en';
       document.getElementById('langSelect').value = savedLang;
+      
+      const savedDiff = localStorage.getItem('chess_difficulty') || 'casual';
+      document.getElementById('difficultySelect').value = savedDiff;
+      currentDifficulty = savedDiff;
+
       applyLanguage(savedLang);
       currentGameInstance = initChessGame();
 
@@ -413,6 +448,11 @@
       }
     }
 
+    function changeDifficulty(diff) {
+      currentDifficulty = diff;
+      localStorage.setItem('chess_difficulty', diff);
+    }
+
     function applyLanguage(lang) {
       const t = translations[lang];
       document.getElementById('chess-title').textContent = t.title;
@@ -426,6 +466,12 @@
       document.getElementById('nav-math').textContent = t.navMath;
       document.getElementById('nav-ai').textContent = t.navAI;
       document.getElementById('lang-label').textContent = t.langLabel;
+      document.getElementById('difficulty-label').textContent = t.difficultyLabel;
+      document.getElementById('opt-casual').textContent = t.casual;
+      document.getElementById('opt-intermediate').textContent = t.intermediate;
+      document.getElementById('opt-advanced').textContent = t.advanced;
+      document.getElementById('opt-elite').textContent = t.elite;
+      document.getElementById('opt-adaptive').textContent = t.adaptive;
     }
 
     async function checkUserSession() {
@@ -440,7 +486,6 @@
           currentUserId = session.user.email;
           const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
           
-          // Display "Justin's Skillz" for admin, or the username from metadata/email for others
           let displayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
 
           document.getElementById('session-info').textContent = `User: ${displayName}`;
@@ -561,6 +606,92 @@
       window.location.reload();
     }
 
+    // AI Chess Engine & Heuristics
+    const pieceValues = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
+
+    function evaluateBoard(game) {
+      let board = game.board();
+      let totalEval = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          let piece = board[r][c];
+          if (piece) {
+            let val = pieceValues[piece.type];
+            if (piece.color === 'b') {
+              totalEval += val;
+            } else {
+              totalEval -= val;
+            }
+          }
+        }
+      }
+      return totalEval;
+    }
+
+    function minimax(game, depth, alpha, beta, isMaximizing) {
+      if (depth === 0 || game.game_over()) {
+        return evaluateBoard(game);
+      }
+
+      var moves = game.moves();
+      if (isMaximizing) {
+        let maxEval = -99999;
+        for (let i = 0; i < moves.length; i++) {
+          game.move(moves[i]);
+          let evaluation = minimax(game, depth - 1, alpha, beta, false);
+          game.undo();
+          maxEval = Math.max(maxEval, evaluation);
+          alpha = Math.max(alpha, evaluation);
+          if (beta <= alpha) break;
+        }
+        return maxEval;
+      } else {
+        let minEval = 99999;
+        for (let i = 0; i < moves.length; i++) {
+          game.move(moves[i]);
+          let evaluation = minimax(game, depth - 1, alpha, beta, true);
+          game.undo();
+          minEval = Math.min(minEval, evaluation);
+          beta = Math.min(beta, evaluation);
+          if (beta <= alpha) break;
+        }
+        return minEval;
+      }
+    }
+
+    function getBestMove(game, depth) {
+      let moves = game.moves();
+      if (moves.length === 0) return null;
+
+      let bestMove = moves[0];
+      let bestValue = -99999;
+      moves.sort(() => Math.random() - 0.5);
+
+      for (let i = 0; i < moves.length; i++) {
+        game.move(moves[i]);
+        let value = minimax(game, depth - 1, -100000, 100000, false);
+        game.undo();
+        if (value > bestValue) {
+          bestValue = value;
+          bestMove = moves[i];
+        }
+      }
+      return bestMove;
+    }
+
+    function getIntermediateMove(game) {
+      let moves = game.moves({ verbose: true });
+      if (moves.length === 0) return null;
+
+      // Prefer captures or checks
+      let priorityMoves = moves.filter(m => m.captured || m.san.includes('+'));
+      if (priorityMoves.length > 0 && Math.random() < 0.7) {
+        let chosen = priorityMoves[Math.floor(Math.random() * priorityMoves.length)];
+        return chosen.san;
+      }
+      return moves[Math.floor(Math.random() * moves.length)].san;
+    }
+
     function initChessGame() {
       var game = new Chess();
       var statusEl = $('#status');
@@ -568,12 +699,37 @@
       var redoStack = [];
       var selectedSquare = null;
 
-      function makeRandomMove() {
+      function makeAIMove() {
         var possibleMoves = game.moves();
         if (possibleMoves.length === 0) return;
 
-        var randomIdx = Math.floor(Math.random() * possibleMoves.length);
-        game.move(possibleMoves[randomIdx]);
+        let chosenMove = null;
+        let effectiveDiff = currentDifficulty;
+
+        if (currentDifficulty === 'adaptive') {
+          let winRate = stats.total > 0 ? (stats.wins / stats.total) * 100 : 50;
+          if (winRate > 70) effectiveDiff = 'elite';
+          else if (winRate >= 40) effectiveDiff = 'advanced';
+          else effectiveDiff = 'intermediate';
+        }
+
+        if (effectiveDiff === 'casual') {
+          var randomIdx = Math.floor(Math.random() * possibleMoves.length);
+          chosenMove = possibleMoves[randomIdx];
+        } else if (effectiveDiff === 'intermediate') {
+          chosenMove = getIntermediateMove(game);
+        } else if (effectiveDiff === 'advanced') {
+          chosenMove = getBestMove(game, 2);
+        } else if (effectiveDiff === 'elite') {
+          chosenMove = getBestMove(game, 3);
+        }
+
+        if (chosenMove) {
+          game.move(chosenMove);
+        } else {
+          game.move(possibleMoves[0]);
+        }
+
         chessBoardObj.position(game.fen());
         updateStatus();
         checkGameResultState();
@@ -617,7 +773,7 @@
             checkGameResultState();
 
             if (!game.game_over()) {
-              window.setTimeout(makeRandomMove, 300);
+              window.setTimeout(makeAIMove, 300);
             }
           }
         }

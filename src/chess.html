@@ -438,11 +438,15 @@
 
         if (session && session.user) {
           currentUserId = session.user.email;
-          document.getElementById('session-info').textContent = `User: ${currentUserId}`;
+          const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+          
+          // Display "Justin's Skillz" for admin, or the username from metadata/email for others
+          let displayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
+
+          document.getElementById('session-info').textContent = `User: ${displayName}`;
           authContainer.innerHTML = `
             <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">${t.signOut}</button>
           `;
-          const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
           if (userEmail === ADMIN_EMAIL && navAdminLink) {
             navAdminLink.style.display = 'block';
           }
@@ -575,7 +579,7 @@
         checkGameResultState();
       }
 
-      // Click-to-Move handler replacing piece dragging
+      // Click-to-Move handler
       $('#myBoard').off('click').on('click', '.square-55d63', function () {
         if (game.game_over()) return;
         if (game.turn() !== 'w') return; // Only allow player (White) to click
@@ -601,7 +605,6 @@
           selectedSquare = null;
 
           if (move === null) {
-            // If clicked another white piece, switch selection
             var piece = game.get(square);
             if (piece && piece.color === 'w' && prevSelected !== square) {
               selectedSquare = square;
@@ -666,7 +669,7 @@
 
       var config = {
         position: 'start',
-        draggable: false, // Disabled dragging for Click-to-Move
+        draggable: false,
         pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
       };
 

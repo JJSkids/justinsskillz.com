@@ -342,6 +342,7 @@
     };
 
     let currentGameInstance = null;
+    let chessBoardObj = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       checkUserSession();
@@ -349,6 +350,11 @@
       document.getElementById('langSelect').value = savedLang;
       applyLanguage(savedLang);
       currentGameInstance = initChessGame();
+
+      // Ensure proper resizing of board elements
+      window.addEventListener('resize', () => {
+        if (chessBoardObj) chessBoardObj.resize();
+      });
     });
 
     function changeLanguage(lang) {
@@ -401,7 +407,6 @@
     }
 
     function initChessGame() {
-      var board = null;
       var game = new Chess();
       var statusEl = $('#status');
       var fenEl = $('#fen');
@@ -420,7 +425,7 @@
 
         var randomIdx = Math.floor(Math.random() * possibleMoves.length);
         game.move(possibleMoves[randomIdx]);
-        board.position(game.fen());
+        chessBoardObj.position(game.fen());
         updateStatus();
       }
 
@@ -435,14 +440,13 @@
 
         updateStatus();
 
-        // Automatically trigger AI move after a brief delay
         if (!game.game_over()) {
           window.setTimeout(makeRandomMove, 250);
         }
       }
 
       function onSnapEnd () {
-        board.position(game.fen());
+        chessBoardObj.position(game.fen());
       }
 
       function updateStatus () {
@@ -486,19 +490,19 @@
         onSnapEnd: onSnapEnd
       };
 
-      board = Chessboard('myBoard', config);
+      chessBoardObj = Chessboard('myBoard', config);
       updateStatus();
 
       $('#startBtn').off('click').on('click', function () {
         game.reset();
-        board.start();
+        chessBoardObj.start();
         updateStatus();
       });
 
       $('#undoBtn').off('click').on('click', function () {
         game.undo();
         game.undo();
-        board.position(game.fen());
+        chessBoardObj.position(game.fen());
         updateStatus();
       });
 

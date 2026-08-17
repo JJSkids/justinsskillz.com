@@ -1,72 +1,615 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Math Lab | Justin's Skillz</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Lab & Curriculum - Justin's Skillz</title>
+  
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
-    .math-card { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .input-group { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; margin: 1rem 0; }
-    .input-group input { width: 80px; padding: 0.5rem; background: var(--bg-pill); border: 1px solid var(--border-subtle); color: var(--text-main); border-radius: 6px; font-size: 1rem; text-align: center; }
-    .result-box { background: #0f172a; border-left: 4px solid var(--accent-cyan); padding: 1rem; margin-top: 1rem; border-radius: 6px; }
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-rose: #f43f5e;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-rose: #e11d48;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .nav-menu {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+    .main-container {
+      max-width: 1000px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .math-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin-bottom: 2rem;
+    }
+    .math-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .filter-tabs {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--accent-purple);
+      color: white;
+      border-color: var(--accent-purple);
+    }
+    .levels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .level-box {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .level-box:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-purple);
+    }
+    .level-badge {
+      display: inline-block;
+      background: rgba(168, 85, 247, 0.15);
+      color: var(--accent-purple);
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: fit-content;
+    }
+    .level-title {
+      font-weight: 700;
+      font-size: 1.1rem;
+    }
+    .level-list {
+      margin: 0;
+      padding-left: 1.2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .masterclass-box {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(59, 130, 246, 0.08));
+      border: 1px solid var(--accent-purple);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent-purple);
+      color: white;
+    }
+    .btn-secondary {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+    .app-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4rem;
+    }
+    .lang-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-family: inherit;
+    }
   </style>
 </head>
 <body>
+
   <header class="app-header">
     <div class="header-container">
-      <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
-      <h1>📐 Skillz Math Lab</h1>
-      <div></div>
+      <a href="../index.html" class="logo">
+        <img src="../Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link" id="nav-home">Home</a>
+        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
+        <a href="chess.html" class="nav-link" id="nav-chess">Chess AI</a>
+        <a href="math.html" class="nav-link active" style="color: var(--accent-purple);" id="nav-math">Math Lab</a>
+        <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
+      </nav>
+
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+        </select>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
+          🌙
+        </button>
+        <div id="auth-action-container">
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
+        </div>
+      </div>
     </div>
   </header>
 
-  <main class="container" style="padding-top: 2rem;">
+  <main class="main-container">
     <div class="math-card">
-      <h3>Quadratic Equation Solver</h3>
-      <p>Solves $ax^2 + bx + c = 0$ for real and complex roots.</p>
-      
-      <div class="input-group">
-        <input type="number" id="coeff-a" value="1" placeholder="a" /> <span>$x^2 +$</span>
-        <input type="number" id="coeff-b" value="-5" placeholder="b" /> <span>$x +$</span>
-        <input type="number" id="coeff-c" value="6" placeholder="c" /> <span>$= 0$</span>
-        <button onclick="solveQuadratic()" class="btn btn-primary">Solve</button>
+      <div class="math-header-flex">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px;">Curriculum Architecture</span>
+          <h1 id="page-title" style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem;">Math Course Outline (Levels 1–12)</h1>
+          <p id="page-subtitle" style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Progressive mastery from elementary number sense to complex numbers, polar coordinates, and De Moivre's Theorem.</p>
+        </div>
+        <div id="session-info" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600;">Connecting session...</div>
       </div>
 
-      <div id="math-output" class="result-box">Click <strong>Solve</strong> to compute roots.</div>
+      <div class="filter-tabs">
+        <button type="button" class="tab-btn active" onclick="filterLevels('all', this)">All Levels (1–12)</button>
+        <button type="button" class="tab-btn" onclick="filterLevels('elementary', this)">Elementary (1–5)</button>
+        <button type="button" class="tab-btn" onclick="filterLevels('middle', this)">Middle School (6–8)</button>
+        <button type="button" class="tab-btn" onclick="filterLevels('high', this)">High School (9–11)</button>
+        <button type="button" class="tab-btn" onclick="filterLevels('masterclass', this)">Masterclass (Level 12)</button>
+      </div>
     </div>
+
+    <!-- Levels Grid Container -->
+    <div class="levels-grid" id="levelsGrid">
+      
+      <!-- Level 1 -->
+      <div class="level-box" data-category="elementary">
+        <span class="level-badge">Level 1 • Grade 1</span>
+        <div class="level-title">Arithmetic Foundations</div>
+        <ul class="level-list">
+          <li>Counting, number recognition, and place value to 100</li>
+          <li>Addition and subtraction within 20 with strategies</li>
+          <li>Basic shapes, patterns, and sorting</li>
+          <li>Simple measurement (length, time, money)</li>
+          <li>Introduction to data (tally marks, simple graphs)</li>
+        </ul>
+      </div>
+
+      <!-- Level 2 -->
+      <div class="level-box" data-category="elementary">
+        <span class="level-badge">Level 2 • Grade 2</span>
+        <div class="level-title">Place Value & Operations</div>
+        <ul class="level-list">
+          <li>Place value to 1,000; skip-counting</li>
+          <li>Addition & subtraction within 100 with regrouping</li>
+          <li>Intro to multiplication concepts (arrays, equal groups)</li>
+          <li>Measurement (length, time, money) & simple data</li>
+          <li>2D and 3D shapes and geometric attributes</li>
+        </ul>
+      </div>
+
+      <!-- Level 3 -->
+      <div class="level-box" data-category="elementary">
+        <span class="level-badge">Level 3 • Grade 3</span>
+        <div class="level-title">Fractions & Multiplicative Thinking</div>
+        <ul class="level-list">
+          <li>Multiplication and division facts and strategies</li>
+          <li>Fractions as parts of a whole and on a number line</li>
+          <li>Area and perimeter of rectangles</li>
+          <li>Time, capacity, and mass units</li>
+          <li>Intro to data representation and probability</li>
+        </ul>
+      </div>
+
+      <!-- Level 4 -->
+      <div class="level-box" data-category="elementary">
+        <span class="level-badge">Level 4 • Grade 4</span>
+        <div class="level-title">Multi-Digit Arithmetic & Decimals</div>
+        <ul class="level-list">
+          <li>Multi-digit multiplication and long division</li>
+          <li>Equivalent fractions, comparisons, mixed numbers</li>
+          <li>Decimals in tenths and hundredths</li>
+          <li>Factors, multiples, prime & composite numbers</li>
+          <li>Angle concepts, shape classification & conversions</li>
+        </ul>
+      </div>
+
+      <!-- Level 5 -->
+      <div class="level-box" data-category="elementary">
+        <span class="level-badge">Level 5 • Grade 5</span>
+        <div class="level-title">Rational Arithmetic & Coordinate Plane</div>
+        <ul class="level-list">
+          <li>Operations with multi-digit numbers and decimals</li>
+          <li>Adding, subtracting, multiplying, dividing fractions</li>
+          <li>Volume of rectangular prisms</li>
+          <li>Coordinate plane (Quadrant 1) and point plotting</li>
+          <li>Order of operations and algebraic expressions</li>
+        </ul>
+      </div>
+
+      <!-- Level 6 -->
+      <div class="level-box" data-category="middle">
+        <span class="level-badge">Level 6 • Grade 6</span>
+        <div class="level-title">Ratios & Proportional Reasoning</div>
+        <ul class="level-list">
+          <li>Ratios, unit rates, and proportional reasoning</li>
+          <li>Percentages and conversions (fractions ↔ decimals ↔ percents)</li>
+          <li>Integers and the full four-quadrant coordinate plane</li>
+          <li>Expressions, equations, and inequalities</li>
+          <li>Area of triangles/parallelograms & surface area/volume</li>
+          <li>Statistical measures (mean, median, mode, range)</li>
+        </ul>
+      </div>
+
+      <!-- Level 7 -->
+      <div class="level-box" data-category="middle">
+        <span class="level-badge">Level 7 • Grade 7</span>
+        <div class="level-title">Rational Equations & Geometry</div>
+        <ul class="level-list">
+          <li>Proportional relationships and constant of proportionality</li>
+          <li>Operations with rational numbers and negative integers</li>
+          <li>Solving multi-step equations and inequalities</li>
+          <li>Scale drawings, circles (circumference & area), angles</li>
+          <li>Theoretical/experimental probability and sampling</li>
+        </ul>
+      </div>
+
+      <!-- Level 8 -->
+      <div class="level-box" data-category="middle">
+        <span class="level-badge">Level 8 • Grade 8</span>
+        <div class="level-title">Linear Functions & Pythagorean Geometry</div>
+        <ul class="level-list">
+          <li>Linear equations, systems of linear equations, and functions</li>
+          <li>Slope, intercepts, and graphing linear relationships</li>
+          <li>Pythagorean Theorem and coordinate distance formula</li>
+          <li>Transformations, congruence, and similarity</li>
+          <li>Volume of cylinders, cones, and spheres</li>
+          <li>Scientific notation, exponent laws, and square roots</li>
+        </ul>
+      </div>
+
+      <!-- Level 9 -->
+      <div class="level-box" data-category="high">
+        <span class="level-badge">Level 9 • Grade 9 (Algebra 1)</span>
+        <div class="level-title">Algebraic Modeling & Quadratics</div>
+        <ul class="level-list">
+          <li>Deep dive into linear functions, systems, and inequalities</li>
+          <li>Quadratic functions (graphing, factoring, completing the square)</li>
+          <li>Exponential growth and decay functions</li>
+          <li>Polynomials and rational expressions</li>
+          <li>Bivariate statistics, scatter plots, and lines of best fit</li>
+          <li>Function notation and transformations</li>
+        </ul>
+      </div>
+
+      <!-- Level 10 -->
+      <div class="level-box" data-category="high">
+        <span class="level-badge">Level 10 • Grade 10 (Geometry)</span>
+        <div class="level-title">Deductive Proofs & Trigonometry</div>
+        <ul class="level-list">
+          <li>Deductive reasoning, formal proofs, and constructions</li>
+          <li>Properties of triangles, congruence, and similarity</li>
+          <li>Right-triangle trigonometry (sine, cosine, tangent)</li>
+          <li>Circle theorems, equations, arcs, and sectors</li>
+          <li>Coordinate geometry proofs and analytical vectors</li>
+        </ul>
+      </div>
+
+      <!-- Level 11 -->
+      <div class="level-box" data-category="high">
+        <span class="level-badge">Level 11 • Grade 11 (Algebra 2 / Precalc)</span>
+        <div class="level-title">Advanced Functions & Unit Circle</div>
+        <ul class="level-list">
+          <li>Advanced functions (polynomial, rational, radical, absolute value)</li>
+          <li>Exponential and logarithmic functions</li>
+          <li>Sequences, series, and arithmetic/geometric progressions</li>
+          <li>Trigonometric functions (unit circle, identities, equations)</li>
+          <li>Complex numbers (basic operations & polar form intro)</li>
+          <li>Nonlinear systems, matrices, and conic sections</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Masterclass Level 12 Card -->
+    <div class="masterclass-box" id="masterclass-section" data-category="masterclass">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+        <span class="level-badge" style="background: var(--accent-purple); color: white;">Level 12 • Grade 12 Masterclass</span>
+        <span style="font-size: 0.85krem; color: var(--accent-blue); font-weight: 700;">Precalculus & Advanced Topics</span>
+      </div>
+      <h2 style="margin: 0 0 1rem 0; font-size: 1.5rem;">Polar Coordinates, Parametric Equations & De Moivre’s Theorem</h2>
+      
+      <p style="color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">
+        Level 12 synthesizes arithmetic, algebra, and trigonometry into sophisticated mathematical frameworks required for advanced calculus, physics, and engineering.
+      </p>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+          <strong style="color: var(--accent-purple);">1. De Moivre’s Theorem</strong>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 0 0;">
+            Computes powers and roots of complex numbers efficiently in polar form: <em>z<sup>n</sup> = r<sup>n</sup> [cos(nθ) + i sin(nθ)]</em>. Used to derive multiple-angle trigonometric identities and solve cyclotomic equations.
+          </p>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+          <strong style="color: var(--accent-blue);">2. Polar & Parametric Curves</strong>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 0 0;">
+            Graphing cardiods, roses, and spirals in polar coordinates. Modeling projectile motion and complex mechanical trajectories using parametric equations in 2D and 3D space.
+          </p>
+        </div>
+        <div style="background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 1.25rem; border-radius: var(--radius-md);">
+          <strong style="color: var(--accent-green);">3. Calculus Bridge & Engineering</strong>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin: 0.5rem 0 0 0;">
+            Connecting Euler’s formula (<em>e<sup>iθ</sup> = cos θ + i sin θ</em>) to AC circuit phasor analysis, signal processing, Fourier transforms, and introductory limits/derivatives.
+          </p>
+        </div>
+      </div>
+    </div>
+
   </main>
 
+  <footer class="app-footer">
+    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
+  </footer>
+
   <script>
-    function solveQuadratic() {
-      const a = parseFloat(document.getElementById('coeff-a').value);
-      const b = parseFloat(document.getElementById('coeff-b').value);
-      const c = parseFloat(document.getElementById('coeff-c').value);
-      const out = document.getElementById('math-output');
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-...'
+      );
+    }
 
-      if (isNaN(a) || a === 0) {
-        out.innerHTML = "<span style='color: #ef4444;'>'a' cannot be zero in a quadratic equation.</span>";
-        return;
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
+
+    const translations = {
+      en: {
+        navHome: "Home",
+        navDashboard: "Dashboard",
+        navChess: "Chess AI",
+        navMath: "Math Lab",
+        navAI: "AI Assistant",
+        signIn: "Sign In",
+        signOut: "Sign Out",
+        title: "Math Course Outline (Levels 1–12)",
+        subtitle: "Progressive mastery from elementary number sense to complex numbers, polar coordinates, and De Moivre's Theorem."
+      },
+      fr: {
+        navHome: "Accueil",
+        navDashboard: "Tableau de bord",
+        navChess: "IA d'Échecs",
+        navMath: "Labo de Math",
+        navAI: "Assistant IA",
+        signIn: "Se connecter",
+        signOut: "Se déconnecter",
+        title: "Programme de Mathématiques (Niveaux 1–12)",
+        subtitle: "Maîtrise progressive, du sens numérique élémentaire aux nombres complexes, coordonnées polaires et théorème de De Moivre."
+      },
+      es: {
+        navHome: "Inicio",
+        navDashboard: "Panel",
+        navChess: "IA de Ajedrez",
+        navMath: "Lab de Matemáticas",
+        navAI: "Asistente IA",
+        signIn: "Iniciar Sesión",
+        signOut: "Cerrar Sesión",
+        title: "Plan de Estudios de Matemáticas (Niveles 1–12)",
+        subtitle: "Dominio progresivo desde la aritmética elemental hasta números complejos, coordenadas polares y el Teorema de De Moivre."
       }
+    };
 
-      const delta = (b * b) - (4 * a * c);
-      let res = `<strong>Discriminant (Δ):</strong> ${delta}<br>`;
+    window.addEventListener('DOMContentLoaded', () => {
+      checkUserSession();
+      const savedLang = localStorage.getItem('site_lang') || 'en';
+      document.getElementById('langSelect').value = savedLang;
+      applyLanguage(savedLang);
+    });
 
-      if (delta > 0) {
-        const x1 = ((-b + Math.sqrt(delta)) / (2 * a)).toFixed(4);
-        const x2 = ((-b - Math.sqrt(delta)) / (2 * a)).toFixed(4);
-        res += `<span style='color:var(--accent-green);'>Two Real Roots: x₁ = ${x1}, x₂ = ${x2}</span>`;
-      } else if (delta === 0) {
-        const x = (-b / (2 * a)).toFixed(4);
-        res += `<span style='color:var(--accent-cyan);'>One Double Root: x = ${x}</span>`;
+    function changeLanguage(lang) {
+      localStorage.setItem('site_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.getElementById('nav-home').textContent = t.navHome;
+      document.getElementById('nav-dashboard').textContent = t.navDashboard;
+      document.getElementById('nav-chess').textContent = t.navChess;
+      document.getElementById('nav-math').textContent = t.navMath;
+      document.getElementById('nav-ai').textContent = t.navAI;
+      document.getElementById('page-title').textContent = t.title;
+      document.getElementById('page-subtitle').textContent = t.subtitle;
+    }
+
+    async function checkUserSession() {
+      try {
+        const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+        const authContainer = document.getElementById('auth-action-container');
+        const navAdminLink = document.getElementById('nav-admin-link');
+        const lang = localStorage.getItem('site_lang') || 'en';
+        const t = translations[lang];
+
+        if (session && session.user) {
+          const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+          let displayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
+
+          document.getElementById('session-info').textContent = `User: ${displayName}`;
+          authContainer.innerHTML = `
+            <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">${t.signOut}</button>
+          `;
+          if (userEmail === ADMIN_EMAIL && navAdminLink) {
+            navAdminLink.style.display = 'block';
+          }
+        } else {
+          let cachedGuest = sessionStorage.getItem('justin_guest_id');
+          if (!cachedGuest) {
+            cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
+            sessionStorage.setItem('justin_guest_id', cachedGuest);
+          }
+          document.getElementById('session-info').textContent = `Player: ${cachedGuest}`;
+          authContainer.innerHTML = `
+            <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">${t.signIn}</a>
+          `;
+        }
+      } catch (err) {
+        document.getElementById('session-info').textContent = 'Guest Session';
+      }
+    }
+
+    async function handleSignOut() {
+      await window.mySupabaseInstance.auth.signOut();
+      window.location.reload();
+    }
+
+    function filterLevels(category, btnElement) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      btnElement.classList.add('active');
+
+      const levelBoxes = document.querySelectorAll('.level-box');
+      const masterclassBox = document.getElementById('masterclass-section');
+
+      levelBoxes.forEach(box => {
+        if (category === 'all' || box.getAttribute('data-category') === category) {
+          box.style.display = 'flex';
+        } else {
+          box.style.display = 'none';
+        }
+      });
+
+      if (category === 'all' || category === 'masterclass') {
+        masterclassBox.style.display = 'block';
       } else {
-        const real = (-b / (2 * a)).toFixed(4);
-        const imag = (Math.sqrt(-delta) / (2 * a)).toFixed(4);
-        res += `<span style='color:var(--accent-amber);'>Complex Roots: x₁ = ${real} + ${imag}i, x₂ = ${real} - ${imag}i</span>`;
+        masterclassBox.style.display = 'none';
       }
-      out.innerHTML = res;
     }
   </script>
 </body>

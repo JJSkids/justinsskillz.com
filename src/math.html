@@ -170,6 +170,10 @@
       transform: translateY(3px);
       box-shadow: 0 5px 0 rgba(120, 40, 200, 0.6), 0 6px 12px rgba(0,0,0,0.3);
     }
+    .node-btn.completed {
+      background: var(--accent-green) !important;
+      box-shadow: 0 8px 0 rgba(16, 153, 111, 0.6), 0 10px 20px rgba(0,0,0,0.3);
+    }
     .node-label {
       margin-top: 0.5rem;
       font-weight: 700;
@@ -234,12 +238,12 @@
 
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link" id="nav-home">Home</a>
-        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
-        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
-        <a href="chess.html" class="nav-link" id="nav-chess">Chess AI</a>
+        <a href="../dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+        <a href="../live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
+        <a href="../chess.html" class="nav-link" id="nav-chess">Chess AI</a>
         <a href="math.html" class="nav-link active" style="color: var(--accent-purple);" id="nav-math">Math Lab</a>
         <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
-        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
+        <a id="nav-admin-link" href="../admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
@@ -252,7 +256,7 @@
           🌙
         </button>
         <div id="auth-action-container">
-          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
+          <a href="../login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
         </div>
       </div>
     </div>
@@ -262,82 +266,87 @@
     <div class="hero-card">
       <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px;">Interactive Math Path</span>
       <h1 id="page-title" style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem;">Math Lessons (Levels 1–12)</h1>
-      <p id="page-subtitle" style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Select a lesson node below to start your interactive practice session.</p>
+      <p id="page-subtitle" style="color: var(--text-muted); margin: 0 0 1rem 0; font-size: 0.95rem;">Select a lesson node below to start your interactive practice session.</p>
+      
+      <!-- Completed Percentage Display Badge -->
+      <div id="overallStatsBadge" style="display: inline-block; background: rgba(168, 85, 247, 0.15); border: 1px solid var(--accent-purple); color: var(--accent-purple); padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
+        Completed - Loading...
+      </div>
       <div id="session-info" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600; margin-top: 1rem;">Connecting session...</div>
     </div>
 
     <!-- Winding Duolingo Style Skill Path -->
-    <div class="skill-path">
+    <div class="skill-path" id="skillPathContainer">
       
       <!-- Level 1 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-1.html" class="node-btn" title="Level 1: Arithmetic Foundations">1</a>
+      <div class="path-node" data-lesson="1">
+        <a href="Lesson-1.html" class="node-btn" id="nodeBtn-1" title="Level 1: Arithmetic Foundations">1</a>
         <span class="node-label">Level 1: Arithmetic</span>
       </div>
 
       <!-- Level 2 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-2.html" class="node-btn" title="Level 2: Place Value & Operations" style="background: var(--accent-blue);">2</a>
+      <div class="path-node" data-lesson="2">
+        <a href="Lesson-2.html" class="node-btn" id="nodeBtn-2" title="Level 2: Place Value & Operations" style="background: var(--accent-blue);">2</a>
         <span class="node-label">Level 2: Place Value</span>
       </div>
 
       <!-- Level 3 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-3.html" class="node-btn" title="Level 3: Fractions & Multiplicative Thinking" style="background: var(--accent-green);">3</a>
+      <div class="path-node" data-lesson="3">
+        <a href="Lesson-3.html" class="node-btn" id="nodeBtn-3" title="Level 3: Fractions & Multiplicative Thinking" style="background: var(--accent-green);">3</a>
         <span class="node-label">Level 3: Fractions</span>
       </div>
 
       <!-- Level 4 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-4.html" class="node-btn" title="Level 4: Multi-Digit Arithmetic" style="background: #eab308;">4</a>
+      <div class="path-node" data-lesson="4">
+        <a href="Lesson-4.html" class="node-btn" id="nodeBtn-4" title="Level 4: Multi-Digit Arithmetic" style="background: #eab308;">4</a>
         <span class="node-label">Level 4: Multi-Digit</span>
       </div>
 
       <!-- Level 5 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-5.html" class="node-btn" title="Level 5: Rational Arithmetic & Coordinates" style="background: #f97316;">5</a>
+      <div class="path-node" data-lesson="5">
+        <a href="Lesson-5.html" class="node-btn" id="nodeBtn-5" title="Level 5: Rational Arithmetic & Coordinates" style="background: #f97316;">5</a>
         <span class="node-label">Level 5: Rational Math</span>
       </div>
 
       <!-- Level 6 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-6.html" class="node-btn" title="Level 6: Ratios & Proportions" style="background: var(--accent-rose);">6</a>
+      <div class="path-node" data-lesson="6">
+        <a href="Lesson-6.html" class="node-btn" id="nodeBtn-6" title="Level 6: Ratios & Proportions" style="background: var(--accent-rose);">6</a>
         <span class="node-label">Level 6: Ratios</span>
       </div>
 
       <!-- Level 7 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-7.html" class="node-btn" title="Level 7: Rational Equations & Geometry" style="background: #06b6d4;">7</a>
+      <div class="path-node" data-lesson="7">
+        <a href="Lesson-7.html" class="node-btn" id="nodeBtn-7" title="Level 7: Rational Equations & Geometry" style="background: #06b6d4;">7</a>
         <span class="node-label">Level 7: Equations</span>
       </div>
 
       <!-- Level 8 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-8.html" class="node-btn" title="Level 8: Linear Functions & Pythagorean Geometry" style="background: #8b5cf6;">8</a>
+      <div class="path-node" data-lesson="8">
+        <a href="Lesson-8.html" class="node-btn" id="nodeBtn-8" title="Level 8: Linear Functions & Pythagorean Geometry" style="background: #8b5cf6;">8</a>
         <span class="node-label">Level 8: Linear Functions</span>
       </div>
 
       <!-- Level 9 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-9.html" class="node-btn" title="Level 9: Algebraic Modeling & Quadratics" style="background: #ec4899;">9</a>
+      <div class="path-node" data-lesson="9">
+        <a href="Lesson-9.html" class="node-btn" id="nodeBtn-9" title="Level 9: Algebraic Modeling & Quadratics" style="background: #ec4899;">9</a>
         <span class="node-label">Level 9: Quadratics</span>
       </div>
 
       <!-- Level 10 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-10.html" class="node-btn" title="Level 10: Deductive Proofs & Trigonometry" style="background: #14b8a6;">10</a>
+      <div class="path-node" data-lesson="10">
+        <a href="Lesson-10.html" class="node-btn" id="nodeBtn-10" title="Level 10: Deductive Proofs & Trigonometry" style="background: #14b8a6;">10</a>
         <span class="node-label">Level 10: Trigonometry</span>
       </div>
 
       <!-- Level 11 -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-11.html" class="node-btn" title="Level 11: Advanced Functions & Unit Circle" style="background: #6366f1;">11</a>
+      <div class="path-node" data-lesson="11">
+        <a href="Lesson-11.html" class="node-btn" id="nodeBtn-11" title="Level 11: Advanced Functions & Unit Circle" style="background: #6366f1;">11</a>
         <span class="node-label">Level 11: Advanced Func</span>
       </div>
 
       <!-- Level 12 Masterclass -->
-      <div class="path-node">
-        <a href="Math Lessons/Lesson-12.html" class="node-btn" title="Level 12: De Moivre's Theorem & Polar Coordinates" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-rose)); border: 4px solid gold;">👑</a>
+      <div class="path-node" data-lesson="12">
+        <a href="Lesson-12.html" class="node-btn" id="nodeBtn-12" title="Level 12: De Moivre's Theorem & Polar Coordinates" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-rose)); border: 4px solid gold;">👑</a>
         <span class="node-label" style="border-color: var(--accent-purple); font-weight: 800;">Level 12: Masterclass</span>
       </div>
 
@@ -358,8 +367,9 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    window.addEventListener('DOMContentLoaded', () => {
-      checkUserSession();
+    window.addEventListener('DOMContentLoaded', async () => {
+      let userId = await checkUserSession();
+      loadUserProgress(userId);
     });
 
     async function checkUserSession() {
@@ -377,18 +387,45 @@
           if (userEmail === ADMIN_EMAIL && navAdminLink) {
             navAdminLink.style.display = 'block';
           }
-        } else {
-          let cachedGuest = sessionStorage.getItem('justin_guest_id');
-          if (!cachedGuest) {
-            cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
-            sessionStorage.setItem('justin_guest_id', cachedGuest);
-          }
-          document.getElementById('session-info').textContent = `Player: ${cachedGuest}`;
-          authContainer.innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>`;
+          return userEmail;
         }
-      } catch (err) {
-        document.getElementById('session-info').textContent = 'Guest Session';
+      } catch (err) {}
+
+      let cachedGuest = sessionStorage.getItem('justin_guest_id');
+      if (!cachedGuest) {
+        cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
+        sessionStorage.setItem('justin_guest_id', cachedGuest);
       }
+      document.getElementById('session-info').textContent = `Player: ${cachedGuest}`;
+      document.getElementById('auth-action-container').innerHTML = `<a href="../login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>`;
+      return cachedGuest.toLowerCase();
+    }
+
+    async function loadUserProgress(userId) {
+      const totalLessons = document.querySelectorAll('.path-node').length; // Dynamic Denominator!
+
+      let completedList = [];
+      try {
+        const { data, error } = await window.mySupabaseInstance
+          .from('user_math_stats')
+          .select('completed_lessons')
+          .eq('user_id', userId)
+          .single();
+
+        if (data && data.completed_lessons) {
+          completedList = data.completed_lessons;
+        }
+      } catch (err) {}
+
+      completedList.forEach(lessonNum => {
+        const btn = document.getElementById(`nodeBtn-${lessonNum}`);
+        if (btn) btn.classList.add('completed');
+      });
+
+      const completedCount = completedList.length;
+      const percentage = totalLessons > 0 ? ((completedCount / totalLessons) * 100).toFixed(2) : '0.00';
+
+      document.getElementById('overallStatsBadge').textContent = `Completed - ${percentage}% (${completedCount}/${totalLessons} Lessons)`;
     }
 
     async function handleSignOut() {

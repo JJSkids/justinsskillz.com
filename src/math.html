@@ -5,13 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Math Curriculum & Lessons - Justin's Skillz</title>
   
-  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
+  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../styles.css">
-  <script src="../theme.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -135,16 +135,9 @@
       position: relative;
       z-index: 2;
     }
-    /* Winding offsets mimicking Duolingo */
-    .path-node:nth-child(even) {
-      transform: translateX(50px);
-    }
-    .path-node:nth-child(3n) {
-      transform: translateX(-50px);
-    }
-    .path-node:nth-child(4n) {
-      transform: translateX(0px);
-    }
+    .path-node:nth-child(even) { transform: translateX(50px); }
+    .path-node:nth-child(3n) { transform: translateX(-50px); }
+    .path-node:nth-child(4n) { transform: translateX(0px); }
 
     .node-btn {
       width: 84px;
@@ -189,7 +182,6 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-
     .app-footer {
       border-top: 1px solid var(--border-subtle);
       padding: 2rem 1rem;
@@ -232,18 +224,18 @@
   <header class="app-header">
     <div class="header-container">
       <a href="../index.html" class="logo">
-        <img src="../Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
 
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link" id="nav-home">Home</a>
-        <a href="../dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
-        <a href="../live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
-        <a href="../chess.html" class="nav-link" id="nav-chess">Chess AI</a>
+        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
+        <a href="chess.html" class="nav-link" id="nav-chess">Chess AI</a>
         <a href="math.html" class="nav-link active" style="color: var(--accent-purple);" id="nav-math">Math Lab</a>
         <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
-        <a id="nav-admin-link" href="../admin.html" class="nav-link" style="display: none;">Admin</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
@@ -256,7 +248,7 @@
           🌙
         </button>
         <div id="auth-action-container">
-          <a href="../login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
         </div>
       </div>
     </div>
@@ -268,88 +260,25 @@
       <h1 id="page-title" style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem;">Math Lessons (Levels 1–12)</h1>
       <p id="page-subtitle" style="color: var(--text-muted); margin: 0 0 1rem 0; font-size: 0.95rem;">Select a lesson node below to start your interactive practice session.</p>
       
-      <!-- Completed Percentage Display Badge -->
       <div id="overallStatsBadge" style="display: inline-block; background: rgba(168, 85, 247, 0.15); border: 1px solid var(--accent-purple); color: var(--accent-purple); padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
         Completed - Loading...
       </div>
       <div id="session-info" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600; margin-top: 1rem;">Connecting session...</div>
     </div>
 
-    <!-- Winding Duolingo Style Skill Path -->
     <div class="skill-path" id="skillPathContainer">
-      
-      <!-- Level 1 -->
-      <div class="path-node" data-lesson="1">
-        <a href="Math Lessons/Lesson-1.html" class="node-btn" id="nodeBtn-1" title="Level 1: Arithmetic Foundations">1</a>
-        <span class="node-label">Level 1: Arithmetic</span>
-      </div>
-
-      <!-- Level 2 -->
-      <div class="path-node" data-lesson="2">
-        <a href="Math Lessons/Lesson-2.html" class="node-btn" id="nodeBtn-2" title="Level 2: Place Value & Operations" style="background: var(--accent-blue);">2</a>
-        <span class="node-label">Level 2: Place Value</span>
-      </div>
-
-      <!-- Level 3 -->
-      <div class="path-node" data-lesson="3">
-        <a href="Math Lessons/Lesson-3.html" class="node-btn" id="nodeBtn-3" title="Level 3: Fractions & Multiplicative Thinking" style="background: var(--accent-green);">3</a>
-        <span class="node-label">Level 3: Fractions</span>
-      </div>
-
-      <!-- Level 4 -->
-      <div class="path-node" data-lesson="4">
-        <a href="Math Lessons/Lesson-4.html" class="node-btn" id="nodeBtn-4" title="Level 4: Multi-Digit Arithmetic" style="background: #eab308;">4</a>
-        <span class="node-label">Level 4: Multi-Digit</span>
-      </div>
-
-      <!-- Level 5 -->
-      <div class="path-node" data-lesson="5">
-        <a href="Math Lessons/Lesson-5.html" class="node-btn" id="nodeBtn-5" title="Level 5: Rational Arithmetic & Coordinates" style="background: #f97316;">5</a>
-        <span class="node-label">Level 5: Rational Math</span>
-      </div>
-
-      <!-- Level 6 -->
-      <div class="path-node" data-lesson="6">
-        <a href="Math Lessons/Lesson-6.html" class="node-btn" id="nodeBtn-6" title="Level 6: Ratios & Proportions" style="background: var(--accent-rose);">6</a>
-        <span class="node-label">Level 6: Ratios</span>
-      </div>
-
-      <!-- Level 7 -->
-      <div class="path-node" data-lesson="7">
-        <a href="Math Lessons/Lesson-7.html" class="node-btn" id="nodeBtn-7" title="Level 7: Rational Equations & Geometry" style="background: #06b6d4;">7</a>
-        <span class="node-label">Level 7: Equations</span>
-      </div>
-
-      <!-- Level 8 -->
-      <div class="path-node" data-lesson="8">
-        <a href="Math Lessons/Lesson-8.html" class="node-btn" id="nodeBtn-8" title="Level 8: Linear Functions & Pythagorean Geometry" style="background: #8b5cf6;">8</a>
-        <span class="node-label">Level 8: Linear Functions</span>
-      </div>
-
-      <!-- Level 9 -->
-      <div class="path-node" data-lesson="9">
-        <a href="Math Lessons/Lesson-9.html" class="node-btn" id="nodeBtn-9" title="Level 9: Algebraic Modeling & Quadratics" style="background: #ec4899;">9</a>
-        <span class="node-label">Level 9: Quadratics</span>
-      </div>
-
-      <!-- Level 10 -->
-      <div class="path-node" data-lesson="10">
-        <a href="Math Lessons/Lesson-10.html" class="node-btn" id="nodeBtn-10" title="Level 10: Deductive Proofs & Trigonometry" style="background: #14b8a6;">10</a>
-        <span class="node-label">Level 10: Trigonometry</span>
-      </div>
-
-      <!-- Level 11 -->
-      <div class="path-node" data-lesson="11">
-        <a href="Math Lessons/Lesson-11.html" class="node-btn" id="nodeBtn-11" title="Level 11: Advanced Functions & Unit Circle" style="background: #6366f1;">11</a>
-        <span class="node-label">Level 11: Advanced Func</span>
-      </div>
-
-      <!-- Level 12 Masterclass -->
-      <div class="path-node" data-lesson="12">
-        <a href="Math Lessons/Lesson-12.html" class="node-btn" id="nodeBtn-12" title="Level 12: De Moivre's Theorem & Polar Coordinates" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-rose)); border: 4px solid gold;">👑</a>
-        <span class="node-label" style="border-color: var(--accent-purple); font-weight: 800;">Level 12: Masterclass</span>
-      </div>
-
+      <div class="path-node" data-lesson="1"><a href="Math Lessons/Lesson-1.html" class="node-btn" id="nodeBtn-1" title="Level 1: Arithmetic Foundations">1</a><span class="node-label">Level 1: Arithmetic</span></div>
+      <div class="path-node" data-lesson="2"><a href="Math Lessons/Lesson-2.html" class="node-btn" id="nodeBtn-2" title="Level 2: Place Value & Operations" style="background: var(--accent-blue);">2</a><span class="node-label">Level 2: Place Value</span></div>
+      <div class="path-node" data-lesson="3"><a href="Math Lessons/Lesson-3.html" class="node-btn" id="nodeBtn-3" title="Level 3: Fractions & Multiplicative Thinking" style="background: var(--accent-green);">3</a><span class="node-label">Level 3: Fractions</span></div>
+      <div class="path-node" data-lesson="4"><a href="Math Lessons/Lesson-4.html" class="node-btn" id="nodeBtn-4" title="Level 4: Multi-Digit Arithmetic" style="background: #eab308;">4</a><span class="node-label">Level 4: Multi-Digit</span></div>
+      <div class="path-node" data-lesson="5"><a href="Math Lessons/Lesson-5.html" class="node-btn" id="nodeBtn-5" title="Level 5: Rational Arithmetic & Coordinates" style="background: #f97316;">5</a><span class="node-label">Level 5: Rational Math</span></div>
+      <div class="path-node" data-lesson="6"><a href="Math Lessons/Lesson-6.html" class="node-btn" id="nodeBtn-6" title="Level 6: Ratios & Proportions" style="background: var(--accent-rose);">6</a><span class="node-label">Level 6: Ratios</span></div>
+      <div class="path-node" data-lesson="7"><a href="Math Lessons/Lesson-7.html" class="node-btn" id="nodeBtn-7" title="Level 7: Rational Equations & Geometry" style="background: #06b6d4;">7</a><span class="node-label">Level 7: Equations</span></div>
+      <div class="path-node" data-lesson="8"><a href="Math Lessons/Lesson-8.html" class="node-btn" id="nodeBtn-8" title="Level 8: Linear Functions & Pythagorean Geometry" style="background: #8b5cf6;">8</a><span class="node-label">Level 8: Linear Functions</span></div>
+      <div class="path-node" data-lesson="9"><a href="Math Lessons/Lesson-9.html" class="node-btn" id="nodeBtn-9" title="Level 9: Algebraic Modeling & Quadratics" style="background: #ec4899;">9</a><span class="node-label">Level 9: Quadratics</span></div>
+      <div class="path-node" data-lesson="10"><a href="Math Lessons/Lesson-10.html" class="node-btn" id="nodeBtn-10" title="Level 10: Deductive Proofs & Trigonometry" style="background: #14b8a6;">10</a><span class="node-label">Level 10: Trigonometry</span></div>
+      <div class="path-node" data-lesson="11"><a href="Math Lessons/Lesson-11.html" class="node-btn" id="nodeBtn-11" title="Level 11: Advanced Functions & Unit Circle" style="background: #6366f1;">11</a><span class="node-label">Level 11: Advanced Func</span></div>
+      <div class="path-node" data-lesson="12"><a href="Math Lessons/Lesson-12.html" class="node-btn" id="nodeBtn-12" title="Level 12: De Moivre's Theorem & Polar Coordinates" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-rose)); border: 4px solid gold;">👑</a><span class="node-label" style="border-color: var(--accent-purple); font-weight: 800;">Level 12: Masterclass</span></div>
     </div>
   </main>
 
@@ -397,14 +326,14 @@
         sessionStorage.setItem('justin_guest_id', cachedGuest);
       }
       document.getElementById('session-info').textContent = `Player: ${cachedGuest}`;
-      document.getElementById('auth-action-container').innerHTML = `<a href="../login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>`;
+      document.getElementById('auth-action-container').innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>`;
       return cachedGuest.toLowerCase();
     }
 
     async function loadUserProgress(userId) {
-      const totalLessons = document.querySelectorAll('.path-node').length; // Dynamic Denominator!
-
+      const totalLessons = document.querySelectorAll('.path-node').length;
       let completedList = [];
+
       try {
         const { data, error } = await window.mySupabaseInstance
           .from('user_math_stats')
@@ -416,6 +345,26 @@
           completedList = data.completed_lessons;
         }
       } catch (err) {}
+
+      for (let i = 1; i <= totalLessons; i++) {
+        if (
+          localStorage.getItem(`lesson_${i}_completed`) === 'true' ||
+          localStorage.getItem(`math_lesson_${i}`) === 'completed' ||
+          localStorage.getItem(`completed_lesson_${i}`) === 'true' ||
+          localStorage.getItem(`lesson${i}`) === 'completed'
+        ) {
+          if (!completedList.includes(i)) {
+            completedList.push(i);
+          }
+        }
+      }
+
+      try {
+        const localArr = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
+        localArr.forEach(n => {
+          if (!completedList.includes(n)) completedList.push(n);
+        });
+      } catch(e) {}
 
       completedList.forEach(lessonNum => {
         const btn = document.getElementById(`nodeBtn-${lessonNum}`);

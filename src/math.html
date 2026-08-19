@@ -86,13 +86,44 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
+    /* Header Nav Links */
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .nav-link-btn {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+    .nav-link-btn:hover {
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.08);
+    }
+    .nav-link-btn.highlight {
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+      color: white;
+    }
+    .nav-link-btn.highlight:hover {
+      opacity: 0.9;
+    }
+
     .main-container {
       max-width: 900px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
 
-    /* Duolingo-style Sticky Section Bar */
+    /* Sticky Section Selector Bar */
     .duo-nav-bar {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -297,13 +328,17 @@
         <img src="../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
-      <a href="../index.html" class="btn btn-secondary">← Dashboard</a>
+      <nav class="nav-links">
+        <a href="../index.html" class="nav-link-btn">Home</a>
+        <a href="../dashboard.html" class="nav-link-btn highlight">Dashboard</a>
+        <a href="../admin.html" class="nav-link-btn">Admin</a>
+      </nav>
     </div>
   </header>
 
   <main class="main-container">
     
-    <!-- Duolingo-style Sticky Section Selector Bar -->
+    <!-- Section Selector Bar -->
     <div class="duo-nav-bar">
       <div class="duo-section-info">
         <span id="activeSectionLabel">Current Section</span>
@@ -670,7 +705,6 @@
     const activeLabel = document.getElementById('activeSectionLabel');
     const showAllBtn = document.getElementById('toggleShowAllBtn');
 
-    // Build Modal Tiles
     function buildModalGrid() {
       modalGrid.innerHTML = '';
       sectionData.forEach((sec, idx) => {
@@ -700,7 +734,6 @@
         activeLabel.textContent = `Active Section (${target.badge})`;
       }
 
-      // Hide all sections, show only selected
       document.querySelectorAll('.grade-section').forEach(el => {
         if (el.getAttribute('data-section-id') === id) {
           el.style.display = 'block';
@@ -731,12 +764,10 @@
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Initial load check
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);
 
-      // Lesson completion status sync from localStorage
       let completedList = [];
       try {
         completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
@@ -744,7 +775,6 @@
         completedList = [];
       }
 
-      // Check completions across unit keys
       const allKeys = [1, 'g1-2', 'g2-1', 'g2-2', 'g3-1', 'g3-2', 'g4-1', 'g4-2', 'g5-1', 'g5-2', 'g6-1', 'g6-2', 'g7-1', 'g7-2', 'g8-1', 'g8-2', 'g9-1', 'g9-2', 'g10-1', 'g10-2', 'g11-1', 'g11-2', 'g12-1', 'g12-2', 'other-1', 'other-2'];
       
       allKeys.forEach(key => {

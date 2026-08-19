@@ -2,13 +2,13 @@
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Duolingo Math - Justin's Skillz</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Curriculum Hub - Justin's Skillz</title>
   
-  <link rel="icon" href="https://www.duolingo.com/favicon.ico">
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../styles.css">
   <script src="../theme.js" defer></script>
@@ -17,203 +17,185 @@
 
   <style>
     :root, [data-theme="dark"] {
-      --duo-green: #58cc02;
-      --duo-green-hover: #46a302;
-      --duo-green-border: #46a302;
-      --duo-blue: #1cb0f6;
-      --duo-purple: #ce82ff;
-      --bg-primary: #131f24;
-      --bg-card: #202f36;
-      --border-subtle: #37464f;
-      --text-main: #ffffff;
-      --text-muted: #afafaf;
-      --radius-pill: 999px;
-      --radius-card: 16px;
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-rose: #f43f5e;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
     }
     [data-theme="light"] {
-      --bg-primary: #f7f7f7;
+      --bg-primary: #f8fafc;
       --bg-card: #ffffff;
-      --border-subtle: #e5e5e5;
-      --text-main: #4b4b4b;
-      --text-muted: #777777;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-rose: #e11d48;
+      --header-bg: rgba(248, 250, 252, 0.85);
     }
-
     body {
       background-color: var(--bg-primary);
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       margin: 0;
       padding: 0;
-      -webkit-font-smoothing: antialiased;
     }
-
-    /* Duolingo App Top Header */
-    .duo-header {
-      background: var(--bg-card);
-      border-bottom: 2px solid var(--border-subtle);
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
       position: sticky;
       top: 0;
       z-index: 100;
       padding: 0.75rem 1.5rem;
     }
-    .duo-header-inner {
-      max-width: 900px;
+    .header-container {
+      max-width: 1200px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .duo-logo {
+    .logo {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.75rem;
       text-decoration: none;
       color: var(--text-main);
-      font-weight: 900;
-      font-size: 1.25rem;
-      letter-spacing: -0.02em;
+      font-weight: 800;
+      font-size: 1.1rem;
     }
-    .duo-logo span { color: var(--duo-green); }
-
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
     .main-container {
-      max-width: 750px;
+      max-width: 900px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
 
-    /* Duolingo Sticky Section Bar (Unit/Section Header) */
-    .duo-section-bar {
+    /* Duolingo-style Sticky Section Bar */
+    .duo-nav-bar {
       background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-bottom: 4px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.75rem;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
       position: sticky;
       top: 4.5rem;
       z-index: 90;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+      backdrop-filter: blur(10px);
     }
-    .duo-section-titles span {
+    .duo-section-info h2 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+    .duo-section-info span {
       font-size: 0.75rem;
-      font-weight: 900;
-      color: var(--duo-green);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-    .duo-section-titles h2 {
-      margin: 0.2rem 0 0 0;
-      font-size: 1.2rem;
-      font-weight: 900;
-    }
-
-    /* Duolingo Buttons (3D Chunky Style) */
-    .duo-btn {
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--accent-purple);
       font-weight: 800;
-      font-size: 0.85rem;
       text-transform: uppercase;
-      padding: 0.75rem 1.25rem;
-      border-radius: var(--radius-pill);
-      border: none;
-      border-bottom: 4px solid rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: all 0.1s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      text-decoration: none;
+      letter-spacing: 0.05em;
     }
-    .duo-btn:active {
-      border-bottom-width: 0px;
-      transform: translateY(4px);
-    }
-    .duo-btn-green {
-      background-color: var(--duo-green);
-      color: white;
-      border-bottom-color: var(--duo-green-border);
-    }
-    .duo-btn-green:hover { background-color: var(--duo-green-hover); }
-    
-    .duo-btn-secondary {
-      background-color: transparent;
-      border: 2px solid var(--border-subtle);
-      border-bottom: 4px solid var(--border-subtle);
-      color: var(--text-main);
-    }
-    .duo-btn-secondary:hover { background-color: rgba(255,255,255,0.05); }
 
-    /* Grade Sections & Lessons */
+    /* Grade Sections */
     .grade-section {
-      margin-bottom: 3rem;
-      animation: fadeIn 0.25s ease-in-out;
+      margin-bottom: 2.5rem;
+      animation: fadeIn 0.3s ease-in-out;
     }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(6px); }
       to { opacity: 1; transform: translateY(0); }
     }
-    .grade-banner {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      padding: 1rem 1.25rem;
-      margin-bottom: 1.25rem;
+    .grade-title-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border-subtle);
     }
-    .grade-badge-tag {
-      font-size: 0.7rem;
-      font-weight: 900;
+    .grade-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
       text-transform: uppercase;
-      background: rgba(88, 204, 2, 0.15);
-      color: var(--duo-green);
+      letter-spacing: 0.05em;
+      background: rgba(168, 85, 247, 0.15);
+      color: var(--accent-purple);
       padding: 0.3rem 0.75rem;
-      border-radius: var(--radius-pill);
+      border-radius: 99px;
     }
-
     .lessons-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 1rem;
     }
-    @media(min-width: 600px) {
-      .lessons-grid { grid-template-columns: 1fr 1fr; }
+    @media(min-width: 640px) {
+      .lessons-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
-
     .lesson-card {
       background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-bottom: 5px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      padding: 1.25rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.25rem 1.5rem;
       text-decoration: none;
       color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: transform 0.1s ease, border-color 0.1s ease;
+      transition: all 0.2s ease;
       position: relative;
+      overflow: hidden;
     }
     .lesson-card:hover {
-      border-color: var(--duo-blue);
+      border-color: var(--accent-purple);
       transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
     }
     .lesson-card.completed {
-      border-color: var(--duo-green);
-      border-bottom-color: var(--duo-green-border);
+      border-color: var(--accent-green);
+    }
+    .lesson-card.completed::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent-green);
     }
 
-    /* Invisible Section Drawer Modal */
+    /* Modal Drawer Overlay */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(5px);
       z-index: 1000;
       display: flex;
       align-items: center;
@@ -221,7 +203,7 @@
       padding: 1rem;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.25s ease;
     }
     .modal-overlay.active {
       opacity: 1;
@@ -229,392 +211,418 @@
     }
     .modal-content {
       background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: 20px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
       width: 100%;
-      max-width: 550px;
+      max-width: 600px;
       max-height: 85vh;
       overflow-y: auto;
-      padding: 1.5rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      padding: 1.75rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
       transform: scale(0.95);
-      transition: transform 0.2s ease;
+      transition: transform 0.25s ease;
     }
-    .modal-overlay.active .modal-content { transform: scale(1); }
-    
+    .modal-overlay.active .modal-content {
+      transform: scale(1);
+    }
     .modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 1.25rem;
       padding-bottom: 0.75rem;
-      border-bottom: 2px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
     }
     .modal-sections-grid {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: 1fr 1fr;
       gap: 0.75rem;
     }
-    @media(min-width: 500px) {
-      .modal-sections-grid { grid-template-columns: 1fr 1fr; }
-    }
-    .section-tile {
+    .section-select-tile {
       background: var(--bg-primary);
-      border: 2px solid var(--border-subtle);
-      border-bottom: 4px solid var(--border-subtle);
-      border-radius: var(--radius-card);
-      padding: 1rem;
+      border: 1px solid var(--border-subtle);
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-md);
       cursor: pointer;
-      text-align: left;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.9rem;
       color: var(--text-main);
-      transition: all 0.1s ease;
+      text-align: left;
+      transition: all 0.2s;
     }
-    .section-tile:hover {
-      border-color: var(--duo-green);
-      background: rgba(88, 204, 2, 0.05);
+    .section-select-tile:hover {
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.08);
     }
-    .section-tile.active {
-      border-color: var(--duo-green);
-      border-bottom-color: var(--duo-green-border);
-      background: rgba(88, 204, 2, 0.1);
+    .section-select-tile.active {
+      border-color: var(--accent-green);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.6rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-primary {
+      background: var(--accent-purple);
+      color: white;
+    }
+    .btn-primary:hover {
+      opacity: 0.9;
+    }
+    .btn-secondary {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+    .btn-secondary:hover {
+      border-color: var(--accent-purple);
     }
   </style>
 </head>
 <body>
 
-  <header class="duo-header">
-    <div class="duo-header-inner">
-      <a href="../index.html" class="duo-logo">
-        <img src="../Justin's Skillz.jpg" alt="Logo" style="width:36px; height:36px; border-radius:50%; border: 2px solid var(--duo-green);">
-        JUSTIN'S <span>MATH</span>
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
-      <a href="../index.html" class="duo-btn duo-btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.75rem;">Dashboard</a>
+      <a href="../index.html" class="btn btn-secondary">← Dashboard</a>
     </div>
   </header>
 
   <main class="main-container">
     
-    <!-- Duolingo Section Selector Bar -->
-    <div class="duo-section-bar">
-      <div class="duo-section-titles">
-        <span id="activeSectionLabel">CURRENT SECTION</span>
+    <!-- Duolingo-style Sticky Section Selector Bar -->
+    <div class="duo-nav-bar">
+      <div class="duo-section-info">
+        <span id="activeSectionLabel">Current Section</span>
         <h2 id="activeSectionTitle">Grade 1: Foundations</h2>
       </div>
       <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <button id="toggleShowAllBtn" class="duo-btn duo-btn-secondary" onclick="toggleShowAll()">Show All</button>
-        <button id="openModalBtn" class="duo-btn duo-btn-green">Sections ▾</button>
+        <button id="toggleShowAllBtn" class="btn btn-secondary" onclick="toggleShowAll()">Show All</button>
+        <button id="openModalBtn" class="btn btn-primary">Jump to Section ▾</button>
       </div>
     </div>
 
     <!-- GRADE 1 -->
     <div class="grade-section" data-section-id="grade-1">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 1: Foundations</h3>
-        <span class="grade-badge-tag">Elementary</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 1: Foundations</h2>
+        <span class="grade-badge">Elementary</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-1.html" class="lesson-card" id="lessonCard-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Basic Addition & Subtraction</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Basic Addition & Subtraction</div>
           </div>
-          <div id="statusIcon-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g1-2.html" class="lesson-card" id="lessonCard-g1-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Shapes & Measurement Basics</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Shapes & Measurement Basics</div>
           </div>
-          <div id="statusIcon-g1-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g1-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 2 -->
     <div class="grade-section" data-section-id="grade-2" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 2: Expansion to 100</h3>
-        <span class="grade-badge-tag">Elementary</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 2: Expansion to 100</h2>
+        <span class="grade-badge">Elementary</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g2-1.html" class="lesson-card" id="lessonCard-g2-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Double-Digit Arithmetic</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Double-Digit Arithmetic</div>
           </div>
-          <div id="statusIcon-g2-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g2-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g2-2.html" class="lesson-card" id="lessonCard-g2-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Arrays & Multiplication</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Introduction to Arrays & Multiplication</div>
           </div>
-          <div id="statusIcon-g2-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g2-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 3 -->
     <div class="grade-section" data-section-id="grade-3" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 3: Multiplication & Fractions</h3>
-        <span class="grade-badge-tag">Elementary</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 3: Multiplication & Fractions</h2>
+        <span class="grade-badge">Elementary</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g3-1.html" class="lesson-card" id="lessonCard-g3-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Multiplication Tables & Division</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Multiplication Tables & Division</div>
           </div>
-          <div id="statusIcon-g3-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g3-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g3-2.html" class="lesson-card" id="lessonCard-g3-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Intro to Fractions</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Intro to Fractions</div>
           </div>
-          <div id="statusIcon-g3-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g3-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 4 -->
     <div class="grade-section" data-section-id="grade-4" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 4: Multi-Digit Operations</h3>
-        <span class="grade-badge-tag">Elementary</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 4: Multi-Digit Operations</h2>
+        <span class="grade-badge">Elementary</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g4-1.html" class="lesson-card" id="lessonCard-g4-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Long Division & Factors</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Long Division & Factors</div>
           </div>
-          <div id="statusIcon-g4-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g4-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g4-2.html" class="lesson-card" id="lessonCard-g4-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Decimals & Angles</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Decimals & Angle Measurement</div>
           </div>
-          <div id="statusIcon-g4-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g4-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 5 -->
     <div class="grade-section" data-section-id="grade-5" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 5: Advanced Fractions & Volume</h3>
-        <span class="grade-badge-tag">Elementary</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 5: Advanced Fractions & Volume</h2>
+        <span class="grade-badge">Elementary</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g5-1.html" class="lesson-card" id="lessonCard-g5-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Unlike Fractions</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Adding & Subtracting Unlike Fractions</div>
           </div>
-          <div id="statusIcon-g5-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g5-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g5-2.html" class="lesson-card" id="lessonCard-g5-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Volume & Coordinate Planes</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Volume & Coordinate Planes</div>
           </div>
-          <div id="statusIcon-g5-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g5-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 6 -->
     <div class="grade-section" data-section-id="grade-6" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 6: Ratios & Expressions</h3>
-        <span class="grade-badge-tag" style="background: rgba(28, 176, 246, 0.15); color: var(--duo-blue);">Middle School</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 6: Ratios & Expressions</h2>
+        <span class="grade-badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">Middle School</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g6-1.html" class="lesson-card" id="lessonCard-g6-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Ratios & Unit Rates</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Ratios & Unit Rates</div>
           </div>
-          <div id="statusIcon-g6-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g6-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g6-2.html" class="lesson-card" id="lessonCard-g6-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Variables & Expressions</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Variables & Algebraic Expressions</div>
           </div>
-          <div id="statusIcon-g6-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g6-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 7 -->
     <div class="grade-section" data-section-id="grade-7" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 7: Proportions & Negatives</h3>
-        <span class="grade-badge-tag" style="background: rgba(28, 176, 246, 0.15); color: var(--duo-blue);">Middle School</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 7: Proportions & Negative Numbers</h2>
+        <span class="grade-badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">Middle School</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g7-1.html" class="lesson-card" id="lessonCard-g7-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Negative Numbers & Absolute Value</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Negative Numbers & Absolute Value</div>
           </div>
-          <div id="statusIcon-g7-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g7-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g7-2.html" class="lesson-card" id="lessonCard-g7-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Proportions & Percents</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Proportional Relationships & Percents</div>
           </div>
-          <div id="statusIcon-g7-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g7-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 8 -->
     <div class="grade-section" data-section-id="grade-8" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 8: Linear Equations & Geometry</h3>
-        <span class="grade-badge-tag" style="background: rgba(28, 176, 246, 0.15); color: var(--duo-blue);">Middle School</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 8: Linear Equations & Geometry</h2>
+        <span class="grade-badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">Middle School</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g8-1.html" class="lesson-card" id="lessonCard-g8-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Linear Equations</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Solving Linear Equations</div>
           </div>
-          <div id="statusIcon-g8-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g8-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g8-2.html" class="lesson-card" id="lessonCard-g8-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Pythagorean Theorem</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Pythagorean Theorem & Transformations</div>
           </div>
-          <div id="statusIcon-g8-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g8-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 9 -->
     <div class="grade-section" data-section-id="grade-9" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 9: Algebra I</h3>
-        <span class="grade-badge-tag" style="background: rgba(206, 130, 255, 0.15); color: var(--duo-purple);">High School</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 9: Algebra I</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g9-1.html" class="lesson-card" id="lessonCard-g9-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Systems of Linear Equations</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Systems of Linear Equations</div>
           </div>
-          <div id="statusIcon-g9-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g9-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g9-2.html" class="lesson-card" id="lessonCard-g9-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Functions & Polynomials</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Introduction to Functions & Polynomials</div>
           </div>
-          <div id="statusIcon-g9-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g9-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 10 -->
     <div class="grade-section" data-section-id="grade-10" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 10: Geometry & Trigonometry</h3>
-        <span class="grade-badge-tag" style="background: rgba(206, 130, 255, 0.15); color: var(--duo-purple);">High School</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 10: Geometry & Trigonometry</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g10-1.html" class="lesson-card" id="lessonCard-g10-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Euclidean Geometry & Proofs</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Euclidean Geometry & Proofs</div>
           </div>
-          <div id="statusIcon-g10-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g10-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g10-2.html" class="lesson-card" id="lessonCard-g10-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Right Triangle Trig</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Right Triangle Trigonometry</div>
           </div>
-          <div id="statusIcon-g10-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g10-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 11 -->
     <div class="grade-section" data-section-id="grade-11" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 11: Functions & Advanced Algebra</h3>
-        <span class="grade-badge-tag" style="background: rgba(206, 130, 255, 0.15); color: var(--duo-purple);">High School</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 11: Functions & Advanced Algebra</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g11-1.html" class="lesson-card" id="lessonCard-g11-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Quadratic Functions & Completing Square</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Quadratic Functions & Completing the Square</div>
           </div>
-          <div id="statusIcon-g11-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g11-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g11-2.html" class="lesson-card" id="lessonCard-g11-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Rational & Exponential Functions</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Rational & Exponential Functions</div>
           </div>
-          <div id="statusIcon-g11-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g11-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- GRADE 12 -->
     <div class="grade-section" data-section-id="grade-12" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">Grade 12: Calculus & Vectors</h3>
-        <span class="grade-badge-tag" style="background: rgba(206, 130, 255, 0.15); color: var(--duo-purple);">High School</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 12: Calculus & Vectors</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-g12-1.html" class="lesson-card" id="lessonCard-g12-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Limits & Derivatives</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Limits & Derivatives</div>
           </div>
-          <div id="statusIcon-g12-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g12-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-g12-2.html" class="lesson-card" id="lessonCard-g12-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 900; margin-bottom: 0.15rem;">UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Integrals & Vector Spaces</div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Integrals & Vector Spaces</div>
           </div>
-          <div id="statusIcon-g12-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-g12-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
 
     <!-- OTHER: UNIVERSITY & ADVANCED TOPICS -->
     <div class="grade-section" data-section-id="other" style="display:none;">
-      <div class="grade-banner">
-        <h3 style="margin: 0; font-size: 1.05rem; font-weight: 900;">OTHER: University & Advanced Topics</h3>
-        <span class="grade-badge-tag" style="background: rgba(88, 204, 2, 0.15); color: var(--duo-green);">Elite & Competition</span>
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">OTHER: University & Advanced Topics</h2>
+        <span class="grade-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">Elite & Competition</span>
       </div>
       <div class="lessons-grid">
         <a href="Math Lessons/lesson-other-1.html" class="lesson-card" id="lessonCard-other-1">
           <div>
-            <div style="font-size: 0.7rem; color: var(--duo-green); font-weight: 900; margin-bottom: 0.15rem;">ADVANCED UNIT 1</div>
-            <div style="font-weight: 800; font-size: 1rem;">Complex Numbers & Polar Forms</div>
+            <div style="font-size: 0.75rem; color: var(--accent-green); font-weight: 700; margin-bottom: 0.2rem;">ADVANCED UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Complex Numbers & Polar Forms</div>
           </div>
-          <div id="statusIcon-other-1" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-other-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
         <a href="Math Lessons/lesson-other-2.html" class="lesson-card" id="lessonCard-other-2">
           <div>
-            <div style="font-size: 0.7rem; color: var(--duo-green); font-weight: 900; margin-bottom: 0.15rem;">ADVANCED UNIT 2</div>
-            <div style="font-weight: 800; font-size: 1rem;">Competition Math & De Moivre's Theorem</div>
+            <div style="font-size: 0.75rem; color: var(--accent-green); font-weight: 700; margin-bottom: 0.2rem;">ADVANCED UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Competition Math Set & De Moivre's Theorem</div>
           </div>
-          <div id="statusIcon-other-2" style="font-size: 1.1rem; color: var(--text-muted);">○</div>
+          <div id="statusIcon-other-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
         </a>
       </div>
     </div>
@@ -625,8 +633,8 @@
   <div id="sectionsModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
-        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 900;">Select a Section</h3>
-        <button id="closeModalBtn" class="duo-btn duo-btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">✕</button>
+        <h3 style="margin: 0; font-size: 1.1rem;">Select a Section</h3>
+        <button id="closeModalBtn" class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">✕</button>
       </div>
       <div class="modal-sections-grid" id="modalSectionsGrid">
         <!-- Populated via JS -->
@@ -662,14 +670,15 @@
     const activeLabel = document.getElementById('activeSectionLabel');
     const showAllBtn = document.getElementById('toggleShowAllBtn');
 
+    // Build Modal Tiles
     function buildModalGrid() {
       modalGrid.innerHTML = '';
       sectionData.forEach((sec, idx) => {
         const tile = document.createElement('button');
-        tile.className = `section-tile ${sec.id === currentSectionId ? 'active' : ''}`;
+        tile.className = `section-select-tile ${sec.id === currentSectionId ? 'active' : ''}`;
         tile.innerHTML = `
-          <div style="font-size: 0.65rem; color: var(--duo-green); font-weight: 900; margin-bottom: 0.1rem;">SECTION ${idx + 1}</div>
-          <div style="font-weight: 800; font-size: 0.9rem;">${sec.name}</div>
+          <div style="font-size: 0.7rem; color: var(--text-muted); margin-bottom: 0.1rem;">SECTION ${idx + 1}</div>
+          <div>${sec.name}</div>
         `;
         tile.addEventListener('click', () => {
           selectSection(sec.id);
@@ -688,9 +697,10 @@
       const target = sectionData.find(s => s.id === id);
       if (target) {
         activeTitle.textContent = target.name;
-        activeLabel.textContent = `SECTION • ${target.badge.toUpperCase()}`;
+        activeLabel.textContent = `Active Section (${target.badge})`;
       }
 
+      // Hide all sections, show only selected
       document.querySelectorAll('.grade-section').forEach(el => {
         if (el.getAttribute('data-section-id') === id) {
           el.style.display = 'block';
@@ -706,8 +716,8 @@
       isShowingAll = !isShowingAll;
       if (isShowingAll) {
         showAllBtn.textContent = 'Focus Mode';
-        activeLabel.textContent = 'FULL CURRICULUM';
-        activeTitle.textContent = 'All Grades 1 to 12 & Advanced';
+        activeLabel.textContent = 'Full Curriculum View';
+        activeTitle.textContent = 'All Grades 1 to 12 & University';
         document.querySelectorAll('.grade-section').forEach(el => el.style.display = 'block');
       } else {
         selectSection(currentSectionId);
@@ -715,16 +725,18 @@
     }
 
     function openModal() { modal.classList.add('active'); }
-    function closeModal() { modal.classList.remove('icon-inactive') || modal.classList.remove('active'); }
+    function closeModal() { modal.classList.remove('active'); }
 
     openBtn.addEventListener('click', openModal);
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
+    // Initial load check
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);
 
+      // Lesson completion status sync from localStorage
       let completedList = [];
       try {
         completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
@@ -732,6 +744,7 @@
         completedList = [];
       }
 
+      // Check completions across unit keys
       const allKeys = [1, 'g1-2', 'g2-1', 'g2-2', 'g3-1', 'g3-2', 'g4-1', 'g4-2', 'g5-1', 'g5-2', 'g6-1', 'g6-2', 'g7-1', 'g7-2', 'g8-1', 'g8-2', 'g9-1', 'g9-2', 'g10-1', 'g10-2', 'g11-1', 'g11-2', 'g12-1', 'g12-2', 'other-1', 'other-2'];
       
       allKeys.forEach(key => {
@@ -745,8 +758,8 @@
         if (isDone && card && icon) {
           card.classList.add('completed');
           icon.textContent = '✓';
-          icon.style.color = 'var(--duo-green)';
-          icon.style.fontWeight = '900';
+          icon.style.color = 'var(--accent-green)';
+          icon.style.fontWeight = '800';
         }
       });
     });

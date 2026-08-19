@@ -3,7 +3,7 @@
 async function markLessonComplete(lessonNum) {
   lessonNum = parseInt(lessonNum, 10);
 
-  // 1. Update localStorage immediately (both array and individual keys)
+  // 1. Update localStorage immediately (supporting all common fallback keys)
   let completedList = [];
   try {
     completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
@@ -18,20 +18,23 @@ async function markLessonComplete(lessonNum) {
   localStorage.setItem('completed_math_lessons', JSON.stringify(completedList));
   localStorage.setItem(`lesson_${lessonNum}_completed`, 'true');
   localStorage.setItem(`math_lesson_${lessonNum}`, 'completed');
+  localStorage.setItem(`completed_lesson_${lessonNum}`, 'true');
 
-  // 2. Sync with Supabase globally
+  // 2. Sync globally with Supabase
   try {
     if (window.supabase && window.mySupabaseInstance) {
-      // Determine user identifier (Supabase session or guest ID)
       let userId = sessionStorage.getItem('justin_guest_id');
+      if (!userId) {
+        userId = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
+        sessionStorage.setItem('justin_guest_id', userId);
+      }
+
       const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
-      
       if (session && session.user) {
         userId = session.user.email ? session.user.email.toLowerCase() : session.user.id;
       }
 
       if (userId) {
-        // Fetch existing record
         const { data: existing } = await window.mySupabaseInstance
           .from('user_math_stats')
           .select('completed_lessons')
@@ -43,7 +46,6 @@ async function markLessonComplete(lessonNum) {
           dbLessons.push(lessonNum);
         }
 
-        // Upsert updated list
         await window.mySupabaseInstance
           .from('user_math_stats')
           .upsert({

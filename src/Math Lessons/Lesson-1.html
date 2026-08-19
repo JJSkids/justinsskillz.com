@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="../../styles.css">
   <script src="../../theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../../math-tracker.js"></script>
 
   <style>
     :root, [data-theme="dark"] {
@@ -322,13 +323,19 @@
       }
     }
 
-    function showCompletionScreen() {
+    async function showCompletionScreen() {
       document.getElementById('lessonProgressFill').style.width = '100%';
+      
+      // Automatically record Lesson 1 as completed in localStorage & Supabase
+      if (typeof markLessonComplete === 'function') {
+        await markLessonComplete(1);
+      }
+
       const card = document.getElementById('lessonCardContent');
       card.innerHTML = `
         <div style="text-align: center; padding: 2rem 0;">
           <div style="font-size: 3.5rem; margin-bottom: 1rem;">🏆</div>
-          <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Lesson Completed!</h2>
+          <h2 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-green);">Lesson Completed!</h2>
           <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem;">Fantastic job! You earned ${userScore} XP in Arithmetic Foundations.</p>
           <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
             <button type="button" class="btn btn-primary" onclick="window.location.reload()">Practice Again</button>

@@ -10,10 +10,10 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../styles.css">
-  <script src="../theme.js" defer></script>
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="../math-tracker.js" defer></script>
+  <script src="math-tracker.js" defer></script>
 
   <style>
     :root, [data-theme="dark"] {
@@ -290,6 +290,42 @@
       background: rgba(16, 185, 129, 0.1);
     }
 
+    /* Cookie Bar Styling */
+    .cookie-bar {
+      position: fixed;
+      bottom: 1rem;
+      left: 1rem;
+      right: 1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      backdrop-filter: blur(12px);
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .cookie-bar.hidden {
+      transform: translateY(120%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    .cookie-bar-content {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .cookie-bar-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: flex-end;
+    }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -330,8 +366,8 @@
       </a>
       <nav class="nav-links">
         <a href="../index.html" class="nav-link-btn">Home</a>
-        <a href="../dashboard.html" class="nav-link-btn highlight">Dashboard</a>
-        <a href="../admin.html" class="nav-link-btn">Admin</a>
+        <a href="dashboard.html" class="nav-link-btn highlight">Dashboard</a>
+        <a href="admin.html" class="nav-link-btn">Admin</a>
       </nav>
     </div>
   </header>
@@ -671,9 +707,18 @@
         <h3 style="margin: 0; font-size: 1.1rem;">Select a Section</h3>
         <button id="closeModalBtn" class="btn btn-secondary" style="padding: 0.3rem 0.6rem;">✕</button>
       </div>
-      <div class="modal-sections-grid" id="modalSectionsGrid">
-        <!-- Populated via JS -->
-      </div>
+      <div class="modal-sections-grid" id="modalSectionsGrid"></div>
+    </div>
+  </div>
+
+  <!-- Cookie Bar Component -->
+  <div id="cookieBar" class="cookie-bar hidden">
+    <div class="cookie-bar-content">
+      <strong>Cookie & Data Sync Notice:</strong> We use cookies to sync your local learning progress to Supabase tables. Click <strong>Accept & Transfer</strong> to create the "Local Storage Transfer" cookie and send your local data to Supabase.
+    </div>
+    <div class="cookie-bar-actions">
+      <button id="declineCookiesBtn" class="btn btn-secondary">Decline</button>
+      <button id="acceptCookiesBtn" class="btn btn-primary">Accept & Transfer</button>
     </div>
   </div>
 
@@ -764,10 +809,81 @@
     closeBtn.addEventListener('click', closeModal);
     modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
+    // Cookie & Supabase Transfer Logic
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+    }
+
+    function setCookie(name, value, days) {
+      let expires = "";
+      if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
+    }
+
+    async function transferLocalStorageToSupabase() {
+      try {
+        if (typeof window.supabase === 'undefined') {
+          console.warn("Supabase client is not loaded.");
+          return;
+        }
+        
+        // Collect all localStorage items into a JSON payload
+        const localDataObj = {};
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          localDataObj[key] = localStorage.getItem(key);
+        }
+
+        // Send data to your Supabase table (e.g., 'user_sync_data' or 'user_progress')
+        // Ensure you have a table created in Supabase with columns like `id`, `data`, and `updated_at`.
+        const { error } = await window.supabase
+          .from('user_sync_data')
+          .upsert({ 
+            id: 'local_storage_dump', 
+            data: localDataObj, 
+            updated_at: new Date().toISOString() 
+          });
+
+        if (error) {
+          console.error("Error transferring to Supabase:", error.message);
+        } else {
+          console.log("Local Storage successfully transferred to Supabase tables!");
+        }
+      } catch (err) {
+        console.error("Sync exception:", err);
+      }
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);
 
+      // Check cookie status
+      const transferCookie = getCookie('Local Storage Transfer');
+      const cookieBar = document.getElementById('cookieBar');
+
+      if (!transferCookie) {
+        setTimeout(() => { cookieBar.classList.remove('hidden'); }, 1000);
+      }
+
+      document.getElementById('acceptCookiesBtn').addEventListener('click', async () => {
+        setCookie('Local Storage Transfer', 'true', 365);
+        cookieBar.classList.add('hidden');
+        await transferLocalStorageToSupabase();
+      });
+
+      document.getElementById('declineCookiesBtn').addEventListener('click', () => {
+        setCookie('Local Storage Transfer', 'declined', 7);
+        cookieBar.classList.add('hidden');
+      });
+
+      // Render completed lessons status icons
       let completedList = [];
       try {
         completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');

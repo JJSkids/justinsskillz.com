@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Math Curriculum & Lessons - Justin's Skillz</title>
+  <title>Complete Math Curriculum (Grades 1-12 & University) - Justin's Skillz</title>
   
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="styles.css">
-  <script src="theme.js" defer></script>
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../math-tracker.js" defer></script>
 
   <style>
     :root, [data-theme="dark"] {
@@ -29,7 +30,6 @@
       --radius-lg: 16px;
       --radius-md: 10px;
     }
-
     [data-theme="light"] {
       --bg-primary: #f8fafc;
       --bg-card: #ffffff;
@@ -42,15 +42,12 @@
       --accent-rose: #e11d48;
       --header-bg: rgba(248, 250, 252, 0.85);
     }
-
     body {
       background-color: var(--bg-primary);
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      transition: background-color 0.3s ease, color 0.3s ease;
     }
     .app-header {
       background: var(--header-bg);
@@ -89,124 +86,89 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .nav-menu {
-      display: flex;
-      gap: 1.25rem;
-      align-items: center;
-    }
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    .nav-link:hover, .nav-link.active {
-      color: var(--text-main);
-    }
     .main-container {
-      max-width: 800px;
-      margin: 2rem auto;
+      max-width: 1000px;
+      margin: 2.5rem auto;
       padding: 0 1rem;
     }
-    .hero-card {
+    .path-hero {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       padding: 2rem;
-      text-align: center;
-      margin-bottom: 3rem;
+      margin-bottom: 2.5rem;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
-
-    /* Duolingo Style Skill Tree / Path */
-    .skill-path {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2.5rem;
-      position: relative;
-      padding: 1rem 0 3rem 0;
+    .grade-section {
+      margin-bottom: 2.5rem;
     }
-    .path-node {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      z-index: 2;
-    }
-    .path-node:nth-child(even) { transform: translateX(50px); }
-    .path-node:nth-child(3n) { transform: translateX(-50px); }
-    .path-node:nth-child(4n) { transform: translateX(0px); }
-
-    .node-btn {
-      width: 84px;
-      height: 84px;
-      border-radius: 50%;
-      background: var(--accent-purple);
-      border: 4px solid rgba(255, 255, 255, 0.15);
-      color: white;
-      font-size: 1.75rem;
+    .grade-title-bar {
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 8px 0 rgba(120, 40, 200, 0.6), 0 10px 20px rgba(0,0,0,0.3);
-      transition: all 0.15s ease;
-      text-decoration: none;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--border-subtle);
     }
-    .node-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 11px 0 rgba(120, 40, 200, 0.6), 0 14px 24px rgba(0,0,0,0.4);
+    .grade-badge {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      background: rgba(168, 85, 247, 0.15);
+      color: var(--accent-purple);
+      padding: 0.3rem 0.75rem;
+      border-radius: 99px;
     }
-    .node-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 5px 0 rgba(120, 40, 200, 0.6), 0 6px 12px rgba(0,0,0,0.3);
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
     }
-    .node-btn.completed {
-      background: var(--accent-green) !important;
-      box-shadow: 0 8px 0 rgba(16, 153, 111, 0.6), 0 10px 20px rgba(0,0,0,0.3);
+    @media(min-width: 640px) {
+      .lessons-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
-    .node-label {
-      margin-top: 0.5rem;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--text-main);
-      background: var(--bg-card);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      border: 1px solid var(--border-subtle);
-      text-align: center;
-      max-width: 180px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .app-footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 2rem 1rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 4rem;
-    }
-    .lang-select {
+    .lesson-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-      padding: 0.4rem 0.6rem;
       border-radius: var(--radius-md);
-      font-size: 0.9rem;
-      font-family: inherit;
+      padding: 1.25rem 1.5rem;
+      text-decoration: none;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .lesson-card:hover {
+      border-color: var(--accent-purple);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    .lesson-card.completed {
+      border-color: var(--accent-green);
+    }
+    .lesson-card.completed::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--accent-green);
     }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.75rem 1.25rem;
+      padding: 0.6rem 1.2rem;
       border-radius: var(--radius-md);
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
       border: none;
       text-decoration: none;
@@ -224,167 +186,409 @@
   <header class="app-header">
     <div class="header-container">
       <a href="../index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <img src="../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
-
-      <nav class="nav-menu">
-        <a href="../index.html" class="nav-link" id="nav-home">Home</a>
-        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
-        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
-        <a href="chess.html" class="nav-link" id="nav-chess">Chess AI</a>
-        <a href="math.html" class="nav-link active" style="color: var(--accent-purple);" id="nav-math">Math Lab</a>
-        <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
-        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
-      </nav>
-
-      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-          <option value="es">Español</option>
-        </select>
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
-          🌙
-        </button>
-        <div id="auth-action-container">
-          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
-        </div>
-      </div>
+      <a href="../index.html" class="btn btn-secondary">← Back to Dashboard</a>
     </div>
   </header>
 
   <main class="main-container">
-    <div class="hero-card">
-      <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px;">Interactive Math Path</span>
-      <h1 id="page-title" style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem;">Math Lessons (Levels 1–12)</h1>
-      <p id="page-subtitle" style="color: var(--text-muted); margin: 0 0 1rem 0; font-size: 0.95rem;">Select a lesson node below to start your interactive practice session.</p>
-      
-      <div id="overallStatsBadge" style="display: inline-block; background: rgba(168, 85, 247, 0.15); border: 1px solid var(--accent-purple); color: var(--accent-purple); padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
-        Completed - Loading...
+    
+    <!-- Hero Header -->
+    <div class="path-hero">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">Master Curriculum</span>
+          <h1 style="margin: 0.25rem 0 0.5rem 0; font-size: 1.8rem;">Grades 1 to 12 & University Hub</h1>
+          <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">Explore elementary arithmetic all the way to advanced university math and competitions.</p>
+        </div>
+        <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 1rem 1.25rem; border-radius: var(--radius-md); text-align: center; min-width: 140px;">
+          <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Overall Progress</div>
+          <div id="pathProgressText" style="font-size: 1.4rem; font-weight: 800; color: var(--accent-green); margin-top: 0.2rem;">0%</div>
+        </div>
       </div>
-      <div id="session-info" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600; margin-top: 1rem;">Connecting session...</div>
     </div>
 
-    <div class="skill-path" id="skillPathContainer">
-      <div class="path-node" data-lesson="1"><a href="Math Lessons/Lesson-1.html" class="node-btn" id="nodeBtn-1" title="Level 1: Arithmetic Foundations">1</a><span class="node-label">Level 1: Arithmetic</span></div>
-      <div class="path-node" data-lesson="2"><a href="Math Lessons/Lesson-2.html" class="node-btn" id="nodeBtn-2" title="Level 2: Place Value & Operations" style="background: var(--accent-blue);">2</a><span class="node-label">Level 2: Place Value</span></div>
-      <div class="path-node" data-lesson="3"><a href="Math Lessons/Lesson-3.html" class="node-btn" id="nodeBtn-3" title="Level 3: Fractions & Multiplicative Thinking" style="background: var(--accent-green);">3</a><span class="node-label">Level 3: Fractions</span></div>
-      <div class="path-node" data-lesson="4"><a href="Math Lessons/Lesson-4.html" class="node-btn" id="nodeBtn-4" title="Level 4: Multi-Digit Arithmetic" style="background: #eab308;">4</a><span class="node-label">Level 4: Multi-Digit</span></div>
-      <div class="path-node" data-lesson="5"><a href="Math Lessons/Lesson-5.html" class="node-btn" id="nodeBtn-5" title="Level 5: Rational Arithmetic & Coordinates" style="background: #f97316;">5</a><span class="node-label">Level 5: Rational Math</span></div>
-      <div class="path-node" data-lesson="6"><a href="Math Lessons/Lesson-6.html" class="node-btn" id="nodeBtn-6" title="Level 6: Ratios & Proportions" style="background: var(--accent-rose);">6</a><span class="node-label">Level 6: Ratios</span></div>
-      <div class="path-node" data-lesson="7"><a href="Math Lessons/Lesson-7.html" class="node-btn" id="nodeBtn-7" title="Level 7: Rational Equations & Geometry" style="background: #06b6d4;">7</a><span class="node-label">Level 7: Equations</span></div>
-      <div class="path-node" data-lesson="8"><a href="Math Lessons/Lesson-8.html" class="node-btn" id="nodeBtn-8" title="Level 8: Linear Functions & Pythagorean Geometry" style="background: #8b5cf6;">8</a><span class="node-label">Level 8: Linear Functions</span></div>
-      <div class="path-node" data-lesson="9"><a href="Math Lessons/Lesson-9.html" class="node-btn" id="nodeBtn-9" title="Level 9: Algebraic Modeling & Quadratics" style="background: #ec4899;">9</a><span class="node-label">Level 9: Quadratics</span></div>
-      <div class="path-node" data-lesson="10"><a href="Math Lessons/Lesson-10.html" class="node-btn" id="nodeBtn-10" title="Level 10: Deductive Proofs & Trigonometry" style="background: #14b8a6;">10</a><span class="node-label">Level 10: Trigonometry</span></div>
-      <div class="path-node" data-lesson="11"><a href="Math Lessons/Lesson-11.html" class="node-btn" id="nodeBtn-11" title="Level 11: Advanced Functions & Unit Circle" style="background: #6366f1;">11</a><span class="node-label">Level 11: Advanced Func</span></div>
-      <div class="path-node" data-lesson="12"><a href="Math Lessons/Lesson-12.html" class="node-btn" id="nodeBtn-12" title="Level 12: De Moivre's Theorem & Polar Coordinates" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-rose)); border: 4px solid gold;">👑</a><span class="node-label" style="border-color: var(--accent-purple); font-weight: 800;">Level 12: Masterclass</span></div>
+    <!-- GRADE 1 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 1: Foundations</h2>
+        <span class="grade-badge">Elementary</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-1.html" class="lesson-card" id="lessonCard-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Basic Addition & Subtraction</div>
+          </div>
+          <div id="statusIcon-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g1-2.html" class="lesson-card" id="lessonCard-g1-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Shapes & Measurement Basics</div>
+          </div>
+          <div id="statusIcon-g1-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
     </div>
+
+    <!-- GRADE 2 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 2: Expansion to 100</h2>
+        <span class="grade-badge">Elementary</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g2-1.html" class="lesson-card" id="lessonCard-g2-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Double-Digit Arithmetic</div>
+          </div>
+          <div id="statusIcon-g2-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g2-2.html" class="lesson-card" id="lessonCard-g2-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Introduction to Arrays & Multiplication</div>
+          </div>
+          <div id="statusIcon-g2-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 3 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 3: Multiplication & Fractions</h2>
+        <span class="grade-badge">Elementary</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g3-1.html" class="lesson-card" id="lessonCard-g3-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Multiplication Tables & Division</div>
+          </div>
+          <div id="statusIcon-g3-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g3-2.html" class="lesson-card" id="lessonCard-g3-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Intro to Fractions</div>
+          </div>
+          <div id="statusIcon-g3-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 4 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 4: Multi-Digit Operations</h2>
+        <span class="grade-badge">Elementary</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g4-1.html" class="lesson-card" id="lessonCard-g4-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Long Division & Factors</div>
+          </div>
+          <div id="statusIcon-g4-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g4-2.html" class="lesson-card" id="lessonCard-g4-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Decimals & Angle Measurement</div>
+          </div>
+          <div id="statusIcon-g4-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 5 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 5: Advanced Fractions & Volume</h2>
+        <span class="grade-badge">Elementary</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g5-1.html" class="lesson-card" id="lessonCard-g5-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Adding & Subtracting Unlike Fractions</div>
+          </div>
+          <div id="statusIcon-g5-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g5-2.html" class="lesson-card" id="lessonCard-g5-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Volume & Coordinate Planes</div>
+          </div>
+          <div id="statusIcon-g5-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 6 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 6: Ratios & Expressions</h2>
+        <span class="grade-badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">Middle School</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g6-1.html" class="lesson-card" id="lessonCard-g6-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Ratios & Unit Rates</div>
+          </div>
+          <div id="statusIcon-g6-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g6-2.html" class="lesson-card" id="lessonCard-g6-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Variables & Algebraic Expressions</div>
+          </div>
+          <div id="statusIcon-g6-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 7 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 7: Proportions & Negative Numbers</h2>
+        <span class="grade-badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">Middle School</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g7-1.html" class="lesson-card" id="lessonCard-g7-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Negative Numbers & Absolute Value</div>
+          </div>
+          <div id="statusIcon-g7-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g7-2.html" class="lesson-card" id="lessonCard-g7-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Proportional Relationships & Percents</div>
+          </div>
+          <div id="statusIcon-g7-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 8 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 8: Linear Equations & Geometry</h2>
+        <span class="grade-badge" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">Middle School</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g8-1.html" class="lesson-card" id="lessonCard-g8-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Solving Linear Equations ($y = mx + b$)</div>
+          </div>
+          <div id="statusIcon-g8-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g8-2.html" class="lesson-card" id="lessonCard-g8-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Pythagorean Theorem & Transformations</div>
+          </div>
+          <div id="statusIcon-g8-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 9 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 9: Algebra I</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g9-1.html" class="lesson-card" id="lessonCard-g9-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Systems of Linear Equations</div>
+          </div>
+          <div id="statusIcon-g9-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g9-2.html" class="lesson-card" id="lessonCard-g9-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Introduction to Functions & Polynomials</div>
+          </div>
+          <div id="statusIcon-g9-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 10 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 10: Geometry & Trigonometry</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g10-1.html" class="lesson-card" id="lessonCard-g10-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Euclidean Geometry & Proofs</div>
+          </div>
+          <div id="statusIcon-g10-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g10-2.html" class="lesson-card" id="lessonCard-g10-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Right Triangle Trigonometry (SOH-CAH-TOA)</div>
+          </div>
+          <div id="statusIcon-g10-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 11 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 11: Functions & Advanced Algebra</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g11-1.html" class="lesson-card" id="lessonCard-g11-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Quadratic Functions & Completing the Square</div>
+          </div>
+          <div id="statusIcon-g11-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g11-2.html" class="lesson-card" id="lessonCard-g11-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Rational & Exponential Functions</div>
+          </div>
+          <div id="statusIcon-g11-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- GRADE 12 -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">Grade 12: Calculus & Vectors</h2>
+        <span class="grade-badge" style="background: rgba(244, 63, 94, 0.15); color: var(--accent-rose);">High School</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-g12-1.html" class="lesson-card" id="lessonCard-g12-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Limits & Derivatives</div>
+          </div>
+          <div id="statusIcon-g12-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-g12-2.html" class="lesson-card" id="lessonCard-g12-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; margin-bottom: 0.2rem;">UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Integrals & Vector Spaces</div>
+          </div>
+          <div id="statusIcon-g12-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
+    <!-- OTHER: UNIVERSITY & ADVANCED TOPICS -->
+    <div class="grade-section">
+      <div class="grade-title-bar">
+        <h2 style="font-size: 1.15rem; margin: 0;">OTHER: University & Advanced Topics</h2>
+        <span class="grade-badge" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">Elite & Competition</span>
+      </div>
+      <div class="lessons-grid">
+        <a href="Math Lessons/lesson-other-1.html" class="lesson-card" id="lessonCard-other-1">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--accent-green); font-weight: 700; margin-bottom: 0.2rem;">ADVANCED UNIT 1</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Complex Numbers & Polar Forms ($x^4 + 1 = 0$)</div>
+          </div>
+          <div id="statusIcon-other-1" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+        <a href="Math Lessons/lesson-other-2.html" class="lesson-card" id="lessonCard-other-2">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--accent-green); font-weight: 700; margin-bottom: 0.2rem;">ADVANCED UNIT 2</div>
+            <div style="font-weight: 700; font-size: 1.05rem;">Competition Math Set & De Moivre's Theorem</div>
+          </div>
+          <div id="statusIcon-other-2" style="font-size: 1.2rem; color: var(--text-muted);">○</div>
+        </a>
+      </div>
+    </div>
+
   </main>
 
-  <footer class="app-footer">
-    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
-  </footer>
-
   <script>
-    if (!window.mySupabaseInstance) {
-      window.mySupabaseInstance = window.supabase.createClient(
-        'https://iifhzdioridrmbcflswa.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-...'
-      );
-    }
-
-    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
-
-    window.addEventListener('DOMContentLoaded', async () => {
-      let userId = await checkUserSession();
-      loadUserProgress(userId);
-    });
-
-    async function checkUserSession() {
-      try {
-        const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
-        const authContainer = document.getElementById('auth-action-container');
-        const navAdminLink = document.getElementById('nav-admin-link');
-
-        if (session && session.user) {
-          const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-          let displayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
-
-          document.getElementById('session-info').textContent = `User: ${displayName}`;
-          authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">Sign Out</button>`;
-          if (userEmail === ADMIN_EMAIL && navAdminLink) {
-            navAdminLink.style.display = 'block';
-          }
-          return userEmail;
-        }
-      } catch (err) {}
-
-      let cachedGuest = sessionStorage.getItem('justin_guest_id');
-      if (!cachedGuest) {
-        cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
-        sessionStorage.setItem('justin_guest_id', cachedGuest);
-      }
-      document.getElementById('session-info').textContent = `Player: ${cachedGuest}`;
-      document.getElementById('auth-action-container').innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>`;
-      return cachedGuest.toLowerCase();
-    }
-
-    async function loadUserProgress(userId) {
-      const totalLessons = document.querySelectorAll('.path-node').length;
+    // Automatically load completion status from localStorage across all lessons
+    window.addEventListener('DOMContentLoaded', () => {
       let completedList = [];
-
-      // 1. Fetch from Supabase
       try {
-        const { data } = await window.mySupabaseInstance
-          .from('user_math_stats')
-          .select('completed_lessons')
-          .eq('user_id', userId)
-          .single();
-
-        if (data && data.completed_lessons) {
-          completedList = data.completed_lessons;
-        }
-      } catch (err) {}
-
-      // 2. Fallback check local storage keys
-      for (let i = 1; i <= totalLessons; i++) {
-        if (
-          localStorage.getItem(`lesson_${i}_completed`) === 'true' ||
-          localStorage.getItem(`math_lesson_${i}`) === 'completed' ||
-          localStorage.getItem(`completed_lesson_${i}`) === 'true'
-        ) {
-          if (!completedList.includes(i)) {
-            completedList.push(i);
-          }
-        }
+        completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
+      } catch (e) {
+        completedList = [];
       }
 
-      // 3. Fallback check completed_math_lessons array
-      try {
-        const localArr = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
-        localArr.forEach(n => {
-          if (!completedList.includes(n)) completedList.push(n);
-        });
-      } catch(e) {}
+      // Map out all lesson key formats
+      const allLessons = [
+        { id: 1, key: '1' },
+        { id: 'g1-2', key: 'g1-2' },
+        { id: 'g2-1', key: 'g2-1' },
+        { id: 'g2-2', key: 'g2-2' },
+        { id: 'g3-1', key: 'g3-1' },
+        { id: 'g3-2', key: 'g3-2' },
+        { id: 'g4-1', key: 'g4-1' },
+        { id: 'g4-2', key: 'g4-2' },
+        { id: 'g5-1', key: 'g5-1' },
+        { id: 'g5-2', key: 'g5-2' },
+        { id: 'g6-1', key: 'g6-1' },
+        { id: 'g6-2', key: 'g6-2' },
+        { id: 'g7-1', key: 'g7-1' },
+        { id: 'g7-2', key: 'g7-2' },
+        { id: 'g8-1', key: 'g8-1' },
+        { id: 'g8-2', key: 'g8-2' },
+        { id: 'g9-1', key: 'g9-1' },
+        { id: 'g9-2', key: 'g9-2' },
+        { id: 'g10-1', key: 'g10-1' },
+        { id: 'g10-2', key: 'g10-2' },
+        { id: 'g11-1', key: 'g11-1' },
+        { id: 'g11-2', key: 'g11-2' },
+        { id: 'g12-1', key: 'g12-1' },
+        { id: 'g12-2', key: 'g12-2' },
+        { id: 'other-1', key: 'other-1' },
+        { id: 'other-2', key: 'other-2' }
+      ];
 
-      // Apply completed class to nodes
-      completedList.forEach(lessonNum => {
-        const btn = document.getElementById(`nodeBtn-${lessonNum}`);
-        if (btn) btn.classList.add('completed');
+      let completedCount = 0;
+
+      allLessons.forEach(item => {
+        const isDone = completedList.includes(item.id) || 
+                       localStorage.getItem(`lesson_${item.id}_completed`) === 'true' ||
+                       localStorage.getItem(`completed_lesson_${item.id}`) === 'true';
+        
+        const card = document.getElementById(`lessonCard-${item.id}`);
+        const icon = document.getElementById(`statusIcon-${item.id}`);
+
+        if (isDone && card && icon) {
+          card.classList.add('completed');
+          icon.textContent = '✓';
+          icon.style.color = 'var(--accent-green)';
+          icon.style.fontWeight = '800';
+          completedCount++;
+        }
       });
 
-      const completedCount = completedList.length;
-      const percentage = totalLessons > 0 ? ((completedCount / totalLessons) * 100).toFixed(2) : '0.00';
-
-      document.getElementById('overallStatsBadge').textContent = `Completed - ${percentage}% (${completedCount}/${totalLessons} Lessons)`;
-    }
-
-    async function handleSignOut() {
-      await window.mySupabaseInstance.auth.signOut();
-      window.location.reload();
-    }
+      const percent = Math.round((completedCount / allLessons.length) * 100);
+      const progressText = document.getElementById('pathProgressText');
+      if (progressText) {
+        progressText.textContent = `${percent}%`;
+      }
+    });
   </script>
-  <script src="cookie-banner.js" defer></script>
 </body>
 </html>

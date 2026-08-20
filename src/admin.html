@@ -275,6 +275,46 @@
       color: var(--accent-green);
     }
   </style>
+  
+<script>
+  const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-.';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  
+  const ADMIN_EMAIL = "hellojjskids@gmail.com";
+  const ADMIN_PASSCODE = "Justin2026!"; // Change to your preferred passcode
+
+  async function verifyAdminAccess() {
+    // 1. Check if already authenticated in this browser session
+    if (sessionStorage.getItem('admin_auth') === 'true') {
+      return;
+    }
+
+    // 2. Check if logged into Supabase as the correct admin email
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user && user.email === ADMIN_EMAIL) {
+        sessionStorage.setItem('admin_auth', 'true');
+        return;
+      }
+    } catch (err) {
+      console.log("Supabase session check skipped or failed, using passcode fallback.");
+    }
+
+    // 3. Fallback: Prompt for the passcode if not logged in via Supabase
+    const enteredPass = prompt(`🔒 Admin Security Check\nEnter Admin Passcode (or log in via Supabase as ${ADMIN_EMAIL}):`);
+    
+    if (enteredPass === ADMIN_PASSCODE) {
+      sessionStorage.setItem('admin_auth', 'true');
+    } else {
+      alert("Unauthorized. Redirecting to home.");
+      window.location.href = "index.html";
+    }
+  }
+
+  // Run security check immediately
+  verifyAdminAccess();
+</script>
 </head>
 <body>
 

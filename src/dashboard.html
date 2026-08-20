@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Student Dashboard</title>
+  <title id="dashWindowTitle">Student Dashboard - Justin's Skillz</title>
   
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,35 +18,40 @@
     :root, [data-theme="dark"] {
       --bg-primary: #0f1117;
       --bg-card: #181b25;
+      --bg-secondary: #212633;
       --border-subtle: #2d3242;
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
       --accent-green: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
       --header-bg: rgba(15, 17, 23, 0.85);
       --radius-lg: 16px;
       --radius-md: 10px;
     }
-
     [data-theme="light"] {
       --bg-primary: #f8fafc;
       --bg-card: #ffffff;
+      --bg-secondary: #f1f5f9;
       --border-subtle: #e2e8f0;
       --text-main: #1e293b;
       --text-muted: #64748b;
       --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
       --accent-green: #059669;
+      --accent-rose: #e11d48;
+      --accent-amber: #d97706;
       --header-bg: rgba(248, 250, 252, 0.85);
     }
-
     body {
       background-color: var(--bg-primary);
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      line-height: 1.5;
     }
     .app-header {
       background: var(--header-bg);
@@ -58,7 +63,7 @@
       padding: 0.75rem 1.5rem;
     }
     .header-container {
-      max-width: 1200px;
+      max-width: 1300px;
       margin: 0 auto;
       display: flex;
       align-items: center;
@@ -81,96 +86,100 @@
       border: 2px solid var(--accent-purple);
     }
     .gradient-text {
-      background: linear-gradient(135deg, #a855f7, #3b82f6);
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-    .nav-menu {
+    .nav-links {
       display: flex;
-      gap: 1.25rem;
       align-items: center;
+      gap: 0.75rem;
     }
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-    .nav-link:hover, .nav-link.active {
-      color: var(--text-main);
-    }
-    .lang-select {
-      background: var(--bg-card);
+    .nav-link-btn {
+      background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
-      padding: 0.3rem 0.5rem;
-      border-radius: 6px;
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
       font-size: 0.85rem;
-      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
     }
-    .dashboard-container {
-      max-width: 1000px;
-      margin: 3rem auto;
-      padding: 0 1.5rem;
+    .nav-link-btn:hover {
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.08);
+    }
+    .nav-link-btn.highlight {
+      background: var(--accent-purple);
+      border-color: var(--accent-purple);
+      color: white;
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Announcement Banner */
+    .announcement-banner {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(59, 130, 246, 0.15));
+      border: 1px solid var(--accent-purple);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .announcement-banner.hidden {
+      display: none;
+    }
+
+    /* Dashboard Grids */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
     }
     .dashboard-card {
       background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
-      padding: 2.5rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-      margin-bottom: 2rem;
-      transition: background-color 0.3s ease, border-color 0.3s ease;
-    }
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
-    }
-    .action-tile {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
       padding: 1.5rem;
-      text-decoration: none;
-      color: var(--text-main);
-      display: block;
-      transition: border-color 0.2s, transform 0.2s;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     }
-    .action-tile:hover {
-      border-color: var(--accent-purple);
-      transform: translateY(-2px);
-    }
-    .view-row {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      padding: 1rem 1.25rem;
-      border-radius: var(--radius-md);
+    .dashboard-card h3 {
+      margin-top: 0;
+      font-size: 1.05rem;
       margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
-    .btn {
-      display: inline-block;
-      padding: 0.65rem 1.25rem;
+    .metric-value {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: var(--accent-purple);
+      margin: 0;
+    }
+    .module-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .module-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: var(--bg-secondary);
       border-radius: var(--radius-md);
-      font-weight: 700;
+      font-weight: 600;
       font-size: 0.9rem;
-      text-decoration: none;
-      cursor: pointer;
-      border: none;
-      transition: opacity 0.2s;
-    }
-    .btn:hover {
-      opacity: 0.9;
-    }
-    .app-footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 2rem 1rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 4rem;
     }
   </style>
 </head>
@@ -178,292 +187,139 @@
 
   <header class="app-header">
     <div class="header-container">
-      <a href="../index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+      <a href="index.html" class="logo">
+        <img src="Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
-
-      <nav class="nav-menu">
-        <a href="../index.html" class="nav-link" data-translate="navHome">Home</a>
-        <a href="dashboard.html" class="nav-link active" style="color: var(--accent-purple);" data-translate="navDashboard">Dashboard</a>
-        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;" data-translate="navAdmin">Admin</a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link-btn">Home</a>
+        <a href="dashboard.html" class="nav-link-btn highlight">Dashboard</a>
+        <a href="admin.html" class="nav-link-btn">Admin</a>
       </nav>
-
-      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <div style="display: flex; align-items: center; gap: 0.3rem;">
-          <label for="langSelect" style="font-size: 0.8rem; cursor: pointer;">🌐</label>
-          <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
-            <option value="en">English</option>
-            <option value="fr">Français</option>
-            <option value="es">Español</option>
-          </select>
-        </div>
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
-          🌙
-        </button>
-        <div id="auth-action-container">
-          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;" data-translate="signIn">Sign In</a>
-        </div>
-      </div>
     </div>
   </header>
 
-  <main class="dashboard-container">
-    
-    <!-- Welcome Card -->
-    <div class="dashboard-card">
-      <h1 id="welcome-heading" style="font-size: 2.25rem; font-weight: 800; margin: 0 0 0.5rem 0;" data-translate="title">Student Dashboard</h1>
-      <p id="welcome-subtext" style="color: var(--text-muted); margin: 0;" data-translate="welcome">Welcome back! Access your active learning modules, labs, and interactive practice tools below.</p>
-    </div>
-
-    <!-- Active Courses & Modules View -->
-    <div class="dashboard-card">
-      <h2 id="active-courses-title" style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;" data-translate="activeCourses">📚 Active Courses & Modules</h2>
-      <div id="student-courses-container">
-        <p style="color: var(--text-muted); font-size: 0.9rem;" data-translate="noCourses">No active courses. Check back soon!</p>
+  <main class="main-container">
+    <div style="margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h1 id="dashHeading" style="margin: 0; font-size: 1.85rem;">Student Learning Dashboard</h1>
+        <p style="color: var(--text-muted); margin: 0.35rem 0 0 0;">Active Academic Term: <span id="dashTerm" style="color: var(--text-main); font-weight: 700;">Loading...</span></p>
+      </div>
+      <div style="font-size: 0.85rem; color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 0.5rem 1rem; border-radius: var(--radius-md);">
+        Status: <span id="syncStatusText" style="color: var(--accent-green); font-weight: 700;">Synced with Supabase</span>
       </div>
     </div>
 
-    <!-- Active Labs View -->
-    <div class="dashboard-card">
-      <h2 id="active-labs-title" style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;" data-translate="activeLabs">🧪 Active Labs</h2>
-      <div id="student-labs-container">
-        <p style="color: var(--text-muted); font-size: 0.9rem;" data-translate="noLabs">No active labs. Check back soon!</p>
+    <!-- Live Announcement Banner from Supabase -->
+    <div id="announcementBanner" class="announcement-banner hidden">
+      <div style="font-size: 1.5rem;">📢</div>
+      <div>
+        <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; color: var(--accent-purple);">Instructor Announcement</h4>
+        <p id="announcementText" style="margin: 0; font-size: 0.9rem; line-height: 1.4;"></p>
       </div>
     </div>
 
-    <!-- Quick Access Hub -->
-    <div class="dashboard-card">
-      <h2 id="quick-hub-title" style="font-size: 1.4rem; font-weight: 700; margin-top: 0; margin-bottom: 1rem;" data-translate="quickHub">🚀 Quick Learning Hub</h2>
-      
-      <div class="grid-2">
-        <a href="math.html" class="action-tile">
-          <h3 id="dash-mathTitle" style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;" data-translate="mathTitle">Math & Algebra Lab</h3>
-          <p id="dash-mathDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="mathDesc">Practice polynomials, 4th degree equations, and polar coordinate problem solving.</p>
-        </a>
+    <!-- Metrics Grid -->
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h3>📐 Math Competition Progress</h3>
+        <p class="metric-value" id="mathProgressCount">--</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0 0 0;">Completed curriculum modules</p>
+      </div>
 
-        <a href="chess.html" class="action-tile">
-          <h3 id="dash-chessTitle" style="margin: 0 0 0.5rem 0; color: var(--text-main); font-size: 1.1rem;" data-translate="chessTitle">Chess Strategy Bot</h3>
-          <p id="dash-chessDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="chessDesc">Test your tactical openings and sharpen your game against the embedded chess AI.</p>
-        </a>
+      <div class="dashboard-card">
+        <h3>🤖 Robotics Lab Project</h3>
+        <p id="dashRobotName" style="font-size: 1.25rem; font-weight: 700; color: var(--accent-blue); margin: 0 0 0.25rem 0;">Snacky - Dispensing Robot</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">Arduino Uno & L298N Motor Driver</p>
+      </div>
 
-        <a href="live.html" class="action-tile">
-          <h3 id="dash-liveTitle" style="margin: 0 0 0.5rem 0; color: var(--accent-green); font-size: 1.1rem;" data-translate="liveTitle">🔴 Live Broadcasts</h3>
-          <p id="dash-liveDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="liveDesc">Catch live streams, announcements, and community updates.</p>
-        </a>
-
-        <a href="../index.html" class="action-tile">
-          <h3 id="dash-mainHubTitle" style="margin: 0 0 0.5rem 0; color: var(--accent-purple); font-size: 1.1rem;" data-translate="mainHubTitle">Main Hub & Projects</h3>
-          <p id="dash-mainHubDesc" style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" data-translate="mainHubDesc">Explore community builds like Arduino Snacky Bot and Minecraft educational resources.</p>
-        </a>
+      <div class="dashboard-card">
+        <h3>🎮 Interactive Modules</h3>
+        <p class="metric-value" style="color: var(--accent-green); font-size: 1.75rem;">Active</p>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0 0 0;">Minecraft Edu & Chess Hub online</p>
       </div>
     </div>
 
+    <!-- Curriculum Modules Breakdown -->
+    <div class="dashboard-card">
+      <h3 style="margin-bottom: 1rem;">Active Platform Modules</h3>
+      <div class="module-list" id="activeModulesContainer">
+        <div class="module-item"><span>Mathematics & Competition Prep</span> <span style="color: var(--accent-green);">Ready</span></div>
+        <div class="module-item"><span>Programming & Web Development</span> <span style="color: var(--accent-green);">Ready</span></div>
+        <div class="module-item"><span>Music & Sheet Arrangements</span> <span style="color: var(--accent-green);">Ready</span></div>
+        <div class="module-item"><span>French Language Studies</span> <span style="color: var(--accent-green);">Ready</span></div>
+        <div class="module-item"><span>Chess & Logic Games</span> <span style="color: var(--accent-green);">Ready</span></div>
+      </div>
+    </div>
   </main>
 
-  <footer class="app-footer">
-    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
-  </footer>
-
   <script>
-    if (!window.mySupabaseInstance) {
-      window.mySupabaseInstance = window.supabase.createClient(
-        'https://iifhzdioridrmbcflswa.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
-      );
-    }
+    const DEFAULT_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+    const DEFAULT_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
 
-    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
-    let currentDisplayName = null;
+    async function loadDashboardData() {
+      let settings = null;
 
-    const dashboardTranslations = {
-      en: {
-        navHome: "Home",
-        navDashboard: "Dashboard",
-        navLive: "🔴 Live Stream",
-        navChess: "Chess AI",
-        navMath: "Math Lab",
-        navAdmin: "Admin",
-        signIn: "Sign In",
-        signOut: "Sign Out",
-        title: "Student Dashboard",
-        welcome: "Welcome back! Access your active learning modules, labs, and interactive practice tools below.",
-        activeCourses: "📚 Active Courses & Modules",
-        noCourses: "No active courses. Check back soon!",
-        activeLabs: "🧪 Active Labs",
-        noLabs: "No active labs. Check back soon!",
-        quickHub: "🚀 Quick Learning Hub",
-        mathTitle: "Math & Algebra Lab",
-        mathDesc: "Practice polynomials, 4th degree equations, and polar coordinate problem solving.",
-        chessTitle: "Chess Strategy Bot",
-        chessDesc: "Test your tactical openings and sharpen your game against the embedded chess AI.",
-        liveTitle: "🔴 Live Broadcasts",
-        liveDesc: "Catch live streams, announcements, and community updates.",
-        mainHubTitle: "Main Hub & Projects",
-        mainHubDesc: "Explore community builds like Arduino Snacky Bot and Minecraft educational resources."
-      },
-      fr: {
-        navHome: "Accueil",
-        navDashboard: "Tableau de bord",
-        navLive: "🔴 Diffusion en direct",
-        navChess: "IA d'échecs",
-        navMath: "Labo de maths",
-        navAdmin: "Admin",
-        signIn: "Se connecter",
-        signOut: "Se déconnecter",
-        title: "Tableau de Bord Étudiant",
-        welcome: "Bon retour! Accédez à vos modules d'apprentissage actifs, laboratoires et outils de pratique interactifs ci-dessous.",
-        activeCourses: "📚 Cours et Modules Actifs",
-        noCourses: "Aucun cours actif. Revenez bientôt !",
-        activeLabs: "🧪 Laboratoires Actifs",
-        noLabs: "Aucun laboratoire actif. Revenez bientôt !",
-        quickHub: "🚀 Centre d'Apprentissage Rapide",
-        mathTitle: "Laboratoire de Math & Algèbre",
-        mathDesc: "Pratiquez les polynômes, les équations du 4e degré et la résolution de coordonnées polaires.",
-        chessTitle: "Bot de Stratégie d'Échecs",
-        chessDesc: "Testez vos ouvertures tactiques et affûtez votre jeu contre l'IA d'échecs intégrée.",
-        liveTitle: "🔴 Diffusions en direct",
-        liveDesc: "Retrouvez les flux en direct, annonces et mises à jour de la communauté.",
-        mainHubTitle: "Hub Principal & Projets",
-        mainHubDesc: "Explorez les projets communautaires comme Arduino Snacky Bot et les ressources éducatives Minecraft."
-      },
-      es: {
-        navHome: "Inicio",
-        navDashboard: "Panel",
-        navLive: "🔴 Transmisión en vivo",
-        navChess: "IA de Ajedrez",
-        navMath: "Laboratorio de Matemáticas",
-        navAdmin: "Admin",
-        signIn: "Iniciar sesión",
-        signOut: "Cerrar sesión",
-        title: "Panel de Estudiante",
-        welcome: "¡Bienvenido de nuevo! Accede a tus módulos de aprendizaje activos, laboratorios y herramientas interactivas abajo.",
-        activeCourses: "📚 Cursos y Módulos Activos",
-        noCourses: "No hay cursos activos. ¡Vuelve pronto!",
-        activeLabs: "🧪 Laboratorios Activos",
-        noLabs: "No hay laboratorios activos. ¡Vuelve pronto!",
-        quickHub: "🚀 Centro de Aprendizaje Rápido",
-        mathTitle: "Laboratorio de Matemáticas y Álgebra",
-        mathDesc: "Practica polinomios, ecuaciones de 4º grado y resolución de problemas de coordenadas polares.",
-        chessTitle: "Bot de Estrategia de Ajedrez",
-        chessDesc: "Prueba tus aperturas tácticas y agudiza tu juego contra la IA de ajedrez integrada.",
-        liveTitle: "🔴 Transmisiones en vivo",
-        liveDesc: "Disfruta de transmisiones en vivo, anuncios y actualizaciones de la comunidad.",
-        mainHubTitle: "Centro Principal y Proyectos",
-        mainHubDesc: "Explora construcciones comunitarias como Arduino Snacky Bot y recursos educativos de Minecraft."
-      }
-    };
+      try {
+        // 1. Attempt fetch from local storage cache first for instant display
+        const cached = localStorage.getItem('admin_settings_cache');
+        if (cached) settings = JSON.parse(cached);
 
-    function changeLanguage(lang) {
-      localStorage.setItem('site_lang', lang);
-      applyLanguage(lang);
-    }
+        // 2. Query Supabase for latest settings if configured
+        let supabaseUrl = settings?.supabaseUrl || DEFAULT_URL;
+        let supabaseKey = settings?.supabaseKey || DEFAULT_KEY;
 
-    function applyLanguage(lang) {
-      const t = dashboardTranslations[lang] || dashboardTranslations.en;
-      
-      document.querySelectorAll('[data-translate]').forEach(el => {
-        const key = el.getAttribute('data-translate');
-        if (t[key]) {
-          el.textContent = t[key];
+        if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && typeof window.supabase !== 'undefined') {
+          const client = window.supabase.createClient(supabaseUrl, supabaseKey);
+          const { data, error } = await client
+            .from('admin_settings')
+            .select('data')
+            .eq('id', 'site_config')
+            .single();
+
+          if (data && data.data) {
+            settings = data.data;
+          }
         }
-      });
 
-      const welcomeHeading = document.getElementById('welcome-heading');
-      if (currentDisplayName) {
-        welcomeHeading.textContent = (lang === 'fr' ? `Bon retour, ${currentDisplayName}!` : lang === 'es' ? `¡Bienvenido de nuevo, ${currentDisplayName}!` : `Welcome back, ${currentDisplayName}!`);
-      } else {
-        welcomeHeading.textContent = t.title;
-      }
-    }
-
-    function renderStudentCourses() {
-      const container = document.getElementById('student-courses-container');
-      const courses = JSON.parse(localStorage.getItem('jjs_admin_courses')) || [];
-      const lang = localStorage.getItem('site_lang') || 'en';
-      const t = dashboardTranslations[lang] || dashboardTranslations.en;
-      
-      if (courses.length === 0) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">${t.noCourses}</p>`;
-        return;
-      }
-
-      container.innerHTML = courses.map(course => `
-        <div class="view-row">
-          <div style="font-weight: 700; color: var(--text-main); font-size: 1.05rem;">${escapeHtml(course.title)}</div>
-          <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.3rem;">${escapeHtml(course.desc)}</div>
-        </div>
-      `).join('');
-    }
-
-    function renderStudentLabs() {
-      const container = document.getElementById('student-labs-container');
-      const labs = JSON.parse(localStorage.getItem('jjs_admin_labs')) || [];
-      const lang = localStorage.getItem('site_lang') || 'en';
-      const t = dashboardTranslations[lang] || dashboardTranslations.en;
-      
-      if (labs.length === 0) {
-        container.innerHTML = `<p style="color: var(--text-muted); font-size: 0.9rem;">${t.noLabs}</p>`;
-        return;
-      }
-
-      container.innerHTML = labs.map(lab => `
-        <div class="view-row">
-          <div style="font-weight: 700; color: var(--text-main); font-size: 1.05rem;">${escapeHtml(lab.title)}</div>
-          <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.3rem;">${escapeHtml(lab.desc)}</div>
-        </div>
-      `).join('');
-    }
-
-    function escapeHtml(str) {
-      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
-    }
-
-    async function checkUserSession() {
-      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
-      const authContainer = document.getElementById('auth-action-container');
-      const navAdminLink = document.getElementById('nav-admin-link');
-      const lang = localStorage.getItem('site_lang') || 'en';
-      const t = dashboardTranslations[lang] || dashboardTranslations.en;
-
-      if (session && session.user) {
-        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-        
-        // Display "Justin's Skillz" for admin, or the account's username/handle for others
-        currentDisplayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
-        
-        applyLanguage(lang);
-
-        authContainer.innerHTML = `
-          <button type="button" onclick="handleSignOut()" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; cursor: pointer;">${t.signOut}</button>
-        `;
-
-        if (userEmail === ADMIN_EMAIL && navAdminLink) {
-          navAdminLink.style.display = 'block';
+        // Apply settings across dashboard elements
+        let maxLessons = "26";
+        if (settings) {
+          if (settings.siteTitle) {
+            document.getElementById('dashWindowTitle').textContent = settings.siteTitle;
+          }
+          if (settings.activeTerm) {
+            document.getElementById('dashTerm').textContent = settings.activeTerm;
+          }
+          if (settings.totalLessons) {
+            maxLessons = settings.totalLessons;
+          }
+          if (settings.robotName) {
+            document.getElementById('dashRobotName').textContent = settings.robotName;
+          }
+          if (settings.announcement && settings.showAnnouncement !== false && settings.announcement.trim() !== "") {
+            document.getElementById('announcementText').textContent = settings.announcement;
+            document.getElementById('announcementBanner').classList.remove('hidden');
+          }
         }
-      } else {
-        currentDisplayName = null;
-        applyLanguage(lang);
-        authContainer.innerHTML = `
-          <a href="login.html" class="btn" style="background: var(--bg-card); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>
-        `;
+
+        // Load student lesson completion stats from local storage
+        let completedList = [];
+        try {
+          completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
+        } catch (e) {
+          completedList = [];
+        }
+        document.getElementById('mathProgressCount').textContent = `${completedList.length} / ${maxLessons}`;
+
+      } catch (err) {
+        console.error("Dashboard sync error:", err);
+        document.getElementById('syncStatusText').textContent = "Offline Mode (Cache Loaded)";
+        document.getElementById('syncStatusText').style.color = "var(--accent-amber)";
       }
     }
 
-    async function handleSignOut() {
-      await window.mySupabaseInstance.auth.signOut();
-      window.location.href = '../index.html';
-    }
-
-    window.addEventListener('DOMContentLoaded', () => {
-      const savedLang = localStorage.getItem('site_lang') || 'en';
-      document.getElementById('langSelect').value = savedLang;
-      applyLanguage(savedLang);
-      checkUserSession();
-      renderStudentCourses();
-      renderStudentLabs();
-    });
+    window.addEventListener('DOMContentLoaded', loadDashboardData);
   </script>
-  <script src="cookie-banner.js" defer></script>
 </body>
 </html>

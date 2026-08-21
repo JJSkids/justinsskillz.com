@@ -70,7 +70,6 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      transition: background-color 0.3s ease, color 0.3s ease;
     }
     .app-header {
       background: var(--header-bg);
@@ -268,7 +267,7 @@
 
   <main class="main-container">
     <div class="chess-card">
-      <h2 id="chess-title" style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.75rem; text-align: center;">Chess AI Training Lab (Click-to-Move)</h2>
+      <h2 id="chess-title" style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.75rem; text-align: center;">Chess AI Training Lab (Lightning Fast)</h2>
       
       <div class="chess-layout">
         <div id="myBoard"></div>
@@ -349,7 +348,7 @@
         const gain = audioCtx.createGain();
         osc.type = type;
         osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
         osc.connect(gain);
         gain.connect(audioCtx.destination);
@@ -357,9 +356,9 @@
         osc.stop(audioCtx.currentTime + duration);
       } catch (e) {}
     }
-    const playMoveSound = () => playTone(440, 'sine', 0.1);
-    const playCaptureSound = () => playTone(220, 'triangle', 0.15);
-    const playCheckSound = () => { playTone(659.25, 'sawtooth', 0.2); setTimeout(() => playTone(880, 'sawtooth', 0.2), 100); };
+    const playMoveSound = () => playTone(440, 'sine', 0.08);
+    const playCaptureSound = () => playTone(220, 'triangle', 0.1);
+    const playCheckSound = () => { playTone(659.25, 'sawtooth', 0.15); setTimeout(() => playTone(880, 'sawtooth', 0.15), 80); };
 
     const translations = {
       en: {
@@ -562,28 +561,8 @@
       window.location.reload();
     }
 
-    // Advanced Piece-Square Tables (PST) for Positional AI Evaluation
+    // High-Speed Evaluation & Move Ordering
     const pieceValues = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
-    const pawnEvalWhite = [
-      [0,  0,  0,  0,  0,  0,  0,  0],
-      [50, 50, 50, 50, 50, 50, 50, 50],
-      [10, 10, 20, 30, 30, 20, 10, 10],
-      [ 5,  5, 10, 25, 25, 10,  5,  5],
-      [ 0,  0,  0, 20, 20,  0,  0,  0],
-      [ 5, -5,-10,  0,  0,-10, -5,  5],
-      [ 5, 10, 10,-20,-20, 10, 10,  5],
-      [ 0,  0,  0,  0,  0,  0,  0,  0]
-    ];
-    const knightEval = [
-      [-50,-40,-30,-30,-30,-30,-40,-50],
-      [-40,-20,  0,  0,  0,  0,-20,-40],
-      [-30,  0, 10, 15, 15, 10,  0,-30],
-      [-30,  5, 15, 20, 20, 15,  5,-30],
-      [-30,  0, 15, 20, 20, 15,  0,-30],
-      [-30,  5, 10, 15, 15, 10,  5,-30],
-      [-40,-20,  0,  5,  5,  0,-20,-40],
-      [-50,-40,-30,-30,-30,-30,-40,-50],
-    ];
 
     function evaluateBoard(game) {
       let board = game.board();
@@ -593,11 +572,6 @@
           let piece = board[r][c];
           if (piece) {
             let val = pieceValues[piece.type];
-            if (piece.type === 'p') {
-              val += (piece.color === 'w' ? pawnEvalWhite[r][c] : pawnEvalWhite[7 - r][c]);
-            } else if (piece.type === 'n') {
-              val += knightEval[r][c];
-            }
             if (piece.color === 'b') totalEval += val;
             else totalEval -= val;
           }
@@ -606,9 +580,14 @@
       return totalEval;
     }
 
+    // Minimax with Alpha-Beta Pruning and Move Ordering
     function minimax(game, depth, alpha, beta, isMaximizing) {
       if (depth === 0 || game.game_over()) return evaluateBoard(game);
-      var moves = game.moves();
+      
+      let moves = game.moves({ verbose: true });
+      // Move Ordering: Evaluate captures first for maximum alpha-beta pruning speed
+      moves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
+
       if (isMaximizing) {
         let maxEval = -99999;
         for (let i = 0; i < moves.length; i++) {
@@ -635,11 +614,12 @@
     }
 
     function getBestMove(game, depth) {
-      let moves = game.moves();
+      let moves = game.moves({ verbose: true });
       if (moves.length === 0) return null;
-      let bestMove = moves[0];
+      moves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
+
+      let bestMove = moves[0].san;
       let bestValue = -99999;
-      moves.sort(() => Math.random() - 0.5);
 
       for (let i = 0; i < moves.length; i++) {
         game.move(moves[i]);
@@ -647,20 +627,10 @@
         game.undo();
         if (value > bestValue) {
           bestValue = value;
-          bestMove = moves[i];
+          bestMove = moves[i].san;
         }
       }
       return bestMove;
-    }
-
-    function getIntermediateMove(game) {
-      let moves = game.moves({ verbose: true });
-      if (moves.length === 0) return null;
-      let priorityMoves = moves.filter(m => m.captured || m.san.includes('+'));
-      if (priorityMoves.length > 0 && Math.random() < 0.7) {
-        return priorityMoves[Math.floor(Math.random() * priorityMoves.length)].san;
-      }
-      return moves[Math.floor(Math.random() * moves.length)].san;
     }
 
     function initChessGame() {
@@ -688,7 +658,8 @@
         if (effectiveDiff === 'casual') {
           chosenMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
         } else if (effectiveDiff === 'intermediate') {
-          chosenMove = getIntermediateMove(game);
+          let priority = game.moves({ verbose: true }).filter(m => m.captured);
+          chosenMove = priority.length > 0 && Math.random() < 0.6 ? priority[0].san : possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
         } else if (effectiveDiff === 'advanced') {
           chosenMove = getBestMove(game, 2);
         } else if (effectiveDiff === 'elite') {
@@ -743,7 +714,8 @@
             checkGameResultState();
 
             if (!game.game_over()) {
-              window.setTimeout(makeAIMove, 350);
+              // Yield main thread briefly with setTimeout to prevent any browser freezing
+              window.setTimeout(makeAIMove, 20);
             }
           }
         }

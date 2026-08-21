@@ -16,7 +16,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Dashboard specific layout enhancements matching global styles.css */
     .dashboard-hero {
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1));
       border: 1px solid var(--border-subtle);
@@ -98,7 +97,7 @@
 </head>
 <body>
 
-  <!-- Standardized Header Matching index.html -->
+  <!-- Standardized Header -->
   <header class="app-header">
     <div class="header-container" style="max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem;">
       <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-main); font-weight: 800; font-size: 1.1rem;">
@@ -108,6 +107,7 @@
       <nav class="nav-links" style="display: flex; align-items: center; gap: 0.75rem;">
         <a href="index.html" class="nav-link-btn">Home</a>
         <a href="dashboard.html" class="nav-link-btn highlight">Dashboard</a>
+        <a href="chess.html" class="nav-link-btn">Chess Hub</a>
         <a href="admin.html" class="nav-link-btn">Admin</a>
       </nav>
     </div>
@@ -116,7 +116,7 @@
   <!-- Main Container -->
   <main class="main-container" style="max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem;">
     
-    <!-- Hero Header Section with Persistent Guest / User Greeting -->
+    <!-- Hero Header Section -->
     <div class="dashboard-hero">
       <div>
         <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-purple);">Student Portal</span>
@@ -131,7 +131,7 @@
       </div>
     </div>
 
-    <!-- Live Announcement Banner (Hidden unless enabled in Admin) -->
+    <!-- Announcement Banner -->
     <div id="announcementBanner" class="announcement-banner hidden" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(59, 130, 246, 0.12)); border: 1px solid var(--accent-purple, #a855f7); border-radius: var(--radius-lg, 16px); padding: 1.25rem 1.5rem; margin-bottom: 2rem; display: none; align-items: flex-start; gap: 1rem;">
       <div style="font-size: 1.5rem;">📢</div>
       <div>
@@ -140,43 +140,35 @@
       </div>
     </div>
 
-    <!-- 4-Column Statistics Overview Grid -->
+    <!-- Statistics Grid -->
     <div class="dashboard-stats-grid">
-      
-      <!-- Math Progress -->
       <div class="stat-card">
         <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">📐 Math Competition</span>
         <p class="stat-value" id="mathProgressCount">--</p>
         <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.35rem 0 0 0;">Curriculum milestones finished</p>
       </div>
 
-      <!-- Robotics Project -->
       <div class="stat-card">
         <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🤖 Robotics Lab</span>
         <p id="dashRobotName" style="font-size: 1.15rem; font-weight: 700; color: var(--accent-blue, #3b82f6); margin: 0.75rem 0 0.25rem 0;">Snacky - Dispensing Robot</p>
         <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0;">Arduino & L298N Motor Driver</p>
       </div>
 
-      <!-- Study Streak -->
       <div class="stat-card">
         <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🔥 Learning Streak</span>
         <p class="stat-value" style="color: var(--accent-amber, #f59e0b);">5 Days</p>
         <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.35rem 0 0 0;">Consistent daily login activity</p>
       </div>
 
-      <!-- Interactive Hub Status -->
       <div class="stat-card">
         <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🎮 Interactive Hub</span>
         <p class="stat-value" style="color: var(--accent-green, #10b981); font-size: 1.85rem;">Online</p>
         <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.35rem 0 0 0;">Minecraft Edu & Chess Hub active</p>
       </div>
-
     </div>
 
-    <!-- Two Column Deep Dive Layout -->
+    <!-- Deep Dive Grid -->
     <div class="dashboard-section-grid">
-      
-      <!-- Left Column: Active Modules Status -->
       <div class="panel-box">
         <h3 style="margin-top: 0; margin-bottom: 1.25rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
           📚 Active Curriculum Modules
@@ -184,28 +176,27 @@
         <div style="display: flex; flex-direction: column; gap: 0.75rem;">
           <div class="module-row">
             <span>Mathematics & Grade 7 Competition Prep</span> 
-            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+            <span style="color: var(--accent-green, #10b981);">● Active</span>
           </div>
           <div class="module-row">
             <span>Programming & Web Development Hub</span> 
-            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+            <span style="color: var(--accent-green, #10b981);">● Active</span>
           </div>
           <div class="module-row">
             <span>Music Sheet Arrangements & Theory</span> 
-            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+            <span style="color: var(--accent-green, #10b981);">● Active</span>
           </div>
           <div class="module-row">
             <span>French Language Studies & Vocabulary</span> 
-            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+            <span style="color: var(--accent-green, #10b981);">● Active</span>
           </div>
           <div class="module-row">
             <span>Chess Tactics & Logic Games</span> 
-            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+            <span style="color: var(--accent-green, #10b981);">● Active</span>
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Recent Student Activity Feed -->
       <div class="panel-box">
         <h3 style="margin-top: 0; margin-bottom: 1.25rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
           ⚡ Recent Activity
@@ -234,12 +225,11 @@
           </div>
         </div>
       </div>
-
     </div>
 
   </main>
 
-  <!-- Dynamic Auth & Persistent Guest ID Data Loading Script -->
+  <!-- Unified Global Guest ID Script -->
   <script>
     const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-.';
@@ -252,7 +242,6 @@
         supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       }
 
-      // 1. Handle Dynamic Greeting (Persistent Guest ID vs Signed-in User)
       let greetingName = "";
       try {
         if (supabaseClient) {
@@ -265,50 +254,38 @@
         console.log("Auth check skipped or offline.");
       }
 
-      // If not signed in, use a consistent guest code saved permanently in localStorage
+      // Use the unified global guest ID shared across all pages (chess.html, etc.)
       if (!greetingName) {
-        let guestCode = localStorage.getItem('persistent_guest_visitor_code');
+        let guestCode = localStorage.getItem('global_guest_id');
         if (!guestCode) {
-          guestCode = 'Guest-' + Math.floor(1000 + Math.random() * 9000);
-          localStorage.setItem('persistent_guest_visitor_code', guestCode);
+          guestCode = 'Guest-' + Math.floor(10000 + Math.random() * 90000);
+          localStorage.setItem('global_guest_id', guestCode);
         }
         greetingName = guestCode;
       }
 
       document.getElementById('userGreeting').textContent = `Welcome, ${greetingName}! 👋`;
 
-      // 2. Fetch platform settings from Supabase / Local Cache
       try {
         const cached = localStorage.getItem('admin_settings_cache');
         if (cached) settings = JSON.parse(cached);
 
         if (supabaseClient) {
-          const { data, error } = await supabaseClient
+          const { data } = await supabaseClient
             .from('admin_settings')
             .select('data')
             .eq('id', 'site_config')
             .single();
 
-          if (data && data.data) {
-            settings = data.data;
-          }
+          if (data && data.data) settings = data.data;
         }
 
-        // Apply settings across dashboard elements
         let maxLessons = "26";
         if (settings) {
-          if (settings.siteTitle) {
-            document.getElementById('dashWindowTitle').textContent = settings.siteTitle;
-          }
-          if (settings.activeTerm) {
-            document.getElementById('dashTerm').textContent = settings.activeTerm;
-          }
-          if (settings.totalLessons) {
-            maxLessons = settings.totalLessons;
-          }
-          if (settings.robotName) {
-            document.getElementById('dashRobotName').textContent = settings.robotName;
-          }
+          if (settings.siteTitle) document.getElementById('dashWindowTitle').textContent = settings.siteTitle;
+          if (settings.activeTerm) document.getElementById('dashTerm').textContent = settings.activeTerm;
+          if (settings.totalLessons) maxLessons = settings.totalLessons;
+          if (settings.robotName) document.getElementById('dashRobotName').textContent = settings.robotName;
           if (settings.announcement && settings.showAnnouncement !== false && settings.announcement.trim() !== "") {
             document.getElementById('announcementText').textContent = settings.announcement;
             const banner = document.getElementById('announcementBanner');
@@ -317,18 +294,12 @@
           }
         }
 
-        // Load student lesson completion stats
-        let completedList = [];
-        try {
-          completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
-        } catch (e) {
-          completedList = [];
-        }
+        let completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
         document.getElementById('mathProgressCount').textContent = `${completedList.length} / ${maxLessons}`;
 
       } catch (err) {
         console.error("Dashboard sync error:", err);
-        document.getElementById('syncStatusText').textContent = "Offline Mode (Cache Loaded)";
+        document.getElementById('syncStatusText').textContent = "Offline Mode";
         document.getElementById('syncStatusText').style.color = "var(--accent-amber, #f59e0b)";
       }
     }

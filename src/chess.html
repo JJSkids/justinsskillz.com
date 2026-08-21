@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chess AI - Justin's Skillz</title>
+  <title>Chess AI Training Lab - Justin's Skillz</title>
   
   <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   
-  <!-- Preload all online chess piece images BEFORE DOMContentLoaded -->
+  <!-- Preload chess piece images -->
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wP.png">
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wN.png">
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/wB.png">
@@ -24,15 +24,15 @@
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bQ.png">
   <link rel="preload" as="image" href="https://chessboardjs.com/img/chesspieces/wikipedia/bK.png">
 
-  <!-- Chessboard.js & Chess.js Dependencies -->
+  <!-- Dependencies -->
   <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css">
   <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.10.3/chess.min.js"></script>
   <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="../styles.css">
   <script src="../theme.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root, [data-theme="dark"] {
@@ -125,7 +125,7 @@
       color: var(--text-main);
     }
     .main-container {
-      max-width: 950px;
+      max-width: 1100px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
@@ -148,12 +148,12 @@
       width: 100%;
     }
     #myBoard {
-      width: 400px;
+      width: 420px;
       max-width: 100%;
     }
     .chess-sidebar {
       flex: 1;
-      min-width: 270px;
+      min-width: 280px;
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -176,29 +176,17 @@
       opacity: 0.9;
       transform: translateY(-1px);
     }
-    .btn-primary {
-      background: var(--accent-purple);
-      color: white;
-    }
-    .btn-secondary {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-    }
-    .btn-warning {
-      background: #d97706;
-      color: white;
-    }
-    .btn-success {
-      background: var(--accent-green);
-      color: white;
-    }
-    .status-box, .stats-box, .lang-select-group {
+    .btn-primary { background: var(--accent-purple); color: white; }
+    .btn-secondary { background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-main); }
+    .btn-warning { background: #d97706; color: white; }
+    .btn-success { background: var(--accent-green); color: white; }
+
+    .status-box, .stats-box, .lang-select-group, .history-box {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
       padding: 1rem;
       border-radius: var(--radius-md);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       line-height: 1.5;
     }
     .stats-grid {
@@ -206,7 +194,6 @@
       grid-template-columns: repeat(2, 1fr);
       gap: 0.5rem;
       margin-top: 0.5rem;
-      font-size: 0.85rem;
     }
     .stat-item {
       background: var(--bg-card);
@@ -216,14 +203,8 @@
       display: flex;
       flex-direction: column;
     }
-    .stat-label {
-      color: var(--text-muted);
-      font-size: 0.75rem;
-    }
-    .stat-value {
-      font-weight: 700;
-      font-size: 1rem;
-    }
+    .stat-label { color: var(--text-muted); font-size: 0.75rem; }
+    .stat-value { font-weight: 700; font-size: 1rem; }
     .lang-select {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -235,12 +216,20 @@
       width: 100%;
       margin-top: 0.3rem;
     }
-    .lang-select:focus {
-      outline: none;
-      border-color: var(--accent-purple);
-    }
-    .highlight {
-      box-shadow: inset 0 0 4px 4px var(--accent-purple) !important;
+    .lang-select:focus { outline: none; border-color: var(--accent-purple); }
+    .highlight { box-shadow: inset 0 0 4px 4px var(--accent-purple) !important; }
+    
+    .history-log {
+      max-height: 110px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.4rem;
+      padding: 0.25rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
     }
     .app-footer {
       border-top: 1px solid var(--border-subtle);
@@ -264,13 +253,12 @@
       <nav class="nav-menu">
         <a href="../index.html" class="nav-link" id="nav-home">Home</a>
         <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+        <a href="math.html" class="nav-link" id="nav-math">Math Lab</a>
         <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
-          🌙
-        </button>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">🌙</button>
         <div id="auth-action-container">
           <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
         </div>
@@ -313,8 +301,13 @@
             <div id="fen" style="font-size: 0.7rem; color: var(--text-muted); word-break: break-all; margin-top: 0.3rem;"></div>
           </div>
 
+          <div class="history-box">
+            <span id="history-label" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">Move History (PGN)</span>
+            <div id="moveHistoryLog" class="history-log">No moves yet.</div>
+          </div>
+
           <div class="stats-box">
-            <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">Match Statistics</span>
+            <span id="stats-label" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">Match Statistics</span>
             <div class="stats-grid">
               <div class="stat-item"><span class="stat-label">Total</span><span id="stat-total" class="stat-value">0</span></div>
               <div class="stat-item"><span class="stat-label">Wins</span><span id="stat-wins" class="stat-value" style="color: var(--accent-green);">0</span></div>
@@ -347,6 +340,27 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
+    // Web Audio Sound Generator
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, type, duration) {
+      try {
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+    const playMoveSound = () => playTone(440, 'sine', 0.1);
+    const playCaptureSound = () => playTone(220, 'triangle', 0.15);
+    const playCheckSound = () => { playTone(659.25, 'sawtooth', 0.2); setTimeout(() => playTone(880, 'sawtooth', 0.2), 100); };
+
     const translations = {
       en: {
         title: "Chess AI Training Lab",
@@ -356,13 +370,13 @@
         redoBtn: "Redo",
         navHome: "Home",
         navDashboard: "Dashboard",
-        navChess: "Chess AI",
         navMath: "Math Lab",
-        navAI: "AI Assistant",
         signIn: "Sign In",
         signOut: "Sign Out",
         langLabel: "Language / Langue / Idioma",
         difficultyLabel: "AI Level / Niveau / Nivel",
+        historyLabel: "Move History (PGN)",
+        statsLabel: "Match Statistics",
         casual: "Casual Justin",
         intermediate: "Intermediate Justin",
         advanced: "Advanced Justin",
@@ -377,13 +391,13 @@
         redoBtn: "Rétablir",
         navHome: "Accueil",
         navDashboard: "Tableau de bord",
-        navChess: "IA d'Échecs",
         navMath: "Labo de Math",
-        navAI: "Assistant IA",
         signIn: "Se connecter",
         signOut: "Se déconnecter",
         langLabel: "Langue / Language / Idioma",
         difficultyLabel: "Niveau de l'IA",
+        historyLabel: "Historique des Coups (PGN)",
+        statsLabel: "Statistiques du Match",
         casual: "Justin Décontracté",
         intermediate: "Justin Intermédiaire",
         advanced: "Justin Avancé",
@@ -398,13 +412,13 @@
         redoBtn: "Rehacer",
         navHome: "Inicio",
         navDashboard: "Panel",
-        navChess: "IA de Ajedrez",
         navMath: "Lab de Matemáticas",
-        navAI: "Asistente IA",
         signIn: "Iniciar Sesión",
         signOut: "Cerrar Sesión",
         langLabel: "Idioma / Language / Langue",
         difficultyLabel: "Nivel de la IA",
+        historyLabel: "Historial de Movimientos (PGN)",
+        statsLabel: "Estadísticas de Partidas",
         casual: "Justin Casual",
         intermediate: "Justin Intermedio",
         advanced: "Justin Avanzado",
@@ -458,11 +472,11 @@
       document.getElementById('redoBtn').textContent = t.redoBtn;
       document.getElementById('nav-home').textContent = t.navHome;
       document.getElementById('nav-dashboard').textContent = t.navDashboard;
-      document.getElementById('nav-chess').textContent = t.navChess;
       document.getElementById('nav-math').textContent = t.navMath;
-      document.getElementById('nav-ai').textContent = t.navAI;
       document.getElementById('lang-label').textContent = t.langLabel;
       document.getElementById('difficulty-label').textContent = t.difficultyLabel;
+      document.getElementById('history-label').textContent = t.historyLabel;
+      document.getElementById('stats-label').textContent = t.statsLabel;
       document.getElementById('opt-casual').textContent = t.casual;
       document.getElementById('opt-intermediate').textContent = t.intermediate;
       document.getElementById('opt-advanced').textContent = t.advanced;
@@ -481,84 +495,32 @@
         if (session && session.user) {
           currentUserId = session.user.email;
           const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-          
           let displayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
 
           document.getElementById('session-info').textContent = `User: ${displayName}`;
-          authContainer.innerHTML = `
-            <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">${t.signOut}</button>
-          `;
-          if (userEmail === ADMIN_EMAIL && navAdminLink) {
-            navAdminLink.style.display = 'block';
-          }
+          authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">${t.signOut}</button>`;
+          if (userEmail === ADMIN_EMAIL && navAdminLink) navAdminLink.style.display = 'block';
         } else {
           let cachedGuest = sessionStorage.getItem('justin_guest_id');
-          if (cachedGuest) {
-            currentUserId = cachedGuest;
-          } else {
-            currentUserId = await allocateUniqueGuestId();
-            sessionStorage.setItem('justin_guest_id', currentUserId);
+          if (!cachedGuest) {
+            cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
+            sessionStorage.setItem('justin_guest_id', cachedGuest);
           }
+          currentUserId = cachedGuest;
           document.getElementById('session-info').textContent = `Player: ${currentUserId}`;
-          authContainer.innerHTML = `
-            <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">${t.signIn}</a>
-          `;
+          authContainer.innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">${t.signIn}</a>`;
         }
         fetchUserStats();
       } catch (err) {
         currentUserId = sessionStorage.getItem('justin_guest_id') || `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
-        sessionStorage.setItem('justin_guest_id', currentUserId);
         document.getElementById('session-info').textContent = `Player: ${currentUserId}`;
         fetchUserStats();
       }
     }
 
-    async function allocateUniqueGuestId() {
-      let isUnique = false;
-      let guestId = '';
-      while (!isUnique) {
-        const randomNum = Math.floor(10000 + Math.random() * 90000);
-        guestId = `Guest-${randomNum}`;
-        try {
-          let { data, error } = await window.mySupabaseInstance
-            .from('active_guests')
-            .select('guest_id')
-            .eq('guest_id', guestId)
-            .single();
-
-          if (error || !data) {
-            isUnique = true;
-            await window.mySupabaseInstance
-              .from('active_guests')
-              .insert([{ guest_id: guestId }]);
-          }
-        } catch (e) {
-          isUnique = true;
-        }
-      }
-      return guestId;
-    }
-
-    window.addEventListener('beforeunload', async () => {
-      let guestId = sessionStorage.getItem('justin_guest_id');
-      if (guestId && !guestId.includes('@')) {
-        try {
-          await window.mySupabaseInstance
-            .from('active_guests')
-            .delete()
-            .eq('guest_id', guestId);
-        } catch (e) {}
-      }
-    });
-
     async function fetchUserStats() {
       try {
-        let { data, error } = await window.mySupabaseInstance
-          .from('chess_stats')
-          .select('*')
-          .eq('user_id', currentUserId)
-          .single();
-
+        let { data } = await window.mySupabaseInstance.from('chess_stats').select('*').eq('user_id', currentUserId).single();
         if (data) {
           stats.wins = data.wins || 0;
           stats.losses = data.losses || 0;
@@ -577,15 +539,13 @@
       updateStatsUI();
 
       try {
-        await window.mySupabaseInstance
-          .from('chess_stats')
-          .upsert({ 
-            user_id: currentUserId, 
-            wins: stats.wins, 
-            losses: stats.losses, 
-            draws: stats.draws,
-            updated_at: new Date()
-          });
+        await window.mySupabaseInstance.from('chess_stats').upsert({ 
+          user_id: currentUserId, 
+          wins: stats.wins, 
+          losses: stats.losses, 
+          draws: stats.draws,
+          updated_at: new Date()
+        });
       } catch (err) {}
     }
 
@@ -602,8 +562,28 @@
       window.location.reload();
     }
 
-    // AI Chess Engine & Heuristics
+    // Advanced Piece-Square Tables (PST) for Positional AI Evaluation
     const pieceValues = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
+    const pawnEvalWhite = [
+      [0,  0,  0,  0,  0,  0,  0,  0],
+      [50, 50, 50, 50, 50, 50, 50, 50],
+      [10, 10, 20, 30, 30, 20, 10, 10],
+      [ 5,  5, 10, 25, 25, 10,  5,  5],
+      [ 0,  0,  0, 20, 20,  0,  0,  0],
+      [ 5, -5,-10,  0,  0,-10, -5,  5],
+      [ 5, 10, 10,-20,-20, 10, 10,  5],
+      [ 0,  0,  0,  0,  0,  0,  0,  0]
+    ];
+    const knightEval = [
+      [-50,-40,-30,-30,-30,-30,-40,-50],
+      [-40,-20,  0,  0,  0,  0,-20,-40],
+      [-30,  0, 10, 15, 15, 10,  0,-30],
+      [-30,  5, 15, 20, 20, 15,  5,-30],
+      [-30,  0, 15, 20, 20, 15,  0,-30],
+      [-30,  5, 10, 15, 15, 10,  5,-30],
+      [-40,-20,  0,  5,  5,  0,-20,-40],
+      [-50,-40,-30,-30,-30,-30,-40,-50],
+    ];
 
     function evaluateBoard(game) {
       let board = game.board();
@@ -613,11 +593,13 @@
           let piece = board[r][c];
           if (piece) {
             let val = pieceValues[piece.type];
-            if (piece.color === 'b') {
-              totalEval += val;
-            } else {
-              totalEval -= val;
+            if (piece.type === 'p') {
+              val += (piece.color === 'w' ? pawnEvalWhite[r][c] : pawnEvalWhite[7 - r][c]);
+            } else if (piece.type === 'n') {
+              val += knightEval[r][c];
             }
+            if (piece.color === 'b') totalEval += val;
+            else totalEval -= val;
           }
         }
       }
@@ -625,10 +607,7 @@
     }
 
     function minimax(game, depth, alpha, beta, isMaximizing) {
-      if (depth === 0 || game.game_over()) {
-        return evaluateBoard(game);
-      }
-
+      if (depth === 0 || game.game_over()) return evaluateBoard(game);
       var moves = game.moves();
       if (isMaximizing) {
         let maxEval = -99999;
@@ -658,7 +637,6 @@
     function getBestMove(game, depth) {
       let moves = game.moves();
       if (moves.length === 0) return null;
-
       let bestMove = moves[0];
       let bestValue = -99999;
       moves.sort(() => Math.random() - 0.5);
@@ -678,12 +656,9 @@
     function getIntermediateMove(game) {
       let moves = game.moves({ verbose: true });
       if (moves.length === 0) return null;
-
-      // Prefer captures or checks
       let priorityMoves = moves.filter(m => m.captured || m.san.includes('+'));
       if (priorityMoves.length > 0 && Math.random() < 0.7) {
-        let chosen = priorityMoves[Math.floor(Math.random() * priorityMoves.length)];
-        return chosen.san;
+        return priorityMoves[Math.floor(Math.random() * priorityMoves.length)].san;
       }
       return moves[Math.floor(Math.random() * moves.length)].san;
     }
@@ -692,6 +667,7 @@
       var game = new Chess();
       var statusEl = $('#status');
       var fenEl = $('#fen');
+      var historyLogEl = $('#moveHistoryLog');
       var redoStack = [];
       var selectedSquare = null;
 
@@ -710,8 +686,7 @@
         }
 
         if (effectiveDiff === 'casual') {
-          var randomIdx = Math.floor(Math.random() * possibleMoves.length);
-          chosenMove = possibleMoves[randomIdx];
+          chosenMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
         } else if (effectiveDiff === 'intermediate') {
           chosenMove = getIntermediateMove(game);
         } else if (effectiveDiff === 'advanced') {
@@ -720,24 +695,23 @@
           chosenMove = getBestMove(game, 3);
         }
 
-        if (chosenMove) {
-          game.move(chosenMove);
-        } else {
-          game.move(possibleMoves[0]);
+        let moveResult = game.move(chosenMove || possibleMoves[0]);
+        if (moveResult) {
+          if (moveResult.captured) playCaptureSound();
+          else if (game.in_check()) playCheckSound();
+          else playMoveSound();
         }
 
         chessBoardObj.position(game.fen());
         updateStatus();
+        updateHistoryLog();
         checkGameResultState();
       }
 
-      // Click-to-Move handler
       $('#myBoard').off('click').on('click', '.square-55d63', function () {
-        if (game.game_over()) return;
-        if (game.turn() !== 'w') return; // Only allow player (White) to click
+        if (game.game_over() || game.turn() !== 'w') return;
 
         var square = $(this).attr('data-square');
-
         if (selectedSquare === null) {
           var piece = game.get(square);
           if (piece && piece.color === 'w') {
@@ -746,12 +720,7 @@
             $(this).addClass('highlight');
           }
         } else {
-          var move = game.move({
-            from: selectedSquare,
-            to: square,
-            promotion: 'q'
-          });
-
+          var move = game.move({ from: selectedSquare, to: square, promotion: 'q' });
           $('#myBoard .square-55d63').removeClass('highlight');
           var prevSelected = selectedSquare;
           selectedSquare = null;
@@ -763,33 +732,37 @@
               $(this).addClass('highlight');
             }
           } else {
-            redoStack = []; // Clear redo stack on new progressive move
+            redoStack = [];
+            if (move.captured) playCaptureSound();
+            else if (game.in_check()) playCheckSound();
+            else playMoveSound();
+
             chessBoardObj.position(game.fen());
             updateStatus();
+            updateHistoryLog();
             checkGameResultState();
 
             if (!game.game_over()) {
-              window.setTimeout(makeAIMove, 300);
+              window.setTimeout(makeAIMove, 350);
             }
           }
         }
       });
 
-      function updateStatus () {
+      function updateStatus() {
         var currentLang = localStorage.getItem('site_lang') || 'en';
-        var status = '';
         var whiteLabel = currentLang === 'fr' ? 'les Blancs' : currentLang === 'es' ? 'Blancas' : 'White';
         var blackLabel = currentLang === 'fr' ? 'les Noirs' : currentLang === 'es' ? 'Negras' : 'Black';
         var colorKey = game.turn() === 'b' ? blackLabel : whiteLabel;
+        var status = '';
 
         if (game.in_checkmate()) {
-          if (currentLang === 'fr') status = `Partie terminée, ${colorKey} est en échec et mat.`;
-          else if (currentLang === 'es') status = `Fin del juego, ${colorKey} está en jaque mate.`;
-          else status = `Game over, ${colorKey} is in checkmate.`;
+          status = currentLang === 'fr' ? `Partie terminée, ${colorKey} est en échec et mat.` :
+                   currentLang === 'es' ? `Fin del juego, ${colorKey} está en jaque mate.` :
+                   `Game over, ${colorKey} is in checkmate.`;
         } else if (game.in_draw()) {
-          if (currentLang === 'fr') status = "Partie terminée, position nulle.";
-          else if (currentLang === 'es') status = "Fin del juego, tablas.";
-          else status = "Game over, drawn position.";
+          status = currentLang === 'fr' ? "Partie terminée, position nulle." :
+                   currentLang === 'es' ? "Fin del juego, tablas." : "Game over, drawn position.";
         } else {
           if (currentLang === 'fr') {
             status = game.turn() === 'w' ? "Aux Blancs de jouer" : "Aux Noirs de jouer";
@@ -802,30 +775,41 @@
             if (game.in_check()) status += ', check';
           }
         }
-
         statusEl.html(status);
         fenEl.html(game.fen());
       }
 
+      function updateHistoryLog() {
+        var history = game.history({ verbose: true });
+        if (history.length === 0) {
+          historyLogEl.html('No moves yet.');
+          return;
+        }
+        let pgnText = '';
+        for (let i = 0; i < history.length; i += 2) {
+          let moveNum = (i / 2) + 1;
+          let whiteMove = history[i].san;
+          let blackMove = history[i + 1] ? history[i + 1].san : '';
+          pgnText += `${moveNum}. ${whiteMove} ${blackMove} `;
+        }
+        historyLogEl.html(pgnText);
+        historyLogEl.scrollTop(historyLogEl[0].scrollHeight);
+      }
+
       function checkGameResultState() {
         if (game.in_checkmate()) {
-          if (game.turn() === 'w') {
-            recordGameResult('loss');
-          } else {
-            recordGameResult('win');
-          }
+          if (game.turn() === 'w') recordGameResult('loss');
+          else recordGameResult('win');
         } else if (game.in_draw() || game.in_stalemate()) {
           recordGameResult('draw');
         }
       }
 
-      var config = {
+      chessBoardObj = Chessboard('myBoard', {
         position: 'start',
         draggable: false,
         pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
-      };
-
-      chessBoardObj = Chessboard('myBoard', config);
+      });
       updateStatus();
 
       $('#startBtn').off('click').on('click', function () {
@@ -835,6 +819,7 @@
         $('#myBoard .square-55d63').removeClass('highlight');
         chessBoardObj.start();
         updateStatus();
+        updateHistoryLog();
       });
 
       $('#undoBtn').off('click').on('click', function () {
@@ -842,13 +827,14 @@
         selectedSquare = null;
         $('#myBoard .square-55d63').removeClass('highlight');
         
-        let move2 = game.undo(); // AI move
-        let move1 = game.undo(); // Player move
+        let move2 = game.undo();
+        let move1 = game.undo();
         if (move1) redoStack.push(move1);
         if (move2) redoStack.push(move2);
 
         chessBoardObj.position(game.fen());
         updateStatus();
+        updateHistoryLog();
       });
 
       $('#redoBtn').off('click').on('click', function () {
@@ -863,11 +849,10 @@
 
         chessBoardObj.position(game.fen());
         updateStatus();
+        updateHistoryLog();
       });
 
-      return {
-        updateStatus: updateStatus
-      };
+      return { updateStatus: updateStatus };
     }
   </script>
   <script src="cookie-banner.js" defer></script>

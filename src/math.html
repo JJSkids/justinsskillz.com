@@ -119,15 +119,53 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     }
 
-    /* Duolingo Style Skill Tree / Path */
+    /* Duolingo Style Skill Tree / Path & Section Banners */
     .skill-path {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 2.5rem;
+      gap: 2.2rem;
       position: relative;
       padding: 1rem 0 3rem 0;
     }
+    .section-banner {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.75rem;
+      text-align: center;
+      width: 100%;
+      max-width: 440px;
+      margin: 1.5rem 0 0.5rem 0;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      z-index: 2;
+      position: relative;
+    }
+    .section-badge {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.15);
+      border: 1px solid var(--accent-purple);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 0.4rem;
+    }
+    .section-title {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+    .section-desc {
+      margin: 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
     .path-node {
       display: flex;
       flex-direction: column;
@@ -266,19 +304,53 @@
       <div id="session-info" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600; margin-top: 1rem;">Connecting session...</div>
     </div>
 
+    <!-- Skill Path with Duolingo-style Section Banners -->
     <div class="skill-path" id="skillPathContainer">
+      
+      <!-- Section 1: Foundations -->
+      <div class="section-banner">
+        <span class="section-badge">Section 1</span>
+        <h3 class="section-title">Foundations & Arithmetic</h3>
+        <p class="section-desc">Master core operations, place value, and fractions.</p>
+      </div>
+
       <div class="path-node" data-lesson="1"><a href="Math Lessons/Lesson-1.html" class="node-btn" id="nodeBtn-1" title="Level 1: Arithmetic Foundations">1</a><span class="node-label">Level 1: Arithmetic</span></div>
       <div class="path-node" data-lesson="2"><a href="Math Lessons/Lesson-2.html" class="node-btn" id="nodeBtn-2" title="Level 2: Place Value & Operations" style="background: var(--accent-blue);">2</a><span class="node-label">Level 2: Place Value</span></div>
       <div class="path-node" data-lesson="3"><a href="Math Lessons/Lesson-3.html" class="node-btn" id="nodeBtn-3" title="Level 3: Fractions & Multiplicative Thinking" style="background: var(--accent-green);">3</a><span class="node-label">Level 3: Fractions</span></div>
+
+      <!-- Section 2: Intermediate Math -->
+      <div class="section-banner">
+        <span class="section-badge" style="color: var(--accent-blue); background: rgba(59, 130, 246, 0.15); border-color: var(--accent-blue);">Section 2</span>
+        <h3 class="section-title">Rational Math & Ratios</h3>
+        <p class="section-desc">Tackle multi-digit arithmetic, coordinates, and proportions.</p>
+      </div>
+
       <div class="path-node" data-lesson="4"><a href="Math Lessons/Lesson-4.html" class="node-btn" id="nodeBtn-4" title="Level 4: Multi-Digit Arithmetic" style="background: #eab308;">4</a><span class="node-label">Level 4: Multi-Digit</span></div>
       <div class="path-node" data-lesson="5"><a href="Math Lessons/Lesson-5.html" class="node-btn" id="nodeBtn-5" title="Level 5: Rational Arithmetic & Coordinates" style="background: #f97316;">5</a><span class="node-label">Level 5: Rational Math</span></div>
       <div class="path-node" data-lesson="6"><a href="Math Lessons/Lesson-6.html" class="node-btn" id="nodeBtn-6" title="Level 6: Ratios & Proportions" style="background: var(--accent-rose);">6</a><span class="node-label">Level 6: Ratios</span></div>
+
+      <!-- Section 3: Advanced Algebra -->
+      <div class="section-banner">
+        <span class="section-badge" style="color: var(--accent-green); background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green);">Section 3</span>
+        <h3 class="section-title">Algebra & Linear Functions</h3>
+        <p class="section-desc">Explore rational equations, Pythagorean geometry, and quadratics.</p>
+      </div>
+
       <div class="path-node" data-lesson="7"><a href="Math Lessons/Lesson-7.html" class="node-btn" id="nodeBtn-7" title="Level 7: Rational Equations & Geometry" style="background: #06b6d4;">7</a><span class="node-label">Level 7: Equations</span></div>
       <div class="path-node" data-lesson="8"><a href="Math Lessons/Lesson-8.html" class="node-btn" id="nodeBtn-8" title="Level 8: Linear Functions & Pythagorean Geometry" style="background: #8b5cf6;">8</a><span class="node-label">Level 8: Linear Functions</span></div>
       <div class="path-node" data-lesson="9"><a href="Math Lessons/Lesson-9.html" class="node-btn" id="nodeBtn-9" title="Level 9: Algebraic Modeling & Quadratics" style="background: #ec4899;">9</a><span class="node-label">Level 9: Quadratics</span></div>
+
+      <!-- Section 4: Trigonometry & Masterclass -->
+      <div class="section-banner">
+        <span class="section-badge" style="color: var(--accent-purple); background: rgba(168, 85, 247, 0.15); border-color: var(--accent-purple);">Section 4</span>
+        <h3 class="section-title">Trigonometry & Masterclass</h3>
+        <p class="section-desc">Conquer deductive proofs, unit circles, and De Moivre's theorem.</p>
+      </div>
+
       <div class="path-node" data-lesson="10"><a href="Math Lessons/Lesson-10.html" class="node-btn" id="nodeBtn-10" title="Level 10: Deductive Proofs & Trigonometry" style="background: #14b8a6;">10</a><span class="node-label">Level 10: Trigonometry</span></div>
       <div class="path-node" data-lesson="11"><a href="Math Lessons/Lesson-11.html" class="node-btn" id="nodeBtn-11" title="Level 11: Advanced Functions & Unit Circle" style="background: #6366f1;">11</a><span class="node-label">Level 11: Advanced Func</span></div>
       <div class="path-node" data-lesson="12"><a href="Math Lessons/Lesson-12.html" class="node-btn" id="nodeBtn-12" title="Level 12: De Moivre's Theorem & Polar Coordinates" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-rose)); border: 4px solid gold;">👑</a><span class="node-label" style="border-color: var(--accent-purple); font-weight: 800;">Level 12: Masterclass</span></div>
+
     </div>
   </main>
 

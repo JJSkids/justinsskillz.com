@@ -16,7 +16,7 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Additional structural styling for comprehensive dashboard grid */
+    /* Dashboard specific layout enhancements matching global styles.css */
     .dashboard-hero {
       background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1));
       border: 1px solid var(--border-subtle);
@@ -98,14 +98,14 @@
 </head>
 <body>
 
-  <!-- Standard Header -->
+  <!-- Standardized Header Matching index.html -->
   <header class="app-header">
-    <div class="header-container">
-      <a href="index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
+    <div class="header-container" style="max-width: 1300px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1.5rem;">
+      <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-main); font-weight: 800; font-size: 1.1rem;">
+        <img src="Justin's Skillz.jpg" alt="Logo" class="nav-logo-img" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-purple);">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
-      <nav class="nav-links">
+      <nav class="nav-links" style="display: flex; align-items: center; gap: 0.75rem;">
         <a href="index.html" class="nav-link-btn">Home</a>
         <a href="dashboard.html" class="nav-link-btn highlight">Dashboard</a>
         <a href="admin.html" class="nav-link-btn">Admin</a>
@@ -116,11 +116,11 @@
   <!-- Main Container -->
   <main class="main-container" style="max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem;">
     
-    <!-- Hero Header Section -->
+    <!-- Hero Header Section with Dynamic Guest / User Greeting -->
     <div class="dashboard-hero">
       <div>
         <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-purple);">Student Portal</span>
-        <h1 style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem; font-weight: 800;">Welcome back, Justin! 👋</h1>
+        <h1 id="userGreeting" style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem; font-weight: 800;">Welcome, Visitor! 👋</h1>
         <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
           Active Academic Term: <span id="dashTerm" style="color: var(--text-main); font-weight: 700;">Loading...</span>
         </p>
@@ -239,23 +239,52 @@
 
   </main>
 
-  <!-- Data Loading Script -->
+  <!-- Dynamic Auth & Data Loading Script -->
   <script>
     const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-.';
 
-    async function loadDashboardData() {
+    async function initializeDashboard() {
       let settings = null;
+      let supabaseClient = null;
 
+      if (typeof window.supabase !== 'undefined') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+
+      // 1. Handle Dynamic Greeting (Guest code vs Signed-in User)
+      let greetingName = "";
       try {
-        // 1. Try local cache first for instant load
+        if (supabaseClient) {
+          const { data: { user } } = await supabaseClient.auth.getUser();
+          if (user) {
+            // Use user metadata name, email prefix, or fallback
+            greetingName = user.user_metadata?.full_name || user.email.split('@')[0];
+          }
+        }
+      } catch (e) {
+        console.log("Auth check skipped or offline.");
+      }
+
+      // If not signed in via Supabase, use guest code fallback stored in sessionStorage
+      if (!greetingName) {
+        let guestCode = sessionStorage.getItem('guest_visitor_code');
+        if (!guestCode) {
+          guestCode = 'Guest-' + Math.floor(1000 + Math.random() * 9000);
+          sessionStorage.setItem('guest_visitor_code', guestCode);
+        }
+        greetingName = guestCode;
+      }
+
+      document.getElementById('userGreeting').textContent = `Welcome, ${greetingName}! 👋`;
+
+      // 2. Fetch platform settings from Supabase / Local Cache
+      try {
         const cached = localStorage.getItem('admin_settings_cache');
         if (cached) settings = JSON.parse(cached);
 
-        // 2. Query Supabase for latest live settings
-        if (typeof window.supabase !== 'undefined') {
-          const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-          const { data, error } = await client
+        if (supabaseClient) {
+          const { data, error } = await supabaseClient
             .from('admin_settings')
             .select('data')
             .eq('id', 'site_config')
@@ -305,7 +334,7 @@
       }
     }
 
-    window.addEventListener('DOMContentLoaded', loadDashboardData);
+    window.addEventListener('DOMContentLoaded', initializeDashboard);
   </script>
 </body>
 </html>

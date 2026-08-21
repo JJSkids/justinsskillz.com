@@ -465,9 +465,9 @@
             <span class="unit-badge">Grade 7</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Proportions & Percentages')">★</a></div>
-            <div class="node-row offset-left"><a href="#" class="lesson-node" onclick="startLesson('Negative Number Operations')">2</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node" onclick="startLesson('Linear Equations Intro')">3</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G7-1')">★</a></div>
+            <div class="node-row offset-left"><a href="#" class="lesson-node" onclick="startLesson('G7-2')">2</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node" onclick="startLesson('G7-3')">3</a></div>
           </div>
         </div>
         <div class="unit-card">
@@ -476,7 +476,7 @@
             <span class="unit-badge">Grade 7 • UNB Prep</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Competition Problem Set 1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G7-Comp1')">★</a></div>
             <div class="node-row offset-right"><a href="#" class="lesson-node locked">2</a></div>
           </div>
         </div>
@@ -529,7 +529,7 @@
             <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Complex Numbers & De Moivre')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G11-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -542,7 +542,7 @@
             <span class="unit-badge">Calculus</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Calculus Basics')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G12-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -555,7 +555,7 @@
             <span class="unit-badge">Elite</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Olympiad Number Theory')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Adv-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -665,8 +665,9 @@
     function openModal() { if (modal) modal.classList.add('active'); }
     function closeModal() { if (modal) modal.classList.remove('active'); }
 
-    function startLesson(lessonName) {
-      alert(`Starting lesson: ${lessonName}! Interactive practice module loading...`);
+    // Direct navigation to Math Lesson/{lessonId}.html
+    function startLesson(lessonId) {
+      window.location.href = `Math Lesson/${lessonId}.html`;
     }
 
     if (openBtn) openBtn.addEventListener('click', openModal);

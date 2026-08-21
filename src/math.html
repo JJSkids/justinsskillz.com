@@ -27,7 +27,6 @@
       padding: 0;
     }
 
-    /* Page Enter/Exit Animation Base */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-primary);
@@ -35,19 +34,82 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: opacity 0.3s ease, transform 0.3s ease;
+      overflow-x: hidden;
     }
 
-    body.page-loaded {
-      opacity: 1;
+    /* --- ULTRA-COOL CINEMATIC CURTAIN TRANSITION --- */
+    .transition-curtain-top, .transition-curtain-bottom {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      height: 50vh;
+      background: #0b1114;
+      z-index: 9999;
+      transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+      pointer-events: none;
+    }
+
+    .transition-curtain-top {
+      top: 0;
+      border-bottom: 3px solid var(--duo-green);
+      transform: translateY(0); /* Starts closed */
+    }
+
+    .transition-curtain-bottom {
+      bottom: 0;
+      border-top: 3px solid var(--duo-green);
+      transform: translateY(0); /* Starts closed */
+    }
+
+    /* When loaded, curtains open up */
+    body.page-loaded .transition-curtain-top {
+      transform: translateY(-100%);
+    }
+    body.page-loaded .transition-curtain-bottom {
+      transform: translateY(100%);
+    }
+
+    /* When exiting, curtains close down */
+    body.page-exiting .transition-curtain-top {
+      transform: translateY(0);
+    }
+    body.page-exiting .transition-curtain-bottom {
       transform: translateY(0);
     }
 
-    body.page-exiting {
+    /* Glowing Portal Core Animation */
+    .transition-portal {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
       opacity: 0;
-      transform: translateY(-10px);
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    body.page-exiting .transition-portal {
+      opacity: 1;
+    }
+
+    .portal-core {
+      font-size: 3rem;
+      background: var(--bg-card);
+      border: 4px solid var(--duo-green);
+      border-radius: 50%;
+      width: 90px; height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px var(--duo-green);
+      animation: portalPulse 0.6s infinite alternate;
+    }
+
+    @keyframes portalPulse {
+      from { transform: scale(0.85) rotate(-10deg); box-shadow: 0 0 15px var(--duo-green); }
+      to { transform: scale(1.15) rotate(10deg); box-shadow: 0 0 50px var(--duo-green); }
     }
 
     /* Top Navigation Header */
@@ -363,6 +425,13 @@
 </head>
 <body>
 
+  <!-- Cinematic Transition Elements -->
+  <div class="transition-curtain-top"></div>
+  <div class="transition-curtain-bottom"></div>
+  <div class="transition-portal">
+    <div class="portal-core">🧮</div>
+  </div>
+
   <!-- Top Navigation Bar -->
   <header>
     <a href="../index.html" class="logo">JUSTIN'S SKILLZ</a>
@@ -597,7 +666,7 @@
     <p>&copy; 2026 Justin's Skillz • Built for Interactive Learning</p>
   </footer>
 
-  <!-- JavaScript Application Logic with Page Transitions -->
+  <!-- JavaScript Application Logic with Cinematic Transitions -->
   <script>
     const sectionData = [
       { id: 'grade-1', name: 'Grade 1: Foundations', badge: 'Elementary' },
@@ -681,25 +750,25 @@
     function openModal() { if (modal) modal.classList.add('active'); }
     function closeModal() { if (modal) modal.classList.remove('active'); }
 
-    // Smooth page exit animation before navigating to lesson page
+    // Cinematic Curtain Exit Animation before navigation
     function startLesson(lessonId) {
       document.body.classList.add('page-exiting');
       setTimeout(() => {
-        window.location.href = `Math Lessons/${lessonId}.html`;
-      }, 300); // Matches CSS transition duration
+        window.location.href = `Math Lesson/${lessonId}.html`;
+      }, 500); // Matches CSS curtain duration
     }
 
     if (openBtn) openBtn.addEventListener('click', openModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Trigger fade-in animation on page load
+    // Trigger curtain opening animation on page load
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);
       setTimeout(() => {
         document.body.classList.add('page-loaded');
-      }, 50);
+      }, 100);
     });
   </script>
 </body>

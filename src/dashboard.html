@@ -10,174 +10,87 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Global Platform Stylesheet & Theme Script -->
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    :root, [data-theme="dark"] {
-      --bg-primary: #0f1117;
-      --bg-card: #181b25;
-      --bg-secondary: #212633;
-      --border-subtle: #2d3242;
-      --text-main: #f3f4f6;
-      --text-muted: #9ca3af;
-      --accent-purple: #a855f7;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --accent-rose: #f43f5e;
-      --accent-amber: #f59e0b;
-      --header-bg: rgba(15, 17, 23, 0.85);
-      --radius-lg: 16px;
-      --radius-md: 10px;
-    }
-    [data-theme="light"] {
-      --bg-primary: #f8fafc;
-      --bg-card: #ffffff;
-      --bg-secondary: #f1f5f9;
-      --border-subtle: #e2e8f0;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --accent-purple: #9333ea;
-      --accent-blue: #2563eb;
-      --accent-green: #059669;
-      --accent-rose: #e11d48;
-      --accent-amber: #d97706;
-      --header-bg: rgba(248, 250, 252, 0.85);
-    }
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0;
-      padding: 0;
-      line-height: 1.5;
-    }
-    .app-header {
-      background: var(--header-bg);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 0.75rem 1.5rem;
-    }
-    .header-container {
-      max-width: 1300px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: var(--text-main);
-      font-weight: 800;
-      font-size: 1.1rem;
-    }
-    .nav-logo-img {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-purple);
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .nav-link-btn {
-      background: var(--bg-primary);
+    /* Additional structural styling for comprehensive dashboard grid */
+    .dashboard-hero {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(59, 130, 246, 0.1));
       border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-      padding: 0.5rem 1rem;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.85rem;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-    .nav-link-btn:hover {
-      border-color: var(--accent-purple);
-      background: rgba(168, 85, 247, 0.08);
-    }
-    .nav-link-btn.highlight {
-      background: var(--accent-purple);
-      border-color: var(--accent-purple);
-      color: white;
-    }
-
-    .main-container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-
-    /* Announcement Banner */
-    .announcement-banner {
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(59, 130, 246, 0.15));
-      border: 1px solid var(--accent-purple);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem 1.5rem;
+      border-radius: var(--radius-lg, 16px);
+      padding: 2rem;
       margin-bottom: 2rem;
       display: flex;
-      align-items: flex-start;
-      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.5rem;
     }
-    .announcement-banner.hidden {
-      display: none;
-    }
-
-    /* Dashboard Grids */
-    .dashboard-grid {
+    .dashboard-stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1.5rem;
       margin-bottom: 2rem;
     }
-    .dashboard-card {
+    .stat-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
+      border-radius: var(--radius-lg, 16px);
       padding: 1.5rem;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      transition: transform 0.2s ease, border-color 0.2s ease;
     }
-    .dashboard-card h3 {
-      margin-top: 0;
-      font-size: 1.05rem;
-      margin-bottom: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+    .stat-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-purple);
     }
-    .metric-value {
+    .stat-value {
       font-size: 2.25rem;
       font-weight: 800;
       color: var(--accent-purple);
-      margin: 0;
+      margin: 0.5rem 0 0 0;
     }
-    .module-list {
+    .dashboard-section-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media(max-width: 900px) {
+      .dashboard-section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .panel-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg, 16px);
+      padding: 1.75rem;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+    }
+    .activity-item {
       display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      margin-top: 1rem;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md, 10px);
+      margin-bottom: 0.75rem;
+      font-size: 0.9rem;
     }
-    .module-item {
+    .module-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 1rem;
-      background: var(--bg-secondary);
-      border-radius: var(--radius-md);
+      padding: 0.85rem 1.1rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md, 10px);
+      margin-bottom: 0.75rem;
       font-weight: 600;
       font-size: 0.9rem;
     }
@@ -185,92 +98,163 @@
 </head>
 <body>
 
+  <!-- Standard Header -->
   <header class="app-header">
     <div class="header-container">
-      <a href="../index.html" class="logo">
+      <a href="index.html" class="logo">
         <img src="Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
       <nav class="nav-links">
-        <a href="../index.html" class="nav-link-btn">Home</a>
+        <a href="index.html" class="nav-link-btn">Home</a>
         <a href="dashboard.html" class="nav-link-btn highlight">Dashboard</a>
         <a href="admin.html" class="nav-link-btn">Admin</a>
       </nav>
     </div>
   </header>
 
-  <main class="main-container">
-    <div style="margin-bottom: 1.75rem; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 1rem;">
+  <!-- Main Container -->
+  <main class="main-container" style="max-width: 1300px; margin: 2rem auto; padding: 0 1.5rem;">
+    
+    <!-- Hero Header Section -->
+    <div class="dashboard-hero">
       <div>
-        <h1 id="dashHeading" style="margin: 0; font-size: 1.85rem;">Student Learning Dashboard</h1>
-        <p style="color: var(--text-muted); margin: 0.35rem 0 0 0;">Active Academic Term: <span id="dashTerm" style="color: var(--text-main); font-weight: 700;">Loading...</span></p>
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--accent-purple);">Student Portal</span>
+        <h1 style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem; font-weight: 800;">Welcome back, Justin! 👋</h1>
+        <p style="color: var(--text-muted); margin: 0; font-size: 0.95rem;">
+          Active Academic Term: <span id="dashTerm" style="color: var(--text-main); font-weight: 700;">Loading...</span>
+        </p>
       </div>
-      <div style="font-size: 0.85rem; color: var(--text-muted); background: var(--bg-card); border: 1px solid var(--border-subtle); padding: 0.5rem 1rem; border-radius: var(--radius-md);">
-        Status: <span id="syncStatusText" style="color: var(--accent-green); font-weight: 700;">Synced with Supabase</span>
+      <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); padding: 0.75rem 1.25rem; border-radius: var(--radius-md, 10px); display: flex; align-items: center; gap: 0.75rem;">
+        <span style="width: 10px; height: 10px; background: var(--accent-green, #10b981); border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 0.85rem; font-weight: 600;" id="syncStatusText">Synced with Supabase</span>
       </div>
     </div>
 
-    <!-- Live Announcement Banner from Supabase -->
-    <div id="announcementBanner" class="announcement-banner hidden">
+    <!-- Live Announcement Banner (Hidden unless enabled in Admin) -->
+    <div id="announcementBanner" class="announcement-banner hidden" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.12), rgba(59, 130, 246, 0.12)); border: 1px solid var(--accent-purple, #a855f7); border-radius: var(--radius-lg, 16px); padding: 1.25rem 1.5rem; margin-bottom: 2rem; display: none; align-items: flex-start; gap: 1rem;">
       <div style="font-size: 1.5rem;">📢</div>
       <div>
-        <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; color: var(--accent-purple);">Instructor Announcement</h4>
-        <p id="announcementText" style="margin: 0; font-size: 0.9rem; line-height: 1.4;"></p>
+        <h4 style="margin: 0 0 0.25rem 0; font-size: 1rem; color: var(--accent-purple, #a855f7);">Instructor Broadcast Announcement</h4>
+        <p id="announcementText" style="margin: 0; font-size: 0.95rem; line-height: 1.5;"></p>
       </div>
     </div>
 
-    <!-- Metrics Grid -->
-    <div class="dashboard-grid">
-      <div class="dashboard-card">
-        <h3>📐 Math Competition Progress</h3>
-        <p class="metric-value" id="mathProgressCount">--</p>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0 0 0;">Completed curriculum modules</p>
+    <!-- 4-Column Statistics Overview Grid -->
+    <div class="dashboard-stats-grid">
+      
+      <!-- Math Progress -->
+      <div class="stat-card">
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">📐 Math Competition</span>
+        <p class="stat-value" id="mathProgressCount">--</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.35rem 0 0 0;">Curriculum milestones finished</p>
       </div>
 
-      <div class="dashboard-card">
-        <h3>🤖 Robotics Lab Project</h3>
-        <p id="dashRobotName" style="font-size: 1.25rem; font-weight: 700; color: var(--accent-blue); margin: 0 0 0.25rem 0;">Snacky - Dispensing Robot</p>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">Arduino Uno & L298N Motor Driver</p>
+      <!-- Robotics Project -->
+      <div class="stat-card">
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🤖 Robotics Lab</span>
+        <p id="dashRobotName" style="font-size: 1.15rem; font-weight: 700; color: var(--accent-blue, #3b82f6); margin: 0.75rem 0 0.25rem 0;">Snacky - Dispensing Robot</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0;">Arduino & L298N Motor Driver</p>
       </div>
 
-      <div class="dashboard-card">
-        <h3>🎮 Interactive Modules</h3>
-        <p class="metric-value" style="color: var(--accent-green); font-size: 1.75rem;">Active</p>
-        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0.5rem 0 0 0;">Minecraft Edu & Chess Hub online</p>
+      <!-- Study Streak -->
+      <div class="stat-card">
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🔥 Learning Streak</span>
+        <p class="stat-value" style="color: var(--accent-amber, #f59e0b);">5 Days</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.35rem 0 0 0;">Consistent daily login activity</p>
       </div>
+
+      <!-- Interactive Hub Status -->
+      <div class="stat-card">
+        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">🎮 Interactive Hub</span>
+        <p class="stat-value" style="color: var(--accent-green, #10b981); font-size: 1.85rem;">Online</p>
+        <p style="color: var(--text-muted); font-size: 0.8rem; margin: 0.35rem 0 0 0;">Minecraft Edu & Chess Hub active</p>
+      </div>
+
     </div>
 
-    <!-- Curriculum Modules Breakdown -->
-    <div class="dashboard-card">
-      <h3 style="margin-bottom: 1rem;">Active Platform Modules</h3>
-      <div class="module-list" id="activeModulesContainer">
-        <div class="module-item"><span>Mathematics & Competition Prep</span> <span style="color: var(--accent-green);">Ready</span></div>
-        <div class="module-item"><span>Programming & Web Development</span> <span style="color: var(--accent-green);">Ready</span></div>
-        <div class="module-item"><span>Music & Sheet Arrangements</span> <span style="color: var(--accent-green);">Ready</span></div>
-        <div class="module-item"><span>French Language Studies</span> <span style="color: var(--accent-green);">Ready</span></div>
-        <div class="module-item"><span>Chess & Logic Games</span> <span style="color: var(--accent-green);">Ready</span></div>
+    <!-- Two Column Deep Dive Layout -->
+    <div class="dashboard-section-grid">
+      
+      <!-- Left Column: Active Modules Status -->
+      <div class="panel-box">
+        <h3 style="margin-top: 0; margin-bottom: 1.25rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+          📚 Active Curriculum Modules
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+          <div class="module-row">
+            <span>Mathematics & Grade 7 Competition Prep</span> 
+            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+          </div>
+          <div class="module-row">
+            <span>Programming & Web Development Hub</span> 
+            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+          </div>
+          <div class="module-row">
+            <span>Music Sheet Arrangements & Theory</span> 
+            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+          </div>
+          <div class="module-row">
+            <span>French Language Studies & Vocabulary</span> 
+            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+          </div>
+          <div class="module-row">
+            <span>Chess Tactics & Logic Games</span> 
+            <span style="color: var(--accent-green, #10b981); display: flex; align-items: center; gap: 0.3rem;">● Active</span>
+          </div>
+        </div>
       </div>
+
+      <!-- Right Column: Recent Student Activity Feed -->
+      <div class="panel-box">
+        <h3 style="margin-top: 0; margin-bottom: 1.25rem; font-size: 1.2rem; display: flex; align-items: center; gap: 0.5rem;">
+          ⚡ Recent Activity
+        </h3>
+        <div id="activityFeed">
+          <div class="activity-item">
+            <div>
+              <strong>Completed Math Lesson</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Algebra & Exponents</div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--accent-purple);">Today</span>
+          </div>
+          <div class="activity-item">
+            <div>
+              <strong>Robotics Circuit Simulation</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Tinkercad L298N Test</div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">Yesterday</span>
+          </div>
+          <div class="activity-item">
+            <div>
+              <strong>Chess Puzzle Solved</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">Mate in 3 Strategy</div>
+            </div>
+            <span style="font-size: 0.75rem; color: var(--text-muted);">2 days ago</span>
+          </div>
+        </div>
+      </div>
+
     </div>
+
   </main>
 
+  <!-- Data Loading Script -->
   <script>
-    const DEFAULT_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
-    const DEFAULT_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-.';
 
     async function loadDashboardData() {
       let settings = null;
 
       try {
-        // 1. Attempt fetch from local storage cache first for instant display
+        // 1. Try local cache first for instant load
         const cached = localStorage.getItem('admin_settings_cache');
         if (cached) settings = JSON.parse(cached);
 
-        // 2. Query Supabase for latest settings if configured
-        let supabaseUrl = settings?.supabaseUrl || DEFAULT_URL;
-        let supabaseKey = settings?.supabaseKey || DEFAULT_KEY;
-
-        if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL' && typeof window.supabase !== 'undefined') {
-          const client = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // 2. Query Supabase for latest live settings
+        if (typeof window.supabase !== 'undefined') {
+          const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
           const { data, error } = await client
             .from('admin_settings')
             .select('data')
@@ -299,11 +283,13 @@
           }
           if (settings.announcement && settings.showAnnouncement !== false && settings.announcement.trim() !== "") {
             document.getElementById('announcementText').textContent = settings.announcement;
-            document.getElementById('announcementBanner').classList.remove('hidden');
+            const banner = document.getElementById('announcementBanner');
+            banner.style.display = 'flex';
+            banner.classList.remove('hidden');
           }
         }
 
-        // Load student lesson completion stats from local storage
+        // Load student lesson completion stats
         let completedList = [];
         try {
           completedList = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
@@ -315,7 +301,7 @@
       } catch (err) {
         console.error("Dashboard sync error:", err);
         document.getElementById('syncStatusText').textContent = "Offline Mode (Cache Loaded)";
-        document.getElementById('syncStatusText').style.color = "var(--accent-amber)";
+        document.getElementById('syncStatusText').style.color = "var(--accent-amber, #f59e0b)";
       }
     }
 

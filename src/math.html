@@ -1,462 +1,682 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Math Curriculum & Lessons - Justin's Skillz</title>
-  
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-  <link rel="stylesheet" href="styles.css">
-  <script src="theme.js" defer></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <title>Mathematics • Justin's Skillz</title>
   <style>
-    :root, [data-theme="dark"] {
-      --bg-primary: #0f1117;
-      --bg-card: #181b25;
-      --border-subtle: #2d3242;
-      --text-main: #f3f4f6;
+    :root {
+      --bg-primary: #131f24;
+      --bg-card: #1f2933;
+      --border-subtle: #374151;
+      --text-main: #ffffff;
       --text-muted: #9ca3af;
-      --accent-purple: #a855f7;
-      --accent-blue: #3b82f6;
-      --accent-green: #10b981;
-      --accent-rose: #f43f5e;
-      --header-bg: rgba(15, 17, 23, 0.85);
-      --radius-lg: 16px;
-      --radius-md: 10px;
+      --duo-green: #58cc02;
+      --duo-green-hover: #46a302;
+      --duo-blue: #1cb0f6;
+      --duo-yellow: #ffc800;
+      --duo-orange: #ff9600;
+      --duo-red: #ff4b4b;
     }
 
-    [data-theme="light"] {
-      --bg-primary: #f8fafc;
-      --bg-card: #ffffff;
-      --border-subtle: #e2e8f0;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --accent-purple: #9333ea;
-      --accent-blue: #2563eb;
-      --accent-green: #059669;
-      --accent-rose: #e11d48;
-      --header-bg: rgba(248, 250, 252, 0.85);
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background-color: var(--bg-primary);
       color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
-    .app-header {
-      background: var(--header-bg);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-subtle);
+
+    /* Top Navigation Header */
+    header {
+      background: var(--bg-card);
+      border-bottom: 2px solid var(--border-subtle);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       position: sticky;
       top: 0;
       z-index: 100;
-      padding: 0.75rem 1.5rem;
     }
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+
     .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: var(--duo-green);
       text-decoration: none;
-      color: var(--text-main);
-      font-weight: 800;
-      font-size: 1.1rem;
+      letter-spacing: 0.05em;
     }
-    .nav-logo-img {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-purple);
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    .nav-menu {
+
+    .nav-links {
       display: flex;
-      gap: 1.25rem;
-      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
     }
-    .nav-link {
+
+    .nav-links a {
       color: var(--text-muted);
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
       font-size: 0.9rem;
       transition: color 0.2s;
     }
-    .nav-link:hover, .nav-link.active {
+
+    .nav-links a:hover, .nav-links a.active {
       color: var(--text-main);
     }
-    .main-container {
+
+    /* Main Container */
+    main {
       max-width: 800px;
-      margin: 2rem auto;
-      padding: 0 1rem;
-    }
-    .hero-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 2rem;
-      text-align: center;
-      margin-bottom: 3rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
-
-    /* Duolingo Style Skill Tree / Path & Section Banners */
-    .skill-path {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2.2rem;
-      position: relative;
-      padding: 1rem 0 3rem 0;
-    }
-    .section-banner {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 1.25rem 1.75rem;
-      text-align: center;
       width: 100%;
-      max-width: 440px;
-      margin: 1.5rem 0 0.5rem 0;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-      z-index: 2;
-      position: relative;
-    }
-    .section-badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--accent-purple);
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid var(--accent-purple);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      margin-bottom: 0.4rem;
-    }
-    .section-title {
-      margin: 0 0 0.25rem 0;
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--text-main);
-    }
-    .section-desc {
-      margin: 0;
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    .path-node {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-      z-index: 2;
-    }
-    .path-node:nth-child(even) { transform: translateX(50px); }
-    .path-node:nth-child(3n) { transform: translateX(-50px); }
-    .path-node:nth-child(4n) { transform: translateX(0px); }
-
-    .node-btn {
-      width: 84px;
-      height: 84px;
-      border-radius: 50%;
-      background: var(--accent-purple);
-      border: 4px solid rgba(255, 255, 255, 0.15);
-      color: white;
-      font-size: 1.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 8px 0 rgba(120, 40, 200, 0.6), 0 10px 20px rgba(0,0,0,0.3);
-      transition: all 0.15s ease;
-      text-decoration: none;
-    }
-    .node-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 11px 0 rgba(120, 40, 200, 0.6), 0 14px 24px rgba(0,0,0,0.4);
-    }
-    .node-btn:active {
-      transform: translateY(3px);
-      box-shadow: 0 5px 0 rgba(120, 40, 200, 0.6), 0 6px 12px rgba(0,0,0,0.3);
-    }
-    .node-btn.completed {
-      background: var(--accent-green) !important;
-      box-shadow: 0 8px 0 rgba(16, 153, 111, 0.6), 0 10px 20px rgba(0,0,0,0.3);
-    }
-    .node-label {
-      margin-top: 0.5rem;
-      font-weight: 700;
-      font-size: 0.85rem;
-      color: var(--text-main);
-      background: var(--bg-card);
-      padding: 0.25rem 0.75rem;
-      border-radius: 20px;
-      border: 1px solid var(--border-subtle);
-      text-align: center;
-      max-width: 180px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .app-footer {
-      border-top: 1px solid var(--border-subtle);
+      margin: 0 auto;
       padding: 2rem 1rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: 4rem;
+      flex: 1;
     }
-    .lang-select {
+
+    /* Duolingo Sticky Section Selector Bar */
+    .duo-section-bar {
       background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-      padding: 0.4rem 0.6rem;
-      border-radius: var(--radius-md);
-      font-size: 0.9rem;
-      font-family: inherit;
+      border: 2px solid var(--border-subtle);
+      border-bottom: 4px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5rem;
+      position: sticky;
+      top: 4.5rem;
+      z-index: 90;
+      box-shadow: 0 4px 0 rgba(0,0,0,0.15);
     }
-    .btn {
+
+    .duo-section-titles span {
+      font-size: 0.75rem;
+      font-weight: 900;
+      color: var(--duo-green);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .duo-section-titles h2 {
+      margin: 0.2rem 0 0 0;
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+
+    /* Chunky 3D Buttons */
+    .duo-btn {
+      font-family: inherit;
+      font-weight: 800;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      padding: 0.75rem 1.25rem;
+      border-radius: 999px;
+      border: none;
+      border-bottom: 4px solid rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: all 0.1s ease;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.75rem 1.25rem;
-      border-radius: var(--radius-md);
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      border: none;
+      gap: 0.4rem;
       text-decoration: none;
-      transition: opacity 0.2s;
     }
-    .btn-secondary {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
+
+    .duo-btn:active {
+      border-bottom-width: 0px;
+      transform: translateY(4px);
+    }
+
+    .duo-btn-green {
+      background-color: var(--duo-green);
+      color: white;
+      border-bottom-color: var(--duo-green-hover);
+    }
+    .duo-btn-green:hover { background-color: var(--duo-green-hover); }
+
+    .duo-btn-secondary {
+      background-color: transparent;
+      border: 2px solid var(--border-subtle);
+      border-bottom: 4px solid var(--border-subtle);
       color: var(--text-main);
+    }
+    .duo-btn-secondary:hover { background-color: rgba(255,255,255,0.05); }
+
+    /* Modal Overlay & Drawer */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 550px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.active .modal-content { transform: scale(1); }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border-subtle);
+    }
+
+    .modal-sections-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .section-tile {
+      background: var(--bg-primary);
+      border: 2px solid var(--border-subtle);
+      border-bottom: 4px solid var(--border-subtle);
+      border-radius: 16px;
+      padding: 1rem;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      color: var(--text-main);
+      transition: all 0.1s ease;
+    }
+
+    .section-tile:hover {
+      border-color: var(--duo-green);
+      background: rgba(88, 204, 2, 0.05);
+    }
+
+    .section-tile.active {
+      border-color: var(--duo-green);
+      border-bottom-color: var(--duo-green-hover);
+      background: rgba(88, 204, 2, 0.1);
+    }
+
+    /* Grade Sections & Lesson Nodes */
+    .grade-section {
+      display: none;
+      animation: fadeIn 0.25s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .unit-card {
+      background: var(--bg-card);
+      border: 2px solid var(--border-subtle);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .unit-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .unit-header h3 {
+      font-size: 1.1rem;
+      font-weight: 800;
+    }
+
+    .unit-badge {
+      background: rgba(88, 204, 2, 0.15);
+      color: var(--duo-green);
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 0.3rem 0.8rem;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+
+    /* Path Node Layout */
+    .path-nodes {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+
+    .node-row {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      width: 100%;
+    }
+
+    .node-row.offset-left { transform: translateX(-40px); }
+    .node-row.offset-right { transform: translateX(40px); }
+
+    .lesson-node {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background-color: var(--duo-green);
+      border-bottom: 6px solid var(--duo-green-hover);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 6px 0 rgba(0,0,0,0.2);
+      transition: all 0.1s ease;
+      position: relative;
+      color: white;
+      font-weight: 900;
+      font-size: 1.25rem;
+      text-decoration: none;
+    }
+
+    .lesson-node:hover {
+      transform: scale(1.05);
+    }
+
+    .lesson-node:active {
+      transform: translateY(4px);
+      border-bottom-width: 2px;
+    }
+
+    .lesson-node.locked {
+      background-color: var(--border-subtle);
+      border-bottom-color: #21262d;
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+
+    .lesson-node.locked:hover, .lesson-node.locked:active {
+      transform: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border-subtle);
+      margin-top: auto;
+    }
+
+    @media (max-width: 600px) {
+      .modal-sections-grid { grid-template-columns: 1fr; }
+      .node-row.offset-left, .node-row.offset-right { transform: none; }
+      .duo-section-bar { flex-direction: column; gap: 1rem; align-items: stretch; }
     }
   </style>
 </head>
 <body>
 
-  <header class="app-header">
-    <div class="header-container">
-      <a href="../index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
-        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
-      </a>
-
-      <nav class="nav-menu">
-        <a href="../index.html" class="nav-link" id="nav-home">Home</a>
-        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
-        <a href="live.html" class="nav-link" style="color: var(--accent-green); font-weight: 700;">🔴 Live Stream</a>
-        <a href="chess.html" class="nav-link" id="nav-chess">Chess AI</a>
-        <a href="math.html" class="nav-link active" style="color: var(--accent-purple);" id="nav-math">Math Lab</a>
-        <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
-        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
-      </nav>
-
-      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
-        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-          <option value="es">Español</option>
-        </select>
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
-          🌙
-        </button>
-        <div id="auth-action-container">
-          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>
-        </div>
-      </div>
-    </div>
+  <!-- Top Navigation Bar -->
+  <header>
+    <a href="index.html" class="logo">JUSTIN'S SKILLZ</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="math.html" class="active">Math</a></li>
+      <li><a href="robotics.html">Robotics</a></li>
+      <li><a href="french.html">French</a></li>
+    </ul>
   </header>
 
-  <main class="main-container">
-    <div class="hero-card">
-      <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase; letter-spacing: 1px;">Interactive Math Path</span>
-      <h1 id="page-title" style="margin: 0.25rem 0 0.5rem 0; font-size: 2rem;">Math Lessons (Levels 1–12)</h1>
-      <p id="page-subtitle" style="color: var(--text-muted); margin: 0 0 1rem 0; font-size: 0.95rem;">Select a lesson node below to start your interactive practice session.</p>
-      
-      <div id="overallStatsBadge" style="display: inline-block; background: rgba(168, 85, 247, 0.15); border: 1px solid var(--accent-purple); color: var(--accent-purple); padding: 0.4rem 1rem; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
-        Completed - Loading...
+  <!-- Main Curriculum View -->
+  <main>
+    <!-- Sticky Section Selector Bar -->
+    <div class="duo-section-bar">
+      <div class="duo-section-titles">
+        <span id="activeSectionLabel">SECTION • MIDDLE SCHOOL</span>
+        <h2 id="activeSectionTitle">Grade 7: Proportions & Negatives</h2>
       </div>
-      <div id="session-info" style="font-size: 0.85rem; color: var(--accent-blue); font-weight: 600; margin-top: 1rem;">Connecting session...</div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <button id="toggleShowAllBtn" class="duo-btn duo-btn-secondary" onclick="toggleShowAll()">Show All</button>
+        <button id="openModalBtn" class="duo-btn duo-btn-green">Sections ▾</button>
+      </div>
     </div>
 
-    <!-- Skill Path with Duolingo-style Section Banners -->
-    <div class="skill-path" id="skillPathContainer">
-      
-      <!-- Section 1: Foundations -->
-      <div class="section-banner">
-        <span class="section-badge">Section 1</span>
-        <h3 class="section-title">Foundations & Arithmetic</h3>
-        <p class="section-desc">Master core operations, place value, and fractions.</p>
+    <!-- Grade Sections Container -->
+    <div id="curriculumContainer">
+
+      <!-- Grade 1 -->
+      <div class="grade-section" data-section-id="grade-1">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Addition & Subtraction Foundations</h3>
+            <span class="unit-badge">Grade 1</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G1-1')">★</a></div>
+            <div class="node-row offset-left"><a href="#" class="lesson-node" onclick="startLesson('G1-2')">2</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node locked">3</a></div>
+          </div>
+        </div>
       </div>
 
-      <div class="path-node" data-lesson="1"><a href="Math Lessons/Lesson-1.html" class="node-btn" id="nodeBtn-1" title="Level 1: Arithmetic Foundations">1</a><span class="node-label">Level 1: Arithmetic</span></div>
-      <div class="path-node" data-lesson="2"><a href="Math Lessons/Lesson-2.html" class="node-btn" id="nodeBtn-2" title="Level 2: Place Value & Operations" style="background: var(--accent-blue);">2</a><span class="node-label">Level 2: Place Value</span></div>
-      <div class="path-node" data-lesson="3"><a href="Math Lessons/Lesson-3.html" class="node-btn" id="nodeBtn-3" title="Level 3: Fractions & Multiplicative Thinking" style="background: var(--accent-green);">3</a><span class="node-label">Level 3: Fractions</span></div>
-
-      <!-- Section 2: Intermediate Math -->
-      <div class="section-banner">
-        <span class="section-badge" style="color: var(--accent-blue); background: rgba(59, 130, 246, 0.15); border-color: var(--accent-blue);">Section 2</span>
-        <h3 class="section-title">Rational Math & Ratios</h3>
-        <p class="section-desc">Tackle multi-digit arithmetic, coordinates, and proportions.</p>
+      <!-- Grade 2 -->
+      <div class="grade-section" data-section-id="grade-2">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Numbers up to 100 & Place Value</h3>
+            <span class="unit-badge">Grade 2</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G2-1')">★</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node" onclick="startLesson('G2-2')">2</a></div>
+          </div>
+        </div>
       </div>
 
-      <div class="path-node" data-lesson="4"><a href="Math Lessons/Lesson-4.html" class="node-btn" id="nodeBtn-4" title="Level 4: Multi-Digit Arithmetic" style="background: #eab308;">4</a><span class="node-label">Level 4: Multi-Digit</span></div>
-      <div class="path-node" data-lesson="5"><a href="Math Lessons/Lesson-5.html" class="node-btn" id="nodeBtn-5" title="Level 5: Rational Arithmetic & Coordinates" style="background: #f97316;">5</a><span class="node-label">Level 5: Rational Math</span></div>
-      <div class="path-node" data-lesson="6"><a href="Math Lessons/Lesson-6.html" class="node-btn" id="nodeBtn-6" title="Level 6: Ratios & Proportions" style="background: var(--accent-rose);">6</a><span class="node-label">Level 6: Ratios</span></div>
-
-      <!-- Section 3: Advanced Algebra -->
-      <div class="section-banner">
-        <span class="section-badge" style="color: var(--accent-green); background: rgba(16, 185, 129, 0.15); border-color: var(--accent-green);">Section 3</span>
-        <h3 class="section-title">Algebra & Linear Functions</h3>
-        <p class="section-desc">Explore rational equations, Pythagorean geometry, and quadratics.</p>
+      <!-- Grade 3 -->
+      <div class="grade-section" data-section-id="grade-3">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Multiplication Tables & Intro Fractions</h3>
+            <span class="unit-badge">Grade 3</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G3-1')">★</a></div>
+            <div class="node-row offset-left"><a href="#" class="lesson-node locked">2</a></div>
+          </div>
+        </div>
       </div>
 
-      <div class="path-node" data-lesson="7"><a href="Math Lessons/Lesson-7.html" class="node-btn" id="nodeBtn-7" title="Level 7: Rational Equations & Geometry" style="background: #06b6d4;">7</a><span class="node-label">Level 7: Equations</span></div>
-      <div class="path-node" data-lesson="8"><a href="Math Lessons/Lesson-8.html" class="node-btn" id="nodeBtn-8" title="Level 8: Linear Functions & Pythagorean Geometry" style="background: #8b5cf6;">8</a><span class="node-label">Level 8: Linear Functions</span></div>
-      <div class="path-node" data-lesson="9"><a href="Math Lessons/Lesson-9.html" class="node-btn" id="nodeBtn-9" title="Level 9: Algebraic Modeling & Quadratics" style="background: #ec4899;">9</a><span class="node-label">Level 9: Quadratics</span></div>
-
-      <!-- Section 4: Trigonometry & Masterclass -->
-      <div class="section-banner">
-        <span class="section-badge" style="color: var(--accent-purple); background: rgba(168, 85, 247, 0.15); border-color: var(--accent-purple);">Section 4</span>
-        <h3 class="section-title">Trigonometry & Masterclass</h3>
-        <p class="section-desc">Conquer deductive proofs, unit circles, and De Moivre's theorem.</p>
+      <!-- Grade 4 -->
+      <div class="grade-section" data-section-id="grade-4">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Multi-Digit Multiplication & Division</h3>
+            <span class="unit-badge">Grade 4</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G4-1')">★</a></div>
+          </div>
+        </div>
       </div>
 
-      <div class="path-node" data-lesson="10"><a href="Math Lessons/Lesson-10.html" class="node-btn" id="nodeBtn-10" title="Level 10: Deductive Proofs & Trigonometry" style="background: #14b8a6;">10</a><span class="node-label">Level 10: Trigonometry</span></div>
-      <div class="path-node" data-lesson="11"><a href="Math Lessons/Lesson-11.html" class="node-btn" id="nodeBtn-11" title="Level 11: Advanced Functions & Unit Circle" style="background: #6366f1;">11</a><span class="node-label">Level 11: Advanced Func</span></div>
-      <div class="path-node" data-lesson="12"><a href="Math Lessons/Lesson-12.html" class="node-btn" id="nodeBtn-12" title="Level 12: De Moivre's Theorem & Polar Coordinates" style="background: linear-gradient(135deg, var(--accent-purple), var(--accent-rose)); border: 4px solid gold;">👑</a><span class="node-label" style="border-color: var(--accent-purple); font-weight: 800;">Level 12: Masterclass</span></div>
+      <!-- Grade 5 -->
+      <div class="grade-section" data-section-id="grade-5">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Decimal Operations & Advanced Fractions</h3>
+            <span class="unit-badge">Grade 5</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G5-1')">★</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 6 -->
+      <div class="grade-section" data-section-id="grade-6">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Ratios, Rates & Algebraic Expressions</h3>
+            <span class="unit-badge">Grade 6</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G6-1')">★</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 7 -->
+      <div class="grade-section" data-section-id="grade-7">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Proportional Relationships & Signed Numbers</h3>
+            <span class="unit-badge">Grade 7</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Proportions & Percentages')">★</a></div>
+            <div class="node-row offset-left"><a href="#" class="lesson-node" onclick="startLesson('Negative Number Operations')">2</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node" onclick="startLesson('Linear Equations Intro')">3</a></div>
+          </div>
+        </div>
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 2: Competition Math & Geometry Practice</h3>
+            <span class="unit-badge">Grade 7 • UNB Prep</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Competition Problem Set 1')">★</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node locked">2</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 8 -->
+      <div class="grade-section" data-section-id="grade-8">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Functions, Systems & Pythagorean Theorem</h3>
+            <span class="unit-badge">Grade 8</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G8-1')">★</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 9 -->
+      <div class="grade-section" data-section-id="grade-9">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Algebra I & Polynomial Factoring</h3>
+            <span class="unit-badge">High School</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G9-1')">★</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 10 -->
+      <div class="grade-section" data-section-id="grade-10">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Coordinate Geometry & Trigonometry</h3>
+            <span class="unit-badge">High School</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G10-1')">★</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 11 -->
+      <div class="grade-section" data-section-id="grade-11">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Quadratic Functions & Complex Numbers</h3>
+            <span class="unit-badge">High School</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Complex Numbers & De Moivre')">★</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grade 12 -->
+      <div class="grade-section" data-section-id="grade-12">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Unit 1: Limits, Derivatives & Vectors</h3>
+            <span class="unit-badge">Calculus</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Calculus Basics')">★</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Other / Advanced -->
+      <div class="grade-section" data-section-id="other">
+        <div class="unit-card">
+          <div class="unit-header">
+            <h3>Advanced Olympiad & University Math</h3>
+            <span class="unit-badge">Elite</span>
+          </div>
+          <div class="path-nodes">
+            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Olympiad Number Theory')">★</a></div>
+          </div>
+        </div>
+      </div>
 
     </div>
   </main>
 
-  <footer class="app-footer">
-    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
+  <!-- Sections Drawer Modal -->
+  <div id="sectionsModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="margin: 0; font-size: 1.1rem; font-weight: 900;">Select a Section</h3>
+        <button id="closeModalBtn" class="duo-btn duo-btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">✕</button>
+      </div>
+      <div class="modal-sections-grid" id="modalSectionsGrid">
+        <!-- Populated dynamically via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2026 Justin's Skillz • Built for Interactive Learning</p>
   </footer>
 
+  <!-- JavaScript Application Logic -->
   <script>
-    if (!window.mySupabaseInstance) {
-      window.mySupabaseInstance = window.supabase.createClient(
-        'https://iifhzdioridrmbcflswa.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-...'
-      );
-    }
+    const sectionData = [
+      { id: 'grade-1', name: 'Grade 1: Foundations', badge: 'Elementary' },
+      { id: 'grade-2', name: 'Grade 2: Expansion to 100', badge: 'Elementary' },
+      { id: 'grade-3', name: 'Grade 3: Multiplication & Fractions', badge: 'Elementary' },
+      { id: 'grade-4', name: 'Grade 4: Multi-Digit Operations', badge: 'Elementary' },
+      { id: 'grade-5', name: 'Grade 5: Advanced Fractions', badge: 'Elementary' },
+      { id: 'grade-6', name: 'Grade 6: Ratios & Expressions', badge: 'Middle School' },
+      { id: 'grade-7', name: 'Grade 7: Proportions & Negatives', badge: 'Middle School' },
+      { id: 'grade-8', name: 'Grade 8: Linear Equations', badge: 'Middle School' },
+      { id: 'grade-9', name: 'Grade 9: Algebra I', badge: 'High School' },
+      { id: 'grade-10', name: 'Grade 10: Geometry & Trig', badge: 'High School' },
+      { id: 'grade-11', name: 'Grade 11: Advanced Algebra', badge: 'High School' },
+      { id: 'grade-12', name: 'Grade 12: Calculus & Vectors', badge: 'High School' },
+      { id: 'other', name: 'OTHER: University & Advanced', badge: 'Elite' }
+    ];
 
-    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
+    let currentSectionId = localStorage.getItem('duo_math_section') || 'grade-7';
+    let isShowingAll = false;
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      let userId = await checkUserSession();
-      loadUserProgress(userId);
-    });
+    const modal = document.getElementById('sectionsModal');
+    const openBtn = document.getElementById('openModalBtn');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const modalGrid = document.getElementById('modalSectionsGrid');
+    const activeTitle = document.getElementById('activeSectionTitle');
+    const activeLabel = document.getElementById('activeSectionLabel');
+    const showAllBtn = document.getElementById('toggleShowAllBtn');
 
-    async function checkUserSession() {
-      try {
-        const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
-        const authContainer = document.getElementById('auth-action-container');
-        const navAdminLink = document.getElementById('nav-admin-link');
-
-        if (session && session.user) {
-          const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-          let displayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
-
-          document.getElementById('session-info').textContent = `User: ${displayName}`;
-          authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">Sign Out</button>`;
-          if (userEmail === ADMIN_EMAIL && navAdminLink) {
-            navAdminLink.style.display = 'block';
-          }
-          return userEmail;
-        }
-      } catch (err) {}
-
-      let cachedGuest = sessionStorage.getItem('justin_guest_id');
-      if (!cachedGuest) {
-        cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
-        sessionStorage.setItem('justin_guest_id', cachedGuest);
-      }
-      document.getElementById('session-info').textContent = `Player: ${cachedGuest}`;
-      document.getElementById('auth-action-container').innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">Sign In</a>`;
-      return cachedGuest.toLowerCase();
-    }
-
-    async function loadUserProgress(userId) {
-      const totalLessons = document.querySelectorAll('.path-node').length;
-      let completedList = [];
-
-      // 1. Fetch from Supabase
-      try {
-        const { data } = await window.mySupabaseInstance
-          .from('user_math_stats')
-          .select('completed_lessons')
-          .eq('user_id', userId)
-          .single();
-
-        if (data && data.completed_lessons) {
-          completedList = data.completed_lessons;
-        }
-      } catch (err) {}
-
-      // 2. Fallback check local storage keys
-      for (let i = 1; i <= totalLessons; i++) {
-        if (
-          localStorage.getItem(`lesson_${i}_completed`) === 'true' ||
-          localStorage.getItem(`math_lesson_${i}`) === 'completed' ||
-          localStorage.getItem(`completed_lesson_${i}`) === 'true'
-        ) {
-          if (!completedList.includes(i)) {
-            completedList.push(i);
-          }
-        }
-      }
-
-      // 3. Fallback check completed_math_lessons array
-      try {
-        const localArr = JSON.parse(localStorage.getItem('completed_math_lessons') || '[]');
-        localArr.forEach(n => {
-          if (!completedList.includes(n)) completedList.push(n);
+    function buildModalGrid() {
+      if (!modalGrid) return;
+      modalGrid.innerHTML = '';
+      sectionData.forEach((sec, idx) => {
+        const tile = document.createElement('button');
+        tile.className = `section-tile ${sec.id === currentSectionId ? 'active' : ''}`;
+        tile.innerHTML = `
+          <div style="font-size: 0.65rem; color: var(--duo-green); font-weight: 900; margin-bottom: 0.1rem;">SECTION ${idx + 1}</div>
+          <div style="font-weight: 800; font-size: 0.9rem;">${sec.name}</div>
+        `;
+        tile.addEventListener('click', () => {
+          selectSection(sec.id);
+          closeModal();
         });
-      } catch(e) {}
-
-      // Apply completed class to nodes
-      completedList.forEach(lessonNum => {
-        const btn = document.getElementById(`nodeBtn-${lessonNum}`);
-        if (btn) btn.classList.add('completed');
+        modalGrid.appendChild(tile);
       });
-
-      const completedCount = completedList.length;
-      const percentage = totalLessons > 0 ? ((completedCount / totalLessons) * 100).toFixed(2) : '0.00';
-
-      document.getElementById('overallStatsBadge').textContent = `Completed - ${percentage}% (${completedCount}/${totalLessons} Lessons)`;
     }
 
-    async function handleSignOut() {
-      await window.mySupabaseInstance.auth.signOut();
-      window.location.reload();
+    function selectSection(id) {
+      currentSectionId = id;
+      localStorage.setItem('duo_math_section', id);
+      isShowingAll = false;
+      if (showAllBtn) showAllBtn.textContent = 'Show All';
+      
+      const target = sectionData.find(s => s.id === id);
+      if (target && activeTitle && activeLabel) {
+        activeTitle.textContent = target.name;
+        activeLabel.textContent = `SECTION • ${target.badge.toUpperCase()}`;
+      }
+
+      document.querySelectorAll('.grade-section').forEach(el => {
+        if (el.getAttribute('data-section-id') === id) {
+          el.style.display = 'block';
+        } else {
+          el.style.display = 'none';
+        }
+      });
+      buildModalGrid();
     }
+
+    function toggleShowAll() {
+      isShowingAll = !isShowingAll;
+      if (isShowingAll) {
+        if (showAllBtn) showAllBtn.textContent = 'Focus Mode';
+        if (activeLabel) activeLabel.textContent = 'FULL CURRICULUM';
+        if (activeTitle) activeTitle.textContent = 'All Grades 1 to 12 & Advanced';
+        document.querySelectorAll('.grade-section').forEach(el => el.style.display = 'block');
+      } else {
+        selectSection(currentSectionId);
+      }
+    }
+
+    function openModal() { if (modal) modal.classList.add('active'); }
+    function closeModal() { if (modal) modal.classList.remove('active'); }
+
+    function startLesson(lessonName) {
+      alert(`Starting lesson: ${lessonName}! Interactive practice module loading...`);
+    }
+
+    if (openBtn) openBtn.addEventListener('click', openModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      buildModalGrid();
+      selectSection(currentSectionId);
+    });
   </script>
-  <script src="cookie-banner.js" defer></script>
 </body>
 </html>

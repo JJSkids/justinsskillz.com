@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mathematics • Justin's Skillz</title>
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧮</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
   <style>
     :root {
       --bg-primary: #131f24;
@@ -37,7 +37,7 @@
       overflow-x: hidden;
     }
 
-    /* --- ULTRA-COOL CINEMATIC CURTAIN TRANSITION --- */
+    /* --- 5-SECOND CINEMATIC CURTAIN & BOOK PULSE ANIMATION --- */
     .transition-curtain-top, .transition-curtain-bottom {
       position: fixed;
       left: 0;
@@ -45,23 +45,23 @@
       height: 50vh;
       background: #0b1114;
       z-index: 9999;
-      transition: transform 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+      transition: transform 5s cubic-bezier(0.77, 0, 0.175, 1);
       pointer-events: none;
     }
 
     .transition-curtain-top {
       top: 0;
       border-bottom: 3px solid var(--duo-green);
-      transform: translateY(0); /* Starts closed */
+      transform: translateY(0); /* Closed by default on entry/exit */
     }
 
     .transition-curtain-bottom {
       bottom: 0;
       border-top: 3px solid var(--duo-green);
-      transform: translateY(0); /* Starts closed */
+      transform: translateY(0); /* Closed by default on entry/exit */
     }
 
-    /* When loaded, curtains open up */
+    /* When page is loaded, curtains open up over 5 seconds */
     body.page-loaded .transition-curtain-top {
       transform: translateY(-100%);
     }
@@ -69,7 +69,7 @@
       transform: translateY(100%);
     }
 
-    /* When exiting, curtains close down */
+    /* When exiting, curtains close down over 5 seconds */
     body.page-exiting .transition-curtain-top {
       transform: translateY(0);
     }
@@ -77,7 +77,7 @@
       transform: translateY(0);
     }
 
-    /* Glowing Portal Core Animation */
+    /* Pulsing Book Portal Core */
     .transition-portal {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -85,9 +85,13 @@
       align-items: center;
       justify-content: center;
       z-index: 10000;
-      opacity: 0;
+      opacity: 1;
       pointer-events: none;
-      transition: opacity 0.3s ease;
+      transition: opacity 1.5s ease;
+    }
+
+    body.page-loaded .transition-portal {
+      opacity: 0;
     }
 
     body.page-exiting .transition-portal {
@@ -95,21 +99,21 @@
     }
 
     .portal-core {
-      font-size: 3rem;
+      font-size: 3.5rem;
       background: var(--bg-card);
       border: 4px solid var(--duo-green);
       border-radius: 50%;
-      width: 90px; height: 90px;
+      width: 100px; height: 100px;
       display: flex;
       align-items: center;
       justify-content: center;
       box-shadow: 0 0 30px var(--duo-green);
-      animation: portalPulse 0.6s infinite alternate;
+      animation: portalPulse 1s infinite alternate;
     }
 
     @keyframes portalPulse {
-      from { transform: scale(0.85) rotate(-10deg); box-shadow: 0 0 15px var(--duo-green); }
-      to { transform: scale(1.15) rotate(10deg); box-shadow: 0 0 50px var(--duo-green); }
+      from { transform: scale(0.85) rotate(-5deg); box-shadow: 0 0 15px var(--duo-green); }
+      to { transform: scale(1.15) rotate(5deg); box-shadow: 0 0 50px var(--duo-green); }
     }
 
     /* Top Navigation Header */
@@ -425,11 +429,11 @@
 </head>
 <body>
 
-  <!-- Cinematic Transition Elements -->
+  <!-- Cinematic Transition Elements with Pulsing Book Core -->
   <div class="transition-curtain-top"></div>
   <div class="transition-curtain-bottom"></div>
   <div class="transition-portal">
-    <div class="portal-core">🧮</div>
+    <div class="portal-core">📖</div>
   </div>
 
   <!-- Top Navigation Bar -->
@@ -666,7 +670,7 @@
     <p>&copy; 2026 Justin's Skillz • Built for Interactive Learning</p>
   </footer>
 
-  <!-- JavaScript Application Logic with Cinematic Transitions -->
+  <!-- JavaScript Application Logic with 5-Second Entry/Exit Animations -->
   <script>
     const sectionData = [
       { id: 'grade-1', name: 'Grade 1: Foundations', badge: 'Elementary' },
@@ -750,19 +754,20 @@
     function openModal() { if (modal) modal.classList.add('active'); }
     function closeModal() { if (modal) modal.classList.remove('active'); }
 
-    // Cinematic Curtain Exit Animation before navigation
+    // 5-Second Exit Animation before navigating to lesson page
     function startLesson(lessonId) {
+      document.body.classList.remove('page-loaded');
       document.body.classList.add('page-exiting');
       setTimeout(() => {
         window.location.href = `Math Lesson/${lessonId}.html`;
-      }, 500); // Matches CSS curtain duration
+      }, 5000); // 5 seconds duration
     }
 
     if (openBtn) openBtn.addEventListener('click', openModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Trigger curtain opening animation on page load
+    // Trigger 5-second entry animation on page load
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);

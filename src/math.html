@@ -670,7 +670,7 @@
     <p>&copy; 2026 Justin's Skillz • Built for Interactive Learning</p>
   </footer>
 
-  <!-- JavaScript Application Logic with 5-Second Entry/Exit Animations -->
+  <!-- JavaScript Application Logic with Global 5-Second Exit Animations on All Links -->
   <script>
     const sectionData = [
       { id: 'grade-1', name: 'Grade 1: Foundations', badge: 'Elementary' },
@@ -754,14 +754,34 @@
     function openModal() { if (modal) modal.classList.add('active'); }
     function closeModal() { if (modal) modal.classList.remove('active'); }
 
-    // 5-Second Exit Animation before navigating to lesson page
+    // 5-Second Exit Animation for Lesson Nodes
     function startLesson(lessonId) {
       document.body.classList.remove('page-loaded');
       document.body.classList.add('page-exiting');
       setTimeout(() => {
-        window.location.href = `Math Lessons/${lessonId}.html`;
+        window.location.href = `Math Lesson/${lessonId}.html`;
       }, 5000); // 5 seconds duration
     }
+
+    // Global Event Listener: Triggers 5-second exit animation on ANY navigation link clicked
+    document.addEventListener('click', (e) => {
+      const link = e.target.closest('a');
+      if (!link) return;
+
+      const href = link.getAttribute('href');
+      // Skip empty hrefs, javascript links, bookmark anchors (#), or new-tab links
+      if (!href || href === '#' || href.startsWith('javascript:') || link.getAttribute('target') === '_blank') {
+        return;
+      }
+
+      // Intercept navigation for all other internal links
+      e.preventDefault();
+      document.body.classList.remove('page-loaded');
+      document.body.classList.add('page-exiting');
+      setTimeout(() => {
+        window.location.href = href;
+      }, 5000); // 5 seconds duration
+    });
 
     if (openBtn) openBtn.addEventListener('click', openModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);

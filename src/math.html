@@ -52,16 +52,15 @@
     .transition-curtain-top {
       top: 0;
       border-bottom: 3px solid var(--duo-green);
-      transform: translateY(0); /* Closed by default on entry/exit */
+      transform: translateY(0);
     }
 
     .transition-curtain-bottom {
       bottom: 0;
       border-top: 3px solid var(--duo-green);
-      transform: translateY(0); /* Closed by default on entry/exit */
+      transform: translateY(0);
     }
 
-    /* When page is loaded, curtains open up over 5 seconds */
     body.page-loaded .transition-curtain-top {
       transform: translateY(-100%);
     }
@@ -69,7 +68,6 @@
       transform: translateY(100%);
     }
 
-    /* When exiting, curtains close down over 5 seconds */
     body.page-exiting .transition-curtain-top {
       transform: translateY(0);
     }
@@ -164,7 +162,7 @@
       flex: 1;
     }
 
-    /* Duolingo Sticky Section Selector Bar */
+    /* Duolingo Sticky Section Selector Bar with Progress Graph */
     .duo-section-bar {
       background: var(--bg-card);
       border: 2px solid var(--border-subtle);
@@ -172,13 +170,19 @@
       border-radius: 16px;
       padding: 1.25rem 1.5rem;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      flex-direction: column;
+      gap: 1rem;
       margin-bottom: 2.5rem;
       position: sticky;
       top: 4.5rem;
       z-index: 90;
       box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+    }
+
+    .bar-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
 
     .duo-section-titles span {
@@ -193,6 +197,40 @@
       margin: 0.2rem 0 0 0;
       font-size: 1.2rem;
       font-weight: 900;
+    }
+
+    /* Progress Bar Graph & Numbers */
+    .progress-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--bg-primary);
+      padding: 0.75rem 1rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .progress-track {
+      flex: 1;
+      height: 12px;
+      background: var(--border-subtle);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--duo-green);
+      width: 0%;
+      transition: width 0.4s ease;
+      border-radius: 6px;
+    }
+
+    .progress-stats {
+      font-size: 0.8rem;
+      font-weight: 900;
+      color: var(--duo-green);
+      white-space: nowrap;
     }
 
     /* Chunky 3D Buttons */
@@ -400,11 +438,18 @@
       border-bottom-width: 2px;
     }
 
+    .lesson-node.completed {
+      background-color: var(--duo-yellow);
+      border-bottom-color: #cca000;
+      color: #131f24;
+    }
+
     .lesson-node.locked {
       background-color: var(--border-subtle);
       border-bottom-color: #21262d;
       color: var(--text-muted);
       cursor: not-allowed;
+      font-size: 1.1rem;
     }
 
     .lesson-node.locked:hover, .lesson-node.locked:active {
@@ -423,7 +468,6 @@
     @media (max-width: 600px) {
       .modal-sections-grid { grid-template-columns: 1fr; }
       .node-row.offset-left, .node-row.offset-right { transform: none; }
-      .duo-section-bar { flex-direction: column; gap: 1rem; align-items: stretch; }
     }
   </style>
 </head>
@@ -449,15 +493,24 @@
 
   <!-- Main Curriculum View -->
   <main>
-    <!-- Sticky Section Selector Bar -->
+    <!-- Sticky Section Selector Bar with Progress Graph -->
     <div class="duo-section-bar">
-      <div class="duo-section-titles">
-        <span id="activeSectionLabel">SECTION • MIDDLE SCHOOL</span>
-        <h2 id="activeSectionTitle">Grade 7: Proportions & Negatives</h2>
+      <div class="bar-top-row">
+        <div class="duo-section-titles">
+          <span id="activeSectionLabel">SECTION • MIDDLE SCHOOL</span>
+          <h2 id="activeSectionTitle">Grade 7: Proportions & Negatives</h2>
+        </div>
+        <div style="display: flex; gap: 0.5rem; align-items: center;">
+          <button id="toggleShowAllBtn" class="duo-btn duo-btn-secondary" onclick="toggleShowAll()">Show All</button>
+          <button id="openModalBtn" class="duo-btn duo-btn-green">Sections ▾</button>
+        </div>
       </div>
-      <div style="display: flex; gap: 0.5rem; align-items: center;">
-        <button id="toggleShowAllBtn" class="duo-btn duo-btn-secondary" onclick="toggleShowAll()">Show All</button>
-        <button id="openModalBtn" class="duo-btn duo-btn-green">Sections ▾</button>
+      <!-- Progress Bar Graph & Numbers -->
+      <div class="progress-section">
+        <div class="progress-track">
+          <div id="progressBarFill" class="progress-fill"></div>
+        </div>
+        <div id="progressStats" class="progress-stats">0 / 21 (0%)</div>
       </div>
     </div>
 
@@ -472,9 +525,9 @@
             <span class="unit-badge">Grade 1</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G1-1')">★</a></div>
-            <div class="node-row offset-left"><a href="#" class="lesson-node" onclick="startLesson('G1-2')">2</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node locked">3</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G1-1" onclick="startLesson('G1-1')">★</a></div>
+            <div class="node-row offset-left"><a href="#" class="lesson-node" data-lesson-id="G1-2" onclick="startLesson('G1-2')">2</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G1-3" onclick="startLesson('G1-3')">3</a></div>
           </div>
         </div>
       </div>
@@ -487,8 +540,8 @@
             <span class="unit-badge">Grade 2</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G2-1')">★</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node" onclick="startLesson('G2-2')">2</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G2-1" onclick="startLesson('G2-1')">★</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G2-2" onclick="startLesson('G2-2')">2</a></div>
           </div>
         </div>
       </div>
@@ -501,8 +554,8 @@
             <span class="unit-badge">Grade 3</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G3-1')">★</a></div>
-            <div class="node-row offset-left"><a href="#" class="lesson-node locked">2</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G3-1" onclick="startLesson('G3-1')">★</a></div>
+            <div class="node-row offset-left"><a href="#" class="lesson-node" data-lesson-id="G3-2" onclick="startLesson('G3-2')">2</a></div>
           </div>
         </div>
       </div>
@@ -515,7 +568,7 @@
             <span class="unit-badge">Grade 4</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G4-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G4-1" onclick="startLesson('G4-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -528,7 +581,7 @@
             <span class="unit-badge">Grade 5</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G5-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G5-1" onclick="startLesson('G5-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -541,7 +594,7 @@
             <span class="unit-badge">Grade 6</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G6-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G6-1" onclick="startLesson('G6-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -554,9 +607,9 @@
             <span class="unit-badge">Grade 7</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G7-1')">★</a></div>
-            <div class="node-row offset-left"><a href="#" class="lesson-node" onclick="startLesson('G7-2')">2</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node" onclick="startLesson('G7-3')">3</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G7-1" onclick="startLesson('G7-1')">★</a></div>
+            <div class="node-row offset-left"><a href="#" class="lesson-node" data-lesson-id="G7-2" onclick="startLesson('G7-2')">2</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G7-3" onclick="startLesson('G7-3')">3</a></div>
           </div>
         </div>
         <div class="unit-card">
@@ -565,8 +618,8 @@
             <span class="unit-badge">Grade 7 • UNB Prep</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G7-Comp1')">★</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node locked">2</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G7-Comp1" onclick="startLesson('G7-Comp1')">★</a></div>
+            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G7-Comp2" onclick="startLesson('G7-Comp2')">2</a></div>
           </div>
         </div>
       </div>
@@ -579,7 +632,7 @@
             <span class="unit-badge">Grade 8</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G8-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G8-1" onclick="startLesson('G8-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -592,7 +645,7 @@
             <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G9-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G9-1" onclick="startLesson('G9-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -605,7 +658,7 @@
             <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G10-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G10-1" onclick="startLesson('G10-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -618,7 +671,7 @@
             <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G11-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G11-1" onclick="startLesson('G11-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -631,7 +684,7 @@
             <span class="unit-badge">Calculus</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('G12-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G12-1" onclick="startLesson('G12-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -644,7 +697,7 @@
             <span class="unit-badge">Elite</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" onclick="startLesson('Adv-1')">★</a></div>
+            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="Adv-1" onclick="startLesson('Adv-1')">★</a></div>
           </div>
         </div>
       </div>
@@ -670,7 +723,7 @@
     <p>&copy; 2026 Justin's Skillz • Built for Interactive Learning</p>
   </footer>
 
-  <!-- JavaScript Application Logic with Global 5-Second Exit Animations on All Links -->
+  <!-- JavaScript Application Logic: Sequential Lock/Unlock & Progress Tracking -->
   <script>
     const sectionData = [
       { id: 'grade-1', name: 'Grade 1: Foundations', badge: 'Elementary' },
@@ -688,6 +741,23 @@
       { id: 'other', name: 'OTHER: University & Advanced', badge: 'Elite' }
     ];
 
+    // Ordered sequence of all lesson nodes for sequential unlocking
+    const lessonSequence = [
+      'G1-1', 'G1-2', 'G1-3',
+      'G2-1', 'G2-2',
+      'G3-1', 'G3-2',
+      'G4-1',
+      'G5-1',
+      'G6-1',
+      'G7-1', 'G7-2', 'G7-3', 'G7-Comp1', 'G7-Comp2',
+      'G8-1',
+      'G9-1',
+      'G10-1',
+      'G11-1',
+      'G12-1',
+      'Adv-1'
+    ];
+
     let currentSectionId = localStorage.getItem('duo_math_section') || 'grade-7';
     let isShowingAll = false;
 
@@ -698,6 +768,58 @@
     const activeTitle = document.getElementById('activeSectionTitle');
     const activeLabel = document.getElementById('activeSectionLabel');
     const showAllBtn = document.getElementById('toggleShowAllBtn');
+
+    // Get completed lessons list from localStorage (default: none completed, G1-1 is unlocked by sequence)
+    function getCompletedLessons() {
+      try {
+        return JSON.parse(localStorage.getItem('math_completed_lessons') || '[]');
+      } catch(e) {
+        return [];
+      }
+    }
+
+    // Update Lock/Unlock states and Progress Bar
+    function updateLessonStates() {
+      const completed = getCompletedLessons();
+      let completedCount = completed.length;
+      let totalLessons = lessonSequence.length;
+
+      lessonSequence.forEach((lessonId, index) => {
+        const node = document.querySelector(`[data-lesson-id="${lessonId}"]`);
+        if (!node) return;
+
+        // Store original symbol (★, 2, 3, etc.) if not saved
+        if (!node.dataset.originalContent) {
+          node.dataset.originalContent = node.textContent.trim();
+        }
+
+        const isCompleted = completed.includes(lessonId);
+        // G1-1 (index 0) is always unlocked. Others unlock if the previous lesson in sequence is completed.
+        const isUnlocked = (index === 0) || completed.includes(lessonSequence[index - 1]);
+
+        node.classList.remove('completed', 'locked');
+
+        if (isCompleted) {
+          node.classList.add('completed');
+          node.textContent = '✓';
+          node.setAttribute('onclick', `startLesson('${lessonId}')`);
+        } else if (isUnlocked) {
+          node.textContent = node.dataset.originalContent;
+          node.setAttribute('onclick', `startLesson('${lessonId}')`);
+        } else {
+          node.classList.add('locked');
+          node.textContent = '🔒';
+          node.removeAttribute('onclick');
+        }
+      });
+
+      // Update progress bar graph & numbers
+      const percent = Math.round((completedCount / totalLessons) * 100);
+      const fillBar = document.getElementById('progressBarFill');
+      const statsText = document.getElementById('progressStats');
+      if (fillBar) fillBar.style.width = `${percent}%`;
+      if (statsText) statsText.textContent = `${completedCount} / ${totalLessons} (${percent}%)`;
+    }
 
     function buildModalGrid() {
       if (!modalGrid) return;
@@ -769,12 +891,10 @@
       if (!link) return;
 
       const href = link.getAttribute('href');
-      // Skip empty hrefs, javascript links, bookmark anchors (#), or new-tab links
       if (!href || href === '#' || href.startsWith('javascript:') || link.getAttribute('target') === '_blank') {
         return;
       }
 
-      // Intercept navigation for all other internal links
       e.preventDefault();
       document.body.classList.remove('page-loaded');
       document.body.classList.add('page-exiting');
@@ -787,10 +907,11 @@
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Trigger 5-second entry animation on page load
+    // Trigger 5-second entry animation and initialize locks/progress on load
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);
+      updateLessonStates();
       setTimeout(() => {
         document.body.classList.add('page-loaded');
       }, 100);

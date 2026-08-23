@@ -456,6 +456,17 @@
       transform: none;
     }
 
+    /* Subtle Unlock Opening Animation */
+    @keyframes nodeUnlockPop {
+      0% { transform: scale(0.7); filter: brightness(0.5); box-shadow: 0 0 0px var(--duo-yellow); }
+      50% { transform: scale(1.2); filter: brightness(1.4); box-shadow: 0 0 35px var(--duo-yellow); }
+      100% { transform: scale(1); filter: brightness(1); box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
+    }
+
+    .lesson-node.just-unlocked {
+      animation: nodeUnlockPop 1.2s ease-in-out;
+    }
+
     footer {
       text-align: center;
       padding: 2rem;
@@ -723,7 +734,7 @@
     <p>&copy; 2026 Justin's Skillz • Built for Interactive Learning</p>
   </footer>
 
-  <!-- JavaScript Application Logic: Sequential Lock/Unlock & Progress Tracking -->
+  <!-- JavaScript Application Logic: Syncs URL completion param & triggers unlock animation -->
   <script>
     const sectionData = [
       { id: 'grade-1', name: 'Grade 1: Foundations', badge: 'Elementary' },
@@ -741,7 +752,6 @@
       { id: 'other', name: 'OTHER: University & Advanced', badge: 'Elite' }
     ];
 
-    // Ordered sequence of all lesson nodes for sequential unlocking
     const lessonSequence = [
       'G1-1', 'G1-2', 'G1-3',
       'G2-1', 'G2-2',
@@ -769,7 +779,6 @@
     const activeLabel = document.getElementById('activeSectionLabel');
     const showAllBtn = document.getElementById('toggleShowAllBtn');
 
-    // Get completed lessons list from localStorage (default: none completed, G1-1 is unlocked by sequence)
     function getCompletedLessons() {
       try {
         return JSON.parse(localStorage.getItem('math_completed_lessons') || '[]');
@@ -778,7 +787,25 @@
       }
     }
 
-    // Update Lock/Unlock states and Progress Bar
+    // Handle completed lessons from URL query parameters (e.g., ?completed=G1-1)
+    const urlParams = new URLSearchParams(window.location.search);
+    const completedLesson = urlParams.get('completed');
+    let justUnlockedNode = null;
+
+    if (completedLesson) {
+      let completed = getCompletedLessons();
+      if (!completed.includes(completedLesson)) {
+        completed.push(completedLesson);
+        localStorage.setItem('math_completed_lessons', JSON.stringify(completed));
+      }
+      const currentIndex = lessonSequence.indexOf(completedLesson);
+      if (currentIndex !== -1 && currentIndex + 1 < lessonSequence.length) {
+        justUnlockedNode = lessonSequence[currentIndex + 1];
+      }
+      // Clean up URL without page reload
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
     function updateLessonStates() {
       const completed = getCompletedLessons();
       let completedCount = completed.length;
@@ -788,16 +815,14 @@
         const node = document.querySelector(`[data-lesson-id="${lessonId}"]`);
         if (!node) return;
 
-        // Store original symbol (★, 2, 3, etc.) if not saved
         if (!node.dataset.originalContent) {
           node.dataset.originalContent = node.textContent.trim();
         }
 
         const isCompleted = completed.includes(lessonId);
-        // G1-1 (index 0) is always unlocked. Others unlock if the previous lesson in sequence is completed.
         const isUnlocked = (index === 0) || completed.includes(lessonSequence[index - 1]);
 
-        node.classList.remove('completed', 'locked');
+        node.classList.remove('completed', 'locked', 'just-unlocked');
 
         if (isCompleted) {
           node.classList.add('completed');
@@ -806,6 +831,10 @@
         } else if (isUnlocked) {
           node.textContent = node.dataset.originalContent;
           node.setAttribute('onclick', `startLesson('${lessonId}')`);
+          // Trigger subtle opening animation if this is the newly unlocked node
+          if (justUnlockedNode && lessonId === justUnlockedNode) {
+            node.classList.add('just-unlocked');
+          }
         } else {
           node.classList.add('locked');
           node.textContent = '🔒';
@@ -813,7 +842,6 @@
         }
       });
 
-      // Update progress bar graph & numbers
       const percent = Math.round((completedCount / totalLessons) * 100);
       const fillBar = document.getElementById('progressBarFill');
       const statsText = document.getElementById('progressStats');
@@ -876,16 +904,14 @@
     function openModal() { if (modal) modal.classList.add('active'); }
     function closeModal() { if (modal) modal.classList.remove('active'); }
 
-    // 5-Second Exit Animation for Lesson Nodes
     function startLesson(lessonId) {
       document.body.classList.remove('page-loaded');
       document.body.classList.add('page-exiting');
       setTimeout(() => {
-        window.location.href = `Math-Lessons/${lessonId}.html`;
-      }, 5000); // 5 seconds duration
+        window.location.href = `Math Lesson/${lessonId}.html`;
+      }, 5000);
     }
 
-    // Global Event Listener: Triggers 5-second exit animation on ANY navigation link clicked
     document.addEventListener('click', (e) => {
       const link = e.target.closest('a');
       if (!link) return;
@@ -900,14 +926,13 @@
       document.body.classList.add('page-exiting');
       setTimeout(() => {
         window.location.href = href;
-      }, 5000); // 5 seconds duration
+      }, 5000);
     });
 
     if (openBtn) openBtn.addEventListener('click', openModal);
     if (closeBtn) closeBtn.addEventListener('click', closeModal);
     if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
 
-    // Trigger 5-second entry animation and initialize locks/progress on load
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);

@@ -261,7 +261,7 @@
 
       const card = document.getElementById('lessonCardContent');
       card.innerHTML = `
-        <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">Lesson 1 • Question ${currentQIndex + 1} of ${lessonQuestions.length}</span>
+        <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">Lesson G1-1 • Question ${currentQIndex + 1} of ${lessonQuestions.length}</span>
         <h2 style="margin: 0.5rem 0 1.5rem 0; font-size: 1.35rem; line-height: 1.4;">${qData.q}</h2>
         <div class="options-grid">${optionsHtml}</div>
         <div id="feedbackBox" class="feedback-box"></div>
@@ -326,10 +326,19 @@
     async function showCompletionScreen() {
       document.getElementById('lessonProgressFill').style.width = '100%';
       
-      // Automatically record Lesson 1 as completed in localStorage & Supabase
+      // 1. Record in your tracker system (Supabase / math-tracker.js)
       if (typeof markLessonComplete === 'function') {
-        await markLessonComplete(1);
+        await markLessonComplete('G1-1');
       }
+
+      // 2. Also ensure local storage records G1-1 so math.html unlocks G1-2 immediately
+      let completed = [];
+      try { completed = JSON.parse(localStorage.getItem('math_completed_lessons') || '[]'); } catch(e) {}
+      if (!completed.includes('G1-1')) {
+        completed.push('G1-1');
+        localStorage.setItem('math_completed_lessons', JSON.stringify(completed));
+      }
+      localStorage.setItem('duo_just_unlocked', 'G1-1');
 
       const card = document.getElementById('lessonCardContent');
       card.innerHTML = `

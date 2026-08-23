@@ -21,11 +21,7 @@
       --duo-red: #ff4b4b;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -37,74 +33,34 @@
       overflow-x: hidden;
     }
 
-    /* --- 5-SECOND CINEMATIC CURTAIN & BOOK PULSE ANIMATION --- */
+    /* --- CINEMATIC CURTAIN & BOOK PULSE ANIMATION --- */
     .transition-curtain-top, .transition-curtain-bottom {
-      position: fixed;
-      left: 0;
-      width: 100%;
-      height: 50vh;
-      background: #0b1114;
-      z-index: 9999;
+      position: fixed; left: 0; width: 100%; height: 50vh;
+      background: #0b1114; z-index: 9999;
       transition: transform 5s cubic-bezier(0.77, 0, 0.175, 1);
       pointer-events: none;
     }
+    .transition-curtain-top { top: 0; border-bottom: 3px solid var(--duo-green); transform: translateY(0); }
+    .transition-curtain-bottom { bottom: 0; border-top: 3px solid var(--duo-green); transform: translateY(0); }
+    body.page-loaded .transition-curtain-top { transform: translateY(-100%); }
+    body.page-loaded .transition-curtain-bottom { transform: translateY(100%); }
+    body.page-exiting .transition-curtain-top { transform: translateY(0); }
+    body.page-exiting .transition-curtain-bottom { transform: translateY(0); }
 
-    .transition-curtain-top {
-      top: 0;
-      border-bottom: 3px solid var(--duo-green);
-      transform: translateY(0);
-    }
-
-    .transition-curtain-bottom {
-      bottom: 0;
-      border-top: 3px solid var(--duo-green);
-      transform: translateY(0);
-    }
-
-    body.page-loaded .transition-curtain-top {
-      transform: translateY(-100%);
-    }
-    body.page-loaded .transition-curtain-bottom {
-      transform: translateY(100%);
-    }
-
-    body.page-exiting .transition-curtain-top {
-      transform: translateY(0);
-    }
-    body.page-exiting .transition-curtain-bottom {
-      transform: translateY(0);
-    }
-
-    /* Pulsing Book Portal Core */
     .transition-portal {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-      opacity: 1;
-      pointer-events: none;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10000; opacity: 1; pointer-events: none;
       transition: opacity 1.5s ease;
     }
-
-    body.page-loaded .transition-portal {
-      opacity: 0;
-    }
-
-    body.page-exiting .transition-portal {
-      opacity: 1;
-    }
+    body.page-loaded .transition-portal { opacity: 0; }
+    body.page-exiting .transition-portal { opacity: 1; }
 
     .portal-core {
-      font-size: 3.5rem;
-      background: var(--bg-card);
-      border: 4px solid var(--duo-green);
-      border-radius: 50%;
-      width: 100px; height: 100px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      font-size: 3.5rem; background: var(--bg-card);
+      border: 4px solid var(--duo-green); border-radius: 50%;
+      width: 100px; height: 100px; display: flex;
+      align-items: center; justify-content: center;
       box-shadow: 0 0 30px var(--duo-green);
       animation: portalPulse 1s infinite alternate;
     }
@@ -116,382 +72,112 @@
 
     /* Top Navigation Header */
     header {
-      background: var(--bg-card);
-      border-bottom: 2px solid var(--border-subtle);
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      background: var(--bg-card); border-bottom: 2px solid var(--border-subtle);
+      padding: 1rem 2rem; display: flex; justify-content: space-between;
+      align-items: center; position: sticky; top: 0; z-index: 100;
     }
+    .logo { font-weight: 900; font-size: 1.25rem; color: var(--duo-green); text-decoration: none; letter-spacing: 0.05em; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--text-muted); text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--text-main); }
 
-    .logo {
-      font-weight: 900;
-      font-size: 1.25rem;
-      color: var(--duo-green);
-      text-decoration: none;
-      letter-spacing: 0.05em;
-    }
+    main { max-width: 800px; width: 100%; margin: 0 auto; padding: 2rem 1rem; flex: 1; }
 
-    .nav-links {
-      display: flex;
-      gap: 1.5rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 700;
-      font-size: 0.9rem;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover, .nav-links a.active {
-      color: var(--text-main);
-    }
-
-    /* Main Container */
-    main {
-      max-width: 800px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-      flex: 1;
-    }
-
-    /* Duolingo Sticky Section Selector Bar with Progress Graph */
+    /* Sticky Section Selector Bar */
     .duo-section-bar {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-bottom: 4px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 1.25rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      margin-bottom: 2.5rem;
-      position: sticky;
-      top: 4.5rem;
-      z-index: 90;
-      box-shadow: 0 4px 0 rgba(0,0,0,0.15);
+      background: var(--bg-card); border: 2px solid var(--border-subtle);
+      border-bottom: 4px solid var(--border-subtle); border-radius: 16px;
+      padding: 1.25rem 1.5rem; display: flex; flex-direction: column;
+      gap: 1rem; margin-bottom: 2.5rem; position: sticky; top: 4.5rem;
+      z-index: 90; box-shadow: 0 4px 0 rgba(0,0,0,0.15);
     }
+    .bar-top-row { display: flex; align-items: center; justify-content: space-between; }
+    .duo-section-titles span { font-size: 0.75rem; font-weight: 900; color: var(--duo-green); text-transform: uppercase; letter-spacing: 0.08em; }
+    .duo-section-titles h2 { margin: 0.2rem 0 0 0; font-size: 1.2rem; font-weight: 900; }
 
-    .bar-top-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
+    .progress-section { display: flex; align-items: center; gap: 1rem; background: var(--bg-primary); padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border-subtle); }
+    .progress-track { flex: 1; height: 12px; background: var(--border-subtle); border-radius: 6px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--duo-green); width: 0%; transition: width 0.4s ease; border-radius: 6px; }
+    .progress-stats { font-size: 0.8rem; font-weight: 900; color: var(--duo-green); white-space: nowrap; }
 
-    .duo-section-titles span {
-      font-size: 0.75rem;
-      font-weight: 900;
-      color: var(--duo-green);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .duo-section-titles h2 {
-      margin: 0.2rem 0 0 0;
-      font-size: 1.2rem;
-      font-weight: 900;
-    }
-
-    /* Progress Bar Graph & Numbers */
-    .progress-section {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      background: var(--bg-primary);
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
-      border: 1px solid var(--border-subtle);
-    }
-
-    .progress-track {
-      flex: 1;
-      height: 12px;
-      background: var(--border-subtle);
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      background: var(--duo-green);
-      width: 0%;
-      transition: width 0.4s ease;
-      border-radius: 6px;
-    }
-
-    .progress-stats {
-      font-size: 0.8rem;
-      font-weight: 900;
-      color: var(--duo-green);
-      white-space: nowrap;
-    }
-
-    /* Chunky 3D Buttons */
     .duo-btn {
-      font-family: inherit;
-      font-weight: 800;
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      padding: 0.75rem 1.25rem;
-      border-radius: 999px;
-      border: none;
-      border-bottom: 4px solid rgba(0,0,0,0.2);
-      cursor: pointer;
-      transition: all 0.1s ease;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.4rem;
-      text-decoration: none;
+      font-family: inherit; font-weight: 800; font-size: 0.85rem; text-transform: uppercase;
+      padding: 0.75rem 1.25rem; border-radius: 999px; border: none; border-bottom: 4px solid rgba(0,0,0,0.2);
+      cursor: pointer; transition: all 0.1s ease; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; text-decoration: none;
     }
-
-    .duo-btn:active {
-      border-bottom-width: 0px;
-      transform: translateY(4px);
-    }
-
-    .duo-btn-green {
-      background-color: var(--duo-green);
-      color: white;
-      border-bottom-color: var(--duo-green-hover);
-    }
+    .duo-btn:active { border-bottom-width: 0px; transform: translateY(4px); }
+    .duo-btn-green { background-color: var(--duo-green); color: white; border-bottom-color: var(--duo-green-hover); }
     .duo-btn-green:hover { background-color: var(--duo-green-hover); }
-
-    .duo-btn-secondary {
-      background-color: transparent;
-      border: 2px solid var(--border-subtle);
-      border-bottom: 4px solid var(--border-subtle);
-      color: var(--text-main);
-    }
+    .duo-btn-secondary { background-color: transparent; border: 2px solid var(--border-subtle); border-bottom: 4px solid var(--border-subtle); color: var(--text-main); }
     .duo-btn-secondary:hover { background-color: rgba(255,255,255,0.05); }
 
-    /* Modal Overlay & Drawer */
+    /* Modal Overlay */
     .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(4px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1rem;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center;
+      padding: 1rem; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
     }
-
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
-
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
     .modal-content {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: 20px;
-      width: 100%;
-      max-width: 550px;
-      max-height: 85vh;
-      overflow-y: auto;
-      padding: 1.5rem;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
-      transform: scale(0.95);
-      transition: transform 0.2s ease;
+      background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: 20px;
+      width: 100%; max-width: 550px; max-height: 85vh; overflow-y: auto; padding: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5); transform: scale(0.95); transition: transform 0.2s ease;
     }
-
     .modal-overlay.active .modal-content { transform: scale(1); }
-
-    .modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.25rem;
-      padding-bottom: 0.75rem;
-      border-bottom: 2px solid var(--border-subtle);
-    }
-
-    .modal-sections-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 2px solid var(--border-subtle); }
+    .modal-sections-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
 
     .section-tile {
-      background: var(--bg-primary);
-      border: 2px solid var(--border-subtle);
-      border-bottom: 4px solid var(--border-subtle);
-      border-radius: 16px;
-      padding: 1rem;
-      cursor: pointer;
-      text-align: left;
-      font-family: inherit;
-      color: var(--text-main);
-      transition: all 0.1s ease;
+      background: var(--bg-primary); border: 2px solid var(--border-subtle); border-bottom: 4px solid var(--border-subtle);
+      border-radius: 16px; padding: 1rem; cursor: pointer; text-align: left; font-family: inherit; color: var(--text-main); transition: all 0.1s ease;
     }
+    .section-tile:hover { border-color: var(--duo-green); background: rgba(88, 204, 2, 0.05); }
+    .section-tile.active { border-color: var(--duo-green); border-bottom-color: var(--duo-green-hover); background: rgba(88, 204, 2, 0.1); }
 
-    .section-tile:hover {
-      border-color: var(--duo-green);
-      background: rgba(88, 204, 2, 0.05);
-    }
+    .grade-section { display: none; animation: fadeIn 0.25s ease-in-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
 
-    .section-tile.active {
-      border-color: var(--duo-green);
-      border-bottom-color: var(--duo-green-hover);
-      background: rgba(88, 204, 2, 0.1);
-    }
+    .unit-card { background: var(--bg-card); border: 2px solid var(--border-subtle); border-radius: 20px; padding: 1.5rem; margin-bottom: 2rem; }
+    .unit-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-subtle); }
+    .unit-header h3 { font-size: 1.1rem; font-weight: 800; }
+    .unit-badge { background: rgba(88, 204, 2, 0.15); color: var(--duo-green); font-size: 0.75rem; font-weight: 900; padding: 0.3rem 0.8rem; border-radius: 999px; text-transform: uppercase; }
 
-    /* Grade Sections & Lesson Nodes */
-    .grade-section {
-      display: none;
-      animation: fadeIn 0.25s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .unit-card {
-      background: var(--bg-card);
-      border: 2px solid var(--border-subtle);
-      border-radius: 20px;
-      padding: 1.5rem;
-      margin-bottom: 2rem;
-    }
-
-    .unit-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .unit-header h3 {
-      font-size: 1.1rem;
-      font-weight: 800;
-    }
-
-    .unit-badge {
-      background: rgba(88, 204, 2, 0.15);
-      color: var(--duo-green);
-      font-size: 0.75rem;
-      font-weight: 900;
-      padding: 0.3rem 0.8rem;
-      border-radius: 999px;
-      text-transform: uppercase;
-    }
-
-    /* Path Node Layout */
-    .path-nodes {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.5rem;
-      padding: 1rem 0;
-    }
-
-    .node-row {
-      display: flex;
-      justify-content: center;
-      gap: 3rem;
-      width: 100%;
-    }
-
+    .path-nodes { display: flex; flex-direction: column; align-items: center; gap: 1.5rem; padding: 1rem 0; }
+    .node-row { display: flex; justify-content: center; gap: 3rem; width: 100%; }
     .node-row.offset-left { transform: translateX(-40px); }
     .node-row.offset-right { transform: translateX(40px); }
 
     .lesson-node {
-      width: 72px;
-      height: 72px;
-      border-radius: 50%;
-      background-color: var(--duo-green);
-      border-bottom: 6px solid var(--duo-green-hover);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 6px 0 rgba(0,0,0,0.2);
-      transition: all 0.1s ease;
-      position: relative;
-      color: white;
-      font-weight: 900;
-      font-size: 1.25rem;
-      text-decoration: none;
+      width: 72px; height: 72px; border-radius: 50%; background-color: var(--duo-green);
+      border-bottom: 6px solid var(--duo-green-hover); display: flex; align-items: center; justify-content: center;
+      cursor: pointer; box-shadow: 0 6px 0 rgba(0,0,0,0.2); transition: all 0.1s ease;
+      position: relative; color: white; font-weight: 900; font-size: 1.25rem; text-decoration: none;
     }
+    .lesson-node:hover { transform: scale(1.05); }
+    .lesson-node:active { transform: translateY(4px); border-bottom-width: 2px; }
+    .lesson-node.completed { background-color: var(--duo-yellow); border-bottom-color: #cca000; color: #131f24; }
+    .lesson-node.locked { background-color: var(--border-subtle); border-bottom-color: #21262d; color: var(--text-muted); cursor: not-allowed; font-size: 1.1rem; }
+    .lesson-node.locked:hover, .lesson-node.locked:active { transform: none; }
 
-    .lesson-node:hover {
-      transform: scale(1.05);
-    }
-
-    .lesson-node:active {
-      transform: translateY(4px);
-      border-bottom-width: 2px;
-    }
-
-    .lesson-node.completed {
-      background-color: var(--duo-yellow);
-      border-bottom-color: #cca000;
-      color: #131f24;
-    }
-
-    .lesson-node.locked {
-      background-color: var(--border-subtle);
-      border-bottom-color: #21262d;
-      color: var(--text-muted);
-      cursor: not-allowed;
-      font-size: 1.1rem;
-    }
-
-    .lesson-node.locked:hover, .lesson-node.locked:active {
-      transform: none;
-    }
-
-    /* Subtle Unlock Opening Animation */
     @keyframes nodeUnlockPop {
       0% { transform: scale(0.7); filter: brightness(0.5); box-shadow: 0 0 0px var(--duo-yellow); }
       50% { transform: scale(1.2); filter: brightness(1.4); box-shadow: 0 0 35px var(--duo-yellow); }
       100% { transform: scale(1); filter: brightness(1); box-shadow: 0 6px 0 rgba(0,0,0,0.2); }
     }
+    .lesson-node.just-unlocked { animation: nodeUnlockPop 1.2s ease-in-out; }
 
-    .lesson-node.just-unlocked {
-      animation: nodeUnlockPop 1.2s ease-in-out;
-    }
-
-    footer {
-      text-align: center;
-      padding: 2rem;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      border-top: 1px solid var(--border-subtle);
-      margin-top: auto;
-    }
-
-    @media (max-width: 600px) {
-      .modal-sections-grid { grid-template-columns: 1fr; }
-      .node-row.offset-left, .node-row.offset-right { transform: none; }
-    }
+    footer { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--border-subtle); margin-top: auto; }
+    @media (max-width: 600px) { .modal-sections-grid { grid-template-columns: 1fr; } .node-row.offset-left, .node-row.offset-right { transform: none; } }
   </style>
 </head>
 <body>
 
-  <!-- Cinematic Transition Elements with Pulsing Book Core -->
   <div class="transition-curtain-top"></div>
   <div class="transition-curtain-bottom"></div>
   <div class="transition-portal">
     <div class="portal-core">📖</div>
   </div>
 
-  <!-- Top Navigation Bar -->
   <header>
     <a href="../index.html" class="logo">JUSTIN'S SKILLZ</a>
     <ul class="nav-links">
@@ -502,9 +188,7 @@
     </ul>
   </header>
 
-  <!-- Main Curriculum View -->
   <main>
-    <!-- Sticky Section Selector Bar with Progress Graph -->
     <div class="duo-section-bar">
       <div class="bar-top-row">
         <div class="duo-section-titles">
@@ -516,19 +200,15 @@
           <button id="openModalBtn" class="duo-btn duo-btn-green">Sections ▾</button>
         </div>
       </div>
-      <!-- Progress Bar Graph & Numbers -->
       <div class="progress-section">
-        <div class="progress-track">
-          <div id="progressBarFill" class="progress-fill"></div>
-        </div>
-        <div id="progressStats" class="progress-stats">0 / 21 (0%)</div>
+        <div class="progress-track"><div id="progressBarFill" class="progress-fill"></div></div>
+        <div id="progressStats" class="progress-stats">0 / 25 (0%)</div>
       </div>
     </div>
 
-    <!-- Grade Sections Container -->
     <div id="curriculumContainer">
 
-      <!-- Grade 1 -->
+      <!-- ==================== GRADE 1 ==================== -->
       <div class="grade-section" data-section-id="grade-1">
         <div class="unit-card">
           <div class="unit-header">
@@ -536,14 +216,14 @@
             <span class="unit-badge">Grade 1</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G1-1" onclick="startLesson('G1-1')">★</a></div>
-            <div class="node-row offset-left"><a href="#" class="lesson-node" data-lesson-id="G1-2" onclick="startLesson('G1-2')">2</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G1-3" onclick="startLesson('G1-3')">3</a></div>
+            <div class="node-row"><a href="G1-1.html" class="lesson-node" data-lesson-id="G1-1">★</a></div>
+            <div class="node-row offset-left"><a href="G1-2.html" class="lesson-node" data-lesson-id="G1-2">2</a></div>
+            <div class="node-row offset-right"><a href="G1-3.html" class="lesson-node" data-lesson-id="G1-3">3</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 2 -->
+      <!-- ==================== GRADE 2 ==================== -->
       <div class="grade-section" data-section-id="grade-2">
         <div class="unit-card">
           <div class="unit-header">
@@ -551,13 +231,14 @@
             <span class="unit-badge">Grade 2</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G2-1" onclick="startLesson('G2-1')">★</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G2-2" onclick="startLesson('G2-2')">2</a></div>
+            <div class="node-row"><a href="G2-1.html" class="lesson-node" data-lesson-id="G2-1">★</a></div>
+            <div class="node-row offset-right"><a href="G2-2.html" class="lesson-node" data-lesson-id="G2-2">2</a></div>
+            <div class="node-row offset-left"><a href="G2-3.html" class="lesson-node" data-lesson-id="G2-3">3</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 3 -->
+      <!-- ==================== GRADE 3 ==================== -->
       <div class="grade-section" data-section-id="grade-3">
         <div class="unit-card">
           <div class="unit-header">
@@ -565,13 +246,14 @@
             <span class="unit-badge">Grade 3</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G3-1" onclick="startLesson('G3-1')">★</a></div>
-            <div class="node-row offset-left"><a href="#" class="lesson-node" data-lesson-id="G3-2" onclick="startLesson('G3-2')">2</a></div>
+            <div class="node-row"><a href="G3-1.html" class="lesson-node" data-lesson-id="G3-1">★</a></div>
+            <div class="node-row offset-left"><a href="G3-2.html" class="lesson-node" data-lesson-id="G3-2">2</a></div>
+            <div class="node-row offset-right"><a href="G3-3.html" class="lesson-node" data-lesson-id="G3-3">3</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 4 -->
+      <!-- ==================== GRADE 4 ==================== -->
       <div class="grade-section" data-section-id="grade-4">
         <div class="unit-card">
           <div class="unit-header">
@@ -579,12 +261,13 @@
             <span class="unit-badge">Grade 4</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G4-1" onclick="startLesson('G4-1')">★</a></div>
+            <div class="node-row"><a href="G4-1.html" class="lesson-node" data-lesson-id="G4-1">★</a></div>
+            <div class="node-row offset-right"><a href="G4-2.html" class="lesson-node" data-lesson-id="G4-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 5 -->
+      <!-- ==================== GRADE 5 ==================== -->
       <div class="grade-section" data-section-id="grade-5">
         <div class="unit-card">
           <div class="unit-header">
@@ -592,12 +275,13 @@
             <span class="unit-badge">Grade 5</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G5-1" onclick="startLesson('G5-1')">★</a></div>
+            <div class="node-row"><a href="G5-1.html" class="lesson-node" data-lesson-id="G5-1">★</a></div>
+            <div class="node-row offset-left"><a href="G5-2.html" class="lesson-node" data-lesson-id="G5-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 6 -->
+      <!-- ==================== GRADE 6 ==================== -->
       <div class="grade-section" data-section-id="grade-6">
         <div class="unit-card">
           <div class="unit-header">
@@ -605,12 +289,13 @@
             <span class="unit-badge">Grade 6</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G6-1" onclick="startLesson('G6-1')">★</a></div>
+            <div class="node-row"><a href="G6-1.html" class="lesson-node" data-lesson-id="G6-1">★</a></div>
+            <div class="node-row offset-right"><a href="G6-2.html" class="lesson-node" data-lesson-id="G6-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 7 -->
+      <!-- ==================== GRADE 7 ==================== -->
       <div class="grade-section" data-section-id="grade-7">
         <div class="unit-card">
           <div class="unit-header">
@@ -618,9 +303,9 @@
             <span class="unit-badge">Grade 7</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G7-1" onclick="startLesson('G7-1')">★</a></div>
-            <div class="node-row offset-left"><a href="#" class="lesson-node" data-lesson-id="G7-2" onclick="startLesson('G7-2')">2</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G7-3" onclick="startLesson('G7-3')">3</a></div>
+            <div class="node-row"><a href="G7-1.html" class="lesson-node" data-lesson-id="G7-1">★</a></div>
+            <div class="node-row offset-left"><a href="G7-2.html" class="lesson-node" data-lesson-id="G7-2">2</a></div>
+            <div class="node-row offset-right"><a href="G7-3.html" class="lesson-node" data-lesson-id="G7-3">3</a></div>
           </div>
         </div>
         <div class="unit-card">
@@ -629,13 +314,13 @@
             <span class="unit-badge">Grade 7 • UNB Prep</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G7-Comp1" onclick="startLesson('G7-Comp1')">★</a></div>
-            <div class="node-row offset-right"><a href="#" class="lesson-node" data-lesson-id="G7-Comp2" onclick="startLesson('G7-Comp2')">2</a></div>
+            <div class="node-row"><a href="G7-Comp1.html" class="lesson-node" data-lesson-id="G7-Comp1">★</a></div>
+            <div class="node-row offset-right"><a href="G7-Comp2.html" class="lesson-node" data-lesson-id="G7-Comp2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 8 -->
+      <!-- ==================== GRADE 8 ==================== -->
       <div class="grade-section" data-section-id="grade-8">
         <div class="unit-card">
           <div class="unit-header">
@@ -643,12 +328,13 @@
             <span class="unit-badge">Grade 8</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G8-1" onclick="startLesson('G8-1')">★</a></div>
+            <div class="node-row"><a href="G8-1.html" class="lesson-node" data-lesson-id="G8-1">★</a></div>
+            <div class="node-row offset-left"><a href="G8-2.html" class="lesson-node" data-lesson-id="G8-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 9 -->
+      <!-- ==================== GRADE 9 ==================== -->
       <div class="grade-section" data-section-id="grade-9">
         <div class="unit-card">
           <div class="unit-header">
@@ -656,12 +342,13 @@
             <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G9-1" onclick="startLesson('G9-1')">★</a></div>
+            <div class="node-row"><a href="G9-1.html" class="lesson-node" data-lesson-id="G9-1">★</a></div>
+            <div class="node-row offset-right"><a href="G9-2.html" class="lesson-node" data-lesson-id="G9-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 10 -->
+      <!-- ==================== GRADE 10 ==================== -->
       <div class="grade-section" data-section-id="grade-10">
         <div class="unit-card">
           <div class="unit-header">
@@ -669,46 +356,50 @@
             <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G10-1" onclick="startLesson('G10-1')">★</a></div>
+            <div class="node-row"><a href="G10-1.html" class="lesson-node" data-lesson-id="G10-1">★</a></div>
+            <div class="node-row offset-left"><a href="G10-2.html" class="lesson-node" data-lesson-id="G10-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 11 -->
+      <!-- ==================== GRADE 11 ==================== -->
       <div class="grade-section" data-section-id="grade-11">
         <div class="unit-card">
           <div class="unit-header">
-            <h3>Unit 1: Quadratic Functions & Complex Numbers</h3>
+            <h3>Unit 1: Advanced Algebra & Complex Numbers</h3>
             <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G11-1" onclick="startLesson('G11-1')">★</a></div>
+            <div class="node-row"><a href="G11-1.html" class="lesson-node" data-lesson-id="G11-1">★</a></div>
+            <div class="node-row offset-right"><a href="G11-2.html" class="lesson-node" data-lesson-id="G11-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Grade 12 -->
+      <!-- ==================== GRADE 12 ==================== -->
       <div class="grade-section" data-section-id="grade-12">
         <div class="unit-card">
           <div class="unit-header">
-            <h3>Unit 1: Limits, Derivatives & Vectors</h3>
-            <span class="unit-badge">Calculus</span>
+            <h3>Unit 1: Calculus, Vectors & Matrices</h3>
+            <span class="unit-badge">High School</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="G12-1" onclick="startLesson('G12-1')">★</a></div>
+            <div class="node-row"><a href="G12-1.html" class="lesson-node" data-lesson-id="G12-1">★</a></div>
+            <div class="node-row offset-left"><a href="G12-2.html" class="lesson-node" data-lesson-id="G12-2">2</a></div>
           </div>
         </div>
       </div>
 
-      <!-- Other / Advanced -->
+      <!-- ==================== ADVANCED / OTHER ==================== -->
       <div class="grade-section" data-section-id="other">
         <div class="unit-card">
           <div class="unit-header">
-            <h3>Advanced Olympiad & University Math</h3>
+            <h3>Unit 1: Olympiad & Elite Mathematics</h3>
             <span class="unit-badge">Elite</span>
           </div>
           <div class="path-nodes">
-            <div class="node-row"><a href="#" class="lesson-node" data-lesson-id="Adv-1" onclick="startLesson('Adv-1')">★</a></div>
+            <div class="node-row"><a href="Adv-1.html" class="lesson-node" data-lesson-id="Adv-1">★</a></div>
+            <div class="node-row offset-right"><a href="Adv-2.html" class="lesson-node" data-lesson-id="Adv-2">2</a></div>
           </div>
         </div>
       </div>
@@ -716,25 +407,20 @@
     </div>
   </main>
 
-  <!-- Sections Drawer Modal -->
   <div id="sectionsModal" class="modal-overlay">
     <div class="modal-content">
       <div class="modal-header">
         <h3 style="margin: 0; font-size: 1.1rem; font-weight: 900;">Select a Section</h3>
         <button id="closeModalBtn" class="duo-btn duo-btn-secondary" style="padding: 0.4rem 0.8rem; font-size: 0.75rem;">✕</button>
       </div>
-      <div class="modal-sections-grid" id="modalSectionsGrid">
-        <!-- Populated dynamically via JS -->
-      </div>
+      <div class="modal-sections-grid" id="modalSectionsGrid"></div>
     </div>
   </div>
 
-  <!-- Footer -->
   <footer>
     <p>&copy; 2026 Justin's Skillz • Built for Interactive Learning</p>
   </footer>
 
-  <!-- JavaScript Application Logic: Syncs URL completion param & triggers unlock animation -->
   <script>
     const sectionData = [
       { id: 'grade-1', name: 'Grade 1: Foundations', badge: 'Elementary' },
@@ -753,57 +439,40 @@
     ];
 
     const lessonSequence = [
-      'G1-1', 'G1-2', 'G1-3',
-      'G2-1', 'G2-2',
-      'G3-1', 'G3-2',
-      'G4-1',
-      'G5-1',
-      'G6-1',
-      'G7-1', 'G7-2', 'G7-3', 'G7-Comp1', 'G7-Comp2',
-      'G8-1',
-      'G9-1',
-      'G10-1',
-      'G11-1',
-      'G12-1',
-      'Adv-1'
+      'G1-1', 'G1-2', 'G1-3', 
+      'G2-1', 'G2-2', 'G2-3', 
+      'G3-1', 'G3-2', 'G3-3', 
+      'G4-1', 'G4-2', 
+      'G5-1', 'G5-2', 
+      'G6-1', 'G6-2', 
+      'G7-1', 'G7-2', 'G7-3', 'G7-Comp1', 'G7-Comp2', 
+      'G8-1', 'G8-2', 
+      'G9-1', 'G9-2', 
+      'G10-1', 'G10-2', 
+      'G11-1', 'G11-2', 
+      'G12-1', 'G12-2', 
+      'Adv-1', 'Adv-2'
     ];
 
     let currentSectionId = localStorage.getItem('duo_math_section') || 'grade-7';
     let isShowingAll = false;
 
-    const modal = document.getElementById('sectionsModal');
-    const openBtn = document.getElementById('openModalBtn');
-    const closeBtn = document.getElementById('closeModalBtn');
-    const modalGrid = document.getElementById('modalSectionsGrid');
-    const activeTitle = document.getElementById('activeSectionTitle');
-    const activeLabel = document.getElementById('activeSectionLabel');
-    const showAllBtn = document.getElementById('toggleShowAllBtn');
-
     function getCompletedLessons() {
-      try {
-        return JSON.parse(localStorage.getItem('math_completed_lessons') || '[]');
-      } catch(e) {
-        return [];
+      try { 
+        return JSON.parse(localStorage.getItem('math_completed_lessons') || '[]'); 
+      } catch(e) { 
+        return []; 
       }
     }
 
-    // Handle completed lessons from URL query parameters (e.g., ?completed=G1-1)
-    const urlParams = new URLSearchParams(window.location.search);
-    const completedLesson = urlParams.get('completed');
     let justUnlockedNode = null;
-
-    if (completedLesson) {
-      let completed = getCompletedLessons();
-      if (!completed.includes(completedLesson)) {
-        completed.push(completedLesson);
-        localStorage.setItem('math_completed_lessons', JSON.stringify(completed));
-      }
-      const currentIndex = lessonSequence.indexOf(completedLesson);
+    const newlyCompleted = localStorage.getItem('duo_just_unlocked');
+    if (newlyCompleted) {
+      const currentIndex = lessonSequence.indexOf(newlyCompleted);
       if (currentIndex !== -1 && currentIndex + 1 < lessonSequence.length) {
         justUnlockedNode = lessonSequence[currentIndex + 1];
       }
-      // Clean up URL without page reload
-      window.history.replaceState({}, document.title, window.location.pathname);
+      localStorage.removeItem('duo_just_unlocked');
     }
 
     function updateLessonStates() {
@@ -814,9 +483,9 @@
       lessonSequence.forEach((lessonId, index) => {
         const node = document.querySelector(`[data-lesson-id="${lessonId}"]`);
         if (!node) return;
-
-        if (!node.dataset.originalContent) {
-          node.dataset.originalContent = node.textContent.trim();
+        
+        if (!node.dataset.originalContent) { 
+          node.dataset.originalContent = node.textContent.trim(); 
         }
 
         const isCompleted = completed.includes(lessonId);
@@ -827,18 +496,15 @@
         if (isCompleted) {
           node.classList.add('completed');
           node.textContent = '✓';
-          node.setAttribute('onclick', `startLesson('${lessonId}')`);
         } else if (isUnlocked) {
           node.textContent = node.dataset.originalContent;
-          node.setAttribute('onclick', `startLesson('${lessonId}')`);
-          // Trigger subtle opening animation if this is the newly unlocked node
           if (justUnlockedNode && lessonId === justUnlockedNode) {
             node.classList.add('just-unlocked');
           }
         } else {
           node.classList.add('locked');
           node.textContent = '🔒';
-          node.removeAttribute('onclick');
+          node.removeAttribute('href');
         }
       });
 
@@ -850,41 +516,30 @@
     }
 
     function buildModalGrid() {
+      const modalGrid = document.getElementById('modalSectionsGrid');
       if (!modalGrid) return;
       modalGrid.innerHTML = '';
       sectionData.forEach((sec, idx) => {
         const tile = document.createElement('button');
         tile.className = `section-tile ${sec.id === currentSectionId ? 'active' : ''}`;
-        tile.innerHTML = `
-          <div style="font-size: 0.65rem; color: var(--duo-green); font-weight: 900; margin-bottom: 0.1rem;">SECTION ${idx + 1}</div>
-          <div style="font-weight: 800; font-size: 0.9rem;">${sec.name}</div>
-        `;
-        tile.addEventListener('click', () => {
-          selectSection(sec.id);
-          closeModal();
-        });
+        tile.innerHTML = `<div style="font-size: 0.65rem; color: var(--duo-green); font-weight: 900; margin-bottom: 0.1rem;">SECTION ${idx + 1}</div><div style="font-weight: 800; font-size: 0.9rem;">${sec.name}</div>`;
+        tile.addEventListener('click', () => { selectSection(sec.id); document.getElementById('sectionsModal').classList.remove('active'); });
         modalGrid.appendChild(tile);
       });
     }
 
     function selectSection(id) {
-      currentSectionId = id;
-      localStorage.setItem('duo_math_section', id);
+      currentSectionId = id; 
+      localStorage.setItem('duo_math_section', id); 
       isShowingAll = false;
-      if (showAllBtn) showAllBtn.textContent = 'Show All';
-      
+      document.getElementById('toggleShowAllBtn').textContent = 'Show All';
       const target = sectionData.find(s => s.id === id);
-      if (target && activeTitle && activeLabel) {
-        activeTitle.textContent = target.name;
-        activeLabel.textContent = `SECTION • ${target.badge.toUpperCase()}`;
+      if (target) {
+        document.getElementById('activeSectionTitle').textContent = target.name;
+        document.getElementById('activeSectionLabel').textContent = `SECTION • ${target.badge.toUpperCase()}`;
       }
-
       document.querySelectorAll('.grade-section').forEach(el => {
-        if (el.getAttribute('data-section-id') === id) {
-          el.style.display = 'block';
-        } else {
-          el.style.display = 'none';
-        }
+        el.style.display = (el.getAttribute('data-section-id') === id) ? 'block' : 'none';
       });
       buildModalGrid();
     }
@@ -892,54 +547,23 @@
     function toggleShowAll() {
       isShowingAll = !isShowingAll;
       if (isShowingAll) {
-        if (showAllBtn) showAllBtn.textContent = 'Focus Mode';
-        if (activeLabel) activeLabel.textContent = 'FULL CURRICULUM';
-        if (activeTitle) activeTitle.textContent = 'All Grades 1 to 12 & Advanced';
+        document.getElementById('toggleShowAllBtn').textContent = 'Focus Mode';
+        document.getElementById('activeSectionLabel').textContent = 'FULL CURRICULUM';
+        document.getElementById('activeSectionTitle').textContent = 'All Grades 1 to 12 & Advanced';
         document.querySelectorAll('.grade-section').forEach(el => el.style.display = 'block');
       } else {
         selectSection(currentSectionId);
       }
     }
 
-    function openModal() { if (modal) modal.classList.add('active'); }
-    function closeModal() { if (modal) modal.classList.remove('active'); }
-
-    function startLesson(lessonId) {
-      document.body.classList.remove('page-loaded');
-      document.body.classList.add('page-exiting');
-      setTimeout(() => {
-        window.location.href = `Math-Lessons/${lessonId}.html`;
-      }, 5000);
-    }
-
-    document.addEventListener('click', (e) => {
-      const link = e.target.closest('a');
-      if (!link) return;
-
-      const href = link.getAttribute('href');
-      if (!href || href === '#' || href.startsWith('javascript:') || link.getAttribute('target') === '_blank') {
-        return;
-      }
-
-      e.preventDefault();
-      document.body.classList.remove('page-loaded');
-      document.body.classList.add('page-exiting');
-      setTimeout(() => {
-        window.location.href = href;
-      }, 5000);
-    });
-
-    if (openBtn) openBtn.addEventListener('click', openModal);
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+    document.getElementById('openModalBtn')?.addEventListener('click', () => document.getElementById('sectionsModal').classList.add('active'));
+    document.getElementById('closeModalBtn')?.addEventListener('click', () => document.getElementById('sectionsModal').classList.remove('active'));
 
     window.addEventListener('DOMContentLoaded', () => {
       buildModalGrid();
       selectSection(currentSectionId);
       updateLessonStates();
-      setTimeout(() => {
-        document.body.classList.add('page-loaded');
-      }, 100);
+      setTimeout(() => document.body.classList.add('page-loaded'), 100);
     });
   </script>
 </body>

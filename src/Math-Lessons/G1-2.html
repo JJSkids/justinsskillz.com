@@ -178,6 +178,15 @@
       border: 1px solid var(--accent-rose);
       display: block;
     }
+    .teach-content {
+      font-size: 1.1rem;
+      line-height: 1.7;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+    .teach-content strong {
+      color: var(--text-main);
+    }
     .btn {
       display: inline-flex;
       align-items: center;
@@ -219,58 +228,111 @@
       <div class="progress-bar-container">
         <div class="progress-bar-fill" id="lessonProgressFill"></div>
       </div>
-      <div id="lessonScoreBadge" style="font-weight: 700; color: var(--accent-purple); font-size: 0.9rem;">Score: 0</div>
+      <div id="lessonScoreBadge" style="font-weight: 700; color: var(--accent-purple); font-size: 0.9rem;">Score: 0 XP</div>
     </div>
 
     <div class="lesson-question-card" id="lessonCardContent">
-      <!-- Injected question content -->
+      <!-- Injected step content -->
     </div>
   </main>
 
   <script>
-    const lessonQuestions = [
-      { q: "What is 14 - 6?", options: ["6", "7", "8", "9"], correct: 2, explanation: "14 minus 6 equals 8." },
-      { q: "Find the missing number: 7 + ? = 12", options: ["4", "5", "6", "7"], correct: 1, explanation: "7 plus 5 equals 12." },
-      { q: "If you have 18 stickers and give 5 to your friend, how many do you have left?", options: ["11", "12", "13", "14"], correct: 2, explanation: "18 minus 5 equals 13." }
+    const lessonSteps = [
+      {
+        type: 'teach',
+        title: 'Understanding Subtraction ➖',
+        subtitle: 'Lesson G1-2 • Concept',
+        content: 'Subtraction is the opposite of addition! When you see the minus sign (<strong>-</strong>), it means you are taking items away from a group and finding out how many are left.'
+      },
+      {
+        type: 'teach',
+        title: 'Solving for Missing Numbers',
+        subtitle: 'Lesson G1-2 • Strategy',
+        content: 'A missing addend problem like <strong>7 + ? = 12</strong> asks what number you need to add to 7 to reach 12. You can count up from 7 until you reach 12: 8, 9, 10, 11, 12 (5 steps)!'
+      },
+      {
+        type: 'quiz',
+        subtitle: 'Lesson G1-2 • Practice Question 1 of 3',
+        q: "What is 14 - 6?",
+        options: ["6", "7", "8", "9"],
+        correct: 2,
+        explanation: "14 minus 6 equals 8."
+      },
+      {
+        type: 'quiz',
+        subtitle: 'Lesson G1-2 • Practice Question 2 of 3',
+        q: "Find the missing number: 7 + ? = 12",
+        options: ["4", "5", "6", "7"],
+        correct: 1,
+        explanation: "7 plus 5 equals 12."
+      },
+      {
+        type: 'quiz',
+        subtitle: 'Lesson G1-2 • Practice Question 3 of 3',
+        q: "If you have 18 stickers and give 5 to your friend, how many do you have left?",
+        options: ["11", "12", "13", "14"],
+        correct: 2,
+        explanation: "18 minus 5 equals 13."
+      }
     ];
 
-    let currentQIndex = 0;
+    let currentStepIndex = 0;
     let userScore = 0;
     let selectedOptionIndex = null;
     let hasAnsweredCurrent = false;
 
+    const totalQuizQuestions = lessonSteps.filter(s => s.type === 'quiz').length;
+    const maxPossibleScore = totalQuizQuestions * 10;
+
     window.addEventListener('DOMContentLoaded', () => {
-      renderQuestion();
+      renderStep();
     });
 
-    function renderQuestion() {
-      if (currentQIndex >= lessonQuestions.length) {
+    function renderStep() {
+      if (currentStepIndex >= lessonSteps.length) {
         showCompletionScreen();
         return;
       }
 
-      const qData = lessonQuestions[currentQIndex];
-      const progressPercent = (currentQIndex / lessonQuestions.length) * 100;
+      const step = lessonSteps[currentStepIndex];
+      const progressPercent = (currentStepIndex / lessonSteps.length) * 100;
       document.getElementById('lessonProgressFill').style.width = `${progressPercent}%`;
-      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore}`;
-
-      let optionsHtml = '';
-      qData.options.forEach((opt, idx) => {
-        optionsHtml += `<button type="button" class="option-btn" id="optBtn-${idx}" onclick="selectOption(${idx})">${String.fromCharCode(65 + idx)}. ${opt}</button>`;
-      });
+      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
 
       const card = document.getElementById('lessonCardContent');
-      card.innerHTML = `
-        <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">Lesson G1-2 • Question ${currentQIndex + 1} of ${lessonQuestions.length}</span>
-        <h2 style="margin: 0.5rem 0 1.5rem 0; font-size: 1.35rem; line-height: 1.4;">${qData.q}</h2>
-        <div class="options-grid">${optionsHtml}</div>
-        <div id="feedbackBox" class="feedback-box"></div>
-        <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
-          <button type="button" class="btn btn-primary" id="actionBtn" onclick="handleActionBtn()" disabled style="opacity: 0.5;">Select an Option</button>
-        </div>
-      `;
-      selectedOptionIndex = null;
-      hasAnsweredCurrent = false;
+
+      if (step.type === 'teach') {
+        card.innerHTML = `
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">${step.subtitle}</span>
+          <h2 style="margin: 0.5rem 0 1.25rem 0; font-size: 1.5rem; line-height: 1.3;">${step.title}</h2>
+          <div class="teach-content">${step.content}</div>
+          <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+          </div>
+        `;
+      } else {
+        let optionsHtml = '';
+        step.options.forEach((opt, idx) => {
+          optionsHtml += `<button type="button" class="option-btn" id="optBtn-${idx}" onclick="selectOption(${idx})">${String.fromCharCode(65 + idx)}. ${opt}</button>`;
+        });
+
+        card.innerHTML = `
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">${step.subtitle}</span>
+          <h2 style="margin: 0.5rem 0 1.5rem 0; font-size: 1.35rem; line-height: 1.4;">${step.q}</h2>
+          <div class="options-grid">${optionsHtml}</div>
+          <div id="feedbackBox" class="feedback-box"></div>
+          <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-primary" id="actionBtn" onclick="handleQuizAction()" disabled style="opacity: 0.5;">Select an Option</button>
+          </div>
+        `;
+        selectedOptionIndex = null;
+        hasAnsweredCurrent = false;
+      }
+    }
+
+    function nextStep() {
+      currentStepIndex++;
+      renderStep();
     }
 
     function selectOption(idx) {
@@ -287,9 +349,9 @@
       actionBtn.textContent = 'Check Answer';
     }
 
-    function handleActionBtn() {
+    function handleQuizAction() {
       if (selectedOptionIndex === null) return;
-      const qData = lessonQuestions[currentQIndex];
+      const step = lessonSteps[currentStepIndex];
       const feedbackBox = document.getElementById('feedbackBox');
       const actionBtn = document.getElementById('actionBtn');
       hasAnsweredCurrent = true;
@@ -297,26 +359,23 @@
       const buttons = document.querySelectorAll('.option-btn');
       buttons.forEach(btn => btn.style.cursor = 'default');
 
-      if (selectedOptionIndex === qData.correct) {
+      if (selectedOptionIndex === step.correct) {
         buttons[selectedOptionIndex].classList.add('correct');
         feedbackBox.className = 'feedback-box correct';
-        feedbackBox.innerHTML = `<strong>Correct! 🎉</strong> ${qData.explanation}`;
+        feedbackBox.innerHTML = `<strong>Correct! 🎉</strong> ${step.explanation}`;
         userScore += 10;
       } else {
         buttons[selectedOptionIndex].classList.add('incorrect');
-        buttons[qData.correct].classList.add('correct');
+        buttons[step.correct].classList.add('correct');
         feedbackBox.className = 'feedback-box incorrect';
-        feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${qData.explanation}`;
+        feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${step.explanation}`;
       }
 
-      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore}`;
+      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
 
-      if (currentQIndex < lessonQuestions.length - 1) {
+      if (currentStepIndex < lessonSteps.length - 1) {
         actionBtn.textContent = 'Next Question →';
-        actionBtn.onclick = () => {
-          currentQIndex++;
-          renderQuestion();
-        };
+        actionBtn.onclick = nextStep;
       } else {
         actionBtn.textContent = 'Complete Lesson 🏆';
         actionBtn.onclick = showCompletionScreen;
@@ -325,16 +384,14 @@
 
     async function showCompletionScreen() {
       document.getElementById('lessonProgressFill').style.width = '100%';
-      const totalPossibleScore = lessonQuestions.length * 10;
 
-      // REQUIREMENT: Must answer ALL questions correctly to pass
-      if (userScore < totalPossibleScore) {
+      if (userScore < maxPossibleScore) {
         const card = document.getElementById('lessonCardContent');
         card.innerHTML = `
           <div style="text-align: center; padding: 2rem 0;">
             <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔄</div>
             <h2 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-rose);">Almost There!</h2>
-            <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem;">You scored ${userScore} / ${totalPossibleScore} XP. You need 100% correct to pass this lesson and unlock the next one!</p>
+            <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem;">You scored ${userScore} / ${maxPossibleScore} XP. You need 100% correct on the quiz to pass this lesson and unlock the next one!</p>
             <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
               <button type="button" class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
               <a href="../math.html" class="btn btn-secondary">Return to Math Path</a>
@@ -344,7 +401,6 @@
         return;
       }
 
-      // --- PASS CONDITION MET ---
       if (typeof markLessonComplete === 'function') {
         await markLessonComplete('G1-2');
       }

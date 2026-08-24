@@ -325,7 +325,26 @@
 
     async function showCompletionScreen() {
       document.getElementById('lessonProgressFill').style.width = '100%';
+      const totalPossibleScore = lessonQuestions.length * 10;
 
+      // REQUIREMENT: Must answer ALL questions correctly to pass
+      if (userScore < totalPossibleScore) {
+        const card = document.getElementById('lessonCardContent');
+        card.innerHTML = `
+          <div style="text-align: center; padding: 2rem 0;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔄</div>
+            <h2 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-rose);">Almost There!</h2>
+            <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem;">You scored ${userScore} / ${totalPossibleScore} XP. You need 100% correct to pass this lesson and unlock the next one!</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+              <button type="button" class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
+              <a href="../math.html" class="btn btn-secondary">Return to Math Path</a>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // --- PASS CONDITION MET ---
       if (typeof markLessonComplete === 'function') {
         await markLessonComplete('G1-3');
       }
@@ -343,7 +362,7 @@
         <div style="text-align: center; padding: 2rem 0;">
           <div style="font-size: 3.5rem; margin-bottom: 1rem;">🏆</div>
           <h2 style="font-size: 2rem; margin-bottom: 0.5rem; color: var(--accent-green);">Lesson Completed!</h2>
-          <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem;">Fantastic job! You earned ${userScore} XP in Word Problems & Number Sense.</p>
+          <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem;">Flawless victory! You earned ${userScore} XP with a perfect score.</p>
           <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
             <button type="button" class="btn btn-primary" onclick="window.location.reload()">Practice Again</button>
             <a href="../math.html" class="btn btn-secondary">Return to Math Path</a>

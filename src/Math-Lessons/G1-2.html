@@ -237,44 +237,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Understanding Subtraction ➖',
-        subtitle: 'Lesson G1-2 • Concept',
-        content: 'Subtraction is the opposite of addition! When you see the minus sign (<strong>-</strong>), it means you are taking items away from a group and finding out how many are left.'
-      },
-      {
-        type: 'teach',
-        title: 'Solving for Missing Numbers',
-        subtitle: 'Lesson G1-2 • Strategy',
-        content: 'A missing addend problem like <strong>7 + ? = 12</strong> asks what number you need to add to 7 to reach 12. You can count up from 7 until you reach 12: 8, 9, 10, 11, 12 (5 steps)!'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-2 • Practice Question 1 of 3',
-        q: "What is 14 - 6?",
-        options: ["6", "7", "8", "9"],
-        correct: 2,
-        explanation: "14 minus 6 equals 8."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-2 • Practice Question 2 of 3',
-        q: "Find the missing number: 7 + ? = 12",
-        options: ["4", "5", "6", "7"],
-        correct: 1,
-        explanation: "7 plus 5 equals 12."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-2 • Practice Question 3 of 3',
-        q: "If you have 18 stickers and give 5 to your friend, how many do you have left?",
-        options: ["11", "12", "13", "14"],
-        correct: 2,
-        explanation: "18 minus 5 equals 13."
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Putting Groups Together ➕',
+    subtitle: 'Lesson G1-2 • Concept',
+    content: 'Addition means combining two groups to find a bigger total. The plus sign (<strong>+</strong>) means "put together" and the equals sign (<strong>=</strong>) shows the total amount.'
+  },
+  {
+    type: 'teach',
+    title: 'Using Your Fingers or Objects',
+    subtitle: 'Lesson G1-2 • Strategy',
+    content: 'When adding small numbers, start with the bigger number in your head and count up by the second number (e.g., for 5 + 2, start at 5 and count up: 6, 7!).'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-2 • Practice Question 1 of 3',
+    q: "What is 3 + 2?",
+    options: ["4", "5", "6", "7"],
+    correct: 1,
+    explanation: "3 plus 2 equals 5."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-2 • Practice Question 2 of 3',
+    q: "If you have 4 blocks and get 4 more, how many do you have?",
+    options: ["7", "8", "9", "10"],
+    correct: 1,
+    explanation: "4 plus 4 equals 8."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-2 • Practice Question 3 of 3',
+    q: "What is 6 + 3?",
+    options: ["8", "9", "10", "11"],
+    correct: 1,
+    explanation: "6 plus 3 equals 9."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

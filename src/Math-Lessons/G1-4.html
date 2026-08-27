@@ -76,44 +76,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Understanding Tens and Ones 📦',
-        subtitle: 'Lesson G1-4 • Concept',
-        content: 'When numbers get bigger, we group them to count faster! A group of 10 items makes <strong>1 ten</strong>. Leftover items that don’t make a full group of 10 are called <strong>ones</strong>.'
-      },
-      {
-        type: 'teach',
-        title: 'Reading 2-Digit Numbers',
-        subtitle: 'Lesson G1-4 • Strategy',
-        content: 'Take the number <strong>34</strong>. It has 3 groups of ten (30) and 4 single units (4). So, 34 = 3 tens and 4 ones!'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-4 • Practice Question 1 of 3',
-        q: "How many tens are in the number 47?",
-        options: ["4", "7", "47", "0"],
-        correct: 0,
-        explanation: "The first digit in 47 represents the tens place, which is 4."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-4 • Practice Question 2 of 3',
-        q: "What number has 6 tens and 3 ones?",
-        options: ["36", "63", "603", "9"],
-        correct: 1,
-        explanation: "6 tens (60) plus 3 ones (3) makes 63."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-4 • Practice Question 3 of 3',
-        q: "Which option shows how to break down the number 52?",
-        options: ["5 tens and 2 ones", "2 tens and 5 ones", "52 tens and 0 ones", "5 tens and 52 ones"],
-        correct: 0,
-        explanation: "52 is made of 5 groups of ten and 2 leftover ones."
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Exploring 2D Shapes 🔺',
+    subtitle: 'Lesson G1-4 • Concept',
+    content: 'Shapes are flat outlines defined by their sides and corners. A <strong>triangle</strong> has 3 sides, while a <strong>square</strong> and <strong>rectangle</strong> have 4 straight sides.'
+  },
+  {
+    type: 'teach',
+    title: 'Squares vs. Rectangles',
+    subtitle: 'Lesson G1-4 • Strategy',
+    content: 'Both squares and rectangles have 4 corners and 4 sides, but a square has <strong>all four sides of equal length</strong>, whereas a rectangle has two long sides and two short sides.'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-4 • Practice Question 1 of 3',
+    q: "How many sides does a triangle have?",
+    options: ["2", "3", "4", "5"],
+    correct: 1,
+    explanation: "A triangle always has 3 straight sides."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-4 • Practice Question 2 of 3',
+    q: "Which shape has 4 equal sides?",
+    options: ["Triangle", "Rectangle", "Square", "Circle"],
+    correct: 2,
+    explanation: "A square has 4 equal sides and 4 square corners."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-4 • Practice Question 3 of 3',
+    q: "Which shape has zero straight sides and is completely round?",
+    options: ["Square", "Circle", "Rectangle", "Triangle"],
+    correct: 1,
+    explanation: "A circle is round with no straight sides or corners."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

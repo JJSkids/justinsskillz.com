@@ -76,44 +76,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Measuring Lengths 📏',
-        subtitle: 'Lesson G1-5 • Concept',
-        content: 'Measurement lets us find out how long, tall, or short an object is. We can use non-standard units like paperclips or blocks laid end-to-end to measure items!'
-      },
-      {
-        type: 'teach',
-        title: 'Comparing Sizes',
-        subtitle: 'Lesson G1-5 • Strategy',
-        content: 'When looking at two objects, we use comparison words like <strong>longer</strong>, <strong>shorter</strong>, <strong>taller</strong>, or <strong>smaller</strong> to describe how they measure up against each other.'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-5 • Practice Question 1 of 3',
-        q: "If a pencil measures 7 paperclips long and a marker measures 10 paperclips long, which object is longer?",
-        options: ["Pencil", "Marker", "They are equal", "Cannot tell"],
-        correct: 1,
-        explanation: "10 paperclips is more than 7 paperclips, so the marker is longer."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-5 • Practice Question 2 of 3',
-        q: "Which word best describes a giraffe compared to a rabbit?",
-        options: ["Shorter", "Taller", "Heavier only", "Smaller"],
-        correct: 1,
-        explanation: "A giraffe stands much higher up, making it taller than a rabbit."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-5 • Practice Question 3 of 3',
-        q: "If Object A is longer than Object B, and Object B is longer than Object C, which object is the longest?",
-        options: ["Object A", "Object B", "Object C", "All are equal"],
-        correct: 0,
-        explanation: "Object A is greater than B, and B is greater than C, making A the longest overall."
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Comparing Numbers 🐊',
+    subtitle: 'Lesson G1-5 • Concept',
+    content: 'When we compare numbers, we look to see which amount is bigger or smaller. The inequality symbol (<strong>></strong> or <strong><</strong>) always opens wide to face the <strong>larger</strong> number!'
+  },
+  {
+    type: 'teach',
+    title: 'Reading Inequality Symbols',
+    subtitle: 'Lesson G1-5 • Strategy',
+    content: '<strong>5 > 3</strong> is read as "5 is greater than 3". <strong>2 < 6</strong> is read as "2 is less than 6". The pointy tip always points toward the smaller number.'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-5 • Practice Question 1 of 3',
+    q: "Which statement is true?",
+    options: ["7 < 4", "3 > 8", "5 < 9", "2 > 9"],
+    correct: 2,
+    explanation: "5 is less than 9, so 5 < 9 is correct."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-5 • Practice Question 2 of 3',
+    q: "Choose the correct symbol to compare: 8 ___ 6",
+    options: [">", "<", "="],
+    correct: 0,
+    explanation: "8 is larger than 6, so 8 > 6."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-5 • Practice Question 3 of 3',
+    q: "Which number is greater than 7?",
+    options: ["4", "6", "9", "5"],
+    correct: 2,
+    explanation: "9 is larger than 7."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

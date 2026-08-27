@@ -76,44 +76,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Entering the Hundreds 💯',
-        subtitle: 'Lesson G2-3 • Concept',
-        content: 'Beyond tens, we introduce the <strong>hundreds place</strong>! A group of 10 tens makes 100. Three-digit numbers have hundreds, tens, and ones columns.'
-      },
-      {
-        type: 'teach',
-        title: 'Breaking Down 3-Digit Numbers',
-        subtitle: 'Lesson G2-3 • Strategy',
-        content: 'Take the number **428**. It has 4 hundreds (400), 2 tens (20), and 8 ones (8). Putting them together gives 428!'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-3 • Practice Question 1 of 3',
-        q: "How many hundreds are in the number 742?",
-        options: ["2", "4", "7", "74"],
-        correct: 2,
-        explanation: "The first digit in 742 is in the hundreds place, representing 7 hundreds."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-3 • Practice Question 2 of 3',
-        q: "What number is made of 5 hundreds, 3 tens, and 9 ones?",
-        options: ["359", "935", "539", "593"],
-        correct: 2,
-        explanation: "500 + 30 + 9 combines to form 539."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-3 • Practice Question 3 of 3',
-        q: "Which number is strictly greater: 412 or 421?",
-        options: ["412", "421", "They are equal", "Cannot compare"],
-        correct: 1,
-        explanation: "Comparing the tens place, 2 tens is greater than 1 ten, making 421 larger."
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Subtracting 2-Digit Numbers ➖',
+    subtitle: 'Lesson G2-2 • Concept',
+    content: 'Just like addition, 2-digit subtraction starts in the <strong>ones column</strong> first, followed by the <strong>tens column</strong>.'
+  },
+  {
+    type: 'teach',
+    title: 'Example: 45 - 21',
+    subtitle: 'Lesson G2-2 • Strategy',
+    content: 'Subtract the ones: 5 - 1 = 4. Then subtract the tens: 4 - 2 = 2. Your final answer is <strong>24</strong>.'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-2 • Practice Question 1 of 3',
+    q: "What is 68 - 32?",
+    options: ["34", "36", "38", "40"],
+    correct: 1,
+    explanation: "Ones: 8-2=6. Tens: 6-3=3. Result is 36."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-2 • Practice Question 2 of 3',
+    q: "What is 85 - 40?",
+    options: ["40", "45", "50", "55"],
+    correct: 1,
+    explanation: "5-0=5 and 8-4=4, resulting in 45."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-2 • Practice Question 3 of 3',
+    q: "What is 97 - 25?",
+    options: ["70", "71", "72", "75"],
+    correct: 2,
+    explanation: "7-5=2 and 9-2=7, giving 72."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

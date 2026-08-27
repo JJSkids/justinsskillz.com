@@ -76,44 +76,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Reading Clocks ⏰',
-        subtitle: 'Lesson G2-5 • Concept',
-        content: 'An analog clock has two main hands: the **short hand** tells you the hour, and the **long hand** tells you the minutes.'
-      },
-      {
-        type: 'teach',
-        title: 'Skip Counting by 5s for Minutes',
-        subtitle: 'Lesson G2-5 • Strategy',
-        content: 'Each number on the clock face represents 5 minutes. When the long hand moves from 12 to 1, that is 5 minutes past the hour. When it points to 6, that is 30 minutes (half-past)!'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-5 • Practice Question 1 of 3',
-        q: "What does the short hand on a clock tell you?",
-        options: ["The hour", "The minute", "The second", "The temperature"],
-        correct: 0,
-        explanation: "The short hand points to the current hour."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-5 • Practice Question 2 of 3',
-        q: "If the minute hand is pointing directly at the 6, how many minutes past the hour is it?",
-        options: ["6 minutes", "15 minutes", "30 minutes", "60 minutes"],
-        correct: 2,
-        explanation: "6 numbers times 5 minutes equals 30 minutes (half past)."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-5 • Practice Question 3 of 3',
-        q: "What time is shown when the hour hand is at 4 and the minute hand is at 12?",
-        options: ["12:04", "4:00", "4:12", "12:00"],
-        correct: 1,
-        explanation: "When the minute hand is at 12, it is the start of the hour (o'clock), so it's 4:00."
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Reading Clocks ⏰',
+    subtitle: 'Lesson G2-5 • Concept',
+    content: 'An analog clock has two main hands: the <strong>short hour hand</strong> and the <strong>long minute hand</strong>. When the long hand points straight up at 12, it is a brand new hour (o\'clock).'
+  },
+  {
+    type: 'teach',
+    title: 'Half-Past the Hour',
+    subtitle: 'Lesson G2-5 • Strategy',
+    content: 'When the long minute hand points straight down at the number 6, 30 minutes have passed. We call this <strong>half-past</strong> the hour!'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-5 • Practice Question 1 of 3',
+    q: "Where does the minute hand point when it is exactly 3:00 o'clock?",
+    options: ["3", "6", "9", "12"],
+    correct: 3,
+    explanation: "At o'clock, the minute hand points directly at 12."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-5 • Practice Question 2 of 3',
+    q: "How many minutes are in 1 full hour?",
+    options: ["30 minutes", "60 minutes", "100 minutes", "12 minutes"],
+    correct: 1,
+    explanation: "There are 60 minutes in an hour."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-5 • Practice Question 3 of 3',
+    q: "What time is half-past 4 o'clock?",
+    options: ["4:00", "4:15", "4:30", "5:00"],
+    correct: 2,
+    explanation: "Half-past means 30 minutes past the hour, so it is 4:30."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

@@ -76,44 +76,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Counting Coins 🪙',
-        subtitle: 'Lesson G2-4 • Concept',
-        content: 'Money helps us buy items! Different coins have different values: a nickel is <strong>5 cents</strong>, a dime is <strong>10 cents</strong>, and a quarter is <strong>25 cents</strong>.'
-      },
-      {
-        type: 'teach',
-        title: 'Combining Values',
-        subtitle: 'Lesson G2-4 • Strategy',
-        content: 'When counting mixed coins, start with the coin of highest value first (like quarters), then add dimes, nickels, and pennies.'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-4 • Practice Question 1 of 3',
-        q: "How many cents are in a standard quarter?",
-        options: ["5 cents", "10 cents", "25 cents", "100 cents"],
-        correct: 2,
-        explanation: "A quarter is worth 25 cents."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-4 • Practice Question 2 of 3',
-        q: "If you have 2 dimes and 3 nickels, what is your total amount?",
-        options: ["25 cents", "35 cents", "50 cents", "20 cents"],
-        correct: 1,
-        explanation: "2 dimes = 20 cents, and 3 nickels = 15 cents. 20 + 15 = 35 cents."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-4 • Practice Question 3 of 3',
-        q: "Which coin combination equals exactly 50 cents?",
-        options: ["Two quarters", "Five dimes", "Ten nickels", "All of the above"],
-        correct: 3,
-        explanation: "Two quarters (2x25), five dimes (5x10), and ten nickels (10x5) all equal 50 cents!"
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Reading Information Tables 📊',
+    subtitle: 'Lesson G2-4 • Concept',
+    content: 'All around the world, we use tables and charts to organize information clearly. By looking at the rows and columns, we can quickly find facts and answer questions without guessing.'
+  },
+  {
+    type: 'teach',
+    title: 'Understanding Bar Graphs',
+    subtitle: 'Lesson G2-4 • Strategy',
+    content: 'A bar graph uses bars of different lengths to show numbers visually. The longer the bar, the larger the amount! Always check the scale numbers to see what each bar represents.'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-4 • Practice Question 1 of 3',
+    q: "If a table shows 4 students like apples, 6 like bananas, and 3 like oranges, which fruit is liked the most?",
+    options: ["Apples", "Bananas", "Oranges", "They are all equal"],
+    correct: 1,
+    explanation: "Bananas have 6 votes, which is the highest number in the table."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-4 • Practice Question 2 of 3',
+    q: "On a bar graph, what does a taller bar mean compared to a shorter bar?",
+    options: ["It represents a smaller amount", "It represents a larger amount", "It represents zero", "It means nothing"],
+    correct: 1,
+    explanation: "Taller bars show higher values or larger quantities."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-4 • Practice Question 3 of 3',
+    q: "A chart shows weather: 3 rainy days, 4 cloudy days, and 2 sunny days. How many total cloudy and rainy days are there?",
+    options: ["5", "6", "7", "9"],
+    correct: 2,
+    explanation: "Combining 3 rainy days and 4 cloudy days gives 3 + 4 = 7 days."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

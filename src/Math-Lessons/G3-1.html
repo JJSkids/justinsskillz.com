@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson G2-1: Addition & Subtraction to 100 - Justin's Skillz</title>
+  <title>Lesson Fractions Intro: Introduction to Fractions: Equal Parts - Justin's Skillz</title>
 
   <link rel="icon" type="image/jpeg" href="../../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,7 +40,7 @@
     .progress-bar-fill { height: 100%; background: var(--accent-green); width: 0%; transition: width 0.4s ease; }
     .lesson-question-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
     .options-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
-    @media(min-width: 640px) { .options-grid { grid-template-columns: 1fr 1fr; } }
+    @media(min-width: 640px) { .options-grid { grid-template-columns: 1fr 1fr; }}
     .option-btn { background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 1.1rem 1.25rem; border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.2s; }
     .option-btn:hover { border-color: var(--accent-purple); background: rgba(168, 85, 247, 0.05); }
     .option-btn.selected { border-color: var(--accent-purple); background: rgba(168, 85, 247, 0.15); }
@@ -76,42 +76,57 @@
   </main>
 
   <script>
-const lessonSteps = [
+    const lessonSteps = [
   {
-    type: 'teach',
-    title: 'Adding 2-Digit Numbers ➕',
-    subtitle: 'Lesson G2-1 • Concept',
-    content: 'When adding larger numbers, always start by adding the <strong>ones place</strong> on the right, and then add the <strong>tens place</strong> on the left!'
+    "type": "teach",
+    "title": "What is a Fraction?",
+    "subtitle": "Lesson Fractions Intro • Concept 1",
+    "content": "A <strong>fraction</strong> represents a part of a whole! When we divide a whole shape or object into <strong>equal parts</strong>, each part is a fraction of the whole. For example, if you cut a pizza into 2 equal slices, each slice is <strong>one half</strong> (1/2) of the pizza."
   },
   {
-    type: 'teach',
-    title: 'Example: 24 + 13',
-    subtitle: 'Lesson G2-1 • Strategy',
-    content: 'First add the ones: 4 + 3 = 7. Next add the tens: 2 + 1 = 3. Put them together to get <strong>37</strong>!'
+    "type": "teach",
+    "title": "Numerator and Denominator",
+    "subtitle": "Lesson Fractions Intro • Concept 2",
+    "content": "A fraction is written with two numbers:<br>• The <strong>bottom number (Denominator)</strong> shows the total number of equal parts.<br>• The <strong>top number (Numerator)</strong> shows how many of those equal parts you have."
   },
   {
-    type: 'quiz',
-    subtitle: 'Lesson G2-1 • Practice Question 1 of 3',
-    q: "What is 32 + 14?",
-    options: ["44", "46", "48", "56"],
-    correct: 1,
-    explanation: "Ones: 2+4=6. Tens: 3+1=4. Total is 46."
+    "type": "quiz",
+    "subtitle": "Lesson Fractions Intro • Practice Question 1 of 3",
+    "q": "If a chocolate bar is divided into 4 equal pieces and you eat 1 piece,what fraction of the chocolate bar did you eat?",
+    "options": [
+      "1/4",
+      "1/2",
+      "3/4",
+      "4/1"
+    ],
+    "correct": 0,
+    "explanation": "The denominator is 4 (total equal parts) and the numerator is 1 (parts eaten), making the fraction 1/4."
   },
   {
-    type: 'quiz',
-    subtitle: 'Lesson G2-1 • Practice Question 2 of 3',
-    q: "What is 50 + 25?",
-    options: ["70", "75", "80", "85"],
-    correct: 1,
-    explanation: "0+5=5 and 5+2=7, giving 75."
+    "type": "quiz",
+    "subtitle": "Lesson Fractions Intro • Practice Question 2 of 3",
+    "q": "In the fraction 3/8, what does the number 8 represent?",
+    "options": [
+      "The number of pieces eaten",
+      "The total number of equal parts",
+      "The number of remaining pieces",
+      "The numerator"
+    ],
+    "correct": 1,
+    "explanation": "The bottom number in a fraction is the denominator, which tells us the total number of equal parts."
   },
   {
-    type: 'quiz',
-    subtitle: 'Lesson G2-1 • Practice Question 3 of 3',
-    q: "What is 41 + 23?",
-    options: ["62", "63", "64", "65"],
-    correct: 2,
-    explanation: "1+3=4 and 4+2=6, giving 64."
+    "type": "quiz",
+    "subtitle": "Lesson Fractions Intro • Practice Question 3 of 3",
+    "q": "Which fraction shows that 2 out of 3 equal parts are shaded?",
+    "options": [
+      "1/3",
+      "3/2",
+      "2/3",
+      "2/2"
+    ],
+    "correct": 2,
+    "explanation": "Two shaded parts out of three total parts is written as 2/3."
   }
 ];
 
@@ -213,18 +228,18 @@ const lessonSteps = [
           </div>`;
         return;
       }
-      if (typeof markLessonComplete === 'function') { await markLessonComplete('G2-1'); }
+      if (typeof markLessonComplete === 'function') { await markLessonComplete('Fractions Intro'); }
       let completed = [];
       try { completed = JSON.parse(localStorage.getItem('math_completed_lessons') || '[]'); } catch(e) {}
-      if (!completed.includes('G2-1')) { completed.push('G2-1'); localStorage.setItem('math_completed_lessons', JSON.stringify(completed)); }
-      localStorage.setItem('duo_just_unlocked', 'G2-1');
+      if (!completed.includes('Fractions Intro')) { completed.push('Fractions Intro'); localStorage.setItem('math_completed_lessons', JSON.stringify(completed));}
+      localStorage.setItem('duo_just_unlocked', 'Fractions Intro');
 
       document.getElementById('lessonCardContent').innerHTML = `
-        <div style="text-align: center; padding: 2rem 0;">
-          <div style="font-size: 3.5rem; margin-bottom: 1rem;">🏆</div>
+        <div style="text-align: center; padding-top: 2rem; padding-bottom: 2rem;">
+          <div style="font-size: 3.5rem; margin-bottom: 1rem;">🎉</div>
           <h2 style="font-size: 2rem; color: var(--accent-green);">Lesson Completed!</h2>
-          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Fantastic work! You unlocked the next Grade 2 challenge.</p>
-          <a href="../math.html" class="btn btn-secondary">Return to Math Path</a>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Incrediblejob! You mastered this lesson with a perfect score.</p>
+          <a href="../math.html" class="btn btn-primary">Return to Math Path</a>
         </div>`;
     }
   </script>

@@ -238,44 +238,44 @@
 
   <script>
     // Lesson steps combining teaching slides and quiz questions
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Welcome to Addition! ➕',
-        subtitle: 'Lesson G1-1 • Introduction',
-        content: 'Addition means putting groups together to find the total amount. When you see the plus sign (<strong>+</strong>), it tells you to combine numbers to make a bigger number!'
-      },
-      {
-        type: 'teach',
-        title: 'How to Count On',
-        subtitle: 'Lesson G1-1 • Concept',
-        content: 'To solve <strong>3 + 2</strong>, start at 3 and count forward 2 steps: 4, 5! You can also use your fingers or draw pictures to help you count.'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-1 • Practice Question 1 of 3',
-        q: "What is 12 + 7?",
-        options: ["17", "18", "19", "20"],
-        correct: 2,
-        explanation: "12 plus 7 equals 19."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-1 • Practice Question 2 of 3',
-        q: "Which number is greater: 45 or 54?",
-        options: ["45", "54", "They are equal", "Neither"],
-        correct: 1,
-        explanation: "54 has 5 tens and 4 units, making it greater than 45."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-1 • Practice Question 3 of 3',
-        q: "If you have 15 apples and eat 6, how many do you have left?",
-        options: ["8", "9", "10", "11"],
-        correct: 1,
-        explanation: "15 - 6 = 9."
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Counting Objects 🔢',
+    subtitle: 'Lesson G1-1 • Concept',
+    content: 'Counting helps us find out <strong>how many</strong> items are in a group. Always touch or point to each object one by one so you don\'t count any item twice!'
+  },
+  {
+    type: 'teach',
+    title: 'Ways to Show Numbers',
+    subtitle: 'Lesson G1-1 • Strategy',
+    content: 'Numbers can be written as digits (<strong>5</strong>), spelled out as words (<strong>five</strong>), or shown using tally marks and pictures (<strong>•••••</strong>).'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-1 • Practice Question 1 of 3',
+    q: "How do you write the number five as a digit?",
+    options: ["3", "4", "5", "6"],
+    correct: 2,
+    explanation: "The digit for five is 5."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-1 • Practice Question 2 of 3',
+    q: "Which word matches the number 3?",
+    options: ["Two", "Three", "Four", "Five"],
+    correct: 1,
+    explanation: "The word for 3 is 'Three'."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-1 • Practice Question 3 of 3',
+    q: "If you count 7 objects, what number comes right before 7?",
+    options: ["5", "6", "8", "9"],
+    correct: 1,
+    explanation: "When counting forward (5, 6, 7), the number before 7 is 6."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

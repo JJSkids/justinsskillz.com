@@ -76,44 +76,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Exploring 2D Shapes 🔷',
-        subtitle: 'Lesson G1-6 • Concept',
-        content: '2D shapes are flat figures like <strong>circles, squares, triangles, and rectangles</strong>. They have straight or curved sides and corners (vertices)!'
-      },
-      {
-        type: 'teach',
-        title: 'Solid 3D Shapes 📦',
-        subtitle: 'Lesson G1-6 • Strategy',
-        content: '3D shapes take up physical space like real objects! Examples include <strong>cubes, spheres, cylinders, and cones</strong> (just like building blocks or sports balls).'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-6 • Practice Question 1 of 3',
-        q: "How many sides and corners does a triangle have?",
-        options: ["2", "3", "4", "5"],
-        correct: 1,
-        explanation: "A triangle always has 3 straight sides and 3 corners."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-6 • Practice Question 2 of 3',
-        q: "Which of these is a 3D solid shape rather than a flat 2D shape?",
-        options: ["Square", "Triangle", "Cube", "Circle"],
-        correct: 2,
-        explanation: "A cube is a 3-dimensional solid shape, whereas squares, triangles, and circles are flat."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G1-6 • Practice Question 3 of 3',
-        q: "A standard rectangle has 4 sides. Are all 4 sides always the exact same length?",
-        options: ["Yes, always", "No, opposite sides are equal", "Rectangles have no sides", "Only 3 sides are equal"],
-        correct: 1,
-        explanation: "A rectangle has 2 longer sides and 2 shorter sides, unlike a square where all 4 sides are equal."
-      }
-    ];
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Skip Counting Patterns ⏭️',
+    subtitle: 'Lesson G1-6 • Concept',
+    content: 'Instead of counting by 1s (1, 2, 3...), skip counting lets us count faster by jumping equal steps—like counting by 2s, 5s, or 10s!'
+  },
+  {
+    type: 'teach',
+    title: 'Counting by 10s',
+    subtitle: 'Lesson G1-6 • Strategy',
+    content: 'When counting by 10s, the numbers always end in zero: <strong>10, 20, 30, 40, 50...</strong> It is a super fast way to count large groups of items.'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-6 • Practice Question 1 of 3',
+    q: "What comes next in this skip-counting pattern by 2s? 2, 4, 6, ___",
+    options: ["7", "8", "9", "10"],
+    correct: 1,
+    explanation: "Adding 2 to 6 gives you 8."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-6 • Practice Question 2 of 3',
+    q: "What comes next when counting by 5s? 5, 10, 15, ___",
+    options: ["16", "18", "20", "25"],
+    correct: 2,
+    explanation: "After 15 comes 20 when skip counting by 5s."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G1-6 • Practice Question 3 of 3',
+    q: "What is the missing number counting by 10s? 10, 20, ___, 40",
+    options: ["25", "30", "35", "50"],
+    correct: 1,
+    explanation: "Between 20 and 40 is 30."
+  }
+];
 
     let currentStepIndex = 0;
     let userScore = 0;

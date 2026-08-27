@@ -76,45 +76,44 @@
   </main>
 
   <script>
-    const lessonSteps = [
-      {
-        type: 'teach',
-        title: 'Organizing Information 📊',
-        subtitle: 'Lesson G2-6 • Concept',
-        content: 'Data is information we collect and organize. We can use tally charts, pictographs (using symbols), and bar graphs to compare numbers easily!'
-      },
-      {
-        type: 'teach',
-        title: 'Reading Tallies and Bars',
-        subtitle: 'Lesson G2-6 • Strategy',
-        content: 'In tally charts, every group of 5 has four vertical lines with a fifth line diagonal across them. In bar graphs, the taller the bar, the larger the quantity!'
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-6 • Practice Question 1 of 3',
-        q: "In a tally chart, how many total lines make up a complete group of 5 tallies?",
-        options: ["3 lines", "4 lines", "5 lines", "10 lines"],
-        correct: 2,
-        explanation: "Four straight lines with one diagonal cross line equals a total of 5 lines."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-6 • Practice Question 2 of 3',
-        q: "If each symbol on a pictograph represents 2 apples, and you see 3 symbols next to a name, how many apples are there?",
-        options: ["3 apples", "5 apples", "6 apples", "9 apples"],
-        correct: 2,
-        explanation: "3 symbols multiplied by 2 apples per symbol equals 6 apples."
-      },
-      {
-        type: 'quiz',
-        subtitle: 'Lesson G2-6 • Practice Question 3 of 3',
-        q: "On a bar graph comparing favorite sports, what does a taller bar mean?",
-        options: ["Fewer people chose it", "More people chose it", "It has no data", "It is incorrect"],
-        correct: 1,
-        explanation: "A taller bar represents a higher quantity or more votes."
-      }
-    ];
-
+const lessonSteps = [
+  {
+    type: 'teach',
+    title: 'Measuring Length 📏',
+    subtitle: 'Lesson G2-6 • Concept',
+    content: 'We use standard tools like rulers and tape measures to find out how long or tall things are using units like <strong>centimeters (cm)</strong> or <strong>meters (m)</strong>.'
+  },
+  {
+    type: 'teach',
+    title: 'Choosing the Right Unit',
+    subtitle: 'Lesson G2-6 • Strategy',
+    content: 'Small objects like a pencil are measured in centimeters. Larger distances across a room or building are measured in meters!'
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-6 • Practice Question 1 of 3',
+    q: "Which unit is best for measuring the length of a small eraser?",
+    options: ["Kilometers", "Centimeters", "Miles", "Gallons"],
+    correct: 1,
+    explanation: "Centimeters are great for measuring small items."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-6 • Practice Question 2 of 3',
+    q: "How many centimeters are in 1 meter?",
+    options: ["10 cm", "50 cm", "100 cm", "1000 cm"],
+    correct: 2,
+    explanation: "There are 100 centimeters in 1 meter."
+  },
+  {
+    type: 'quiz',
+    subtitle: 'Lesson G2-6 • Practice Question 3 of 3',
+    q: "Which tool would you use to measure the length of your school desk?",
+    options: ["A thermometer", "A clock", "A ruler or tape measure", "A scale"],
+    correct: 2,
+    explanation: "A ruler or tape measure measures length."
+  }
+];
     let currentStepIndex = 0;
     let userScore = 0;
     let selectedOptionIndex = null;

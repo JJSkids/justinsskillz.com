@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson Fractions Intro: Introduction to Equal Parts and Basic Fractions - Justin's Skillz</title>
+  <title>Lesson G3-1: Understanding 4-Digit Place Value - Justin's Skillz</title>
 
   <link rel="icon" type="image/jpeg" href="../../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -79,54 +79,54 @@
     const lessonSteps = [
   {
     "type": "teach",
-    "title": "What is a Fraction?",
-    "subtitle": "Lesson Fractions Intro ΓÇó Concept 1",
-    "content": "A <strong>fraction</strong> represents a part of a whole. When we divide a whole shape or object into <strong>equal parts</strong>, each part is a fraction of that whole! For example, if you slice a pancake into 2 equal pieces, each piece is one-half."
+    "title": "Welcome to the Thousands Place!",
+    "subtitle": "Lesson G3-1 • Concept 1",
+    "content": "When we group <strong>10 hundreds</strong> together, we make <strong>1 thousand</strong>! A 4-digit number is made of <strong>Thousands</strong>, <strong>Hundreds</strong>, <strong>Tens</strong>, and <strong>Ones</strong>."
   },
   {
     "type": "teach",
-    "title": "Numerators and Denominators",
-    "subtitle": "Lesson Fractions Intro ΓÇó Concept 2",
-    "content": "A fraction is written with two numbers stacked on top of each other:<br>ΓÇó The <strong>denominator</strong> (bottom number) shows the <strong>total number of equal parts</strong>.<br>ΓÇó The <strong>numerator</strong> (top number) shows <strong>how many parts</strong> we are selecting or shading."
+    "title": "Breaking Down 4-Digit Numbers",
+    "subtitle": "Lesson G3-1 • Concept 2",
+    "content": "In the number <strong>3,452</strong>:<br>• The <strong>3</strong> is in the thousands place (3,000)<br>• The <strong>4</strong> is in the hundreds place (400)<br>• The <strong>5</strong> is in the tens place (50)<br>• The <strong>2</strong> is in the ones place (2)"
   },
   {
     "type": "quiz",
-    "subtitle": "Lesson Fractions Intro ΓÇó Practice Question 1 of 3",
-    "q": "If a pizza is sliced into 4 equal pieces and you eat 1 piece, what fraction of the pizza did you eat?",
+    "subtitle": "Lesson G3-1 • Practice Question 1 of 3",
+    "q": "In the number 4,815, which digit is in the hundreds place?",
     "options": [
-      "1/4",
-      "1/2",
-      "3/4",
-      "4/1"
-    ],
-    "correct": 0,
-    "explanation": "You ate 1 piece out of 4 equal total pieces, which is written as 1/4."
-  },
-  {
-    "type": "quiz",
-    "subtitle": "Lesson Fractions Intro ΓÇó Practice Question 2 of 3",
-    "q": "What does the bottom number (denominator) in a fraction tell us?",
-    "options": [
-      "How many parts are shaded",
-      "The total number of equal parts in the whole",
-      "The size of the shape",
-      "How many parts are left over"
+      "4",
+      "8",
+      "1",
+      "5"
     ],
     "correct": 1,
-    "explanation": "The denominator on the bottom shows the total number of equal parts into which the whole object is divided."
+    "explanation": "In 4,815, the digit 4 is in the thousands place, 8 is in the hundreds place, 1 is in the tens place, and 5 is in the ones place."
   },
   {
     "type": "quiz",
-    "subtitle": "Lesson Fractions Intro ΓÇó Practice Question 3 of 3",
-    "q": "Which fraction represents three out of five equal parts being colored in?",
+    "subtitle": "Lesson G3-1 • Practice Question 2 of 3",
+    "q": "What is the value of the digit 6 in the number 6,209?",
     "options": [
-      "5/3",
-      "2/5",
-      "3/5",
-      "3/8"
+      "60",
+      "600",
+      "6,000",
+      "6"
     ],
     "correct": 2,
-    "explanation": "The top number (numerator) is 3 for the colored parts, and the bottom number (denominator) is 5 for the total parts, giving 3/5."
+    "explanation": "Because the digit 6 is in the thousands place, its total value is 6,000."
+  },
+  {
+    "type": "quiz",
+    "subtitle": "Lesson G3-1 • Practice Question 3 of 3",
+    "q": "Which number represents 5 thousands, 0 hundreds, 3 tens, and 7 ones?",
+    "options": [
+      "537",
+      "5,307",
+      "5,037",
+      "5,370"
+    ],
+    "correct": 2,
+    "explanation": "Putting the places together: 5 thousands (5,000) + 0 hundreds (0) + 3 tens (30) + 7 ones (7) = 5,037."
   }
 ];
 
@@ -212,7 +212,7 @@
       if (currentStepIndex < lessonSteps.length - 1) {
         actionBtn.textContent = 'Next Question &rarr;'; actionBtn.onclick = nextStep;
       } else {
-        actionBtn.textContent = 'Complete Lesson ≡ƒÅå'; actionBtn.onclick = showCompletionScreen;
+        actionBtn.textContent = 'Complete Lesson 🏆'; actionBtn.onclick = showCompletionScreen;
       }
     }
 
@@ -221,22 +221,22 @@
       if (userScore < maxPossibleScore) {
         document.getElementById('lessonCardContent').innerHTML = `
           <div style="text-align: center; padding: 2rem 0;">
-            <div style="font-size: 3.5rem; margin-bottom: 1rem;">≡ƒöä</div>
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔄</div>
             <h2 style="font-size: 2rem; color: var(--accent-rose);">Almost There!</h2>
             <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You scored ${userScore} / ${maxPossibleScore} XP. You need 100% correct to pass!</p>
             <button type="button" class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
           </div>`;
         return;
       }
-      if (typeof markLessonComplete === 'function') { await markLessonComplete('Fractions Intro'); }
+      if (typeof markLessonComplete === 'function') { await markLessonComplete('G3-1'); }
       let completed = [];
       try { completed = JSON.parse(localStorage.getItem('math_completed_lessons') || '[]'); } catch(e) {}
-      if (!completed.includes('Fractions Intro')) { completed.push('Fractions Intro'); localStorage.setItem('math_completed_lessons', JSON.stringify(completed)); }
-      localStorage.setItem('duo_just_unlocked', 'Fractions Intro');
+      if (!completed.includes('G3-1')) { completed.push('G3-1'); localStorage.setItem('math_completed_lessons', JSON.stringify(completed)); }
+      localStorage.setItem('duo_just_unlocked', 'G3-1');
 
       document.getElementById('lessonCardContent').innerHTML = `
         <div style="text-align: center; padding: 2rem 0;">
-          <div style="font-size: 3.5rem; margin-bottom: 1rem;">≡ƒÅå</div>
+          <div style="font-size: 3.5rem; margin-bottom: 1rem;">🏆</div>
           <h2 style="font-size: 2rem; color: var(--accent-green);">Lesson Completed!</h2>
           <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Incredible job mastering this lesson!</p>
           <a href="../math.html" class="btn btn-secondary">&larr; Return to Math Path</a>

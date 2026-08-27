@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson Fractions Intro: Introduction to Fractions: Equal Parts and Wholes - Justin's Skillz</title>
+  <title>Lesson Fractions Intro: Introduction to Fractions: Equal Parts of a Whole - Justin's Skillz</title>
 
   <link rel="icon" type="image/jpeg" href="../../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,7 +63,7 @@
         <img src="../../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
-      <a href="../math.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">ΓåÉ Back to Math Path</a>
+      <a href="../math.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">&larr; Back to Math Path</a>
     </div>
   </header>
 
@@ -81,52 +81,52 @@
     "type": "teach",
     "title": "What is a Fraction?",
     "subtitle": "Lesson Fractions Intro ΓÇó Concept 1",
-    "content": "<p>A <strong>fraction</strong> represents an <strong>equal part</strong> of a whole object.</p><p>When we split an object into parts of the exact same size, we create fractions:</p><ul><li><strong>Numerator (Top Number):</strong> How many equal parts you have or are focusing on.</li><li><strong>Denominator (Bottom Number):</strong> The total number of equal parts that make up the whole.</li></ul>"
+    "content": "A <strong>fraction</strong> shows part of a whole object. When you divide something into <strong>equal parts</strong>, each piece is a fraction of the entire item."
   },
   {
     "type": "teach",
-    "title": "Halves, Thirds, and Fourths",
+    "title": "Numerators and Denominators",
     "subtitle": "Lesson Fractions Intro ΓÇó Concept 2",
-    "content": "<p>We name fractions based on how many equal parts the whole is divided into:</p><ul><li><strong>Halves (1/2):</strong> Split into <strong>2 equal parts</strong>.</li><li><strong>Thirds (1/3):</strong> Split into <strong>3 equal parts</strong>.</li><li><strong>Fourths (1/4):</strong> Split into <strong>4 equal parts</strong> (also called quarters).</li></ul><p>Remember: If the parts are not <strong>equal</strong>, they are not fractions!</p>"
+    "content": "In a fraction like <strong>3/4</strong>, the bottom number (<strong>denominator</strong>) tells us the total number of equal parts. The top number (<strong>numerator</strong>) shows how many parts we are counting."
   },
   {
     "type": "quiz",
     "subtitle": "Lesson Fractions Intro ΓÇó Practice Question 1 of 3",
-    "q": "What does the denominator (the bottom number of a fraction) represent?",
+    "q": "If a pizza is divided into 4 equal slices and you eat 1 slice, what fraction of the pizza did you eat?",
     "options": [
-      "The total number of equal parts in the whole",
-      "The number of parts that are shaded",
-      "The size of the whole shape",
-      "The number of whole objects"
+      "1/4",
+      "1/2",
+      "3/4",
+      "4/1"
     ],
     "correct": 0,
-    "explanation": "The denominator tells us the total number of equal parts that the whole is split into."
+    "explanation": "You ate 1 part (numerator) out of a total of 4 equal parts (denominator), which is written as 1/4."
   },
   {
     "type": "quiz",
     "subtitle": "Lesson Fractions Intro ΓÇó Practice Question 2 of 3",
-    "q": "If a pie is cut into 4 equal slices and you eat 1 slice, what fraction of the pie did you eat?",
+    "q": "What does the bottom number (denominator) in a fraction tell us?",
     "options": [
-      "1/2",
-      "1/4",
-      "3/4",
-      "4/1"
+      "How many parts are shaded or counted",
+      "The total number of equal parts in the whole",
+      "How big the whole object is",
+      "How many parts are left over"
     ],
     "correct": 1,
-    "explanation": "You ate 1 part out of 4 equal parts, which is represented by the fraction 1/4."
+    "explanation": "The denominator shows the total number of equal parts that make up the whole."
   },
   {
     "type": "quiz",
     "subtitle": "Lesson Fractions Intro ΓÇó Practice Question 3 of 3",
-    "q": "Which rule MUST be true when dividing a shape into fractions?",
+    "q": "A rectangle is cut into 5 equal parts, and 3 parts are colored blue. What fraction of the rectangle is blue?",
     "options": [
-      "The shape must be a circle",
-      "The parts can be any random size",
-      "All the parts must be equal in size",
-      "There must be at least 5 parts"
+      "5/3",
+      "2/5",
+      "3/5",
+      "3/2"
     ],
     "correct": 2,
-    "explanation": "To represent a true fraction, all divided parts of the whole must be equal in size."
+    "explanation": "There are 3 blue parts (numerator) out of 5 total equal parts (denominator), making the fraction 3/5."
   }
 ];
 
@@ -153,7 +153,7 @@
           <h2 style="margin: 0.5rem 0 1.25rem 0; font-size: 1.5rem;">${step.title}</h2>
           <div class="teach-content">${step.content}</div>
           <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue ΓåÆ</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue &rarr;</button>
           </div>
         `;
       } else {
@@ -199,7 +199,7 @@
       if (selectedOptionIndex === step.correct) {
         buttons[selectedOptionIndex].classList.add('correct');
         feedbackBox.className = 'feedback-box correct';
-        feedbackBox.innerHTML = `<strong>Correct! ≡ƒÄë</strong> ${step.explanation}`;
+        feedbackBox.innerHTML = `<strong>Correct!</strong> ${step.explanation}`;
         userScore += 10;
       } else {
         buttons[selectedOptionIndex].classList.add('incorrect');
@@ -210,7 +210,7 @@
       document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
 
       if (currentStepIndex < lessonSteps.length - 1) {
-        actionBtn.textContent = 'Next Question ΓåÆ'; actionBtn.onclick = nextStep;
+        actionBtn.textContent = 'Next Question &rarr;'; actionBtn.onclick = nextStep;
       } else {
         actionBtn.textContent = 'Complete Lesson ≡ƒÅå'; actionBtn.onclick = showCompletionScreen;
       }
@@ -239,7 +239,7 @@
           <div style="font-size: 3.5rem; margin-bottom: 1rem;">≡ƒÅå</div>
           <h2 style="font-size: 2rem; color: var(--accent-green);">Lesson Completed!</h2>
           <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Incredible job mastering this lesson!</p>
-          <a href="../math.html" class="btn btn-secondary">Return to Math Path</a>
+          <a href="../math.html" class="btn btn-secondary">&larr; Return to Math Path</a>
         </div>`;
     }
   </script>

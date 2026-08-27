@@ -76,44 +76,44 @@
   </main>
 
   <script>
-const lessonSteps = [
-  {
-    type: 'teach',
-    title: 'Subtracting 2-Digit Numbers ➖',
-    subtitle: 'Lesson G2-2 • Concept',
-    content: 'Just like addition, 2-digit subtraction starts in the <strong>ones column</strong> first, followed by the <strong>tens column</strong>.'
-  },
-  {
-    type: 'teach',
-    title: 'Example: 45 - 21',
-    subtitle: 'Lesson G2-2 • Strategy',
-    content: 'Subtract the ones: 5 - 1 = 4. Then subtract the tens: 4 - 2 = 2. Your final answer is <strong>24</strong>.'
-  },
-  {
-    type: 'quiz',
-    subtitle: 'Lesson G2-2 • Practice Question 1 of 3',
-    q: "What is 68 - 32?",
-    options: ["34", "36", "38", "40"],
-    correct: 1,
-    explanation: "Ones: 8-2=6. Tens: 6-3=3. Result is 36."
-  },
-  {
-    type: 'quiz',
-    subtitle: 'Lesson G2-2 • Practice Question 2 of 3',
-    q: "What is 85 - 40?",
-    options: ["40", "45", "50", "55"],
-    correct: 1,
-    explanation: "5-0=5 and 8-4=4, resulting in 45."
-  },
-  {
-    type: 'quiz',
-    subtitle: 'Lesson G2-2 • Practice Question 3 of 3',
-    q: "What is 97 - 25?",
-    options: ["70", "71", "72", "75"],
-    correct: 2,
-    explanation: "7-5=2 and 9-2=7, giving 72."
-  }
-];
+    const lessonSteps = [
+      {
+        type: 'teach',
+        title: 'Skip Counting Fast 🔢',
+        subtitle: 'Lesson G2-2 • Concept',
+        content: 'Instead of counting by ones, we can jump forward by twos, fives, or tens! For example, counting by 5s goes: <strong>5, 10, 15, 20, 25...</strong>'
+      },
+      {
+        type: 'teach',
+        title: 'Finding the Rule in Patterns',
+        subtitle: 'Lesson G2-2 • Strategy',
+        content: 'A number pattern follows a repeating rule. If a sequence goes 10, 20, 30, 40, the rule is to <strong>add 10</strong> each time.'
+      },
+      {
+        type: 'quiz',
+        subtitle: 'Lesson G2-2 • Practice Question 1 of 3',
+        q: "What comes next in this skip-counting sequence: 15, 20, 25, 30, ...?",
+        options: ["32", "35", "40", "50"],
+        correct: 1,
+        explanation: "The pattern adds 5 each time, so after 30 comes 35."
+      },
+      {
+        type: 'quiz',
+        subtitle: 'Lesson G2-2 • Practice Question 2 of 3',
+        q: "Identify the missing number in the pattern: 2, 4, 6, _, 10",
+        options: ["7", "8", "9", "5"],
+        correct: 1,
+        explanation: "Counting by 2s: 2, 4, 6, 8, 10. The missing number is 8."
+      },
+      {
+        type: 'quiz',
+        subtitle: 'Lesson G2-2 • Practice Question 3 of 3',
+        q: "If a pattern starts at 50 and subtracts 10 each step, what is the third number? (50, 40, ...)",
+        options: ["30", "20", "35", "25"],
+        correct: 0,
+        explanation: "Step 1: 50. Step 2: 40. Step 3: 30."
+      }
+    ];
 
     let currentStepIndex = 0;
     let userScore = 0;
@@ -129,7 +129,7 @@ const lessonSteps = [
       if (currentStepIndex >= lessonSteps.length) { showCompletionScreen(); return; }
       const step = lessonSteps[currentStepIndex];
       document.getElementById('lessonProgressFill').style.width = `${(currentStepIndex / lessonSteps.length) * 100}%`;
-      document.getElementById('lessonScoreBadge')->textContent = `Score: ${userScore} XP`;
+      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
       const card = document.getElementById('lessonCardContent');
 
       if (step.type === 'teach') {
@@ -192,7 +192,7 @@ const lessonSteps = [
         feedbackBox.className = 'feedback-box incorrect';
         feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${step.explanation}`;
       }
-      document.getElementById('lessonScoreBadge')->textContent = `Score: ${userScore} XP`;
+      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
 
       if (currentStepIndex < lessonSteps.length - 1) {
         actionBtn.textContent = 'Next Question →'; actionBtn.onclick = nextStep;

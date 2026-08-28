@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lesson G3-2: Introduction to Multiplication - Justin's Skillz</title>
+
+  <link rel="icon" type="image/jpeg" href="../../Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../styles.css">
+  <script src="../theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../math-tracker.js"></script>
+
+  <style>
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117; --bg-card: #181b25; --border-subtle: #2d3242;
+      --text-main: #f3f4f6; --text-muted: #9ca3af; --accent-purple: #a855f7;
+      --accent-blue: #3b82f6; --accent-green: #10b981; --accent-rose: #f43f5e;
+      --header-bg: rgba(15, 17, 23, 0.85); --radius-lg: 16px; --radius-md: 10px;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f8fafc; --bg-card: #ffffff; --border-subtle: #e2e8f0;
+      --text-main: #1e293b; --text-muted: #64748b; --accent-purple: #9333ea;
+      --accent-blue: #2563eb; --accent-green: #059669; --accent-rose: #e11d48;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+    body { background-color: var(--bg-primary); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
+    .app-header { background: var(--header-bg); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-subtle); position: sticky; top: 0; z-index: 100; padding: 0.75rem 1.5rem; }
+    .header-container { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text-main); font-weight: 800; font-size: 1.1rem; }
+    .nav-logo-img { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-purple); }
+    .gradient-text { background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .main-container { max-width: 750px; margin: 2rem auto; padding: 0 1rem; }
+    .lesson-header-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; gap: 1rem; }
+    .progress-bar-container { flex: 1; height: 10px; background: var(--border-subtle); border-radius: 99px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--accent-green); width: 0%; transition: width 0.4s ease; }
+    .lesson-question-card { background: var(--bg-card); border: 1px solid var(--border-subtle); border-radius: var(--radius-lg); padding: 2.5rem; box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+    .options-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
+    @media(min-width: 640px) { .options-grid { grid-template-columns: 1fr 1fr; } }
+    .option-btn { background: var(--bg-primary); border: 2px solid var(--border-subtle); color: var(--text-main); padding: 1.1rem 1.25rem; border-radius: var(--radius-md); font-size: 1rem; font-weight: 600; text-align: left; cursor: pointer; transition: all 0.2s; }
+    .option-btn:hover { border-color: var(--accent-purple); background: rgba(168, 85, 247, 0.05); }
+    .option-btn.selected { border-color: var(--accent-purple); background: rgba(168, 85, 247, 0.15); }
+    .option-btn.correct { border-color: var(--accent-green) !important; background: rgba(16, 185, 129, 0.2) !important; color: var(--accent-green); }
+    .option-btn.incorrect { border-color: var(--accent-rose) !important; background: rgba(244, 63, 94, 0.2) !important; color: var(--accent-rose); }
+    .feedback-box { margin-top: 1.5rem; padding: 1rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; display: none; }
+    .feedback-box.correct { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); display: block; }
+    .feedback-box.incorrect { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border: 1px solid var(--accent-rose); display: block; }
+    .teach-content { font-size: 1.1rem; line-height: 1.7; color: var(--text-muted); margin-bottom: 2rem; }
+    .teach-content strong { color: var(--text-main); }
+    .btn { display: inline-flex; align-items: center; justify-content: center; padding: 0.75rem 1.25rem; border-radius: var(--radius-md); font-weight: 600; font-size: 0.9rem; cursor: pointer; border: none; text-decoration: none; transition: opacity 0.2s; }
+    .btn-primary { background: var(--accent-purple); color: white; }
+    .btn-secondary { background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-main); }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../../index.html" class="logo">
+        <img src="../../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+      <a href="../math.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">← Back to Math Path</a>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="lesson-header-bar">
+      <div class="progress-bar-container"><div class="progress-bar-fill" id="lessonProgressFill"></div></div>
+      <div id="lessonScoreBadge" style="font-weight: 700; color: var(--accent-purple); font-size: 0.9rem;">Score: 0 XP</div>
+    </div>
+    <div class="lesson-question-card" id="lessonCardContent"></div>
+  </main>
+
+  <script>
+    const lessonSteps = [
+  {
+    "type": "teach",
+    "title": "Multiplication as Equal Groups",
+    "subtitle": "Lesson G3-2 • Concept 1",
+    "content": "When you have <strong>equal groups</strong> of items, you can use multiplication to find the total quickly instead of adding them one by one. For example, if you have 3 bags with 4 apples in each bag, you can write this as repeated addition: <code>4 + 4 + 4 = 12</code>. In multiplication, we write this as <strong>3 × 4 = 12</strong>!"
+  },
+  {
+    "type": "teach",
+    "title": "Factors and Products",
+    "subtitle": "Lesson G3-2 • Concept 2",
+    "content": "In multiplication, the numbers we are multiplying together are called <strong>factors</strong>, and the answer is called the <strong>product</strong>.<br><br>In the equation <strong>5 × 2 = 10</strong>:<br>• <strong>5</strong> and <strong>2</strong> are the <em>factors</em>.<br>• <strong>10</strong> is the <em>product</em>."
+  },
+  {
+    "type": "quiz",
+    "subtitle": "Lesson G3-2 • Practice Question 1 of 3",
+    "q": "Which repeated addition sentence is equal to 4 × 3?",
+    "options": [
+      "3 + 3 + 3 + 3",
+      "4 + 4 + 4 + 4",
+      "4 + 3",
+      "3 + 4 + 3"
+    ],
+    "correct": 0,
+    "explanation": "4 × 3 means 4 groups of 3, which is 3 + 3 + 3 + 3 = 12."
+  },
+  {
+    "type": "quiz",
+    "subtitle": "Lesson G3-2 • Practice Question 2 of 3",
+    "q": "In the equation 6 × 5 = 30, what is the term for the number 30?",
+    "options": [
+      "Factor",
+      "Product",
+      "Sum",
+      "Difference"
+    ],
+    "correct": 1,
+    "explanation": "The answer to a multiplication problem is called the product."
+  },
+  {
+    "type": "quiz",
+    "subtitle": "Lesson G3-2 • Practice Question 3 of 3",
+    "q": "Leo has 5 boxes with 4 toys in each box. How many toys does he have in total?",
+    "options": [
+      "9 toys",
+      "15 toys",
+      "20 toys",
+      "25 toys"
+    ],
+    "correct": 2,
+    "explanation": "5 boxes with 4 toys each means 5 groups of 4, or 5 × 4 = 20 total toys."
+  }
+];
+
+    let currentStepIndex = 0;
+    let userScore = 0;
+    let selectedOptionIndex = null;
+    let hasAnsweredCurrent = false;
+
+    const totalQuizQuestions = lessonSteps.filter(s => s.type === 'quiz').length;
+    const maxPossibleScore = totalQuizQuestions * 10;
+
+    window.addEventListener('DOMContentLoaded', () => { renderStep(); });
+
+    function renderStep() {
+      if (currentStepIndex >= lessonSteps.length) { showCompletionScreen(); return; }
+      const step = lessonSteps[currentStepIndex];
+      document.getElementById('lessonProgressFill').style.width = `${(currentStepIndex / lessonSteps.length) * 100}%`;
+      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
+      const card = document.getElementById('lessonCardContent');
+
+      if (step.type === 'teach') {
+        card.innerHTML = `
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">${step.subtitle}</span>
+          <h2 style="margin: 0.5rem 0 1.25rem 0; font-size: 1.5rem;">${step.title}</h2>
+          <div class="teach-content">${step.content}</div>
+          <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
+          </div>
+        `;
+      } else {
+        let optionsHtml = '';
+        step.options.forEach((opt, idx) => {
+          optionsHtml += `<button type="button" class="option-btn" id="optBtn-${idx}" onclick="selectOption(${idx})">${String.fromCharCode(65 + idx)}. ${opt}</button>`;
+        });
+        card.innerHTML = `
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">${step.subtitle}</span>
+          <h2 style="margin: 0.5rem 0 1.5rem 0; font-size: 1.35rem;">${step.q}</h2>
+          <div class="options-grid">${optionsHtml}</div>
+          <div id="feedbackBox" class="feedback-box"></div>
+          <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+            <button type="button" class="btn btn-primary" id="actionBtn" onclick="handleQuizAction()" disabled style="opacity: 0.5;">Select an Option</button>
+          </div>
+        `;
+        selectedOptionIndex = null;
+        hasAnsweredCurrent = false;
+      }
+    }
+
+    function nextStep() { currentStepIndex++; renderStep(); }
+
+    function selectOption(idx) {
+      if (hasAnsweredCurrent) return;
+      selectedOptionIndex = idx;
+      document.querySelectorAll('.option-btn').forEach((btn, i) => {
+        if (i === idx) btn.classList.add('selected'); else btn.classList.remove('selected');
+      });
+      const actionBtn = document.getElementById('actionBtn');
+      actionBtn.disabled = false; actionBtn.style.opacity = '1'; actionBtn.textContent = 'Check Answer';
+    }
+
+    function handleQuizAction() {
+      if (selectedOptionIndex === null) return;
+      const step = lessonSteps[currentStepIndex];
+      const feedbackBox = document.getElementById('feedbackBox');
+      const actionBtn = document.getElementById('actionBtn');
+      hasAnsweredCurrent = true;
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(btn => btn.style.cursor = 'default');
+
+      if (selectedOptionIndex === step.correct) {
+        buttons[selectedOptionIndex].classList.add('correct');
+        feedbackBox.className = 'feedback-box correct';
+        feedbackBox.innerHTML = `<strong>Correct! 🎉</strong> ${step.explanation}`;
+        userScore += 10;
+      } else {
+        buttons[selectedOptionIndex].classList.add('incorrect');
+        buttons[step.correct].classList.add('correct');
+        feedbackBox.className = 'feedback-box incorrect';
+        feedbackBox.innerHTML = `<strong>Incorrect.</strong> ${step.explanation}`;
+      }
+      document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
+
+      if (currentStepIndex < lessonSteps.length - 1) {
+        actionBtn.textContent = 'Next Question →'; actionBtn.onclick = nextStep;
+      } else {
+        actionBtn.textContent = 'Complete Lesson 🏆'; actionBtn.onclick = showCompletionScreen;
+      }
+    }
+
+    async function showCompletionScreen() {
+      document.getElementById('lessonProgressFill').style.width = '100%';
+      if (userScore < maxPossibleScore) {
+        document.getElementById('lessonCardContent').innerHTML = `
+          <div style="text-align: center; padding: 2rem 0;">
+            <div style="font-size: 3.5rem; margin-bottom: 1rem;">🔄</div>
+            <h2 style="font-size: 2rem; color: var(--accent-rose);">Almost There!</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">You scored ${userScore} / ${maxPossibleScore} XP. You need 100% correct to pass!</p>
+            <button type="button" class="btn btn-primary" onclick="window.location.reload()">Try Again</button>
+          </div>`;
+        return;
+      }
+      if (typeof markLessonComplete === 'function') { await markLessonComplete('G3-2'); }
+      let completed = [];
+      try { completed = JSON.parse(localStorage.getItem('math_completed_lessons') || '[]'); } catch(e) {}
+      if (!completed.includes('G3-2')) { completed.push('G3-2'); localStorage.setItem('math_completed_lessons', JSON.stringify(completed)); }
+      localStorage.setItem('duo_just_unlocked', 'G3-2');
+
+      document.getElementById('lessonCardContent').innerHTML = `
+        <div style="text-align: center; padding: 2rem 0;">
+          <div style="font-size: 3.5rem; margin-bottom: 1rem;">🏆</div>
+          <h2 style="font-size: 2rem; color: var(--accent-green);">Lesson Completed!</h2>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Incredible job mastering this lesson!</p>
+          <a href="../math.html" class="btn btn-secondary">← Return to Math Path</a>
+        </div>`;
+    }
+  </script>
+</body>
+</html>

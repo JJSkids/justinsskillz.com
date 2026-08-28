@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lesson G3-1: Understanding 4-Digit Place Value - Justin's Skillz</title>
+  <title>Lesson G3-1: Place Value to 10,000 - Justin's Skillz</title>
 
   <link rel="icon" type="image/jpeg" href="../../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,7 +63,7 @@
         <img src="../../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
-      <a href="../math.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">&larr; Back to Math Path</a>
+      <a href="../math.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">← Back to Math Path</a>
     </div>
   </header>
 
@@ -79,54 +79,54 @@
     const lessonSteps = [
   {
     "type": "teach",
-    "title": "Welcome to the Thousands Place!",
+    "title": "Understanding 4-Digit Numbers",
     "subtitle": "Lesson G3-1 • Concept 1",
-    "content": "When we group <strong>10 hundreds</strong> together, we make <strong>1 thousand</strong>! A 4-digit number is made of <strong>Thousands</strong>, <strong>Hundreds</strong>, <strong>Tens</strong>, and <strong>Ones</strong>."
+    "content": "Every digit in a number has a value based on its position. In a 4-digit number like <strong>3,452</strong>, the place values from left to right are <strong>Thousands</strong>, <strong>Hundreds</strong>, <strong>Tens</strong>, and <strong>Ones</strong>.<br/><br/>• 3 is in the <strong>thousands</strong> place (3,000)<br/>• 4 is in the <strong>hundreds</strong> place (400)<br/>• 5 is in the <strong>tens</strong> place (50)<br/>• 2 is in the <strong>ones</strong> place (2)"
   },
   {
     "type": "teach",
-    "title": "Breaking Down 4-Digit Numbers",
+    "title": "Writing Numbers in Expanded Form",
     "subtitle": "Lesson G3-1 • Concept 2",
-    "content": "In the number <strong>3,452</strong>:<br>• The <strong>3</strong> is in the thousands place (3,000)<br>• The <strong>4</strong> is in the hundreds place (400)<br>• The <strong>5</strong> is in the tens place (50)<br>• The <strong>2</strong> is in the ones place (2)"
+    "content": "We can write numbers in <strong>expanded form</strong> to show the value of each digit added together!<br/><br/>For example, for the number <strong>4,285</strong>:<br/><strong>4,000 + 200 + 80 + 5 = 4,285</strong>"
   },
   {
     "type": "quiz",
     "subtitle": "Lesson G3-1 • Practice Question 1 of 3",
-    "q": "In the number 4,815, which digit is in the hundreds place?",
+    "q": "What is the value of the digit 7 in the number 5,742?",
     "options": [
-      "4",
-      "8",
-      "1",
-      "5"
+      "7",
+      "70",
+      "700",
+      "7,000"
     ],
-    "correct": 1,
-    "explanation": "In 4,815, the digit 4 is in the thousands place, 8 is in the hundreds place, 1 is in the tens place, and 5 is in the ones place."
+    "correct": 2,
+    "explanation": "The digit 7 is in the hundreds place, so its value is 7 hundreds, or 700."
   },
   {
     "type": "quiz",
     "subtitle": "Lesson G3-1 • Practice Question 2 of 3",
-    "q": "What is the value of the digit 6 in the number 6,209?",
+    "q": "Which of the following shows the number 3,094 written in expanded form?",
     "options": [
-      "60",
-      "600",
-      "6,000",
-      "6"
+      "3,000 + 900 + 4",
+      "3,000 + 90 + 4",
+      "300 + 90 + 4",
+      "3,000 + 9 + 40"
     ],
-    "correct": 2,
-    "explanation": "Because the digit 6 is in the thousands place, its total value is 6,000."
+    "correct": 1,
+    "explanation": "3,094 has 3 thousands (3,000), 0 hundreds, 9 tens (90), and 4 ones (4). Combined, it is 3,000 + 90 + 4."
   },
   {
     "type": "quiz",
     "subtitle": "Lesson G3-1 • Practice Question 3 of 3",
-    "q": "Which number represents 5 thousands, 0 hundreds, 3 tens, and 7 ones?",
+    "q": "What 4-digit number has 6 thousands, 4 hundreds, 0 tens, and 8 ones?",
     "options": [
-      "537",
-      "5,307",
-      "5,037",
-      "5,370"
+      "6,480",
+      "6,048",
+      "6,408",
+      "64,008"
     ],
     "correct": 2,
-    "explanation": "Putting the places together: 5 thousands (5,000) + 0 hundreds (0) + 3 tens (30) + 7 ones (7) = 5,037."
+    "explanation": "6 thousands (6,000) + 4 hundreds (400) + 0 tens (0) + 8 ones (8) equals 6,408."
   }
 ];
 
@@ -153,7 +153,7 @@
           <h2 style="margin: 0.5rem 0 1.25rem 0; font-size: 1.5rem;">${step.title}</h2>
           <div class="teach-content">${step.content}</div>
           <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
-            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue &rarr;</button>
+            <button type="button" class="btn btn-primary" onclick="nextStep()">Continue →</button>
           </div>
         `;
       } else {
@@ -199,7 +199,7 @@
       if (selectedOptionIndex === step.correct) {
         buttons[selectedOptionIndex].classList.add('correct');
         feedbackBox.className = 'feedback-box correct';
-        feedbackBox.innerHTML = `<strong>Correct!</strong> ${step.explanation}`;
+        feedbackBox.innerHTML = `<strong>Correct! 🎉</strong> ${step.explanation}`;
         userScore += 10;
       } else {
         buttons[selectedOptionIndex].classList.add('incorrect');
@@ -210,7 +210,7 @@
       document.getElementById('lessonScoreBadge').textContent = `Score: ${userScore} XP`;
 
       if (currentStepIndex < lessonSteps.length - 1) {
-        actionBtn.textContent = 'Next Question &rarr;'; actionBtn.onclick = nextStep;
+        actionBtn.textContent = 'Next Question →'; actionBtn.onclick = nextStep;
       } else {
         actionBtn.textContent = 'Complete Lesson 🏆'; actionBtn.onclick = showCompletionScreen;
       }
@@ -239,7 +239,7 @@
           <div style="font-size: 3.5rem; margin-bottom: 1rem;">🏆</div>
           <h2 style="font-size: 2rem; color: var(--accent-green);">Lesson Completed!</h2>
           <p style="color: var(--text-muted); margin-bottom: 1.5rem;">Incredible job mastering this lesson!</p>
-          <a href="../math.html" class="btn btn-secondary">&larr; Return to Math Path</a>
+          <a href="../math.html" class="btn btn-secondary">← Return to Math Path</a>
         </div>`;
     }
   </script>

@@ -710,4 +710,716 @@
     });
   </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Justin's Skillz</title>
+
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-rose: #e11d48;
+      --accent-amber: #d97706;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .main-container {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .profile-hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+      margin-bottom: 2rem;
+    }
+
+    .user-info-group {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .avatar-circle {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+      text-transform: uppercase;
+    }
+
+    .user-details h1 {
+      margin: 0 0 0.25rem 0;
+      font-size: 1.65rem;
+      font-weight: 800;
+    }
+
+    .badges-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.75rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-guest {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+    }
+    .badge-member {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent-green);
+      border: 1px solid var(--accent-green);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+    }
+    .stat-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+    .stat-val {
+      font-size: 1.6rem;
+      font-weight: 800;
+      line-height: 1.1;
+    }
+    .stat-lbl {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 0.2rem;
+    }
+
+    .dashboard-sections-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 900px) {
+      .dashboard-sections-grid {
+        grid-template-columns: 2fr 1fr;
+      }
+    }
+
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem;
+      margin-bottom: 2rem;
+    }
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin: 0 0 1.25rem 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .subject-progress-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .subject-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+    }
+    .subject-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    .progress-bar-container {
+      height: 10px;
+      background: var(--border-subtle);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      width: 0%;
+      transition: width 0.6s ease;
+    }
+
+    .achievements-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 1rem;
+    }
+    .achievement-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+      text-align: center;
+      opacity: 0.35;
+      filter: grayscale(1);
+      transition: all 0.3s ease;
+    }
+    .achievement-item.unlocked {
+      opacity: 1;
+      filter: grayscale(0);
+      border-color: var(--accent-purple);
+      background: rgba(168, 85, 247, 0.08);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
+    }
+    .achievement-icon { font-size: 2rem; margin-bottom: 0.4rem; }
+    .achievement-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .achievement-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.2; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.6rem 1.1rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      border: none;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary { background: var(--accent-purple); color: white; }
+    .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
+    .btn-secondary { background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-main); }
+    .btn-secondary:hover { border-color: var(--accent-purple); }
+    .btn-danger { background: rgba(244, 63, 94, 0.15); border: 1px solid var(--accent-rose); color: var(--accent-rose); }
+    .btn-danger:hover { background: var(--accent-rose); color: white; }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+      <div class="nav-menu">
+        <a href="../index.html" class="btn btn-secondary">🏠 Home</a>
+        <a href="math.html" class="btn btn-secondary">📐 Math Lab</a>
+        <div id="nav-auth-container">
+          <a href="login.html" class="btn btn-primary">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Profile Hero Card -->
+    <div class="profile-hero-card">
+      <div class="user-info-group">
+        <div class="avatar-circle" id="userAvatar">?</div>
+        <div class="user-details">
+          <h1 id="userNameDisplay">Checking Auth State...</h1>
+          <div class="badges-row">
+            <span class="status-badge badge-guest" id="accountBadge">Loading...</span>
+            <span class="status-badge" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple);" id="userIdBadge">ID: --</span>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+        <a href="math.html" class="btn btn-primary">Continue Learning →</a>
+        <button type="button" class="btn btn-secondary" onclick="copyUserId()">📋 Copy User ID</button>
+      </div>
+    </div>
+
+    <!-- Stats Summary Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple);">⚡</div>
+        <div>
+          <div class="stat-val" id="totalXpDisplay">0 XP</div>
+          <div class="stat-lbl">Total Experience</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: var(--accent-green);">📚</div>
+        <div>
+          <div class="stat-val" id="completedLessonsDisplay">0</div>
+          <div class="stat-lbl">Lessons Completed</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">🔥</div>
+        <div>
+          <div class="stat-val" id="dayStreakDisplay">1 Day</div>
+          <div class="stat-lbl">Active Day Streak</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">🏆</div>
+        <div>
+          <div class="stat-val" id="unlockedBadgesCount">0 / 6</div>
+          <div class="stat-lbl">Badges Unlocked</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dashboard Main Grid -->
+    <div class="dashboard-sections-grid">
+      
+      <div>
+        <div class="content-card">
+          <h2 class="card-title">🚀 Subject Curriculum Progress</h2>
+          <div class="subject-progress-list">
+
+            <!-- Math -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>📐 Mathematics</span>
+                <span id="mathPercentText" style="color: var(--accent-purple);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="mathProgressBar" style="background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="mathSubtext">0 / 10 Modules Completed</div>
+            </div>
+
+            <!-- Coding -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>💻 Web Development & Coding</span>
+                <span id="codingPercentText" style="color: var(--accent-blue);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="codingProgressBar" style="background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="codingSubtext">0 / 10 Modules Completed</div>
+            </div>
+
+            <!-- Science -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>🔬 Science & Tech</span>
+                <span id="sciencePercentText" style="color: var(--accent-green);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="scienceProgressBar" style="background: linear-gradient(90deg, var(--accent-green), var(--accent-amber));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="scienceSubtext">0 / 8 Modules Completed</div>
+            </div>
+
+            <!-- French -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>🇫🇷 French Language</span>
+                <span id="frenchPercentText" style="color: var(--accent-rose);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="frenchProgressBar" style="background: linear-gradient(90deg, var(--accent-rose), var(--accent-purple));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="frenchSubtext">0 / 8 Modules Completed</div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="content-card">
+          <h2 class="card-title">🎖️ Earned Badges & Milestones</h2>
+          <div class="achievements-grid">
+            
+            <div class="achievement-item" id="badge-first-step">
+              <div class="achievement-icon">🌱</div>
+              <div class="achievement-name">First Step</div>
+              <div class="achievement-desc">Complete 1 lesson in any subject</div>
+            </div>
+
+            <div class="achievement-item" id="badge-explorer">
+              <div class="achievement-icon">🧭</div>
+              <div class="achievement-name">Explorer</div>
+              <div class="achievement-desc">Study lessons in 2+ subjects</div>
+            </div>
+
+            <div class="achievement-item" id="badge-xp-master">
+              <div class="achievement-icon">⚡</div>
+              <div class="achievement-name">XP Master</div>
+              <div class="achievement-desc">Earn 100+ Total XP</div>
+            </div>
+
+            <div class="achievement-item" id="badge-streak-flame">
+              <div class="achievement-icon">🔥</div>
+              <div class="achievement-name">On Fire</div>
+              <div class="achievement-desc">Maintain a 3+ day streak</div>
+            </div>
+
+            <div class="achievement-item" id="badge-scholar">
+              <div class="achievement-icon">🎓</div>
+              <div class="achievement-name">Scholar</div>
+              <div class="achievement-desc">Complete 10+ total lessons</div>
+            </div>
+
+            <div class="achievement-item" id="badge-polymath">
+              <div class="achievement-icon">👑</div>
+              <div class="achievement-name">Polymath</div>
+              <div class="achievement-desc">Study lessons in all 4 subjects</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Account Management -->
+      <div>
+        <div class="content-card">
+          <h2 class="card-title">🔑 Account Session</h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem;" id="accountHelpText">
+            Synchronizing session details...
+          </p>
+
+          <div style="background: var(--bg-primary); padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-family: monospace; font-size: 0.82rem; margin-bottom: 1rem; word-break: break-all; text-align: center; color: var(--accent-purple);" id="userIdBox">
+            --
+          </div>
+
+          <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 0.75rem;" onclick="copyUserId()">
+            📋 Copy Active User Key
+          </button>
+          
+          <button type="button" class="btn btn-danger" style="width: 100%; font-size: 0.8rem;" onclick="resetCurrentUserData()">
+            🗑️ Reset My Account Progress
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
+
+    let supabaseClient = null;
+    let currentScope = "guest";
+
+    if (window.supabase && typeof window.supabase.createClient === 'function') {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      window.mySupabaseInstance = supabaseClient;
+    }
+
+    function getStorageKey(subKey) {
+      return `${currentScope}_${subKey}`;
+    }
+
+    function getCompletedList(subKey) {
+      try {
+        const primaryData = localStorage.getItem(getStorageKey(subKey));
+        if (primaryData) return JSON.parse(primaryData);
+        // Fallback check to un-scoped key if guest or legacy user
+        const legacyData = localStorage.getItem(subKey);
+        return legacyData ? JSON.parse(legacyData) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function calculateStreak() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const lastActiveKey = getStorageKey('last_active_date');
+      const streakKey = getStorageKey('streak_days');
+
+      const lastActive = localStorage.getItem(lastActiveKey);
+      let streak = parseInt(localStorage.getItem(streakKey) || '1', 10);
+
+      if (!lastActive) {
+        localStorage.setItem(lastActiveKey, todayStr);
+        localStorage.setItem(streakKey, '1');
+        return 1;
+      }
+
+      if (lastActive === todayStr) {
+        return streak;
+      }
+
+      const lastDate = new Date(lastActive);
+      const currentDate = new Date(todayStr);
+      const diffDays = Math.round((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        streak += 1;
+      } else if (diffDays > 1) {
+        streak = 1;
+      }
+
+      localStorage.setItem(lastActiveKey, todayStr);
+      localStorage.setItem(streakKey, streak.toString());
+      return streak;
+    }
+
+    function copyUserId() {
+      const activeId = document.getElementById('userIdBox').textContent;
+      navigator.clipboard.writeText(activeId).then(() => {
+        alert(`User ID copied: ${activeId}`);
+      }).catch(() => {
+        alert(`Your User ID: ${activeId}`);
+      });
+    }
+
+    function resetCurrentUserData() {
+      if (confirm("Reset progress for this active session? This cannot be undone.")) {
+        ['math_completed_lessons', 'coding_completed_lessons', 'science_completed_lessons', 'french_completed_lessons', 'completed_lessons', 'last_active_date', 'streak_days'].forEach(key => {
+          localStorage.removeItem(getStorageKey(key));
+          localStorage.removeItem(key);
+        });
+        window.location.reload();
+      }
+    }
+
+    async function handleSignOut() {
+      if (supabaseClient) {
+        await supabaseClient.auth.signOut();
+      }
+      window.location.reload();
+    }
+
+    async function initializeDashboard() {
+      let activeUser = null;
+
+      if (supabaseClient) {
+        try {
+          const { data } = await supabaseClient.auth.getSession();
+          if (data && data.session) {
+            activeUser = data.session.user;
+          }
+        } catch (e) {
+          console.warn("Supabase session check skipped:", e);
+        }
+      }
+
+      const navAuthContainer = document.getElementById('nav-auth-container');
+
+      if (activeUser) {
+        currentScope = `user_${activeUser.id}`;
+        const userEmail = activeUser.email || "Registered Member";
+        const displayName = activeUser.user_metadata?.full_name || activeUser.user_metadata?.name || userEmail.split('@')[0];
+
+        document.getElementById('userNameDisplay').textContent = displayName;
+        document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
+        document.getElementById('accountBadge').className = "status-badge badge-member";
+        document.getElementById('accountBadge').textContent = "✓ Signed In";
+        document.getElementById('userIdBadge').textContent = `UID: ${activeUser.id.substring(0, 8)}...`;
+        document.getElementById('userIdBox').textContent = activeUser.email;
+        document.getElementById('accountHelpText').textContent = `Signed in as ${userEmail}. Your progress is saved and linked directly to your Supabase account.`;
+
+        navAuthContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary">Sign Out</button>`;
+      } else {
+        let guestId = localStorage.getItem('justin_guest_id');
+        if (!guestId) {
+          guestId = `Guest-${Math.floor(1000 + Math.random() * 9000)}`;
+          localStorage.setItem('justin_guest_id', guestId);
+        }
+        currentScope = `guest_${guestId}`;
+
+        document.getElementById('userNameDisplay').textContent = "Guest Scholar";
+        document.getElementById('userAvatar').textContent = "G";
+        document.getElementById('accountBadge').className = "status-badge badge-guest";
+        document.getElementById('accountBadge').textContent = "⚡ Guest Session";
+        document.getElementById('userIdBadge').textContent = `ID: ${guestId}`;
+        document.getElementById('userIdBox').textContent = guestId;
+        document.getElementById('accountHelpText').textContent = "Browsing in Guest Mode. Sign in with your account to permanently sync your badges and streak.";
+
+        navAuthContainer.innerHTML = `<a href="login.html" class="btn btn-primary">Sign In</a>`;
+      }
+
+      renderUserProgress();
+    }
+
+    function renderUserProgress() {
+      const mathLessons = getCompletedList('math_completed_lessons');
+      const codingLessons = getCompletedList('coding_completed_lessons');
+      const scienceLessons = getCompletedList('science_completed_lessons');
+      const frenchLessons = getCompletedList('french_completed_lessons');
+      const generalLessons = getCompletedList('completed_lessons');
+
+      const mathCount = mathLessons.length;
+      const codingCount = codingLessons.length;
+      const scienceCount = scienceLessons.length;
+      const frenchCount = frenchLessons.length;
+      const totalLessons = mathCount + codingCount + scienceCount + frenchCount + generalLessons.length;
+
+      const streakDays = calculateStreak();
+      const totalXp = (totalLessons * 30) + (streakDays * 10);
+
+      document.getElementById('totalXpDisplay').textContent = `${totalXp} XP`;
+      document.getElementById('completedLessonsDisplay').textContent = totalLessons;
+      document.getElementById('dayStreakDisplay').textContent = `${streakDays} Day${streakDays > 1 ? 's' : ''}`;
+
+      const updateBar = (count, max, barId, textId, subId, name) => {
+        const pct = Math.min(100, Math.round((count / max) * 100));
+        document.getElementById(barId).style.width = `${pct}%`;
+        document.getElementById(textId).textContent = `${pct}%`;
+        document.getElementById(subId).textContent = `${count} / ${max} ${name} Completed`;
+      };
+
+      updateBar(mathCount, 10, 'mathProgressBar', 'mathPercentText', 'mathSubtext', 'Modules');
+      updateBar(codingCount, 10, 'codingProgressBar', 'codingPercentText', 'codingSubtext', 'Modules');
+      updateBar(scienceCount, 8, 'scienceProgressBar', 'sciencePercentText', 'scienceSubtext', 'Modules');
+      updateBar(frenchCount, 8, 'frenchProgressBar', 'frenchPercentText', 'frenchSubtext', 'Modules');
+
+      let unlockedCount = 0;
+      let activeSubjects = (mathCount > 0 ? 1 : 0) + (codingCount > 0 ? 1 : 0) + (scienceCount > 0 ? 1 : 0) + (frenchCount > 0 ? 1 : 0);
+
+      const unlockBadge = (id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.add('unlocked');
+          unlockedCount++;
+        }
+      };
+
+      if (totalLessons >= 1) unlockBadge('badge-first-step');
+      if (activeSubjects >= 2) unlockBadge('badge-explorer');
+      if (totalXp >= 100) unlockBadge('badge-xp-master');
+      if (streakDays >= 3) unlockBadge('badge-streak-flame');
+      if (totalLessons >= 10) unlockBadge('badge-scholar');
+      if (activeSubjects >= 4) unlockBadge('badge-polymath');
+
+      document.getElementById('unlockedBadgesCount').textContent = `${unlockedCount} / 6`;
+    }
+
+    window.addEventListener('DOMContentLoaded', initializeDashboard);
+  </script>
+</body>
 </html>

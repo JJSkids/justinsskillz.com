@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Justin's Skillz - Software Development Hub</title>
-  
+
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
+
   <link rel="stylesheet" href="src/styles.css">
   <script src="src/theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -51,6 +51,7 @@
       transition: background-color 0.3s ease, color 0.3s ease;
       overflow-x: hidden;
     }
+
     .app-header {
       background: var(--header-bg);
       backdrop-filter: blur(12px);
@@ -60,6 +61,7 @@
       z-index: 100;
       padding: 0.75rem 1.5rem;
     }
+
     .header-container {
       max-width: 1200px;
       margin: 0 auto;
@@ -67,6 +69,7 @@
       align-items: center;
       justify-content: space-between;
     }
+
     .logo {
       display: flex;
       align-items: center;
@@ -76,6 +79,7 @@
       font-weight: 800;
       font-size: 1.1rem;
     }
+
     .nav-logo-img {
       width: 38px;
       height: 38px;
@@ -83,16 +87,19 @@
       object-fit: cover;
       border: 2px solid var(--accent-purple);
     }
+
     .gradient-text {
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
+
     .nav-menu {
       display: flex;
       gap: 1.25rem;
       align-items: center;
     }
+
     .nav-link {
       color: var(--text-muted);
       text-decoration: none;
@@ -100,14 +107,17 @@
       font-size: 0.9rem;
       transition: color 0.2s;
     }
+
     .nav-link:hover, .nav-link.active {
       color: var(--text-main);
     }
+
     .main-container {
       max-width: 1100px;
       margin: 3rem auto;
       padding: 0 1.5rem;
     }
+
     .hero-section {
       text-align: center;
       padding: 3rem 1rem;
@@ -115,13 +125,15 @@
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      margin-bottom: 3rem;
+      margin-bottom: 2rem;
     }
+
     .hero-title {
       font-size: 2.5rem;
       font-weight: 800;
       margin-bottom: 1rem;
     }
+
     .hero-subtitle {
       font-size: 1.1rem;
       color: var(--text-muted);
@@ -129,11 +141,69 @@
       margin: 0 auto 2rem auto;
       line-height: 1.6;
     }
+
+    /* About Me Section Styling */
+    .about-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      margin-bottom: 3rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .about-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .about-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-purple);
+      object-fit: cover;
+    }
+
+    .about-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .about-text {
+      font-size: 1rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .about-tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .tag-pill {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.35rem 0.8rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
     .features-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 1.5rem;
     }
+
     .feature-card {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -146,21 +216,25 @@
       text-decoration: none;
       color: inherit;
     }
+
     .feature-card:hover {
       transform: translateY(-3px);
       border-color: var(--accent-purple);
     }
+
     .feature-title {
       font-size: 1.25rem;
       font-weight: 700;
       margin: 0;
     }
+
     .feature-desc {
       font-size: 0.95rem;
       color: var(--text-muted);
       line-height: 1.5;
       margin: 0;
     }
+
     .btn {
       display: inline-flex;
       align-items: center;
@@ -174,19 +248,23 @@
       transition: opacity 0.2s, transform 0.2s;
       text-decoration: none;
     }
+
     .btn:hover {
       opacity: 0.9;
       transform: translateY(-1px);
     }
+
     .btn-primary {
       background: var(--accent-purple);
       color: white;
     }
+
     .btn-secondary {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
     }
+
     .lang-select {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -196,10 +274,12 @@
       font-size: 0.85rem;
       font-family: inherit;
     }
+
     .lang-select:focus {
       outline: none;
       border-color: var(--accent-purple);
     }
+
     .app-footer {
       border-top: 1px solid var(--border-subtle);
       padding: 2rem 1rem;
@@ -209,7 +289,6 @@
       margin-top: 4rem;
     }
 
-    /* Mobile Responsive Header Fix */
     @media (max-width: 768px) {
       .header-container {
         flex-direction: column;
@@ -249,8 +328,7 @@
 
       <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
         <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
-          <option value="en">English</option>
-          <option value="fr">Français</option>
+          <option value="en">English</option>          <option value="fr">Français</option>
           <option value="es">Español</option>
         </select>
         <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
@@ -264,6 +342,8 @@
   </header>
 
   <main class="main-container">
+
+    <!-- Hero Section -->
     <section class="hero-section">
       <h1 class="hero-title" id="hero-title">Welcome to Justin's Skillz</h1>
       <p class="hero-subtitle" id="hero-subtitle">A personal software development portfolio, coding playground, and interactive educational hub featuring custom JavaScript web applications, front-end tools, and developer utilities.</p>
@@ -273,6 +353,26 @@
       </div>
     </section>
 
+    <!-- Brief Talk About Me Section -->
+    <section class="about-card">
+      <div class="about-header">
+        <img src="Justin's Skillz.jpg" alt="Justin Emuekhare" class="about-avatar">
+        <div>
+          <h2 class="about-title" id="about-title">👋 About the Creator</h2>
+        </div>
+      </div>
+      <p class="about-text" id="about-text">
+        Hi, I'm Justin! I'm a passionate developer and student dedicated to building interactive software, robotics projects, and web applications. Justin's Skillz is my personal digital hub designed to make learning programming, mathematics, and science engaging for everyone through hands-on tools, AI models, and custom modules.
+      </p>
+      <div class="about-tags">
+        <span class="tag-pill" id="about-tag-1">💻 Web Development</span>
+        <span class="tag-pill" id="about-tag-2">📐 Mathematics & Math Lab</span>
+        <span class="tag-pill" id="about-tag-3">🤖 Hardware & Robotics</span>
+        <span class="tag-pill" id="about-tag-4">⚡ Supabase & Backend</span>
+      </div>
+    </section>
+
+    <!-- Features Grid -->
     <div class="features-grid">
       <a href="AI.html" class="feature-card">
         <h3 class="feature-title" id="card-ai-title">🤖 Gemini AI Assistant</h3>
@@ -299,6 +399,7 @@
         <p class="feature-desc" id="card-dash-desc">Manage your account session, track project stats, and view your interactive profile settings.</p>
       </a>
     </div>
+
   </main>
 
   <footer class="app-footer">
@@ -329,6 +430,12 @@
         heroSubtitle: "A personal software development portfolio, coding playground, and interactive educational hub featuring custom JavaScript web applications, front-end tools, and developer utilities.",
         btnExploreAI: "Explore AI Assistant",
         btnPlayChess: "Play Chess AI",
+        aboutTitle: "👋 About the Creator",
+        aboutText: "Hi, I'm Justin! I'm a passionate developer and student dedicated to building interactive software, robotics projects, and web applications. Justin's Skillz is my personal digital hub designed to make learning programming, mathematics, and science engaging for everyone through hands-on tools, AI models, and custom modules.",
+        aboutTag1: "💻 Web Development",
+        aboutTag2: "📐 Mathematics & Math Lab",
+        aboutTag3: "🤖 Hardware & Robotics",
+        aboutTag4: "⚡ Supabase & Backend",
         cardAiTitle: "🤖 Gemini AI Assistant",
         cardAiDesc: "Chat with a Gemini-powered educational assistant configured to help with programming, math, and puzzles.",
         cardChessTitle: "♟️ Chess AI Training Lab",
@@ -353,6 +460,12 @@
         heroSubtitle: "Un portfolio de développement logiciel personnel, un terrain de jeu de code et un centre éducatif interactif proposant des applications Web JavaScript personnalisées et des outils de développement.",
         btnExploreAI: "Explorer l'Assistant IA",
         btnPlayChess: "Jouer contre l'IA d'Échecs",
+        aboutTitle: "👋 À propos du Créateur",
+        aboutText: "Bonjour, je m'appelle Justin ! Je suis un développeur et étudiant passionné par la création de logiciels interactifs, de projets de robotique et d'applications web. Justin's Skillz est mon centre numérique personnel conçu pour rendre l'apprentissage de la programmation, des mathématiques et des sciences captivant.",
+        aboutTag1: "💻 Développement Web",
+        aboutTag2: "📐 Mathématiques & Labo",
+        aboutTag3: "🤖 Matériel & Robotique",
+        aboutTag4: "⚡ Supabase & Backend",
         cardAiTitle: "🤖 Assistant IA Gemini",
         cardAiDesc: "Discutez avec un assistant pédagogique alimenté par Gemini configuré pour aider en programmation et en mathématiques.",
         cardChessTitle: "♟️ Labo d'Entraînement IA d'Échecs",
@@ -377,6 +490,12 @@
         heroSubtitle: "Un portafolio personal de desarrollo de software, un patio de recreo de código y un centro educativo interactivo con aplicaciones web de JavaScript personalizadas y herramientas de desarrollo.",
         btnExploreAI: "Explorar Asistente IA",
         btnPlayChess: "Jugar IA de Ajedrez",
+        aboutTitle: "👋 Sobre el Creador",
+        aboutText: "¡Hola, soy Justin! Soy un desarrollador y estudiante apasionado por la creación de software interactivo, proyectos de robótica y aplicaciones web. Justin's Skillz es mi centro digital personal diseñado para hacer que el aprendizaje de la programación, las matemáticas y las ciencias sea interactivo para todos.",
+        aboutTag1: "💻 Desarrollo Web",
+        aboutTag2: "📐 Matemáticas y Lab",
+        aboutTag3: "🤖 Hardware y Robótica",
+        aboutTag4: "⚡ Supabase y Backend",
         cardAiTitle: "🤖 Asistente IA Gemini",
         cardAiDesc: "Chatea con un asistente educativo impulsado por Gemini configurado para ayudar con programación y matemáticas.",
         cardChessTitle: "♟️ Laboratorio de IA de Ajedrez",
@@ -414,6 +533,14 @@
       document.getElementById('hero-subtitle').textContent = t.heroSubtitle;
       document.getElementById('btn-explore-ai').textContent = t.btnExploreAI;
       document.getElementById('btn-play-chess').textContent = t.btnPlayChess;
+      
+      document.getElementById('about-title').textContent = t.aboutTitle;
+      document.getElementById('about-text').textContent = t.aboutText;
+      document.getElementById('about-tag-1').textContent = t.aboutTag1;
+      document.getElementById('about-tag-2').textContent = t.aboutTag2;
+      document.getElementById('about-tag-3').textContent = t.aboutTag3;
+      document.getElementById('about-tag-4').textContent = t.aboutTag4;
+
       document.getElementById('card-ai-title').textContent = t.cardAiTitle;
       document.getElementById('card-ai-desc').textContent = t.cardAiDesc;
       document.getElementById('card-chess-title').textContent = t.cardChessTitle;

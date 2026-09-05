@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="styles.css">
   <script src="theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="math-tracker.js"></script>
+  <script src="math-tracker.js" defer></script>
 
   <style>
     :root, [data-theme="dark"] {
@@ -95,7 +95,7 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 1rem;
+      gap: 0.75rem;
     }
 
     .main-container {
@@ -135,11 +135,12 @@
       font-weight: 800;
       color: white;
       box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+      text-transform: uppercase;
     }
 
     .user-details h1 {
       margin: 0 0 0.25rem 0;
-      font-size: 1.75rem;
+      font-size: 1.65rem;
       font-weight: 800;
     }
 
@@ -234,30 +235,42 @@
       gap: 0.5rem;
     }
 
-    .progress-box {
+    /* Subject Breakdown Bars */
+    .subject-progress-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .subject-item {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
-      padding: 1.25rem;
-      margin-bottom: 1.5rem;
+      padding: 1rem;
+    }
+    .subject-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
     }
     .progress-bar-container {
-      height: 12px;
+      height: 10px;
       background: var(--border-subtle);
       border-radius: 99px;
       overflow: hidden;
-      margin: 0.75rem 0 0.5rem 0;
     }
     .progress-bar-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+      border-radius: 99px;
       width: 0%;
       transition: width 0.6s ease;
     }
 
+    /* Achievements */
     .achievements-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
       gap: 1rem;
     }
     .achievement-item {
@@ -266,19 +279,20 @@
       border-radius: var(--radius-md);
       padding: 1rem;
       text-align: center;
-      opacity: 0.4;
+      opacity: 0.35;
       filter: grayscale(1);
-      transition: all 0.3s;
+      transition: all 0.3s ease;
     }
     .achievement-item.unlocked {
       opacity: 1;
       filter: grayscale(0);
       border-color: var(--accent-purple);
-      background: rgba(168, 85, 247, 0.05);
+      background: rgba(168, 85, 247, 0.08);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);
     }
     .achievement-icon { font-size: 2rem; margin-bottom: 0.4rem; }
     .achievement-name { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.2rem; }
-    .achievement-desc { font-size: 0.75rem; color: var(--text-muted); }
+    .achievement-desc { font-size: 0.72rem; color: var(--text-muted); line-height: 1.2; }
 
     .btn {
       display: inline-flex;
@@ -306,13 +320,13 @@
 
   <header class="app-header">
     <div class="header-container">
-      <a href="index.html" class="logo">
+      <a href="../index.html" class="logo">
         <img src="Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
       <div class="nav-links">
-        <a href="math.html" class="btn btn-secondary">Math Path</a>
-        <a href="index.html" class="btn btn-secondary">Home</a>
+        <a href="../index.html" class="btn btn-secondary">🏠 Home</a>
+        <a href="math.html" class="btn btn-secondary">📐 Math Path</a>
       </div>
     </div>
   </header>
@@ -324,16 +338,16 @@
       <div class="user-info-group">
         <div class="avatar-circle" id="userAvatar">G</div>
         <div class="user-details">
-          <h1 id="userNameDisplay">Guest Scholar</h1>
+          <h1 id="userNameDisplay">Loading Account...</h1>
           <div class="badges-row">
             <span class="status-badge badge-guest" id="accountBadge">⚡ Guest Session</span>
-            <span class="status-badge" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple);" id="guestIdBadge">ID: Guest-#0000</span>
+            <span class="status-badge" style="background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid var(--accent-purple);" id="userIdBadge">ID: Guest-#0000</span>
           </div>
         </div>
       </div>
       <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
         <a href="math.html" class="btn btn-primary">Continue Learning →</a>
-        <button type="button" class="btn btn-secondary" onclick="copyGuestId()">📋 Copy ID</button>
+        <button type="button" class="btn btn-secondary" onclick="copyUserId()">📋 Copy ID</button>
       </div>
     </div>
 
@@ -359,89 +373,141 @@
         <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: var(--accent-amber);">🔥</div>
         <div>
           <div class="stat-val" id="dayStreakDisplay">1 Day</div>
-          <div class="stat-lbl">Active Streak</div>
+          <div class="stat-lbl">Active Day Streak</div>
         </div>
       </div>
 
       <div class="stat-card">
         <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: var(--accent-blue);">🏆</div>
         <div>
-          <div class="stat-val" id="unlockedBadgesCount">0 / 4</div>
+          <div class="stat-val" id="unlockedBadgesCount">0 / 6</div>
           <div class="stat-lbl">Badges Earned</div>
         </div>
       </div>
     </div>
 
-    <!-- Dashboard Main Layout -->
+    <!-- Main Dashboard Layout Grid -->
     <div class="dashboard-sections-grid">
       
-      <!-- Left Column: Progress & Activity -->
+      <!-- Left Column: Multi-Subject Progress & Achievements -->
       <div>
         <div class="content-card">
-          <h2 class="card-title">🚀 Math Path Progress</h2>
-          <div class="progress-box">
-            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
-              <span>Curriculum Mastery</span>
-              <span id="progressPercentText" style="color: var(--accent-purple);">0%</span>
+          <h2 class="card-title">🚀 Multi-Subject Curriculum Progress</h2>
+          <div class="subject-progress-list">
+
+            <!-- Math -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>📐 Mathematics</span>
+                <span id="mathPercentText" style="color: var(--accent-purple);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="mathProgressBar" style="background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="mathSubtext">0 / 10 Modules Completed</div>
             </div>
-            <div class="progress-bar-container">
-              <div class="progress-bar-fill" id="dashboardProgressBar"></div>
+
+            <!-- Web Dev / Coding -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>💻 Web Development & Coding</span>
+                <span id="codingPercentText" style="color: var(--accent-blue);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="codingProgressBar" style="background: linear-gradient(90deg, var(--accent-blue), var(--accent-green));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="codingSubtext">0 / 10 Modules Completed</div>
             </div>
-            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem;" id="progressSubtext">
-              Complete lessons in the Math Path to unlock your next rank!
+
+            <!-- Science -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>🔬 Science & Tech</span>
+                <span id="sciencePercentText" style="color: var(--accent-green);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="scienceProgressBar" style="background: linear-gradient(90deg, var(--accent-green), var(--accent-amber));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="scienceSubtext">0 / 8 Modules Completed</div>
             </div>
+
+            <!-- French -->
+            <div class="subject-item">
+              <div class="subject-header">
+                <span>🇫🇷 French Language</span>
+                <span id="frenchPercentText" style="color: var(--accent-rose);">0%</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="frenchProgressBar" style="background: linear-gradient(90deg, var(--accent-rose), var(--accent-purple));"></div>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.4rem;" id="frenchSubtext">0 / 8 Modules Completed</div>
+            </div>
+
           </div>
-          <a href="math.html" class="btn btn-primary" style="width: 100%;">Open Math Map</a>
         </div>
 
         <div class="content-card">
-          <h2 class="card-title">🎖️ Achievements</h2>
+          <h2 class="card-title">🎖️ Badges & Achievements</h2>
           <div class="achievements-grid">
+            
             <div class="achievement-item" id="badge-first-step">
               <div class="achievement-icon">🌱</div>
               <div class="achievement-name">First Step</div>
-              <div class="achievement-desc">Complete 1 lesson</div>
+              <div class="achievement-desc">Complete 1 lesson in any subject</div>
             </div>
 
-            <div class="achievement-item" id="badge-math-scholar">
-              <div class="achievement-icon">📐</div>
-              <div class="achievement-name">Math Scholar</div>
-              <div class="achievement-desc">Complete 3 lessons</div>
+            <div class="achievement-item" id="badge-explorer">
+              <div class="achievement-icon">🧭</div>
+              <div class="achievement-name">Explorer</div>
+              <div class="achievement-desc">Study lessons in 2+ subjects</div>
             </div>
 
             <div class="achievement-item" id="badge-xp-master">
               <div class="achievement-icon">⚡</div>
               <div class="achievement-name">XP Master</div>
-              <div class="achievement-desc">Earn 50+ XP</div>
+              <div class="achievement-desc">Earn 100+ Total XP</div>
             </div>
 
-            <div class="achievement-item" id="badge-champion">
-              <div class="achievement-icon">👑</div>
-              <div class="achievement-name">Champion</div>
-              <div class="achievement-desc">Complete 5+ lessons</div>
+            <div class="achievement-item" id="badge-streak-flame">
+              <div class="achievement-icon">🔥</div>
+              <div class="achievement-name">On Fire</div>
+              <div class="achievement-desc">Maintain a 3+ day streak</div>
             </div>
+
+            <div class="achievement-item" id="badge-scholar">
+              <div class="achievement-icon">🎓</div>
+              <div class="achievement-name">Scholar</div>
+              <div class="achievement-desc">Complete 10+ total lessons</div>
+            </div>
+
+            <div class="achievement-item" id="badge-polymath">
+              <div class="achievement-icon">👑</div>
+              <div class="achievement-name">Polymath</div>
+              <div class="achievement-desc">Study lessons in all 4 subjects</div>
+            </div>
+
           </div>
         </div>
       </div>
 
-      <!-- Right Column: Account & Sync -->
+      <!-- Right Column: Account Management & Data Controls -->
       <div>
         <div class="content-card">
-          <h2 class="card-title">🔑 Account & ID</h2>
+          <h2 class="card-title">🔑 Account & Sync</h2>
           <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 1.25rem;">
-            Your progress is saved locally using your unique Guest ID. You can copy this ID to keep track of your identity across sessions.
+            Your progress is synchronized locally and tied to your verified account or guest profile.
           </p>
 
-          <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-family: monospace; font-weight: 700; font-size: 0.95rem; margin-bottom: 1rem; text-align: center; color: var(--accent-purple);" id="guestIdBox">
+          <div style="background: var(--bg-primary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); font-family: monospace; font-weight: 700; font-size: 0.9rem; margin-bottom: 1rem; text-align: center; color: var(--accent-purple);" id="userIdBox">
             Guest-#0000
           </div>
 
-          <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 0.75rem;" onclick="copyGuestId()">
-            Copy Guest ID
+          <button type="button" class="btn btn-secondary" style="width: 100%; margin-bottom: 0.75rem;" onclick="copyUserId()">
+            📋 Copy ID / User Key
           </button>
           
           <button type="button" class="btn btn-danger" style="width: 100%; font-size: 0.8rem;" onclick="resetLocalData()">
-            Reset Local Progress
+            🗑️ Reset All Local Progress
           </button>
         </div>
       </div>
@@ -451,6 +517,7 @@
   </main>
 
   <script>
+    // Initialize or Retrieve Guest ID
     function getOrCreateGuestId() {
       let guestId = localStorage.getItem('justin_guest_id');
       if (!guestId) {
@@ -461,73 +528,185 @@
       return guestId;
     }
 
-    function copyGuestId() {
-      const guestId = getOrCreateGuestId();
-      navigator.clipboard.writeText(guestId).then(() => {
-        alert(`Copied Guest ID: ${guestId}`);
+    function copyUserId() {
+      const activeId = document.getElementById('userIdBox').textContent;
+      navigator.clipboard.writeText(activeId).then(() => {
+        alert(`Copied ID to clipboard: ${activeId}`);
       }).catch(() => {
-        alert(`Your Guest ID is: ${guestId}`);
+        alert(`Your ID is: ${activeId}`);
       });
     }
 
     function resetLocalData() {
-      if (confirm("Are you sure you want to reset your local lesson progress and XP?")) {
+      if (confirm("Are you sure you want to reset all lesson progress, XP, and streak data?")) {
         localStorage.removeItem('math_completed_lessons');
+        localStorage.removeItem('coding_completed_lessons');
+        localStorage.removeItem('science_completed_lessons');
+        localStorage.removeItem('french_completed_lessons');
+        localStorage.removeItem('completed_lessons');
+        localStorage.removeItem('user_last_active');
+        localStorage.removeItem('user_streak_days');
         window.location.reload();
       }
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      const guestId = getOrCreateGuestId();
-      
-      let completedLessons = [];
+    // Safely parse localStorage array
+    function getCompletedList(key) {
       try {
-        completedLessons = JSON.parse(localStorage.getItem('math_completed_lessons') || '[]');
-      } catch(e) {
-        completedLessons = [];
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    // Compute Streak
+    function getAndUpdateStreak() {
+      const today = new Date().toISOString().split('T')[0];
+      const lastActive = localStorage.getItem('user_last_active');
+      let streak = parseInt(localStorage.getItem('user_streak_days') || '1', 10);
+
+      if (!lastActive) {
+        localStorage.setItem('user_last_active', today);
+        localStorage.setItem('user_streak_days', '1');
+        return 1;
       }
 
-      const lessonCount = completedLessons.length;
-      const totalXp = lessonCount * 30; // 30 XP per completed lesson module
-      const totalCurriculumLessons = 10;
-      const progressPercent = Math.min(100, Math.round((lessonCount / totalCurriculumLessons) * 100));
+      if (lastActive === today) {
+        return streak;
+      }
 
-      // Update Header/Profile details
-      document.getElementById('userNameDisplay').textContent = "Guest Scholar";
-      document.getElementById('userAvatar').textContent = "G";
-      document.getElementById('guestIdBadge').textContent = `ID: ${guestId}`;
-      document.getElementById('guestIdBox').textContent = guestId;
+      const lastDate = new Date(lastActive);
+      const currentDate = new Date(today);
+      const diffTime = Math.abs(currentDate - lastDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      // Update Stats
+      if (diffDays === 1) {
+        streak += 1;
+      } else if (diffDays > 1) {
+        streak = 1;
+      }
+
+      localStorage.setItem('user_last_active', today);
+      localStorage.setItem('user_streak_days', streak.toString());
+      return streak;
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. Determine User State (Supabase Auth vs Guest)
+      const guestId = getOrCreateGuestId();
+      let currentUser = null;
+
+      if (window.supabase && typeof window.supabase.createClient === 'function' && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+        try {
+          const client = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+          const { data } = await client.auth.getUser();
+          currentUser = data?.user || null;
+        } catch (err) {
+          currentUser = null;
+        }
+      }
+
+      // 2. Render User Details
+      if (currentUser) {
+        const userName = currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || "Scholar";
+        const userEmail = currentUser.email || "Registered Member";
+
+        document.getElementById('userNameDisplay').textContent = userName;
+        document.getElementById('userAvatar').textContent = userName.charAt(0).toUpperCase();
+        document.getElementById('accountBadge').className = "status-badge badge-member";
+        document.getElementById('accountBadge').textContent = "✓ Verified Member";
+        document.getElementById('userIdBadge').textContent = userEmail;
+        document.getElementById('userIdBox').textContent = userEmail;
+      } else {
+        document.getElementById('userNameDisplay').textContent = "Guest Scholar";
+        document.getElementById('userAvatar').textContent = "G";
+        document.getElementById('accountBadge').className = "status-badge badge-guest";
+        document.getElementById('accountBadge').textContent = "⚡ Guest Session";
+        document.getElementById('userIdBadge').textContent = `ID: ${guestId}`;
+        document.getElementById('userIdBox').textContent = guestId;
+      }
+
+      // 3. Harvest Multi-Subject Progress
+      const mathLessons = getCompletedList('math_completed_lessons');
+      const codingLessons = getCompletedList('coding_completed_lessons');
+      const scienceLessons = getCompletedList('science_completed_lessons');
+      const frenchLessons = getCompletedList('french_completed_lessons');
+      const generalLessons = getCompletedList('completed_lessons');
+
+      const mathCount = mathLessons.length;
+      const codingCount = codingLessons.length;
+      const scienceCount = scienceLessons.length;
+      const frenchCount = frenchLessons.length;
+      const totalLessonsCount = mathCount + codingCount + scienceCount + frenchCount + generalLessons.length;
+
+      // 4. Calculate XP & Streak
+      const streakDays = getAndUpdateStreak();
+      const totalXp = (totalLessonsCount * 30) + (streakDays * 10); // 30 XP per lesson + 10 XP per streak day
+
+      // 5. Update Stat Displays
       document.getElementById('totalXpDisplay').textContent = `${totalXp} XP`;
-      document.getElementById('completedLessonsDisplay').textContent = lessonCount;
-      document.getElementById('dayStreakDisplay').textContent = `1 Day`;
+      document.getElementById('completedLessonsDisplay').textContent = totalLessonsCount;
+      document.getElementById('dayStreakDisplay').textContent = `${streakDays} Day${streakDays > 1 ? 's' : ''}`;
 
-      // Update Progress
-      document.getElementById('dashboardProgressBar').style.width = `${progressPercent}%`;
-      document.getElementById('progressPercentText').textContent = `${progressPercent}%`;
-      document.getElementById('progressSubtext').textContent = `${lessonCount} of ${totalCurriculumLessons} lessons completed. Keep going!`;
+      // 6. Update Subject Progress Bars
+      const updateSubjectUI = (count, total, barId, textId, subtextId, name) => {
+        const pct = Math.min(100, Math.round((count / total) * 100));
+        document.getElementById(barId).style.width = `${pct}%`;
+        document.getElementById(textId).textContent = `${pct}%`;
+        document.getElementById(subtextId).textContent = `${count} / ${total} ${name} Completed`;
+      };
 
-      // Check Badges
+      updateSubjectUI(mathCount, 10, 'mathProgressBar', 'mathPercentText', 'mathSubtext', 'Modules');
+      updateSubjectUI(codingCount, 10, 'codingProgressBar', 'codingPercentText', 'codingSubtext', 'Modules');
+      updateSubjectUI(scienceCount, 8, 'scienceProgressBar', 'sciencePercentText', 'scienceSubtext', 'Modules');
+      updateSubjectUI(frenchCount, 8, 'frenchProgressBar', 'frenchPercentText', 'frenchSubtext', 'Modules');
+
+      // 7. Evaluate and Unlock Badges
       let unlockedCount = 0;
-      if (lessonCount >= 1) {
+      let activeSubjects = 0;
+      if (mathCount > 0) activeSubjects++;
+      if (codingCount > 0) activeSubjects++;
+      if (scienceCount > 0) activeSubjects++;
+      if (frenchCount > 0) activeSubjects++;
+
+      // Badge 1: First Step
+      if (totalLessonsCount >= 1) {
         document.getElementById('badge-first-step').classList.add('unlocked');
         unlockedCount++;
       }
-      if (lessonCount >= 3) {
-        document.getElementById('badge-math-scholar').classList.add('unlocked');
-        unlockedCount++;
-      }
-      if (totalXp >= 50) {
-        document.getElementById('badge-xp-master').classList.add('unlocked');
-        unlockedCount++;
-      }
-      if (lessonCount >= 5) {
-        document.getElementById('badge-champion').classList.add('unlocked');
+
+      // Badge 2: Explorer (2+ subjects)
+      if (activeSubjects >= 2) {
+        document.getElementById('badge-explorer').classList.add('unlocked');
         unlockedCount++;
       }
 
-      document.getElementById('unlockedBadgesCount').textContent = `${unlockedCount} / 4`;
+      // Badge 3: XP Master (100+ XP)
+      if (totalXp >= 100) {
+        document.getElementById('badge-xp-master').classList.add('unlocked');
+        unlockedCount++;
+      }
+
+      // Badge 4: On Fire (3+ day streak)
+      if (streakDays >= 3) {
+        document.getElementById('badge-streak-flame').classList.add('unlocked');
+        unlockedCount++;
+      }
+
+      // Badge 5: Scholar (10+ total lessons)
+      if (totalLessonsCount >= 10) {
+        document.getElementById('badge-scholar').classList.add('unlocked');
+        unlockedCount++;
+      }
+
+      // Badge 6: Polymath (All 4 subjects)
+      if (activeSubjects >= 4) {
+        document.getElementById('badge-polymath').classList.add('unlocked');
+        unlockedCount++;
+      }
+
+      document.getElementById('unlockedBadgesCount').textContent = `${unlockedCount} / 6`;
     });
   </script>
 </body>

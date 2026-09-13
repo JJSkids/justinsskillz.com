@@ -193,22 +193,6 @@
       font-size: 0.9rem;
       line-height: 1.5;
     }
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-    }
-    .stat-item {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      padding: 0.5rem;
-      border-radius: 6px;
-      display: flex;
-      flex-direction: column;
-    }
-    .stat-label { color: var(--text-muted); font-size: 0.75rem; }
-    .stat-value { font-weight: 700; font-size: 1rem; }
     .lang-select {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
@@ -494,13 +478,13 @@
     if (!window.mySupabaseInstance && window.supabase) {
       window.mySupabaseInstance = window.supabase.createClient(
         'https://iifhzdioridrmbcflswa.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmltY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-...'
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmltY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY4MDkwNX0.Pq5n0mIl-3lBli16OVrl-...' // Ensure full Anon Key here
       );
     }
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    // Web Audio Sound Generator
+    // Audio Engine
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playTone(freq, type, duration) {
       try {
@@ -525,79 +509,16 @@
       const toast = document.getElementById('toastNotification');
       toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2500);
+      setTimeout(() => toast.classList.remove('show'), 3000);
     }
 
     function openModal(id) { document.getElementById(id).classList.add('active'); }
     function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
     const translations = {
-      en: {
-        title: "Chess AI & Online Multiplayer Lab",
-        statusGame: "Game Status:",
-        newGame: "New Game vs AI",
-        undoBtn: "Undo",
-        redoBtn: "Redo",
-        navHome: "Home",
-        navDashboard: "Dashboard",
-        navMath: "Math Lab",
-        signIn: "Sign In",
-        signOut: "Sign Out",
-        langLabel: "Language / Langue / Idioma",
-        difficultyLabel: "AI Engine Level",
-        historyLabel: "Move History (PGN)",
-        casual: "Casual Justin",
-        intermediate: "Intermediate Justin",
-        advanced: "Advanced Justin",
-        elite: "ELITE Grandmaster",
-        adaptive: "Adaptive Justin ⚡",
-        copiedPgn: "PGN copied to clipboard!",
-        copiedFen: "FEN copied to clipboard!"
-      },
-      fr: {
-        title: "Laboratoire d'Échecs IA et Multijoueur",
-        statusGame: "État du Jeu :",
-        newGame: "Nouvelle Partie vs IA",
-        undoBtn: "Annuler",
-        redoBtn: "Rétablir",
-        navHome: "Accueil",
-        navDashboard: "Tableau de bord",
-        navMath: "Labo de Math",
-        signIn: "Se connecter",
-        signOut: "Se déconnecter",
-        langLabel: "Langue / Language / Idioma",
-        difficultyLabel: "Niveau de l'IA",
-        historyLabel: "Historique des Coups (PGN)",
-        casual: "Justin Décontracté",
-        intermediate: "Justin Intermédiaire",
-        advanced: "Justin Avancé",
-        elite: "Grand Maître ÉLITE",
-        adaptive: "Justin Adaptatif ⚡",
-        copiedPgn: "PGN copié dans le presse-papiers !",
-        copiedFen: "FEN copié dans le presse-papiers !"
-      },
-      es: {
-        title: "Laboratorio de IA y Multijugador de Ajedrez",
-        statusGame: "Estado del Juego:",
-        newGame: "Nueva Partida vs IA",
-        undoBtn: "Deshacer",
-        redoBtn: "Rehacer",
-        navHome: "Inicio",
-        navDashboard: "Panel",
-        navMath: "Lab de Matemáticas",
-        signIn: "Iniciar Sesión",
-        signOut: "Cerrar Sesión",
-        langLabel: "Idioma / Language / Langue",
-        difficultyLabel: "Nivel de la IA",
-        historyLabel: "Historial de Movimientos (PGN)",
-        casual: "Justin Casual",
-        intermediate: "Justin Intermedio",
-        advanced: "Justin Avanzado",
-        elite: "Gran Maestro ÉLITE",
-        adaptive: "Justin Adaptativo ⚡",
-        copiedPgn: "¡PGN copiado al portapapeles!",
-        copiedFen: "¡FEN copiado al portapapeles!"
-      }
+      en: { title: "Chess AI & Online Multiplayer Lab", statusGame: "Game Status:", newGame: "New Game vs AI", undoBtn: "Undo", redoBtn: "Redo", navHome: "Home", navDashboard: "Dashboard", navMath: "Math Lab", signIn: "Sign In", signOut: "Sign Out", langLabel: "Language / Langue / Idioma", difficultyLabel: "AI Engine Level", historyLabel: "Move History (PGN)", casual: "Casual Justin", intermediate: "Intermediate Justin", advanced: "Advanced Justin", elite: "ELITE Grandmaster", adaptive: "Adaptive Justin ⚡", copiedPgn: "PGN copied to clipboard!", copiedFen: "FEN copied to clipboard!" },
+      fr: { title: "Laboratoire d'Échecs IA et Multijoueur", statusGame: "État du Jeu :", newGame: "Nouvelle Partie vs IA", undoBtn: "Annuler", redoBtn: "Rétablir", navHome: "Accueil", navDashboard: "Tableau de bord", navMath: "Labo de Math", signIn: "Se connecter", signOut: "Se déconnecter", langLabel: "Langue / Language / Idioma", difficultyLabel: "Niveau de l'IA", historyLabel: "Historique des Coups (PGN)", casual: "Justin Décontracté", intermediate: "Justin Intermédiaire", advanced: "Justin Avancé", elite: "Grand Maître ÉLITE", adaptive: "Justin Adaptatif ⚡", copiedPgn: "PGN copié dans le presse-papiers !", copiedFen: "FEN copié dans le presse-papiers !" },
+      es: { title: "Laboratorio de IA y Multijugador de Ajedrez", statusGame: "Estado del Juego:", newGame: "Nueva Partida vs IA", undoBtn: "Deshacer", redoBtn: "Rehacer", navHome: "Inicio", navDashboard: "Panel", navMath: "Lab de Matemáticas", signIn: "Iniciar Sesión", signOut: "Cerrar Sesión", langLabel: "Idioma / Language / Langue", difficultyLabel: "Nivel de la IA", historyLabel: "Historial de Movimientos (PGN)", casual: "Justin Casual", intermediate: "Justin Intermedio", advanced: "Justin Avanzado", elite: "Gran Maestro ÉLITE", adaptive: "Justin Adaptativo ⚡", copiedPgn: "¡PGN copiado al portapapeles!", copiedFen: "¡FEN copiado al portapapeles!" }
     };
 
     let currentGameInstance = null;
@@ -606,15 +527,13 @@
     let currentUsername = 'Player';
     let currentDifficulty = 'casual';
 
-    // Multiplayer & Realtime Global Variables
     let currentRoomId = null;
-    let playerColor = 'w'; // 'w' or 'b'
+    let playerColor = 'w';
     let isMultiplayer = false;
     let globalPresenceChannel = null;
     let roomRealtimeChannel = null;
     let onlineUsersMap = {};
 
-    // Replay System Globals
     let replayChess = new Chess();
     let replayBoardObj = null;
     let replayMoves = [];
@@ -642,9 +561,7 @@
     function changeLanguage(lang) {
       localStorage.setItem('site_lang', lang);
       applyLanguage(lang);
-      if (currentGameInstance && typeof currentGameInstance.updateStatus === 'function') {
-        currentGameInstance.updateStatus();
-      }
+      if (currentGameInstance && typeof currentGameInstance.updateStatus === 'function') currentGameInstance.updateStatus();
     }
 
     function changeDifficulty(diff) {
@@ -692,7 +609,7 @@
         } else {
           let cachedGuest = sessionStorage.getItem('justin_guest_id');
           if (!cachedGuest) {
-            cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
+            cachedGuest = `Guest_${Math.floor(1000 + Math.random() * 9000)}`;
             sessionStorage.setItem('justin_guest_id', cachedGuest);
           }
           currentUsername = cachedGuest;
@@ -702,7 +619,7 @@
         }
         setupPresenceChannel();
       } catch (err) {
-        currentUsername = sessionStorage.getItem('justin_guest_id') || `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
+        currentUsername = sessionStorage.getItem('justin_guest_id') || `Guest_${Math.floor(1000 + Math.random() * 9000)}`;
         currentUserId = currentUsername;
         document.getElementById('session-info').textContent = `Player: ${currentUsername}`;
         setupPresenceChannel();
@@ -710,13 +627,11 @@
     }
 
     async function handleSignOut() {
-      if (window.mySupabaseInstance) {
-        await window.mySupabaseInstance.auth.signOut();
-      }
+      if (window.mySupabaseInstance) await window.mySupabaseInstance.auth.signOut();
       window.location.reload();
     }
 
-    // --- SUPABASE REALTIME PRESENCE & CHALLENGE SYSTEM ---
+    // --- REALTIME LOBBY PRESENCE FIX ---
     function setupPresenceChannel() {
       if (!window.mySupabaseInstance) return;
 
@@ -724,18 +639,25 @@
         config: { presence: { key: currentUserId } }
       });
 
-      globalPresenceChannel
-        .on('presence', { event: 'sync' }, () => {
-          const state = globalPresenceChannel.presenceState();
-          onlineUsersMap = {};
-          Object.keys(state).forEach(key => {
-            const userObj = state[key][0];
-            if (userObj && userObj.user_id !== currentUserId) {
+      const updatePresenceMap = () => {
+        const state = globalPresenceChannel.presenceState();
+        onlineUsersMap = {};
+        Object.keys(state).forEach(key => {
+          const presences = state[key];
+          if (presences && presences.length > 0) {
+            const userObj = presences[0];
+            if (userObj.user_id !== currentUserId) {
               onlineUsersMap[userObj.user_id] = userObj.username;
             }
-          });
-          renderOnlinePlayers();
-        })
+          }
+        });
+        renderOnlinePlayers();
+      };
+
+      globalPresenceChannel
+        .on('presence', { event: 'sync' }, updatePresenceMap)
+        .on('presence', { event: 'join' }, updatePresenceMap)
+        .on('presence', { event: 'leave' }, updatePresenceMap)
         .on('broadcast', { event: 'chess_challenge' }, payload => {
           if (payload.toUserId === currentUserId) {
             playTone(880, 'sine', 0.2);
@@ -766,7 +688,7 @@
       const container = document.getElementById('onlinePlayersList');
       const keys = Object.keys(onlineUsersMap);
       if (keys.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 0.5rem;">No other players online right now. Invite a friend!</div>`;
+        container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 0.5rem;">No other players online right now.</div>`;
         return;
       }
       container.innerHTML = keys.map(uid => `
@@ -837,21 +759,24 @@
       }
     }
 
-    // --- SUPABASE GAME STORAGE & REPLAY SYSTEM ---
+    // --- SUPABASE GAME STORAGE & ERROR LOGGING ---
     async function saveGameToSupabase(whitePlayer, blackPlayer, winner, pgn, fen) {
       if (!window.mySupabaseInstance) return;
-      try {
-        await window.mySupabaseInstance.from('chess_games').insert([{
-          white_player: whitePlayer,
-          black_player: blackPlayer,
-          winner: winner,
-          pgn: pgn,
-          fen: fen,
-          created_at: new Date()
-        }]);
+
+      const { data, error } = await window.mySupabaseInstance.from('chess_games').insert([{
+        white_player: whitePlayer,
+        black_player: blackPlayer,
+        winner: winner,
+        pgn: pgn,
+        fen: fen,
+        created_at: new Date().toISOString()
+      }]);
+
+      if (error) {
+        console.error("Supabase Game Save Error:", error);
+        showToast("Database Save Error: Check SQL Table Setup!");
+      } else {
         showToast("Match saved to Supabase database!");
-      } catch (err) {
-        console.warn("Save game err:", err);
       }
     }
 
@@ -866,10 +791,16 @@
           .from('chess_games')
           .select('*')
           .order('created_at', { ascending: false })
-          .limit(20);
+          .limit(25);
 
-        if (error || !data || data.length === 0) {
-          container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">No saved matches found yet. Play a game to store history!</div>`;
+        if (error) {
+          console.error("Fetch games error:", error);
+          container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">Error fetching matches. Please ensure SQL table is created.</div>`;
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">No saved matches found. Complete a match to store history!</div>`;
           return;
         }
 
@@ -883,7 +814,7 @@
           </div>
         `).join('');
       } catch (err) {
-        container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">Failed to fetch saved games.</div>`;
+        container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">Failed to load saved games.</div>`;
       }
     }
 
@@ -967,7 +898,7 @@
       }
     }
 
-    // --- AI ENGINE MINIMAX ALGORITHM ---
+    // --- AI MINIMAX ALGORITHM ---
     const pieceValues = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
     const pst = {
       p: [[ 0, 0, 0, 0, 0, 0, 0, 0],[50,50,50,50,50,50,50,50],[10,10,20,30,30,20,10,10],[ 5, 5,10,25,25,10, 5, 5],[ 0, 0, 0,20,20, 0, 0, 0],[ 5,-5,-10, 0, 0,-10,-5, 5],[ 5,10,10,-20,-20,10,10, 5],[ 0, 0, 0, 0, 0, 0, 0, 0]],
@@ -1045,7 +976,7 @@
       return bestMove;
     }
 
-    // --- MAIN CHESS GAME INITIALIZATION ---
+    // --- MAIN GAME INIT ---
     function initChessGame() {
       var game = new Chess();
       var statusEl = $('#status');
@@ -1060,16 +991,14 @@
         if (possibleMoves.length === 0) return;
 
         let chosenMove = null;
-        let effectiveDiff = currentDifficulty;
-
-        if (effectiveDiff === 'casual') {
+        if (currentDifficulty === 'casual') {
           chosenMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-        } else if (effectiveDiff === 'intermediate') {
+        } else if (currentDifficulty === 'intermediate') {
           let priority = game.moves({ verbose: true }).filter(m => m.captured);
           chosenMove = priority.length > 0 && Math.random() < 0.6 ? priority[0].san : possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-        } else if (effectiveDiff === 'advanced') {
+        } else if (currentDifficulty === 'advanced') {
           chosenMove = getBestMove(game, 2);
-        } else if (effectiveDiff === 'elite' || effectiveDiff === 'adaptive') {
+        } else if (currentDifficulty === 'elite' || currentDifficulty === 'adaptive') {
           chosenMove = getBestMove(game, 3);
         }
 
@@ -1092,18 +1021,12 @@
           if ((playerColor === 'w' && game.turn() !== 'w') || (playerColor === 'b' && game.turn() !== 'b')) return false;
           if ((playerColor === 'w' && piece.search(/^b/) !== -1) || (playerColor === 'b' && piece.search(/^w/) !== -1)) return false;
         } else {
-          if (game.turn() !== 'w') return false;
-          if (piece.search(/^b/) !== -1) return false;
+          if (game.turn() !== 'w' || piece.search(/^b/) !== -1) return false;
         }
       }
 
       function onDrop(source, target) {
-        var move = game.move({
-          from: source,
-          to: target,
-          promotion: 'q'
-        });
-
+        var move = game.move({ from: source, to: target, promotion: 'q' });
         if (move === null) return 'snapback';
 
         redoStack = [];
@@ -1138,7 +1061,6 @@
         chessBoardObj.position(game.fen());
       }
 
-      // Click to move support
       $('#myBoard').off('click').on('click', '.square-55d63', function () {
         if (game.game_over()) return;
         if (isMultiplayer && game.turn() !== playerColor) return;
@@ -1302,20 +1224,15 @@
       $('#copyPgnBtn').off('click').on('click', function () {
         const lang = localStorage.getItem('site_lang') || 'en';
         const t = translations[lang] || translations.en;
-        navigator.clipboard.writeText(game.pgn() || "No moves played yet.").then(() => {
-          showToast(t.copiedPgn);
-        });
+        navigator.clipboard.writeText(game.pgn() || "No moves played yet.").then(() => showToast(t.copiedPgn));
       });
 
       $('#copyFenBtn').off('click').on('click', function () {
         const lang = localStorage.getItem('site_lang') || 'en';
         const t = translations[lang] || translations.en;
-        navigator.clipboard.writeText(game.fen()).then(() => {
-          showToast(t.copiedFen);
-        });
+        navigator.clipboard.writeText(game.fen()).then(() => showToast(t.copiedFen));
       });
 
-      // Multiplayer Room Loader
       window.startMultiplayerMatch = function(roomId, color, opponentName) {
         isMultiplayer = true;
         playerColor = color;

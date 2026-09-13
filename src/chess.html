@@ -230,6 +230,23 @@
       border: 1px solid var(--border-subtle);
       border-radius: 6px;
     }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--accent-purple);
+      color: #fff;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+      pointer-events: none;
+    }
+    .toast.show { opacity: 1; }
     .app-footer {
       border-top: 1px solid var(--border-subtle);
       padding: 2rem 1rem;
@@ -301,7 +318,13 @@
           </div>
 
           <div class="history-box">
-            <span id="history-label" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">Move History (PGN)</span>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="history-label" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">Move History (PGN)</span>
+              <div style="display: flex; gap: 0.3rem;">
+                <button type="button" id="copyPgnBtn" class="btn btn-secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; width: auto;">Copy PGN</button>
+                <button type="button" id="copyFenBtn" class="btn btn-secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; width: auto;">Copy FEN</button>
+              </div>
+            </div>
             <div id="moveHistoryLog" class="history-log">No moves yet.</div>
           </div>
 
@@ -325,12 +348,14 @@
     </div>
   </main>
 
+  <div id="toastNotification" class="toast">Copied to clipboard!</div>
+
   <footer class="app-footer">
     <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
   </footer>
 
   <script>
-    if (!window.mySupabaseInstance) {
+    if (!window.mySupabaseInstance && window.supabase) {
       window.mySupabaseInstance = window.supabase.createClient(
         'https://iifhzdioridrmbcflswa.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-...'
@@ -360,6 +385,13 @@
     const playCaptureSound = () => playTone(220, 'triangle', 0.1);
     const playCheckSound = () => { playTone(659.25, 'sawtooth', 0.15); setTimeout(() => playTone(880, 'sawtooth', 0.15), 80); };
 
+    function showToast(msg) {
+      const toast = document.getElementById('toastNotification');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+
     const translations = {
       en: {
         title: "Chess AI Training Lab",
@@ -380,7 +412,9 @@
         intermediate: "Intermediate Justin",
         advanced: "Advanced Justin",
         elite: "ELITE Grandmaster",
-        adaptive: "Adaptive Justin ⚡"
+        adaptive: "Adaptive Justin ⚡",
+        copiedPgn: "PGN copied to clipboard!",
+        copiedFen: "FEN copied to clipboard!"
       },
       fr: {
         title: "Laboratoire d'Entraînement IA d'Échecs",
@@ -401,7 +435,9 @@
         intermediate: "Justin Intermédiaire",
         advanced: "Justin Avancé",
         elite: "Grand Maître ÉLITE",
-        adaptive: "Justin Adaptatif ⚡"
+        adaptive: "Justin Adaptatif ⚡",
+        copiedPgn: "PGN copié dans le presse-papiers !",
+        copiedFen: "FEN copié dans le presse-papiers !"
       },
       es: {
         title: "Laboratorio de IA de Ajedrez",
@@ -422,7 +458,9 @@
         intermediate: "Justin Intermedio",
         advanced: "Justin Avanzado",
         elite: "Gran Maestro ÉLITE",
-        adaptive: "Justin Adaptativo ⚡"
+        adaptive: "Justin Adaptativo ⚡",
+        copiedPgn: "¡PGN copiado al portapapeles!",
+        copiedFen: "¡FEN copiado al portapapeles!"
       }
     };
 
@@ -463,7 +501,7 @@
     }
 
     function applyLanguage(lang) {
-      const t = translations[lang];
+      const t = translations[lang] || translations.en;
       document.getElementById('chess-title').textContent = t.title;
       document.getElementById('status-label').textContent = t.statusGame;
       document.getElementById('startBtn').textContent = t.newGame;
@@ -485,11 +523,12 @@
 
     async function checkUserSession() {
       try {
+        if (!window.mySupabaseInstance) throw new Error("No Supabase instance");
         const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
         const authContainer = document.getElementById('auth-action-container');
         const navAdminLink = document.getElementById('nav-admin-link');
         const lang = localStorage.getItem('site_lang') || 'en';
-        const t = translations[lang];
+        const t = translations[lang] || translations.en;
 
         if (session && session.user) {
           currentUserId = session.user.email;
@@ -519,6 +558,7 @@
 
     async function fetchUserStats() {
       try {
+        if (!window.mySupabaseInstance) return;
         let { data } = await window.mySupabaseInstance.from('chess_stats').select('*').eq('user_id', currentUserId).single();
         if (data) {
           stats.wins = data.wins || 0;
@@ -538,6 +578,7 @@
       updateStatsUI();
 
       try {
+        if (!window.mySupabaseInstance) return;
         await window.mySupabaseInstance.from('chess_stats').upsert({ 
           user_id: currentUserId, 
           wins: stats.wins, 
@@ -557,12 +598,77 @@
     }
 
     async function handleSignOut() {
-      await window.mySupabaseInstance.auth.signOut();
+      if (window.mySupabaseInstance) {
+        await window.mySupabaseInstance.auth.signOut();
+      }
       window.location.reload();
     }
 
-    // High-Speed Evaluation & Move Ordering
-    const pieceValues = { p: 10, n: 30, b: 30, r: 50, q: 90, k: 900 };
+    // Piece Values and Positional Piece-Square Tables (PST)
+    const pieceValues = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
+
+    const pst = {
+      p: [
+        [ 0,  0,  0,  0,  0,  0,  0,  0],
+        [50, 50, 50, 50, 50, 50, 50, 50],
+        [10, 10, 20, 30, 30, 20, 10, 10],
+        [ 5,  5, 10, 25, 25, 10,  5,  5],
+        [ 0,  0,  0, 20, 20,  0,  0,  0],
+        [ 5, -5,-10,  0,  0,-10, -5,  5],
+        [ 5, 10, 10,-20,-20, 10, 10,  5],
+        [ 0,  0,  0,  0,  0,  0,  0,  0]
+      ],
+      n: [
+        [-50,-40,-30,-30,-30,-30,-40,-50],
+        [-40,-20,  0,  0,  0,  0,-20,-40],
+        [-30,  0, 10, 15, 15, 10,  0,-30],
+        [-30,  5, 15, 20, 20, 15,  5,-30],
+        [-30,  0, 15, 20, 20, 15,  0,-30],
+        [-30,  5, 10, 15, 15, 10,  5,-30],
+        [-40,-20,  0,  5,  5,  0,-20,-40],
+        [-50,-40,-30,-30,-30,-30,-40,-50]
+      ],
+      b: [
+        [-20,-10,-10,-10,-10,-10,-10,-20],
+        [-10,  0,  0,  0,  0,  0,  0,-10],
+        [-10,  0,  5, 10, 10,  5,  0,-10],
+        [-10,  5,  5, 10, 10,  5,  5,-10],
+        [-10,  0, 10, 10, 10, 10,  0,-10],
+        [-10, 10, 10, 10, 10, 10, 10,-10],
+        [-10,  5,  0,  0,  0,  0,  5,-10],
+        [-20,-10,-10,-10,-10,-10,-10,-20]
+      ],
+      r: [
+        [ 0,  0,  0,  0,  0,  0,  0,  0],
+        [ 5, 10, 10, 10, 10, 10, 10,  5],
+        [-5,  0,  0,  0,  0,  0,  0, -5],
+        [-5,  0,  0,  0,  0,  0,  0, -5],
+        [-5,  0,  0,  0,  0,  0,  0, -5],
+        [-5,  0,  0,  0,  0,  0,  0, -5],
+        [-5,  0,  0,  0,  0,  0,  0, -5],
+        [ 0,  0,  0,  5,  5,  0,  0,  0]
+      ],
+      q: [
+        [-20,-10,-10, -5, -5,-10,-10,-20],
+        [-10,  0,  0,  0,  0,  0,  0,-10],
+        [-10,  0,  5,  5,  5,  5,  0,-10],
+        [ -5,  0,  5,  5,  5,  5,  0, -5],
+        [  0,  0,  5,  5,  5,  5,  0, -5],
+        [-10,  5,  5,  5,  5,  5,  0,-10],
+        [-10,  0,  5,  0,  0,  0,  0,-10],
+        [-20,-10,-10, -5, -5,-10,-10,-20]
+      ],
+      k: [
+        [-30,-40,-40,-50,-50,-40,-40,-30],
+        [-30,-40,-40,-50,-50,-40,-40,-30],
+        [-30,-40,-40,-50,-50,-40,-40,-30],
+        [-30,-40,-40,-50,-50,-40,-40,-30],
+        [-20,-30,-30,-40,-40,-30,-30,-20],
+        [-10,-20,-20,-20,-20,-20,-20,-10],
+        [ 20, 20,  0,  0,  0,  0, 20, 20],
+        [ 20, 30, 10,  0,  0, 10, 30, 20]
+      ]
+    };
 
     function evaluateBoard(game) {
       let board = game.board();
@@ -572,8 +678,9 @@
           let piece = board[r][c];
           if (piece) {
             let val = pieceValues[piece.type];
-            if (piece.color === 'b') totalEval += val;
-            else totalEval -= val;
+            let posVal = pst[piece.type] ? (piece.color === 'w' ? pst[piece.type][r][c] : pst[piece.type][7 - r][c]) : 0;
+            if (piece.color === 'b') totalEval += (val + posVal);
+            else totalEval -= (val + posVal);
           }
         }
       }
@@ -585,7 +692,6 @@
       if (depth === 0 || game.game_over()) return evaluateBoard(game);
       
       let moves = game.moves({ verbose: true });
-      // Move Ordering: Evaluate captures first for maximum alpha-beta pruning speed
       moves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
 
       if (isMaximizing) {
@@ -679,6 +785,44 @@
         checkGameResultState();
       }
 
+      // Drag and Drop callbacks
+      function onDragStart(source, piece, position, orientation) {
+        if (game.game_over()) return false;
+        if (game.turn() !== 'w') return false;
+        if (piece.search(/^b/) !== -1) return false;
+      }
+
+      function onDrop(source, target) {
+        var move = game.move({
+          from: source,
+          to: target,
+          promotion: 'q'
+        });
+
+        if (move === null) return 'snapback';
+
+        redoStack = [];
+        selectedSquare = null;
+        $('#myBoard .square-55d63').removeClass('highlight');
+
+        if (move.captured) playCaptureSound();
+        else if (game.in_check()) playCheckSound();
+        else playMoveSound();
+
+        updateStatus();
+        updateHistoryLog();
+        checkGameResultState();
+
+        if (!game.game_over()) {
+          window.setTimeout(makeAIMove, 50);
+        }
+      }
+
+      function onSnapEnd() {
+        chessBoardObj.position(game.fen());
+      }
+
+      // Click-to-move fallback for mobile & touch support
       $('#myBoard').off('click').on('click', '.square-55d63', function () {
         if (game.game_over() || game.turn() !== 'w') return;
 
@@ -714,7 +858,6 @@
             checkGameResultState();
 
             if (!game.game_over()) {
-              // Yield main thread briefly with setTimeout to prevent any browser freezing
               window.setTimeout(makeAIMove, 20);
             }
           }
@@ -779,7 +922,10 @@
 
       chessBoardObj = Chessboard('myBoard', {
         position: 'start',
-        draggable: false,
+        draggable: true,
+        onDragStart: onDragStart,
+        onDrop: onDrop,
+        onSnapEnd: onSnapEnd,
         pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
       });
       updateStatus();
@@ -824,9 +970,24 @@
         updateHistoryLog();
       });
 
+      $('#copyPgnBtn').off('click').on('click', function () {
+        const lang = localStorage.getItem('site_lang') || 'en';
+        const t = translations[lang] || translations.en;
+        navigator.clipboard.writeText(game.pgn() || "No moves played yet.").then(() => {
+          showToast(t.copiedPgn);
+        });
+      });
+
+      $('#copyFenBtn').off('click').on('click', function () {
+        const lang = localStorage.getItem('site_lang') || 'en';
+        const t = translations[lang] || translations.en;
+        navigator.clipboard.writeText(game.fen()).then(() => {
+          showToast(t.copiedFen);
+        });
+      });
+
       return { updateStatus: updateStatus };
     }
   </script>
-  <script src="cookie-banner.js" defer></script>
 </body>
 </html>

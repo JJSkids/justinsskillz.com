@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chess AI Training Lab - Justin's Skillz</title>
+  <title>Chess AI & Multiplayer Training Lab - Justin's Skillz</title>
   
   <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -124,7 +124,7 @@
       color: var(--text-main);
     }
     .main-container {
-      max-width: 1100px;
+      max-width: 1150px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
@@ -147,24 +147,24 @@
       width: 100%;
     }
     #myBoard {
-      width: 420px;
+      width: 440px;
       max-width: 100%;
     }
     .chess-sidebar {
       flex: 1;
-      min-width: 280px;
+      min-width: 290px;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: 0.9rem;
     }
     .btn {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      padding: 0.75rem 1.25rem;
+      padding: 0.7rem 1rem;
       border-radius: var(--radius-md);
       font-weight: 600;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       cursor: pointer;
       border: none;
       transition: opacity 0.2s, transform 0.2s;
@@ -172,18 +172,23 @@
       width: 100%;
     }
     .btn:hover {
-      opacity: 0.9;
+      opacity: 0.92;
       transform: translateY(-1px);
+    }
+    .btn-sm {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
     }
     .btn-primary { background: var(--accent-purple); color: white; }
     .btn-secondary { background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-main); }
     .btn-warning { background: #d97706; color: white; }
     .btn-success { background: var(--accent-green); color: white; }
+    .btn-blue { background: var(--accent-blue); color: white; }
 
-    .status-box, .stats-box, .lang-select-group, .history-box {
+    .status-box, .stats-box, .lang-select-group, .history-box, .mode-box {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
-      padding: 1rem;
+      padding: 0.9rem;
       border-radius: var(--radius-md);
       font-size: 0.9rem;
       line-height: 1.5;
@@ -208,9 +213,9 @@
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
-      padding: 0.4rem 0.6rem;
+      padding: 0.45rem 0.6rem;
       border-radius: var(--radius-md);
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-family: inherit;
       width: 100%;
       margin-top: 0.3rem;
@@ -219,34 +224,104 @@
     .highlight { box-shadow: inset 0 0 4px 4px var(--accent-purple) !important; }
     
     .history-log {
-      max-height: 110px;
+      max-height: 100px;
       overflow-y: auto;
       font-family: monospace;
       font-size: 0.85rem;
       color: var(--text-muted);
       margin-top: 0.4rem;
-      padding: 0.25rem;
+      padding: 0.4rem;
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: 6px;
     }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(6px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .modal-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 650px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 1.5rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.75rem;
+    }
+    .modal-title { font-size: 1.25rem; font-weight: 700; }
+    .close-modal {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+    }
+    .close-modal:hover { color: var(--text-main); }
+    
+    .game-item, .player-item {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .badge-online {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      margin-right: 6px;
+    }
+
     .toast {
       position: fixed;
       bottom: 20px;
       right: 20px;
       background: var(--accent-purple);
       color: #fff;
-      padding: 0.6rem 1.2rem;
+      padding: 0.75rem 1.25rem;
       border-radius: 8px;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       font-weight: 600;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
       opacity: 0;
       transition: opacity 0.3s ease;
-      z-index: 1000;
+      z-index: 2000;
       pointer-events: none;
     }
     .toast.show { opacity: 1; }
+
     .app-footer {
       border-top: 1px solid var(--border-subtle);
       padding: 2rem 1rem;
@@ -284,7 +359,7 @@
 
   <main class="main-container">
     <div class="chess-card">
-      <h2 id="chess-title" style="margin-top: 0; margin-bottom: 1.5rem; font-size: 1.75rem; text-align: center;">Chess AI Training Lab (Lightning Fast)</h2>
+      <h2 id="chess-title" style="margin-top: 0; margin-bottom: 1.25rem; font-size: 1.75rem; text-align: center;">Chess AI & Online Multiplayer Lab</h2>
       
       <div class="chess-layout">
         <div id="myBoard"></div>
@@ -300,7 +375,7 @@
           </div>
 
           <div class="lang-select-group">
-            <label for="difficultySelect" id="difficulty-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">AI Level / Niveau / Nivel</label>
+            <label for="difficultySelect" id="difficulty-label" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;">AI Engine Level</label>
             <select id="difficultySelect" class="lang-select" onchange="changeDifficulty(this.value)">
               <option value="casual" id="opt-casual">Casual Justin</option>
               <option value="intermediate" id="opt-intermediate">Intermediate Justin</option>
@@ -311,7 +386,10 @@
           </div>
 
           <div class="status-box">
-            <strong id="status-label">Game Status:</strong><br>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong id="status-label">Game Status:</strong>
+              <span id="game-mode-tag" style="font-size: 0.75rem; background: var(--accent-purple); color: white; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700;">VS AI</span>
+            </div>
             <span id="status">Turn: White</span><br>
             <span id="session-info" style="font-size: 0.8rem; color: var(--accent-blue); font-weight: 600;">Connecting session...</span>
             <div id="fen" style="font-size: 0.7rem; color: var(--text-muted); word-break: break-all; margin-top: 0.3rem;"></div>
@@ -328,25 +406,83 @@
             <div id="moveHistoryLog" class="history-log">No moves yet.</div>
           </div>
 
-          <div class="stats-box">
-            <span id="stats-label" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">Match Statistics</span>
-            <div class="stats-grid">
-              <div class="stat-item"><span class="stat-label">Total</span><span id="stat-total" class="stat-value">0</span></div>
-              <div class="stat-item"><span class="stat-label">Wins</span><span id="stat-wins" class="stat-value" style="color: var(--accent-green);">0</span></div>
-              <div class="stat-item"><span class="stat-label">Losses</span><span id="stat-losses" class="stat-value" style="color: var(--accent-rose);">0</span></div>
-              <div class="stat-item"><span class="stat-label">Win Rate</span><span id="stat-winrate" class="stat-value" style="color: var(--accent-blue);">0%</span></div>
-            </div>
+          <!-- Multiplayer & Database Controls -->
+          <div style="display: flex; gap: 0.5rem;">
+            <button type="button" id="onlineLobbyBtn" class="btn btn-blue" onclick="openOnlineLobby()">🌐 Online Lobby</button>
+            <button type="button" id="loadGamesBtn" class="btn btn-secondary" onclick="openSavedGamesModal()">📜 Watch Saved Games</button>
           </div>
 
           <div style="display: flex; gap: 0.5rem;">
             <button type="button" id="undoBtn" class="btn btn-warning">Undo</button>
             <button type="button" id="redoBtn" class="btn btn-success">Redo</button>
           </div>
-          <button type="button" id="startBtn" class="btn btn-primary">New Game</button>
+
+          <button type="button" id="startBtn" class="btn btn-primary">New Game vs AI</button>
         </div>
       </div>
     </div>
   </main>
+
+  <!-- Saved Games Replay Modal -->
+  <div id="savedGamesModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-load-title">Saved Matches Database</span>
+        <button type="button" class="close-modal" onclick="closeModal('savedGamesModal')">&times;</button>
+      </div>
+      <div id="savedGamesList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div style="color: var(--text-muted); text-align: center; padding: 1rem;">Loading games from Supabase...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Replay Viewer Player Modal -->
+  <div id="replayModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 500px; text-align: center;">
+      <div class="modal-header">
+        <span class="modal-title" id="replayMatchTitle">Game Replay Viewer</span>
+        <button type="button" class="close-modal" onclick="closeModal('replayModal')">&times;</button>
+      </div>
+      <div id="replayBoard" style="width: 380px; max-width: 100%; margin: 0 auto;"></div>
+      <div id="replayInfo" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">Move 0 / 0</div>
+      <div style="display: flex; gap: 0.4rem; justify-content: center; margin-top: 0.5rem;">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="replayStepFirst()">|&lt;</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="replayStepPrev()">&lt;</button>
+        <button type="button" id="replayPlayBtn" class="btn btn-primary btn-sm" onclick="toggleReplayAuto()">Play</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="replayStepNext()">&gt;</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="replayStepLast()">&gt;|</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Online Lobby & Challenge Modal -->
+  <div id="onlineLobbyModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title" id="modal-lobby-title">Live Chess.com Style Lobby</span>
+        <button type="button" class="close-modal" onclick="closeModal('onlineLobbyModal')">&times;</button>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <button type="button" class="btn btn-success" onclick="startRandomMatchmaking()" id="matchmakeBtn">⚡ Play Random Opponent</button>
+      </div>
+      <h4 style="margin-bottom: 0.5rem; margin-top: 0.5rem; color: var(--accent-purple);">Online Players</h4>
+      <div id="onlinePlayersList" style="display: flex; flex-direction: column; gap: 0.6rem; max-height: 250px; overflow-y: auto;">
+        <div style="color: var(--text-muted); text-align: center;">Scanning online presence...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Incoming Challenge Modal -->
+  <div id="challengeModal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 400px; text-align: center;">
+      <h3 style="margin-top: 0; color: var(--accent-purple);">⚔️ Chess Duel Challenge!</h3>
+      <p id="challengeText">Player challenged you to a live match!</p>
+      <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem;">
+        <button type="button" class="btn btn-success" id="acceptChallengeBtn">Accept</button>
+        <button type="button" class="btn btn-warning" onclick="closeModal('challengeModal')">Decline</button>
+      </div>
+    </div>
+  </div>
 
   <div id="toastNotification" class="toast">Copied to clipboard!</div>
 
@@ -358,7 +494,7 @@
     if (!window.mySupabaseInstance && window.supabase) {
       window.mySupabaseInstance = window.supabase.createClient(
         'https://iifhzdioridrmbcflswa.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-...'
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmltY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-...'
       );
     }
 
@@ -389,14 +525,17 @@
       const toast = document.getElementById('toastNotification');
       toast.textContent = msg;
       toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
+      setTimeout(() => toast.classList.remove('show'), 2500);
     }
+
+    function openModal(id) { document.getElementById(id).classList.add('active'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
     const translations = {
       en: {
-        title: "Chess AI Training Lab",
+        title: "Chess AI & Online Multiplayer Lab",
         statusGame: "Game Status:",
-        newGame: "New Game",
+        newGame: "New Game vs AI",
         undoBtn: "Undo",
         redoBtn: "Redo",
         navHome: "Home",
@@ -405,9 +544,8 @@
         signIn: "Sign In",
         signOut: "Sign Out",
         langLabel: "Language / Langue / Idioma",
-        difficultyLabel: "AI Level / Niveau / Nivel",
+        difficultyLabel: "AI Engine Level",
         historyLabel: "Move History (PGN)",
-        statsLabel: "Match Statistics",
         casual: "Casual Justin",
         intermediate: "Intermediate Justin",
         advanced: "Advanced Justin",
@@ -417,9 +555,9 @@
         copiedFen: "FEN copied to clipboard!"
       },
       fr: {
-        title: "Laboratoire d'Entraînement IA d'Échecs",
+        title: "Laboratoire d'Échecs IA et Multijoueur",
         statusGame: "État du Jeu :",
-        newGame: "Nouvelle Partie",
+        newGame: "Nouvelle Partie vs IA",
         undoBtn: "Annuler",
         redoBtn: "Rétablir",
         navHome: "Accueil",
@@ -430,7 +568,6 @@
         langLabel: "Langue / Language / Idioma",
         difficultyLabel: "Niveau de l'IA",
         historyLabel: "Historique des Coups (PGN)",
-        statsLabel: "Statistiques du Match",
         casual: "Justin Décontracté",
         intermediate: "Justin Intermédiaire",
         advanced: "Justin Avancé",
@@ -440,9 +577,9 @@
         copiedFen: "FEN copié dans le presse-papiers !"
       },
       es: {
-        title: "Laboratorio de IA de Ajedrez",
+        title: "Laboratorio de IA y Multijugador de Ajedrez",
         statusGame: "Estado del Juego:",
-        newGame: "Nueva Partida",
+        newGame: "Nueva Partida vs IA",
         undoBtn: "Deshacer",
         redoBtn: "Rehacer",
         navHome: "Inicio",
@@ -453,7 +590,6 @@
         langLabel: "Idioma / Language / Langue",
         difficultyLabel: "Nivel de la IA",
         historyLabel: "Historial de Movimientos (PGN)",
-        statsLabel: "Estadísticas de Partidas",
         casual: "Justin Casual",
         intermediate: "Justin Intermedio",
         advanced: "Justin Avanzado",
@@ -467,8 +603,23 @@
     let currentGameInstance = null;
     let chessBoardObj = null;
     let currentUserId = null;
-    let stats = { wins: 0, losses: 0, draws: 0, total: 0 };
+    let currentUsername = 'Player';
     let currentDifficulty = 'casual';
+
+    // Multiplayer & Realtime Global Variables
+    let currentRoomId = null;
+    let playerColor = 'w'; // 'w' or 'b'
+    let isMultiplayer = false;
+    let globalPresenceChannel = null;
+    let roomRealtimeChannel = null;
+    let onlineUsersMap = {};
+
+    // Replay System Globals
+    let replayChess = new Chess();
+    let replayBoardObj = null;
+    let replayMoves = [];
+    let replayCurrentIndex = 0;
+    let replayInterval = null;
 
     window.addEventListener('DOMContentLoaded', () => {
       checkUserSession();
@@ -484,6 +635,7 @@
 
       window.addEventListener('resize', () => {
         if (chessBoardObj) chessBoardObj.resize();
+        if (replayBoardObj) replayBoardObj.resize();
       });
     });
 
@@ -513,7 +665,6 @@
       document.getElementById('lang-label').textContent = t.langLabel;
       document.getElementById('difficulty-label').textContent = t.difficultyLabel;
       document.getElementById('history-label').textContent = t.historyLabel;
-      document.getElementById('stats-label').textContent = t.statsLabel;
       document.getElementById('opt-casual').textContent = t.casual;
       document.getElementById('opt-intermediate').textContent = t.intermediate;
       document.getElementById('opt-advanced').textContent = t.advanced;
@@ -531,11 +682,11 @@
         const t = translations[lang] || translations.en;
 
         if (session && session.user) {
-          currentUserId = session.user.email;
           const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-          let displayName = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
+          currentUsername = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
+          currentUserId = session.user.id || currentUsername;
 
-          document.getElementById('session-info').textContent = `User: ${displayName}`;
+          document.getElementById('session-info').textContent = `User: ${currentUsername}`;
           authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">${t.signOut}</button>`;
           if (userEmail === ADMIN_EMAIL && navAdminLink) navAdminLink.style.display = 'block';
         } else {
@@ -544,57 +695,18 @@
             cachedGuest = `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
             sessionStorage.setItem('justin_guest_id', cachedGuest);
           }
+          currentUsername = cachedGuest;
           currentUserId = cachedGuest;
-          document.getElementById('session-info').textContent = `Player: ${currentUserId}`;
+          document.getElementById('session-info').textContent = `Player: ${currentUsername}`;
           authContainer.innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">${t.signIn}</a>`;
         }
-        fetchUserStats();
+        setupPresenceChannel();
       } catch (err) {
-        currentUserId = sessionStorage.getItem('justin_guest_id') || `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
-        document.getElementById('session-info').textContent = `Player: ${currentUserId}`;
-        fetchUserStats();
+        currentUsername = sessionStorage.getItem('justin_guest_id') || `Guest-${Math.floor(10000 + Math.random() * 90000)}`;
+        currentUserId = currentUsername;
+        document.getElementById('session-info').textContent = `Player: ${currentUsername}`;
+        setupPresenceChannel();
       }
-    }
-
-    async function fetchUserStats() {
-      try {
-        if (!window.mySupabaseInstance) return;
-        let { data } = await window.mySupabaseInstance.from('chess_stats').select('*').eq('user_id', currentUserId).single();
-        if (data) {
-          stats.wins = data.wins || 0;
-          stats.losses = data.losses || 0;
-          stats.draws = data.draws || 0;
-          stats.total = stats.wins + stats.losses + stats.draws;
-          updateStatsUI();
-        }
-      } catch (err) {}
-    }
-
-    async function recordGameResult(result) {
-      if (result === 'win') stats.wins++;
-      if (result === 'loss') stats.losses++;
-      if (result === 'draw') stats.draws++;
-      stats.total = stats.wins + stats.losses + stats.draws;
-      updateStatsUI();
-
-      try {
-        if (!window.mySupabaseInstance) return;
-        await window.mySupabaseInstance.from('chess_stats').upsert({ 
-          user_id: currentUserId, 
-          wins: stats.wins, 
-          losses: stats.losses, 
-          draws: stats.draws,
-          updated_at: new Date()
-        });
-      } catch (err) {}
-    }
-
-    function updateStatsUI() {
-      document.getElementById('stat-total').textContent = stats.total;
-      document.getElementById('stat-wins').textContent = stats.wins;
-      document.getElementById('stat-losses').textContent = stats.losses;
-      let winRate = stats.total > 0 ? Math.round((stats.wins / stats.total) * 100) : 0;
-      document.getElementById('stat-winrate').textContent = winRate + '%';
     }
 
     async function handleSignOut() {
@@ -604,70 +716,266 @@
       window.location.reload();
     }
 
-    // Piece Values and Positional Piece-Square Tables (PST)
-    const pieceValues = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
+    // --- SUPABASE REALTIME PRESENCE & CHALLENGE SYSTEM ---
+    function setupPresenceChannel() {
+      if (!window.mySupabaseInstance) return;
 
+      globalPresenceChannel = window.mySupabaseInstance.channel('online_chess_lobby', {
+        config: { presence: { key: currentUserId } }
+      });
+
+      globalPresenceChannel
+        .on('presence', { event: 'sync' }, () => {
+          const state = globalPresenceChannel.presenceState();
+          onlineUsersMap = {};
+          Object.keys(state).forEach(key => {
+            const userObj = state[key][0];
+            if (userObj && userObj.user_id !== currentUserId) {
+              onlineUsersMap[userObj.user_id] = userObj.username;
+            }
+          });
+          renderOnlinePlayers();
+        })
+        .on('broadcast', { event: 'chess_challenge' }, payload => {
+          if (payload.toUserId === currentUserId) {
+            playTone(880, 'sine', 0.2);
+            document.getElementById('challengeText').textContent = `${payload.fromUsername} challenged you to a Chess Duel!`;
+            document.getElementById('acceptChallengeBtn').onclick = () => acceptChallenge(payload.fromUserId, payload.roomId);
+            openModal('challengeModal');
+          }
+        })
+        .on('broadcast', { event: 'challenge_accepted' }, payload => {
+          if (payload.toUserId === currentUserId) {
+            closeModal('onlineLobbyModal');
+            showToast(`Challenge accepted by ${payload.fromUsername}!`);
+            startMultiplayerMatch(payload.roomId, 'w', payload.fromUsername);
+          }
+        })
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            await globalPresenceChannel.track({
+              user_id: currentUserId,
+              username: currentUsername,
+              online_at: new Date().toISOString()
+            });
+          }
+        });
+    }
+
+    function renderOnlinePlayers() {
+      const container = document.getElementById('onlinePlayersList');
+      const keys = Object.keys(onlineUsersMap);
+      if (keys.length === 0) {
+        container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 0.5rem;">No other players online right now. Invite a friend!</div>`;
+        return;
+      }
+      container.innerHTML = keys.map(uid => `
+        <div class="player-item">
+          <div>
+            <span class="badge-online"></span>
+            <strong>${onlineUsersMap[uid]}</strong>
+          </div>
+          <button class="btn btn-primary btn-sm" style="width: auto;" onclick="sendChallenge('${uid}', '${onlineUsersMap[uid]}')">⚔️ Challenge Duel</button>
+        </div>
+      `).join('');
+    }
+
+    function openOnlineLobby() {
+      renderOnlinePlayers();
+      openModal('onlineLobbyModal');
+    }
+
+    function sendChallenge(targetUserId, targetUsername) {
+      const roomId = `room_${Math.random().toString(36).substring(2, 9)}`;
+      globalPresenceChannel.send({
+        type: 'broadcast',
+        event: 'chess_challenge',
+        toUserId: targetUserId,
+        fromUserId: currentUserId,
+        fromUsername: currentUsername,
+        roomId: roomId
+      });
+      showToast(`Challenge sent to ${targetUsername}! Waiting...`);
+    }
+
+    function acceptChallenge(opponentUserId, roomId) {
+      closeModal('challengeModal');
+      closeModal('onlineLobbyModal');
+
+      globalPresenceChannel.send({
+        type: 'broadcast',
+        event: 'challenge_accepted',
+        toUserId: opponentUserId,
+        fromUserId: currentUserId,
+        fromUsername: currentUsername,
+        roomId: roomId
+      });
+
+      startMultiplayerMatch(roomId, 'b', onlineUsersMap[opponentUserId] || 'Opponent');
+    }
+
+    function startRandomMatchmaking() {
+      const matchmakeBtn = document.getElementById('matchmakeBtn');
+      matchmakeBtn.textContent = "Searching for opponent...";
+      matchmakeBtn.disabled = true;
+
+      const keys = Object.keys(onlineUsersMap);
+      if (keys.length > 0) {
+        const randomTargetId = keys[Math.floor(Math.random() * keys.length)];
+        sendChallenge(randomTargetId, onlineUsersMap[randomTargetId]);
+        setTimeout(() => {
+          matchmakeBtn.textContent = "⚡ Play Random Opponent";
+          matchmakeBtn.disabled = false;
+        }, 4000);
+      } else {
+        setTimeout(() => {
+          showToast("No online opponent found. Training against AI!");
+          matchmakeBtn.textContent = "⚡ Play Random Opponent";
+          matchmakeBtn.disabled = false;
+          closeModal('onlineLobbyModal');
+        }, 2000);
+      }
+    }
+
+    // --- SUPABASE GAME STORAGE & REPLAY SYSTEM ---
+    async function saveGameToSupabase(whitePlayer, blackPlayer, winner, pgn, fen) {
+      if (!window.mySupabaseInstance) return;
+      try {
+        await window.mySupabaseInstance.from('chess_games').insert([{
+          white_player: whitePlayer,
+          black_player: blackPlayer,
+          winner: winner,
+          pgn: pgn,
+          fen: fen,
+          created_at: new Date()
+        }]);
+        showToast("Match saved to Supabase database!");
+      } catch (err) {
+        console.warn("Save game err:", err);
+      }
+    }
+
+    async function openSavedGamesModal() {
+      openModal('savedGamesModal');
+      const container = document.getElementById('savedGamesList');
+      container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">Loading games...</div>`;
+
+      try {
+        if (!window.mySupabaseInstance) throw new Error("No database");
+        const { data, error } = await window.mySupabaseInstance
+          .from('chess_games')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(20);
+
+        if (error || !data || data.length === 0) {
+          container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">No saved matches found yet. Play a game to store history!</div>`;
+          return;
+        }
+
+        container.innerHTML = data.map(g => `
+          <div class="game-item">
+            <div>
+              <div style="font-weight: 700; font-size: 0.95rem;">${g.white_player} (W) vs ${g.black_player} (B)</div>
+              <div style="font-size: 0.78rem; color: var(--text-muted);">Winner: <strong style="color:var(--accent-green);">${g.winner}</strong> | ${new Date(g.created_at).toLocaleDateString()}</div>
+            </div>
+            <button class="btn btn-blue btn-sm" style="width: auto;" onclick="watchReplay('${encodeURIComponent(g.pgn)}', '${g.white_player}', '${g.black_player}')">▶ Watch Replay</button>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">Failed to fetch saved games.</div>`;
+      }
+    }
+
+    function watchReplay(encodedPgn, white, black) {
+      closeModal('savedGamesModal');
+      openModal('replayModal');
+      const pgn = decodeURIComponent(encodedPgn);
+      document.getElementById('replayMatchTitle').textContent = `${white} vs ${black}`;
+
+      replayChess = new Chess();
+      replayChess.load_pgn(pgn);
+      replayMoves = replayChess.history();
+      replayCurrentIndex = 0;
+
+      replayChess.reset();
+      if (!replayBoardObj) {
+        replayBoardObj = Chessboard('replayBoard', {
+          position: 'start',
+          pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+        });
+      } else {
+        replayBoardObj.start();
+      }
+      updateReplayUI();
+    }
+
+    function updateReplayUI() {
+      document.getElementById('replayInfo').textContent = `Move ${replayCurrentIndex} / ${replayMoves.length}`;
+    }
+
+    function replayStepNext() {
+      if (replayCurrentIndex < replayMoves.length) {
+        replayChess.move(replayMoves[replayCurrentIndex]);
+        replayCurrentIndex++;
+        replayBoardObj.position(replayChess.fen());
+        updateReplayUI();
+        playMoveSound();
+      } else {
+        clearInterval(replayInterval);
+        replayInterval = null;
+        document.getElementById('replayPlayBtn').textContent = 'Play';
+      }
+    }
+
+    function replayStepPrev() {
+      if (replayCurrentIndex > 0) {
+        replayChess.undo();
+        replayCurrentIndex--;
+        replayBoardObj.position(replayChess.fen());
+        updateReplayUI();
+        playMoveSound();
+      }
+    }
+
+    function replayStepFirst() {
+      replayChess.reset();
+      replayCurrentIndex = 0;
+      replayBoardObj.position(replayChess.fen());
+      updateReplayUI();
+    }
+
+    function replayStepLast() {
+      while (replayCurrentIndex < replayMoves.length) {
+        replayChess.move(replayMoves[replayCurrentIndex]);
+        replayCurrentIndex++;
+      }
+      replayBoardObj.position(replayChess.fen());
+      updateReplayUI();
+    }
+
+    function toggleReplayAuto() {
+      const btn = document.getElementById('replayPlayBtn');
+      if (replayInterval) {
+        clearInterval(replayInterval);
+        replayInterval = null;
+        btn.textContent = 'Play';
+      } else {
+        if (replayCurrentIndex >= replayMoves.length) replayStepFirst();
+        btn.textContent = 'Pause';
+        replayInterval = setInterval(replayStepNext, 800);
+      }
+    }
+
+    // --- AI ENGINE MINIMAX ALGORITHM ---
+    const pieceValues = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
     const pst = {
-      p: [
-        [ 0,  0,  0,  0,  0,  0,  0,  0],
-        [50, 50, 50, 50, 50, 50, 50, 50],
-        [10, 10, 20, 30, 30, 20, 10, 10],
-        [ 5,  5, 10, 25, 25, 10,  5,  5],
-        [ 0,  0,  0, 20, 20,  0,  0,  0],
-        [ 5, -5,-10,  0,  0,-10, -5,  5],
-        [ 5, 10, 10,-20,-20, 10, 10,  5],
-        [ 0,  0,  0,  0,  0,  0,  0,  0]
-      ],
-      n: [
-        [-50,-40,-30,-30,-30,-30,-40,-50],
-        [-40,-20,  0,  0,  0,  0,-20,-40],
-        [-30,  0, 10, 15, 15, 10,  0,-30],
-        [-30,  5, 15, 20, 20, 15,  5,-30],
-        [-30,  0, 15, 20, 20, 15,  0,-30],
-        [-30,  5, 10, 15, 15, 10,  5,-30],
-        [-40,-20,  0,  5,  5,  0,-20,-40],
-        [-50,-40,-30,-30,-30,-30,-40,-50]
-      ],
-      b: [
-        [-20,-10,-10,-10,-10,-10,-10,-20],
-        [-10,  0,  0,  0,  0,  0,  0,-10],
-        [-10,  0,  5, 10, 10,  5,  0,-10],
-        [-10,  5,  5, 10, 10,  5,  5,-10],
-        [-10,  0, 10, 10, 10, 10,  0,-10],
-        [-10, 10, 10, 10, 10, 10, 10,-10],
-        [-10,  5,  0,  0,  0,  0,  5,-10],
-        [-20,-10,-10,-10,-10,-10,-10,-20]
-      ],
-      r: [
-        [ 0,  0,  0,  0,  0,  0,  0,  0],
-        [ 5, 10, 10, 10, 10, 10, 10,  5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [-5,  0,  0,  0,  0,  0,  0, -5],
-        [ 0,  0,  0,  5,  5,  0,  0,  0]
-      ],
-      q: [
-        [-20,-10,-10, -5, -5,-10,-10,-20],
-        [-10,  0,  0,  0,  0,  0,  0,-10],
-        [-10,  0,  5,  5,  5,  5,  0,-10],
-        [ -5,  0,  5,  5,  5,  5,  0, -5],
-        [  0,  0,  5,  5,  5,  5,  0, -5],
-        [-10,  5,  5,  5,  5,  5,  0,-10],
-        [-10,  0,  5,  0,  0,  0,  0,-10],
-        [-20,-10,-10, -5, -5,-10,-10,-20]
-      ],
-      k: [
-        [-30,-40,-40,-50,-50,-40,-40,-30],
-        [-30,-40,-40,-50,-50,-40,-40,-30],
-        [-30,-40,-40,-50,-50,-40,-40,-30],
-        [-30,-40,-40,-50,-50,-40,-40,-30],
-        [-20,-30,-30,-40,-40,-30,-30,-20],
-        [-10,-20,-20,-20,-20,-20,-20,-10],
-        [ 20, 20,  0,  0,  0,  0, 20, 20],
-        [ 20, 30, 10,  0,  0, 10, 30, 20]
-      ]
+      p: [[ 0, 0, 0, 0, 0, 0, 0, 0],[50,50,50,50,50,50,50,50],[10,10,20,30,30,20,10,10],[ 5, 5,10,25,25,10, 5, 5],[ 0, 0, 0,20,20, 0, 0, 0],[ 5,-5,-10, 0, 0,-10,-5, 5],[ 5,10,10,-20,-20,10,10, 5],[ 0, 0, 0, 0, 0, 0, 0, 0]],
+      n: [[-50,-40,-30,-30,-30,-30,-40,-50],[-40,-20, 0, 0, 0, 0,-20,-40],[-30, 0,10,15,15,10, 0,-30],[-30, 5,15,20,20,15, 5,-30],[-30, 0,15,20,20,15, 0,-30],[-30, 5,10,15,15,10, 5,-30],[-40,-20, 0, 5, 5, 0,-20,-40],[-50,-40,-30,-30,-30,-30,-40,-50]],
+      b: [[-20,-10,-10,-10,-10,-10,-10,-20],[-10, 0, 0, 0, 0, 0, 0,-10],[-10, 0, 5,10,10, 5, 0,-10],[-10, 5, 5,10,10, 5, 5,-10],[-10, 0,10,10,10,10, 0,-10],[-10,10,10,10,10,10,10,-10],[-10, 5, 0, 0, 0, 0, 5,-10],[-20,-10,-10,-10,-10,-10,-10,-20]],
+      r: [[ 0, 0, 0, 0, 0, 0, 0, 0],[ 5,10,10,10,10,10,10, 5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[ 0, 0, 0, 5, 5, 0, 0, 0]],
+      q: [[-20,-10,-10,-5,-5,-10,-10,-20],[-10, 0, 0, 0, 0, 0, 0,-10],[-10, 0, 5, 5, 5, 5, 0,-10],[ -5, 0, 5, 5, 5, 5, 0,-5],[  0, 0, 5, 5, 5, 5, 0,-5],[-10, 5, 5, 5, 5, 5, 0,-10],[-10, 0, 5, 0, 0, 0, 0,-10],[-20,-10,-10,-5,-5,-10,-10,-20]],
+      k: [[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-20,-30,-30,-40,-40,-30,-30,-20],[-10,-20,-20,-20,-20,-20,-20,-10],[ 20, 20, 0, 0, 0, 0, 20, 20],[ 20, 30,10, 0, 0,10, 30, 20]]
     };
 
     function evaluateBoard(game) {
@@ -687,10 +995,8 @@
       return totalEval;
     }
 
-    // Minimax with Alpha-Beta Pruning and Move Ordering
     function minimax(game, depth, alpha, beta, isMaximizing) {
       if (depth === 0 || game.game_over()) return evaluateBoard(game);
-      
       let moves = game.moves({ verbose: true });
       moves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
 
@@ -739,6 +1045,7 @@
       return bestMove;
     }
 
+    // --- MAIN CHESS GAME INITIALIZATION ---
     function initChessGame() {
       var game = new Chess();
       var statusEl = $('#status');
@@ -748,18 +1055,12 @@
       var selectedSquare = null;
 
       function makeAIMove() {
+        if (isMultiplayer) return;
         var possibleMoves = game.moves();
         if (possibleMoves.length === 0) return;
 
         let chosenMove = null;
         let effectiveDiff = currentDifficulty;
-
-        if (currentDifficulty === 'adaptive') {
-          let winRate = stats.total > 0 ? (stats.wins / stats.total) * 100 : 50;
-          if (winRate > 70) effectiveDiff = 'elite';
-          else if (winRate >= 40) effectiveDiff = 'advanced';
-          else effectiveDiff = 'intermediate';
-        }
 
         if (effectiveDiff === 'casual') {
           chosenMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
@@ -768,7 +1069,7 @@
           chosenMove = priority.length > 0 && Math.random() < 0.6 ? priority[0].san : possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
         } else if (effectiveDiff === 'advanced') {
           chosenMove = getBestMove(game, 2);
-        } else if (effectiveDiff === 'elite') {
+        } else if (effectiveDiff === 'elite' || effectiveDiff === 'adaptive') {
           chosenMove = getBestMove(game, 3);
         }
 
@@ -785,11 +1086,15 @@
         checkGameResultState();
       }
 
-      // Drag and Drop callbacks
       function onDragStart(source, piece, position, orientation) {
         if (game.game_over()) return false;
-        if (game.turn() !== 'w') return false;
-        if (piece.search(/^b/) !== -1) return false;
+        if (isMultiplayer) {
+          if ((playerColor === 'w' && game.turn() !== 'w') || (playerColor === 'b' && game.turn() !== 'b')) return false;
+          if ((playerColor === 'w' && piece.search(/^b/) !== -1) || (playerColor === 'b' && piece.search(/^w/) !== -1)) return false;
+        } else {
+          if (game.turn() !== 'w') return false;
+          if (piece.search(/^b/) !== -1) return false;
+        }
       }
 
       function onDrop(source, target) {
@@ -811,9 +1116,20 @@
 
         updateStatus();
         updateHistoryLog();
+
+        if (isMultiplayer && roomRealtimeChannel) {
+          roomRealtimeChannel.send({
+            type: 'broadcast',
+            event: 'pvp_move',
+            from: source,
+            to: target,
+            promotion: 'q'
+          });
+        }
+
         checkGameResultState();
 
-        if (!game.game_over()) {
+        if (!isMultiplayer && !game.game_over()) {
           window.setTimeout(makeAIMove, 50);
         }
       }
@@ -822,14 +1138,16 @@
         chessBoardObj.position(game.fen());
       }
 
-      // Click-to-move fallback for mobile & touch support
+      // Click to move support
       $('#myBoard').off('click').on('click', '.square-55d63', function () {
-        if (game.game_over() || game.turn() !== 'w') return;
+        if (game.game_over()) return;
+        if (isMultiplayer && game.turn() !== playerColor) return;
+        if (!isMultiplayer && game.turn() !== 'w') return;
 
         var square = $(this).attr('data-square');
         if (selectedSquare === null) {
           var piece = game.get(square);
-          if (piece && piece.color === 'w') {
+          if (piece && piece.color === game.turn()) {
             selectedSquare = square;
             $('#myBoard .square-55d63').removeClass('highlight');
             $(this).addClass('highlight');
@@ -842,7 +1160,7 @@
 
           if (move === null) {
             var piece = game.get(square);
-            if (piece && piece.color === 'w' && prevSelected !== square) {
+            if (piece && piece.color === game.turn() && prevSelected !== square) {
               selectedSquare = square;
               $(this).addClass('highlight');
             }
@@ -855,10 +1173,21 @@
             chessBoardObj.position(game.fen());
             updateStatus();
             updateHistoryLog();
+
+            if (isMultiplayer && roomRealtimeChannel) {
+              roomRealtimeChannel.send({
+                type: 'broadcast',
+                event: 'pvp_move',
+                from: prevSelected,
+                to: square,
+                promotion: 'q'
+              });
+            }
+
             checkGameResultState();
 
-            if (!game.game_over()) {
-              window.setTimeout(makeAIMove, 20);
+            if (!isMultiplayer && !game.game_over()) {
+              window.setTimeout(makeAIMove, 50);
             }
           }
         }
@@ -872,23 +1201,12 @@
         var status = '';
 
         if (game.in_checkmate()) {
-          status = currentLang === 'fr' ? `Partie terminée, ${colorKey} est en échec et mat.` :
-                   currentLang === 'es' ? `Fin del juego, ${colorKey} está en jaque mate.` :
-                   `Game over, ${colorKey} is in checkmate.`;
+          status = `Game over, ${colorKey} is in checkmate.`;
         } else if (game.in_draw()) {
-          status = currentLang === 'fr' ? "Partie terminée, position nulle." :
-                   currentLang === 'es' ? "Fin del juego, tablas." : "Game over, drawn position.";
+          status = "Game over, drawn position.";
         } else {
-          if (currentLang === 'fr') {
-            status = game.turn() === 'w' ? "Aux Blancs de jouer" : "Aux Noirs de jouer";
-            if (game.in_check()) status += " (en échec)";
-          } else if (currentLang === 'es') {
-            status = game.turn() === 'w' ? "Turno de Blancas" : "Turno de Negras";
-            if (game.in_check()) status += " (en jaque)";
-          } else {
-            status = (game.turn() === 'w' ? 'White' : 'Black') + ' to move';
-            if (game.in_check()) status += ', check';
-          }
+          status = (game.turn() === 'w' ? 'White' : 'Black') + ' to move';
+          if (game.in_check()) status += ', check';
         }
         statusEl.html(status);
         fenEl.html(game.fen());
@@ -912,11 +1230,15 @@
       }
 
       function checkGameResultState() {
-        if (game.in_checkmate()) {
-          if (game.turn() === 'w') recordGameResult('loss');
-          else recordGameResult('win');
-        } else if (game.in_draw() || game.in_stalemate()) {
-          recordGameResult('draw');
+        if (game.game_over()) {
+          let winner = 'Draw';
+          if (game.in_checkmate()) {
+            winner = game.turn() === 'w' ? 'Black' : 'White';
+          }
+          let whitePlayer = isMultiplayer ? (playerColor === 'w' ? currentUsername : 'Opponent') : currentUsername;
+          let blackPlayer = isMultiplayer ? (playerColor === 'b' ? currentUsername : 'Opponent') : `AI (${currentDifficulty})`;
+
+          saveGameToSupabase(whitePlayer, blackPlayer, winner, game.pgn(), game.fen());
         }
       }
 
@@ -931,17 +1253,24 @@
       updateStatus();
 
       $('#startBtn').off('click').on('click', function () {
+        isMultiplayer = false;
+        playerColor = 'w';
+        if (roomRealtimeChannel) roomRealtimeChannel.unsubscribe();
+        document.getElementById('game-mode-tag').textContent = "VS AI";
+        document.getElementById('game-mode-tag').style.background = "var(--accent-purple)";
+
         game.reset();
         redoStack = [];
         selectedSquare = null;
         $('#myBoard .square-55d63').removeClass('highlight');
+        chessBoardObj.orientation('white');
         chessBoardObj.start();
         updateStatus();
         updateHistoryLog();
       });
 
       $('#undoBtn').off('click').on('click', function () {
-        if (game.history().length < 2) return;
+        if (isMultiplayer || game.history().length < 2) return;
         selectedSquare = null;
         $('#myBoard .square-55d63').removeClass('highlight');
         
@@ -956,7 +1285,7 @@
       });
 
       $('#redoBtn').off('click').on('click', function () {
-        if (redoStack.length < 2) return;
+        if (isMultiplayer || redoStack.length < 2) return;
         selectedSquare = null;
         $('#myBoard .square-55d63').removeClass('highlight');
 
@@ -985,6 +1314,41 @@
           showToast(t.copiedFen);
         });
       });
+
+      // Multiplayer Room Loader
+      window.startMultiplayerMatch = function(roomId, color, opponentName) {
+        isMultiplayer = true;
+        playerColor = color;
+        currentRoomId = roomId;
+
+        document.getElementById('game-mode-tag').textContent = `LIVE PvP vs ${opponentName}`;
+        document.getElementById('game-mode-tag').style.background = "var(--accent-green)";
+
+        game.reset();
+        chessBoardObj.orientation(color === 'w' ? 'white' : 'black');
+        chessBoardObj.start();
+        updateStatus();
+        updateHistoryLog();
+
+        if (roomRealtimeChannel) roomRealtimeChannel.unsubscribe();
+
+        roomRealtimeChannel = window.mySupabaseInstance.channel(roomId);
+        roomRealtimeChannel
+          .on('broadcast', { event: 'pvp_move' }, payload => {
+            let m = game.move({ from: payload.from, to: payload.to, promotion: payload.promotion });
+            if (m) {
+              if (m.captured) playCaptureSound();
+              else if (game.in_check()) playCheckSound();
+              else playMoveSound();
+
+              chessBoardObj.position(game.fen());
+              updateStatus();
+              updateHistoryLog();
+              checkGameResultState();
+            }
+          })
+          .subscribe();
+      };
 
       return { updateStatus: updateStatus };
     }

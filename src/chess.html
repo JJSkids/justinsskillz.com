@@ -478,7 +478,7 @@
     if (!window.mySupabaseInstance && window.supabase) {
       window.mySupabaseInstance = window.supabase.createClient(
         'https://iifhzdioridrmbcflswa.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088' // Ensure full Anon Key here
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
       );
     }
 
@@ -631,7 +631,6 @@
       window.location.reload();
     }
 
-    // --- REALTIME LOBBY PRESENCE FIX ---
     function setupPresenceChannel() {
       if (!window.mySupabaseInstance) return;
 
@@ -748,312 +747,230 @@
         setTimeout(() => {
           matchmakeBtn.textContent = "⚡ Play Random Opponent";
           matchmakeBtn.disabled = false;
-        }, 4000);
+        }, 3000);
       } else {
         setTimeout(() => {
-          showToast("No online opponent found. Training against AI!");
+          showToast("No online players found right now. Try challenging someone or play vs AI!");
           matchmakeBtn.textContent = "⚡ Play Random Opponent";
           matchmakeBtn.disabled = false;
-          closeModal('onlineLobbyModal');
         }, 2000);
       }
     }
 
-    // --- SUPABASE GAME STORAGE & ERROR LOGGING ---
-    async function saveGameToSupabase(whitePlayer, blackPlayer, winner, pgn, fen) {
-      if (!window.mySupabaseInstance) return;
+    function startMultiplayerMatch(roomId, color, opponentName) {
+      isMultiplayer = true;
+      currentRoomId = roomId;
+      playerColor = color;
 
-      const { data, error } = await window.mySupabaseInstance.from('chess_games').insert([{
-        white_player: whitePlayer,
-        black_player: blackPlayer,
-        winner: winner,
-        pgn: pgn,
-        fen: fen,
-        created_at: new Date().toISOString()
-      }]);
+      document.getElementById('game-mode-tag').textContent = "MULTIPLAYER";
+      document.getElementById('game-mode-tag').style.background = "var(--accent-green)";
+      document.getElementById('session-info').textContent = `Match vs ${opponentName}`;
 
-      if (error) {
-        console.error("Supabase Game Save Error:", error);
-        showToast("Database Save Error: Check SQL Table Setup!");
-      } else {
-        showToast("Match saved to Supabase database!");
+      if (currentGameInstance && currentGameInstance.game) {
+        currentGameInstance.game.reset();
       }
-    }
-
-    async function openSavedGamesModal() {
-      openModal('savedGamesModal');
-      const container = document.getElementById('savedGamesList');
-      container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">Loading games...</div>`;
-
-      try {
-        if (!window.mySupabaseInstance) throw new Error("No database");
-        const { data, error } = await window.mySupabaseInstance
-          .from('chess_games')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(25);
-
-        if (error) {
-          console.error("Fetch games error:", error);
-          container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">Error fetching matches. Please ensure SQL table is created.</div>`;
-          return;
-        }
-
-        if (!data || data.length === 0) {
-          container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">No saved matches found. Complete a match to store history!</div>`;
-          return;
-        }
-
-        container.innerHTML = data.map(g => `
-          <div class="game-item">
-            <div>
-              <div style="font-weight: 700; font-size: 0.95rem;">${g.white_player} (W) vs ${g.black_player} (B)</div>
-              <div style="font-size: 0.78rem; color: var(--text-muted);">Winner: <strong style="color:var(--accent-green);">${g.winner}</strong> | ${new Date(g.created_at).toLocaleDateString()}</div>
-            </div>
-            <button class="btn btn-blue btn-sm" style="width: auto;" onclick="watchReplay('${encodeURIComponent(g.pgn)}', '${g.white_player}', '${g.black_player}')">▶ Watch Replay</button>
-          </div>
-        `).join('');
-      } catch (err) {
-        container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">Failed to load saved games.</div>`;
+      if (chessBoardObj) {
+        chessBoardObj.orientation(color === 'w' ? 'white' : 'black');
+        chessBoardObj.start();
       }
-    }
 
-    function watchReplay(encodedPgn, white, black) {
-      closeModal('savedGamesModal');
-      openModal('replayModal');
-      const pgn = decodeURIComponent(encodedPgn);
-      document.getElementById('replayMatchTitle').textContent = `${white} vs ${black}`;
-
-      replayChess = new Chess();
-      replayChess.load_pgn(pgn);
-      replayMoves = replayChess.history();
-      replayCurrentIndex = 0;
-
-      replayChess.reset();
-      if (!replayBoardObj) {
-        replayBoardObj = Chessboard('replayBoard', {
-          position: 'start',
-          pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
-        });
-      } else {
-        replayBoardObj.start();
+      if (roomRealtimeChannel) {
+        roomRealtimeChannel.unsubscribe();
       }
-      updateReplayUI();
+
+      roomRealtimeChannel = window.mySupabaseInstance.channel(`room_${roomId}`);
+      roomRealtimeChannel
+        .on('broadcast', { event: 'chess_move' }, payload => {
+          if (payload.senderId !== currentUserId && currentGameInstance) {
+            currentGameInstance.makeRemoteMove(payload.move);
+          }
+        })
+        .subscribe();
+
+      if (currentGameInstance) currentGameInstance.updateStatus();
+      showToast(`Multiplayer match started as ${color === 'w' ? 'White' : 'Black'}!`);
     }
 
-    function updateReplayUI() {
-      document.getElementById('replayInfo').textContent = `Move ${replayCurrentIndex} / ${replayMoves.length}`;
-    }
+    function initChessGame() {
+      const game = new Chess();
+      let redoStack = [];
 
-    function replayStepNext() {
-      if (replayCurrentIndex < replayMoves.length) {
-        replayChess.move(replayMoves[replayCurrentIndex]);
-        replayCurrentIndex++;
-        replayBoardObj.position(replayChess.fen());
-        updateReplayUI();
-        playMoveSound();
-      } else {
-        clearInterval(replayInterval);
-        replayInterval = null;
-        document.getElementById('replayPlayBtn').textContent = 'Play';
-      }
-    }
+      const weights = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
+      
+      const pstPawn = [
+        [0,  0,  0,  0,  0,  0,  0,  0],
+        [50, 50, 50, 50, 50, 50, 50, 50],
+        [10, 10, 20, 30, 30, 20, 10, 10],
+        [ 5,  5, 10, 25, 25, 10,  5,  5],
+        [ 0,  0,  0, 20, 20,  0,  0,  0],
+        [ 5, -5,-10,  0,  0,-10, -5,  5],
+        [ 5, 10, 10,-20,-20, 10, 10,  5],
+        [ 0,  0,  0,  0,  0,  0,  0,  0]
+      ];
+      
+      const pstKnight = [
+        [-50,-40,-30,-30,-30,-30,-40,-50],
+        [-40,-20,  0,  0,  0,  0,-20,-40],
+        [-30,  0, 10, 15, 15, 10,  0,-30],
+        [-30,  5, 15, 20, 20, 15,  5,-30],
+        [-30,  0, 15, 20, 20, 15,  0,-30],
+        [-30,  5, 10, 15, 15, 10,  5,-30],
+        [-40,-20,  0,  5,  5,  0,-20,-40],
+        [-50,-40,-30,-30,-30,-30,-40,-50]
+      ];
 
-    function replayStepPrev() {
-      if (replayCurrentIndex > 0) {
-        replayChess.undo();
-        replayCurrentIndex--;
-        replayBoardObj.position(replayChess.fen());
-        updateReplayUI();
-        playMoveSound();
-      }
-    }
-
-    function replayStepFirst() {
-      replayChess.reset();
-      replayCurrentIndex = 0;
-      replayBoardObj.position(replayChess.fen());
-      updateReplayUI();
-    }
-
-    function replayStepLast() {
-      while (replayCurrentIndex < replayMoves.length) {
-        replayChess.move(replayMoves[replayCurrentIndex]);
-        replayCurrentIndex++;
-      }
-      replayBoardObj.position(replayChess.fen());
-      updateReplayUI();
-    }
-
-    function toggleReplayAuto() {
-      const btn = document.getElementById('replayPlayBtn');
-      if (replayInterval) {
-        clearInterval(replayInterval);
-        replayInterval = null;
-        btn.textContent = 'Play';
-      } else {
-        if (replayCurrentIndex >= replayMoves.length) replayStepFirst();
-        btn.textContent = 'Pause';
-        replayInterval = setInterval(replayStepNext, 800);
-      }
-    }
-
-    // --- AI MINIMAX ALGORITHM ---
-    const pieceValues = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
-    const pst = {
-      p: [[ 0, 0, 0, 0, 0, 0, 0, 0],[50,50,50,50,50,50,50,50],[10,10,20,30,30,20,10,10],[ 5, 5,10,25,25,10, 5, 5],[ 0, 0, 0,20,20, 0, 0, 0],[ 5,-5,-10, 0, 0,-10,-5, 5],[ 5,10,10,-20,-20,10,10, 5],[ 0, 0, 0, 0, 0, 0, 0, 0]],
-      n: [[-50,-40,-30,-30,-30,-30,-40,-50],[-40,-20, 0, 0, 0, 0,-20,-40],[-30, 0,10,15,15,10, 0,-30],[-30, 5,15,20,20,15, 5,-30],[-30, 0,15,20,20,15, 0,-30],[-30, 5,10,15,15,10, 5,-30],[-40,-20, 0, 5, 5, 0,-20,-40],[-50,-40,-30,-30,-30,-30,-40,-50]],
-      b: [[-20,-10,-10,-10,-10,-10,-10,-20],[-10, 0, 0, 0, 0, 0, 0,-10],[-10, 0, 5,10,10, 5, 0,-10],[-10, 5, 5,10,10, 5, 5,-10],[-10, 0,10,10,10,10, 0,-10],[-10,10,10,10,10,10,10,-10],[-10, 5, 0, 0, 0, 0, 5,-10],[-20,-10,-10,-10,-10,-10,-10,-20]],
-      r: [[ 0, 0, 0, 0, 0, 0, 0, 0],[ 5,10,10,10,10,10,10, 5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[-5, 0, 0, 0, 0, 0, 0,-5],[ 0, 0, 0, 5, 5, 0, 0, 0]],
-      q: [[-20,-10,-10,-5,-5,-10,-10,-20],[-10, 0, 0, 0, 0, 0, 0,-10],[-10, 0, 5, 5, 5, 5, 0,-10],[ -5, 0, 5, 5, 5, 5, 0,-5],[  0, 0, 5, 5, 5, 5, 0,-5],[-10, 5, 5, 5, 5, 5, 0,-10],[-10, 0, 5, 0, 0, 0, 0,-10],[-20,-10,-10,-5,-5,-10,-10,-20]],
-      k: [[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-30,-40,-40,-50,-50,-40,-40,-30],[-20,-30,-30,-40,-40,-30,-30,-20],[-10,-20,-20,-20,-20,-20,-20,-10],[ 20, 20, 0, 0, 0, 0, 20, 20],[ 20, 30,10, 0, 0,10, 30, 20]]
-    };
-
-    function evaluateBoard(game) {
-      let board = game.board();
-      let totalEval = 0;
-      for (let r = 0; r < 8; r++) {
-        for (let c = 0; c < 8; c++) {
-          let piece = board[r][c];
-          if (piece) {
-            let val = pieceValues[piece.type];
-            let posVal = pst[piece.type] ? (piece.color === 'w' ? pst[piece.type][r][c] : pst[piece.type][7 - r][c]) : 0;
-            if (piece.color === 'b') totalEval += (val + posVal);
-            else totalEval -= (val + posVal);
+      function evaluateBoard(b) {
+        let totalEval = 0;
+        const boardArr = b.board();
+        for (let r = 0; r < 8; r++) {
+          for (let c = 0; c < 8; c++) {
+            const piece = boardArr[r][c];
+            if (piece) {
+              let val = weights[piece.type] || 0;
+              if (piece.type === 'p') val += pstPawn[r][c];
+              if (piece.type === 'n') val += pstKnight[r][c];
+              totalEval += piece.color === 'w' ? val : -val;
+            }
           }
         }
+        return totalEval;
       }
-      return totalEval;
-    }
 
-    function minimax(game, depth, alpha, beta, isMaximizing) {
-      if (depth === 0 || game.game_over()) return evaluateBoard(game);
-      let moves = game.moves({ verbose: true });
-      moves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
+      function minimax(b, depth, alpha, beta, isMaximizing) {
+        if (depth === 0 || b.game_over()) {
+          return evaluateBoard(b);
+        }
+        const moves = b.moves();
+        if (isMaximizing) {
+          let maxEval = -Infinity;
+          for (let i = 0; i < moves.length; i++) {
+            b.move(moves[i]);
+            let evaluation = minimax(b, depth - 1, alpha, beta, false);
+            b.undo();
+            maxEval = Math.max(maxEval, evaluation);
+            alpha = Math.max(alpha, evaluation);
+            if (beta <= alpha) break;
+          }
+          return maxEval;
+        } else {
+          let minEval = Infinity;
+          for (let i = 0; i < moves.length; i++) {
+            b.move(moves[i]);
+            let evaluation = minimax(b, depth - 1, alpha, beta, true);
+            b.undo();
+            minEval = Math.min(minEval, evaluation);
+            beta = Math.min(beta, evaluation);
+            if (beta <= alpha) break;
+          }
+          return minEval;
+        }
+      }
 
-      if (isMaximizing) {
-        let maxEval = -99999;
+      function getBestMove(b, difficulty) {
+        const moves = b.moves();
+        if (moves.length === 0) return null;
+
+        if (difficulty === 'casual') {
+          return moves[Math.floor(Math.random() * moves.length)];
+        }
+
+        let depth = 1;
+        if (difficulty === 'intermediate') depth = 1;
+        if (difficulty === 'advanced') depth = 2;
+        if (difficulty === 'elite') depth = 3;
+        if (difficulty === 'adaptive') {
+          const moveCount = b.history().length;
+          depth = moveCount > 15 ? 3 : 2;
+        }
+
+        let bestMove = null;
+        let bestValue = b.turn() === 'w' ? -Infinity : Infinity;
+
         for (let i = 0; i < moves.length; i++) {
-          game.move(moves[i]);
-          let evaluation = minimax(game, depth - 1, alpha, beta, false);
-          game.undo();
-          maxEval = Math.max(maxEval, evaluation);
-          alpha = Math.max(alpha, evaluation);
-          if (beta <= alpha) break;
+          b.move(moves[i]);
+          let boardValue = minimax(b, depth - 1, -Infinity, Infinity, b.turn() === 'w');
+          b.undo();
+
+          if (b.turn() === 'w') {
+            if (boardValue > bestValue) {
+              bestValue = boardValue;
+              bestMove = moves[i];
+            }
+          } else {
+            if (boardValue < bestValue) {
+              bestValue = boardValue;
+              bestMove = moves[i];
+            }
+          }
         }
-        return maxEval;
-      } else {
-        let minEval = 99999;
-        for (let i = 0; i < moves.length; i++) {
-          game.move(moves[i]);
-          let evaluation = minimax(game, depth - 1, alpha, beta, true);
-          game.undo();
-          minEval = Math.min(minEval, evaluation);
-          beta = Math.min(beta, evaluation);
-          if (beta <= alpha) break;
-        }
-        return minEval;
-      }
-    }
-
-    function getBestMove(game, depth) {
-      let moves = game.moves({ verbose: true });
-      if (moves.length === 0) return null;
-      moves.sort((a, b) => (b.captured ? 1 : 0) - (a.captured ? 1 : 0));
-
-      let bestMove = moves[0].san;
-      let bestValue = -99999;
-
-      for (let i = 0; i < moves.length; i++) {
-        game.move(moves[i]);
-        let value = minimax(game, depth - 1, -100000, 100000, false);
-        game.undo();
-        if (value > bestValue) {
-          bestValue = value;
-          bestMove = moves[i].san;
-        }
-      }
-      return bestMove;
-    }
-
-    // --- MAIN GAME INIT ---
-    function initChessGame() {
-      var game = new Chess();
-      var statusEl = $('#status');
-      var fenEl = $('#fen');
-      var historyLogEl = $('#moveHistoryLog');
-      var redoStack = [];
-      var selectedSquare = null;
-
-      function makeAIMove() {
-        if (isMultiplayer) return;
-        var possibleMoves = game.moves();
-        if (possibleMoves.length === 0) return;
-
-        let chosenMove = null;
-        if (currentDifficulty === 'casual') {
-          chosenMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-        } else if (currentDifficulty === 'intermediate') {
-          let priority = game.moves({ verbose: true }).filter(m => m.captured);
-          chosenMove = priority.length > 0 && Math.random() < 0.6 ? priority[0].san : possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
-        } else if (currentDifficulty === 'advanced') {
-          chosenMove = getBestMove(game, 2);
-        } else if (currentDifficulty === 'elite' || currentDifficulty === 'adaptive') {
-          chosenMove = getBestMove(game, 3);
-        }
-
-        let moveResult = game.move(chosenMove || possibleMoves[0]);
-        if (moveResult) {
-          if (moveResult.captured) playCaptureSound();
-          else if (game.in_check()) playCheckSound();
-          else playMoveSound();
-        }
-
-        chessBoardObj.position(game.fen());
-        updateStatus();
-        updateHistoryLog();
-        checkGameResultState();
+        return bestMove || moves[Math.floor(Math.random() * moves.length)];
       }
 
       function onDragStart(source, piece, position, orientation) {
         if (game.game_over()) return false;
         if (isMultiplayer) {
-          if ((playerColor === 'w' && game.turn() !== 'w') || (playerColor === 'b' && game.turn() !== 'b')) return false;
-          if ((playerColor === 'w' && piece.search(/^b/) !== -1) || (playerColor === 'b' && piece.search(/^w/) !== -1)) return false;
+          if ((playerColor === 'w' && piece.search(/^b/) !== -1) ||
+              (playerColor === 'b' && piece.search(/^w/) !== -1)) {
+            return false;
+          }
+          if ((game.turn() === 'w' && playerColor !== 'w') ||
+              (game.turn() === 'b' && playerColor !== 'b')) {
+            return false;
+          }
         } else {
-          if (game.turn() !== 'w' || piece.search(/^b/) !== -1) return false;
+          if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+              (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+            return false;
+          }
         }
       }
 
       function onDrop(source, target) {
-        var move = game.move({ from: source, to: target, promotion: 'q' });
+        const move = game.move({
+          from: source,
+          to: target,
+          promotion: 'q'
+        });
+
         if (move === null) return 'snapback';
 
-        redoStack = [];
-        selectedSquare = null;
-        $('#myBoard .square-55d63').removeClass('highlight');
-
         if (move.captured) playCaptureSound();
-        else if (game.in_check()) playCheckSound();
         else playMoveSound();
 
+        redoStack = [];
         updateStatus();
-        updateHistoryLog();
 
         if (isMultiplayer && roomRealtimeChannel) {
           roomRealtimeChannel.send({
             type: 'broadcast',
-            event: 'pvp_move',
-            from: source,
-            to: target,
-            promotion: 'q'
+            event: 'chess_move',
+            move: { from: source, to: target, promotion: 'q' },
+            senderId: currentUserId
           });
+        } else if (!game.game_over() && game.turn() === 'b') {
+          window.setTimeout(makeAIMove, 300);
         }
+      }
 
-        checkGameResultState();
+      function makeAIMove() {
+        const aiMove = getBestMove(game, currentDifficulty);
+        if (aiMove) {
+          const moveObj = game.move(aiMove);
+          if (moveObj && moveObj.captured) playCaptureSound();
+          else playMoveSound();
 
-        if (!isMultiplayer && !game.game_over()) {
-          window.setTimeout(makeAIMove, 50);
+          chessBoardObj.position(game.fen());
+          updateStatus();
+        }
+      }
+
+      function makeRemoteMove(moveData) {
+        const move = game.move(moveData);
+        if (move) {
+          if (move.captured) playCaptureSound();
+          else playMoveSound();
+          chessBoardObj.position(game.fen());
+          updateStatus();
         }
       }
 
@@ -1061,213 +978,238 @@
         chessBoardObj.position(game.fen());
       }
 
-      $('#myBoard').off('click').on('click', '.square-55d63', function () {
-        if (game.game_over()) return;
-        if (isMultiplayer && game.turn() !== playerColor) return;
-        if (!isMultiplayer && game.turn() !== 'w') return;
-
-        var square = $(this).attr('data-square');
-        if (selectedSquare === null) {
-          var piece = game.get(square);
-          if (piece && piece.color === game.turn()) {
-            selectedSquare = square;
-            $('#myBoard .square-55d63').removeClass('highlight');
-            $(this).addClass('highlight');
-          }
-        } else {
-          var move = game.move({ from: selectedSquare, to: square, promotion: 'q' });
-          $('#myBoard .square-55d63').removeClass('highlight');
-          var prevSelected = selectedSquare;
-          selectedSquare = null;
-
-          if (move === null) {
-            var piece = game.get(square);
-            if (piece && piece.color === game.turn() && prevSelected !== square) {
-              selectedSquare = square;
-              $(this).addClass('highlight');
-            }
-          } else {
-            redoStack = [];
-            if (move.captured) playCaptureSound();
-            else if (game.in_check()) playCheckSound();
-            else playMoveSound();
-
-            chessBoardObj.position(game.fen());
-            updateStatus();
-            updateHistoryLog();
-
-            if (isMultiplayer && roomRealtimeChannel) {
-              roomRealtimeChannel.send({
-                type: 'broadcast',
-                event: 'pvp_move',
-                from: prevSelected,
-                to: square,
-                promotion: 'q'
-              });
-            }
-
-            checkGameResultState();
-
-            if (!isMultiplayer && !game.game_over()) {
-              window.setTimeout(makeAIMove, 50);
-            }
-          }
-        }
-      });
-
       function updateStatus() {
-        var currentLang = localStorage.getItem('site_lang') || 'en';
-        var whiteLabel = currentLang === 'fr' ? 'les Blancs' : currentLang === 'es' ? 'Blancas' : 'White';
-        var blackLabel = currentLang === 'fr' ? 'les Noirs' : currentLang === 'es' ? 'Negras' : 'Black';
-        var colorKey = game.turn() === 'b' ? blackLabel : whiteLabel;
-        var status = '';
+        let statusStr = '';
+        const moveColor = game.turn() === 'w' ? 'White' : 'Black';
 
         if (game.in_checkmate()) {
-          status = `Game over, ${colorKey} is in checkmate.`;
+          statusStr = `Game over, ${moveColor} is in checkmate.`;
+          playCheckSound();
+          saveMatchToDatabase();
         } else if (game.in_draw()) {
-          status = "Game over, drawn position.";
+          statusStr = 'Game over, drawn position.';
+          saveMatchToDatabase();
         } else {
-          status = (game.turn() === 'w' ? 'White' : 'Black') + ' to move';
-          if (game.in_check()) status += ', check';
-        }
-        statusEl.html(status);
-        fenEl.html(game.fen());
-      }
-
-      function updateHistoryLog() {
-        var history = game.history({ verbose: true });
-        if (history.length === 0) {
-          historyLogEl.html('No moves yet.');
-          return;
-        }
-        let pgnText = '';
-        for (let i = 0; i < history.length; i += 2) {
-          let moveNum = (i / 2) + 1;
-          let whiteMove = history[i].san;
-          let blackMove = history[i + 1] ? history[i + 1].san : '';
-          pgnText += `${moveNum}. ${whiteMove} ${blackMove} `;
-        }
-        historyLogEl.html(pgnText);
-        historyLogEl.scrollTop(historyLogEl[0].scrollHeight);
-      }
-
-      function checkGameResultState() {
-        if (game.game_over()) {
-          let winner = 'Draw';
-          if (game.in_checkmate()) {
-            winner = game.turn() === 'w' ? 'Black' : 'White';
+          statusStr = `${moveColor} to move`;
+          if (game.in_check()) {
+            statusStr += `, ${moveColor} is in check!`;
+            playCheckSound();
           }
-          let whitePlayer = isMultiplayer ? (playerColor === 'w' ? currentUsername : 'Opponent') : currentUsername;
-          let blackPlayer = isMultiplayer ? (playerColor === 'b' ? currentUsername : 'Opponent') : `AI (${currentDifficulty})`;
+        }
 
-          saveGameToSupabase(whitePlayer, blackPlayer, winner, game.pgn(), game.fen());
+        document.getElementById('status').textContent = statusStr;
+        document.getElementById('fen').textContent = `FEN: ${game.fen()}`;
+        
+        const pgnHistory = game.pgn();
+        document.getElementById('moveHistoryLog').textContent = pgnHistory || 'No moves yet.';
+      }
+
+      async function saveMatchToDatabase() {
+        if (!window.mySupabaseInstance) return;
+        try {
+          await window.mySupabaseInstance.from('chess_games').insert([
+            {
+              player_id: currentUserId,
+              player_name: currentUsername,
+              pgn: game.pgn(),
+              fen: game.fen(),
+              mode: isMultiplayer ? 'multiplayer' : `AI (${currentDifficulty})`,
+              created_at: new Date().toISOString()
+            }
+          ]);
+          showToast("Match result saved to database!");
+        } catch (err) {
+          console.error("Failed to save match:", err);
         }
       }
 
-      chessBoardObj = Chessboard('myBoard', {
-        position: 'start',
+      const boardConfig = {
         draggable: true,
+        position: 'start',
         onDragStart: onDragStart,
         onDrop: onDrop,
         onSnapEnd: onSnapEnd,
         pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
-      });
+      };
+
+      chessBoardObj = Chessboard('myBoard', boardConfig);
       updateStatus();
 
-      $('#startBtn').off('click').on('click', function () {
+      document.getElementById('startBtn').onclick = () => {
         isMultiplayer = false;
-        playerColor = 'w';
-        if (roomRealtimeChannel) roomRealtimeChannel.unsubscribe();
         document.getElementById('game-mode-tag').textContent = "VS AI";
         document.getElementById('game-mode-tag').style.background = "var(--accent-purple)";
-
+        document.getElementById('session-info').textContent = `Player: ${currentUsername}`;
         game.reset();
-        redoStack = [];
-        selectedSquare = null;
-        $('#myBoard .square-55d63').removeClass('highlight');
         chessBoardObj.orientation('white');
         chessBoardObj.start();
         updateStatus();
-        updateHistoryLog();
-      });
+        showToast("New Game Started vs AI!");
+      };
 
-      $('#undoBtn').off('click').on('click', function () {
-        if (isMultiplayer || game.history().length < 2) return;
-        selectedSquare = null;
-        $('#myBoard .square-55d63').removeClass('highlight');
-        
-        let move2 = game.undo();
-        let move1 = game.undo();
+      document.getElementById('undoBtn').onclick = () => {
+        if (isMultiplayer) {
+          showToast("Undo disabled in live multiplayer.");
+          return;
+        }
+        const move1 = game.undo();
         if (move1) redoStack.push(move1);
+        const move2 = game.undo();
         if (move2) redoStack.push(move2);
 
         chessBoardObj.position(game.fen());
         updateStatus();
-        updateHistoryLog();
-      });
-
-      $('#redoBtn').off('click').on('click', function () {
-        if (isMultiplayer || redoStack.length < 2) return;
-        selectedSquare = null;
-        $('#myBoard .square-55d63').removeClass('highlight');
-
-        let move2 = redoStack.pop();
-        let move1 = redoStack.pop();
-        if (move1) game.move(move1);
-        if (move2) game.move(move2);
-
-        chessBoardObj.position(game.fen());
-        updateStatus();
-        updateHistoryLog();
-      });
-
-      $('#copyPgnBtn').off('click').on('click', function () {
-        const lang = localStorage.getItem('site_lang') || 'en';
-        const t = translations[lang] || translations.en;
-        navigator.clipboard.writeText(game.pgn() || "No moves played yet.").then(() => showToast(t.copiedPgn));
-      });
-
-      $('#copyFenBtn').off('click').on('click', function () {
-        const lang = localStorage.getItem('site_lang') || 'en';
-        const t = translations[lang] || translations.en;
-        navigator.clipboard.writeText(game.fen()).then(() => showToast(t.copiedFen));
-      });
-
-      window.startMultiplayerMatch = function(roomId, color, opponentName) {
-        isMultiplayer = true;
-        playerColor = color;
-        currentRoomId = roomId;
-
-        document.getElementById('game-mode-tag').textContent = `LIVE PvP vs ${opponentName}`;
-        document.getElementById('game-mode-tag').style.background = "var(--accent-green)";
-
-        game.reset();
-        chessBoardObj.orientation(color === 'w' ? 'white' : 'black');
-        chessBoardObj.start();
-        updateStatus();
-        updateHistoryLog();
-
-        if (roomRealtimeChannel) roomRealtimeChannel.unsubscribe();
-
-        roomRealtimeChannel = window.mySupabaseInstance.channel(roomId);
-        roomRealtimeChannel
-          .on('broadcast', { event: 'pvp_move' }, payload => {
-            let m = game.move({ from: payload.from, to: payload.to, promotion: payload.promotion });
-            if (m) {
-              if (m.captured) playCaptureSound();
-              else if (game.in_check()) playCheckSound();
-              else playMoveSound();
-
-              chessBoardObj.position(game.fen());
-              updateStatus();
-              updateHistoryLog();
-              checkGameResultState();
-            }
-          })
-          .subscribe();
       };
 
-      return { updateStatus: updateStatus };
+      document.getElementById('redoBtn').onclick = () => {
+        if (isMultiplayer) return;
+        if (redoStack.length > 0) {
+          const m1 = redoStack.pop();
+          if (m1) game.move(m1);
+          const m2 = redoStack.pop();
+          if (m2) game.move(m2);
+
+          chessBoardObj.position(game.fen());
+          updateStatus();
+        }
+      };
+
+      return {
+        game,
+        makeRemoteMove,
+        updateStatus
+      };
+    }
+
+    document.getElementById('copyPgnBtn').onclick = () => {
+      const pgn = document.getElementById('moveHistoryLog').textContent;
+      navigator.clipboard.writeText(pgn);
+      const lang = localStorage.getItem('site_lang') || 'en';
+      showToast(translations[lang]?.copiedPgn || "PGN copied!");
+    };
+
+    document.getElementById('copyFenBtn').onclick = () => {
+      const fenText = document.getElementById('fen').textContent.replace('FEN: ', '');
+      navigator.clipboard.writeText(fenText);
+      const lang = localStorage.getItem('site_lang') || 'en';
+      showToast(translations[lang]?.copiedFen || "FEN copied!");
+    };
+
+    async function openSavedGamesModal() {
+      openModal('savedGamesModal');
+      const container = document.getElementById('savedGamesList');
+      container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">Loading games from Supabase...</div>`;
+
+      if (!window.mySupabaseInstance) {
+        container.innerHTML = `<div style="color: var(--accent-rose); text-align: center;">Supabase database connection not available.</div>`;
+        return;
+      }
+
+      try {
+        const { data, error } = await window.mySupabaseInstance
+          .from('chess_games')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(15);
+
+        if (error || !data || data.length === 0) {
+          container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">No saved matches found in database.</div>`;
+          return;
+        }
+
+        container.innerHTML = data.map(g => `
+          <div class="game-item">
+            <div>
+              <strong>${g.player_name || 'Anonymous'}</strong> 
+              <span style="font-size: 0.75rem; color: var(--text-muted);">(${g.mode || 'VS AI'})</span><br>
+              <span style="font-size: 0.7rem; color: var(--accent-blue);">${new Date(g.created_at).toLocaleString()}</span>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" style="width: auto;" onclick="startReplay('${encodeURIComponent(g.pgn)}', '${g.player_name || 'Player'}')">▶ Watch Replay</button>
+          </div>
+        `).join('');
+      } catch (err) {
+        container.innerHTML = `<div style="color: var(--accent-rose); text-align: center;">Error fetching saved games.</div>`;
+      }
+    }
+
+    function startReplay(encodedPgn, playerName) {
+      closeModal('savedGamesModal');
+      openModal('replayModal');
+
+      const pgn = decodeURIComponent(encodedPgn);
+      document.getElementById('replayMatchTitle').textContent = `Replay: ${playerName}'s Game`;
+
+      replayChess = new Chess();
+      if (pgn && pgn !== 'No moves yet.') {
+        replayChess.load_pgn(pgn);
+      }
+      replayMoves = replayChess.history({ verbose: true });
+      replayCurrentIndex = 0;
+
+      if (!replayBoardObj) {
+        replayBoardObj = Chessboard('replayBoard', {
+          position: 'start',
+          pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
+        });
+      } else {
+        replayBoardObj.position('start');
+      }
+
+      updateReplayUI();
+    }
+
+    function updateReplayUI() {
+      const tempChess = new Chess();
+      for (let i = 0; i < replayCurrentIndex; i++) {
+        tempChess.move(replayMoves[i]);
+      }
+      if (replayBoardObj) replayBoardObj.position(tempChess.fen());
+      document.getElementById('replayInfo').textContent = `Move ${replayCurrentIndex} / ${replayMoves.length}`;
+    }
+
+    function replayStepFirst() {
+      replayCurrentIndex = 0;
+      updateReplayUI();
+    }
+
+    function replayStepPrev() {
+      if (replayCurrentIndex > 0) {
+        replayCurrentIndex--;
+        updateReplayUI();
+      }
+    }
+
+    function replayStepNext() {
+      if (replayCurrentIndex < replayMoves.length) {
+        replayCurrentIndex++;
+        updateReplayUI();
+      }
+    }
+
+    function replayStepLast() {
+      replayCurrentIndex = replayMoves.length;
+      updateReplayUI();
+    }
+
+    function toggleReplayAuto() {
+      const playBtn = document.getElementById('replayPlayBtn');
+      if (replayInterval) {
+        clearInterval(replayInterval);
+        replayInterval = null;
+        playBtn.textContent = 'Play';
+      } else {
+        playBtn.textContent = 'Pause';
+        replayInterval = setInterval(() => {
+          if (replayCurrentIndex < replayMoves.length) {
+            replayCurrentIndex++;
+            updateReplayUI();
+          } else {
+            clearInterval(replayInterval);
+            replayInterval = null;
+            playBtn.textContent = 'Play';
+          }
+        }, 1000);
+      }
     }
   </script>
 </body>

@@ -124,7 +124,7 @@
       color: var(--text-main);
     }
     .main-container {
-      max-width: 1150px;
+      max-width: 1200px;
       margin: 2rem auto;
       padding: 0 1rem;
     }
@@ -152,7 +152,7 @@
     }
     .chess-sidebar {
       flex: 1;
-      min-width: 290px;
+      min-width: 300px;
       display: flex;
       flex-direction: column;
       gap: 0.9rem;
@@ -185,7 +185,7 @@
     .btn-success { background: var(--accent-green); color: white; }
     .btn-blue { background: var(--accent-blue); color: white; }
 
-    .status-box, .lang-select-group, .history-box {
+    .status-box, .lang-select-group, .history-box, .chat-box {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
       padding: 0.9rem;
@@ -193,7 +193,7 @@
       font-size: 0.9rem;
       line-height: 1.5;
     }
-    .lang-select {
+    .lang-select, .chat-input-field {
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       color: var(--text-main);
@@ -202,14 +202,13 @@
       font-size: 0.88rem;
       font-family: inherit;
       width: 100%;
-      margin-top: 0.3rem;
+      box-sizing: border-box;
     }
-    .lang-select:focus { outline: none; border-color: var(--accent-purple); }
+    .lang-select:focus, .chat-input-field:focus { outline: none; border-color: var(--accent-purple); }
     
-    .history-log {
-      max-height: 100px;
+    .history-log, .chat-log {
+      max-height: 110px;
       overflow-y: auto;
-      font-family: monospace;
       font-size: 0.85rem;
       color: var(--text-muted);
       margin-top: 0.4rem;
@@ -217,6 +216,9 @@
       background: var(--bg-card);
       border: 1px solid var(--border-subtle);
       border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
     }
 
     /* Modal Styles */
@@ -268,7 +270,7 @@
     }
     .close-modal:hover { color: var(--text-main); }
     
-    .game-item, .player-item {
+    .game-item, .player-item, .leaderboard-item {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
       padding: 0.75rem 1rem;
@@ -378,6 +380,31 @@
             <div id="fen" style="font-size: 0.7rem; color: var(--text-muted); word-break: break-all; margin-top: 0.3rem;"></div>
           </div>
 
+          <!-- Sidebar Live Online Players Panel -->
+          <div class="status-box" id="online-users-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+              <strong style="color: var(--accent-purple);">🟢 Active Online Players</strong>
+              <span id="online-count-badge" style="font-size: 0.75rem; background: var(--accent-green); color: white; padding: 0.15rem 0.5rem; border-radius: 12px; font-weight: 700;">1 Online</span>
+            </div>
+            <div id="sidebar-online-list" style="display: flex; flex-direction: column; gap: 0.4rem; max-height: 120px; overflow-y: auto;">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Scanning for online players...</span>
+            </div>
+          </div>
+
+          <!-- Live Chat Component -->
+          <div class="chat-box">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent-blue);">💬 Live Match & Lobby Chat</span>
+            </div>
+            <div id="chatLog" class="chat-log">
+              <span style="font-size: 0.78rem; color: var(--text-muted);">Welcome to Justin's Chess Chat!</span>
+            </div>
+            <div style="display: flex; gap: 0.4rem; margin-top: 0.4rem;">
+              <input type="text" id="chatInput" class="chat-input-field" placeholder="Type a message..." onkeypress="handleChatKeyPress(event)">
+              <button type="button" class="btn btn-primary btn-sm" style="width: auto; padding: 0.4rem 0.8rem;" onclick="sendChatMessage()">Send</button>
+            </div>
+          </div>
+
           <div class="history-box">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <span id="history-label" style="font-size: 0.85rem; font-weight: 700; color: var(--accent-purple);">Move History (PGN)</span>
@@ -386,12 +413,16 @@
                 <button type="button" id="copyFenBtn" class="btn btn-secondary" style="font-size: 0.7rem; padding: 0.2rem 0.5rem; width: auto;">Copy FEN</button>
               </div>
             </div>
-            <div id="moveHistoryLog" class="history-log">No moves yet.</div>
+            <div id="moveHistoryLog" class="history-log" style="font-family: monospace;">No moves yet.</div>
           </div>
 
-          <!-- Multiplayer & Database Controls -->
+          <!-- Controls -->
           <div style="display: flex; gap: 0.5rem;">
             <button type="button" id="onlineLobbyBtn" class="btn btn-blue" onclick="openOnlineLobby()">🌐 Online Lobby</button>
+            <button type="button" class="btn btn-warning" onclick="openLeaderboardModal()">🏆 Leaderboard</button>
+          </div>
+
+          <div style="display: flex; gap: 0.5rem;">
             <button type="button" id="loadGamesBtn" class="btn btn-secondary" onclick="openSavedGamesModal()">📜 Watch Saved Games</button>
           </div>
 
@@ -405,6 +436,19 @@
       </div>
     </div>
   </main>
+
+  <!-- Leaderboard Modal -->
+  <div id="leaderboardModal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span class="modal-title">🏆 Global Chess Leaderboard</span>
+        <button type="button" class="close-modal" onclick="closeModal('leaderboardModal')">&times;</button>
+      </div>
+      <div id="leaderboardList" style="display: flex; flex-direction: column; gap: 0.75rem;">
+        <div style="color: var(--text-muted); text-align: center; padding: 1rem;">Calculating rankings...</div>
+      </div>
+    </div>
+  </div>
 
   <!-- Saved Games Replay Modal -->
   <div id="savedGamesModal" class="modal-overlay">
@@ -442,7 +486,7 @@
   <div id="onlineLobbyModal" class="modal-overlay">
     <div class="modal-card">
       <div class="modal-header">
-        <span class="modal-title" id="modal-lobby-title">Live Chess.com Style Lobby</span>
+        <span class="modal-title" id="modal-lobby-title">Live Chess Lobby</span>
         <button type="button" class="close-modal" onclick="closeModal('onlineLobbyModal')">&times;</button>
       </div>
       <div style="display: flex; gap: 0.5rem;">
@@ -462,7 +506,7 @@
       <p id="challengeText">Player challenged you to a live match!</p>
       <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1rem;">
         <button type="button" class="btn btn-success" id="acceptChallengeBtn">Accept</button>
-        <button type="button" class="btn btn-warning" onclick="closeModal('challengeModal')">Decline</button>
+        <button type="button" class="btn btn-warning" id="declineChallengeBtn">Decline</button>
       </div>
     </div>
   </div>
@@ -474,7 +518,6 @@
   </footer>
 
   <script>
-    // Initialize Supabase Client
     if (!window.mySupabaseInstance && window.supabase) {
       window.mySupabaseInstance = window.supabase.createClient(
         'https://iifhzdioridrmbcflswa.supabase.co',
@@ -484,7 +527,6 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    // Audio Synthesizer
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playTone(freq, type, duration) {
       try {
@@ -589,7 +631,6 @@
       document.getElementById('opt-adaptive').textContent = t.adaptive;
     }
 
-    // Fetch Logged-In User from Supabase
     async function checkUserSession() {
       try {
         if (!window.mySupabaseInstance) throw new Error("No Supabase instance");
@@ -632,6 +673,47 @@
       window.location.reload();
     }
 
+    /* 🟢 PRESENCE & DUEL SYSTEM */
+    function renderOnlinePlayers() {
+      const modalContainer = document.getElementById('onlinePlayersList');
+      const sidebarContainer = document.getElementById('sidebar-online-list');
+      const countBadge = document.getElementById('online-count-badge');
+      
+      const keys = Object.keys(onlineUsersMap);
+      const totalCount = keys.length + 1; // Including self
+
+      if (countBadge) countBadge.textContent = `${totalCount} Online`;
+
+      if (sidebarContainer) {
+        if (keys.length === 0) {
+          sidebarContainer.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-muted); padding: 0.2rem 0;">No other players online right now.</div>`;
+        } else {
+          sidebarContainer.innerHTML = keys.map(uid => `
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; background: var(--bg-card); padding: 0.35rem 0.6rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
+              <span><span class="badge-online"></span><strong>${onlineUsersMap[uid]}</strong></span>
+              <button class="btn btn-primary btn-sm" style="width: auto; padding: 0.15rem 0.4rem; font-size: 0.7rem;" onclick="sendChallenge('${uid}', '${onlineUsersMap[uid]}')">⚔️ Challenge</button>
+            </div>
+          `).join('');
+        }
+      }
+
+      if (modalContainer) {
+        if (keys.length === 0) {
+          modalContainer.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 0.5rem;">No other players online right now.</div>`;
+        } else {
+          modalContainer.innerHTML = keys.map(uid => `
+            <div class="player-item">
+              <div>
+                <span class="badge-online"></span>
+                <strong>${onlineUsersMap[uid]}</strong>
+              </div>
+              <button class="btn btn-primary btn-sm" style="width: auto;" onclick="sendChallenge('${uid}', '${onlineUsersMap[uid]}')">⚔️ Challenge Duel</button>
+            </div>
+          `).join('');
+        }
+      }
+    }
+
     function setupPresenceChannel() {
       if (!window.mySupabaseInstance) return;
 
@@ -662,7 +744,8 @@
           if (payload.toUserId === currentUserId) {
             playTone(880, 'sine', 0.2);
             document.getElementById('challengeText').textContent = `${payload.fromUsername} challenged you to a Chess Duel!`;
-            document.getElementById('acceptChallengeBtn').onclick = () => acceptChallenge(payload.fromUserId, payload.roomId);
+            document.getElementById('acceptChallengeBtn').onclick = () => acceptChallenge(payload.fromUserId, payload.roomId, payload.fromUsername);
+            document.getElementById('declineChallengeBtn').onclick = () => declineChallenge(payload.fromUserId);
             openModal('challengeModal');
           }
         })
@@ -673,6 +756,14 @@
             startMultiplayerMatch(payload.roomId, 'w', payload.fromUsername);
           }
         })
+        .on('broadcast', { event: 'challenge_declined' }, payload => {
+          if (payload.toUserId === currentUserId) {
+            showToast(`${payload.fromUsername} declined your duel challenge.`);
+          }
+        })
+        .on('broadcast', { event: 'global_chat' }, payload => {
+          if (!isMultiplayer) appendChatMessage(payload.sender, payload.message);
+        })
         .subscribe(async (status) => {
           if (status === 'SUBSCRIBED') {
             await globalPresenceChannel.track({
@@ -682,24 +773,6 @@
             });
           }
         });
-    }
-
-    function renderOnlinePlayers() {
-      const container = document.getElementById('onlinePlayersList');
-      const keys = Object.keys(onlineUsersMap);
-      if (keys.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 0.5rem;">No other players online right now.</div>`;
-        return;
-      }
-      container.innerHTML = keys.map(uid => `
-        <div class="player-item">
-          <div>
-            <span class="badge-online"></span>
-            <strong>${onlineUsersMap[uid]}</strong>
-          </div>
-          <button class="btn btn-primary btn-sm" style="width: auto;" onclick="sendChallenge('${uid}', '${onlineUsersMap[uid]}')">⚔️ Challenge Duel</button>
-        </div>
-      `).join('');
     }
 
     function openOnlineLobby() {
@@ -720,7 +793,7 @@
       showToast(`Challenge sent to ${targetUsername}! Waiting...`);
     }
 
-    function acceptChallenge(opponentUserId, roomId) {
+    function acceptChallenge(opponentUserId, roomId, opponentName) {
       closeModal('challengeModal');
       closeModal('onlineLobbyModal');
 
@@ -733,7 +806,18 @@
         roomId: roomId
       });
 
-      startMultiplayerMatch(roomId, 'b', onlineUsersMap[opponentUserId] || 'Opponent');
+      startMultiplayerMatch(roomId, 'b', opponentName);
+    }
+
+    function declineChallenge(opponentUserId) {
+      closeModal('challengeModal');
+      globalPresenceChannel.send({
+        type: 'broadcast',
+        event: 'challenge_declined',
+        toUserId: opponentUserId,
+        fromUserId: currentUserId,
+        fromUsername: currentUsername
+      });
     }
 
     function startRandomMatchmaking() {
@@ -765,7 +849,7 @@
 
       document.getElementById('game-mode-tag').textContent = "MULTIPLAYER";
       document.getElementById('game-mode-tag').style.background = "var(--accent-green)";
-      document.getElementById('session-info').textContent = `Match vs ${opponentName}`;
+      document.getElementById('session-info').textContent = `Match vs ${opponentName} (${color === 'w' ? 'White' : 'Black'})`;
 
       if (currentGameInstance && currentGameInstance.game) {
         currentGameInstance.game.reset();
@@ -786,18 +870,66 @@
             currentGameInstance.makeRemoteMove(payload.move);
           }
         })
+        .on('broadcast', { event: 'chess_chat' }, payload => {
+          appendChatMessage(payload.sender, payload.message);
+        })
         .subscribe();
 
       if (currentGameInstance) currentGameInstance.updateStatus();
-      showToast(`Multiplayer match started as ${color === 'w' ? 'White' : 'Black'}!`);
+      showToast(`Multiplayer match started! You are ${color === 'w' ? 'White' : 'Black'}.`);
     }
 
+    /* 💬 CHAT SYSTEM */
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      appendChatMessage(currentUsername, msg);
+
+      if (isMultiplayer && roomRealtimeChannel) {
+        roomRealtimeChannel.send({
+          type: 'broadcast',
+          event: 'chess_chat',
+          sender: currentUsername,
+          message: msg
+        });
+      } else if (globalPresenceChannel) {
+        globalPresenceChannel.send({
+          type: 'broadcast',
+          event: 'global_chat',
+          sender: currentUsername,
+          message: msg
+        });
+      }
+
+      input.value = '';
+    }
+
+    function handleChatKeyPress(event) {
+      if (event.key === 'Enter') sendChatMessage();
+    }
+
+    function appendChatMessage(sender, message) {
+      const chatLog = document.getElementById('chatLog');
+      const div = document.createElement('div');
+      div.style.fontSize = '0.82rem';
+      div.style.wordBreak = 'break-word';
+      div.innerHTML = `<strong style="color: ${sender === currentUsername ? 'var(--accent-purple)' : 'var(--accent-blue)'};">${sender}:</strong> ${escapeHtml(message)}`;
+      chatLog.appendChild(div);
+      chatLog.scrollTop = chatLog.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    /* ♟️ CHESS ENGINE & BOARD */
     function initChessGame() {
       const game = new Chess();
       let redoStack = [];
 
       const weights = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
-      
       const pstPawn = [
         [0,  0,  0,  0,  0,  0,  0,  0],
         [50, 50, 50, 50, 50, 50, 50, 50],
@@ -826,9 +958,7 @@
       }
 
       function minimax(b, depth, alpha, beta, isMaximizing) {
-        if (depth === 0 || b.game_over()) {
-          return evaluateBoard(b);
-        }
+        if (depth === 0 || b.game_over()) return evaluateBoard(b);
         const moves = b.moves();
         if (isMaximizing) {
           let maxEval = -Infinity;
@@ -859,18 +989,13 @@
         const moves = b.moves();
         if (moves.length === 0) return null;
 
-        if (difficulty === 'casual') {
-          return moves[Math.floor(Math.random() * moves.length)];
-        }
+        if (difficulty === 'casual') return moves[Math.floor(Math.random() * moves.length)];
 
         let depth = 1;
         if (difficulty === 'intermediate') depth = 1;
         if (difficulty === 'advanced') depth = 2;
         if (difficulty === 'elite') depth = 3;
-        if (difficulty === 'adaptive') {
-          const moveCount = b.history().length;
-          depth = moveCount > 15 ? 3 : 2;
-        }
+        if (difficulty === 'adaptive') depth = b.history().length > 15 ? 3 : 2;
 
         let bestMove = null;
         let bestValue = b.turn() === 'w' ? -Infinity : Infinity;
@@ -899,18 +1024,12 @@
         if (game.game_over()) return false;
         if (isMultiplayer) {
           if ((playerColor === 'w' && piece.search(/^b/) !== -1) ||
-              (playerColor === 'b' && piece.search(/^w/) !== -1)) {
-            return false;
-          }
+              (playerColor === 'b' && piece.search(/^w/) !== -1)) return false;
           if ((game.turn() === 'w' && playerColor !== 'w') ||
-              (game.turn() === 'b' && playerColor !== 'b')) {
-            return false;
-          }
+              (game.turn() === 'b' && playerColor !== 'b')) return false;
         } else {
           if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-              (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-            return false;
-          }
+              (game.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
         }
       }
 
@@ -972,12 +1091,13 @@
         const moveColor = game.turn() === 'w' ? 'White' : 'Black';
 
         if (game.in_checkmate()) {
-          statusStr = `Game over, ${moveColor} is in checkmate.`;
+          const winningSide = game.turn() === 'w' ? 'Black' : 'White';
+          statusStr = `Game over, ${moveColor} is in checkmate. ${winningSide} wins!`;
           playCheckSound();
-          saveMatchToDatabase();
+          saveMatchToDatabase(winningSide + ' Wins', winningSide === 'White' ? currentUsername : 'Opponent/AI');
         } else if (game.in_draw()) {
           statusStr = 'Game over, drawn position.';
-          saveMatchToDatabase();
+          saveMatchToDatabase('Draw', 'None');
         } else {
           statusStr = `${moveColor} to move`;
           if (game.in_check()) {
@@ -988,16 +1108,12 @@
 
         document.getElementById('status').textContent = statusStr;
         document.getElementById('fen').textContent = `FEN: ${game.fen()}`;
-        
-        const pgnHistory = game.pgn();
-        document.getElementById('moveHistoryLog').textContent = pgnHistory || 'No moves yet.';
+        document.getElementById('moveHistoryLog').textContent = game.pgn() || 'No moves yet.';
       }
 
-      // Save Game Results to Supabase
-      async function saveMatchToDatabase() {
+      async function saveMatchToDatabase(resultStatus = 'In Progress', winnerName = null) {
         if (!window.mySupabaseInstance) return;
         try {
-          // Re-fetch current user info dynamically
           const { data: { user } } = await window.mySupabaseInstance.auth.getUser();
           const activeUserId = user ? user.id : currentUserId;
           const activeUserName = user ? (user.user_metadata?.username || user.email?.split('@')[0] || currentUsername) : currentUsername;
@@ -1009,13 +1125,14 @@
               pgn: game.pgn(),
               fen: game.fen(),
               mode: isMultiplayer ? 'Multiplayer' : `AI (${currentDifficulty})`,
+              result: resultStatus,
+              winner_name: winnerName || activeUserName,
               created_at: new Date().toISOString()
             }
           ]);
 
           if (error) {
             console.error("Supabase Save Error:", error);
-            showToast("Failed to save match. Ensure chess_games table exists.");
           } else {
             showToast("Match saved to database!");
           }
@@ -1049,10 +1166,7 @@
       };
 
       document.getElementById('undoBtn').onclick = () => {
-        if (isMultiplayer) {
-          showToast("Undo disabled in live multiplayer.");
-          return;
-        }
+        if (isMultiplayer) return showToast("Undo disabled in live multiplayer.");
         const move1 = game.undo();
         if (move1) redoStack.push(move1);
         const move2 = game.undo();
@@ -1082,30 +1196,74 @@
       };
     }
 
+    /* 🏆 LEADERBOARD SYSTEM */
+    async function openLeaderboardModal() {
+      openModal('leaderboardModal');
+      const listContainer = document.getElementById('leaderboardList');
+      listContainer.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">Calculating rankings...</div>`;
+
+      if (!window.mySupabaseInstance) return;
+
+      try {
+        const { data, error } = await window.mySupabaseInstance
+          .from('chess_games')
+          .select('winner_name, player_name');
+
+        if (error) {
+          listContainer.innerHTML = `<div style="color: var(--accent-rose); text-align: center;">Failed to load leaderboard.</div>`;
+          return;
+        }
+
+        const scores = {};
+        data.forEach(row => {
+          const name = row.winner_name || row.player_name || 'Anonymous';
+          if (name && name !== 'None') {
+            scores[name] = (scores[name] || 0) + 1;
+          }
+        });
+
+        const sorted = Object.keys(scores)
+          .map(name => ({ name, wins: scores[name] }))
+          .sort((a, b) => b.wins - a.wins);
+
+        if (sorted.length === 0) {
+          listContainer.innerHTML = `<div style="color: var(--text-muted); text-align: center;">No matches logged yet. Play games to claim #1!</div>`;
+          return;
+        }
+
+        listContainer.innerHTML = sorted.map((p, idx) => `
+          <div class="leaderboard-item">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <strong style="font-size: 1.1rem; color: ${idx === 0 ? '#f59e0b' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'var(--text-muted)'};">#${idx + 1}</strong>
+              <strong>${escapeHtml(p.name)}</strong>
+            </div>
+            <span style="font-weight: 700; color: var(--accent-green);">${p.wins} Wins</span>
+          </div>
+        `).join('');
+      } catch (err) {
+        listContainer.innerHTML = `<div style="color: var(--accent-rose); text-align: center;">Error fetching leaderboard.</div>`;
+      }
+    }
+
+    /* 📜 REPLAY & HISTORY UTILS */
     document.getElementById('copyPgnBtn').onclick = () => {
       const pgn = document.getElementById('moveHistoryLog').textContent;
       navigator.clipboard.writeText(pgn);
-      const lang = localStorage.getItem('site_lang') || 'en';
-      showToast(translations[lang]?.copiedPgn || "PGN copied!");
+      showToast("PGN copied to clipboard!");
     };
 
     document.getElementById('copyFenBtn').onclick = () => {
       const fenText = document.getElementById('fen').textContent.replace('FEN: ', '');
       navigator.clipboard.writeText(fenText);
-      const lang = localStorage.getItem('site_lang') || 'en';
-      showToast(translations[lang]?.copiedFen || "FEN copied!");
+      showToast("FEN copied to clipboard!");
     };
 
-    // Load Saved Matches from Supabase
     async function openSavedGamesModal() {
       openModal('savedGamesModal');
       const container = document.getElementById('savedGamesList');
       container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">Loading games from Supabase...</div>`;
 
-      if (!window.mySupabaseInstance) {
-        container.innerHTML = `<div style="color: var(--accent-rose); text-align: center;">Supabase database connection not available.</div>`;
-        return;
-      }
+      if (!window.mySupabaseInstance) return;
 
       try {
         const { data, error } = await window.mySupabaseInstance
@@ -1114,16 +1272,7 @@
           .order('created_at', { ascending: false })
           .limit(15);
 
-        if (error) {
-          console.error("Supabase Query Error:", error);
-          container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">
-            Failed to load games (${error.message || '400 Bad Request'}).<br>
-            Please make sure the <code>chess_games</code> table exists in your Supabase SQL editor.
-          </div>`;
-          return;
-        }
-
-        if (!data || data.length === 0) {
+        if (error || !data || data.length === 0) {
           container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">No saved matches found in database.</div>`;
           return;
         }
@@ -1131,11 +1280,11 @@
         container.innerHTML = data.map(g => `
           <div class="game-item">
             <div>
-              <strong>${g.player_name || 'Anonymous'}</strong> 
+              <strong>${escapeHtml(g.player_name || 'Anonymous')}</strong> 
               <span style="font-size: 0.75rem; color: var(--text-muted);">(${g.mode || 'VS AI'})</span><br>
               <span style="font-size: 0.7rem; color: var(--accent-blue);">${new Date(g.created_at).toLocaleString()}</span>
             </div>
-            <button type="button" class="btn btn-secondary btn-sm" style="width: auto;" onclick="startReplay('${encodeURIComponent(g.pgn)}', '${g.player_name || 'Player'}')">▶ Watch Replay</button>
+            <button type="button" class="btn btn-secondary btn-sm" style="width: auto;" onclick="startReplay('${encodeURIComponent(g.pgn)}', '${escapeHtml(g.player_name || 'Player')}')">▶ Watch Replay</button>
           </div>
         `).join('');
       } catch (err) {
@@ -1151,9 +1300,7 @@
       document.getElementById('replayMatchTitle').textContent = `Replay: ${playerName}'s Game`;
 
       replayChess = new Chess();
-      if (pgn && pgn !== 'No moves yet.') {
-        replayChess.load_pgn(pgn);
-      }
+      if (pgn && pgn !== 'No moves yet.') replayChess.load_pgn(pgn);
       replayMoves = replayChess.history({ verbose: true });
       replayCurrentIndex = 0;
 
@@ -1178,29 +1325,10 @@
       document.getElementById('replayInfo').textContent = `Move ${replayCurrentIndex} / ${replayMoves.length}`;
     }
 
-    function replayStepFirst() {
-      replayCurrentIndex = 0;
-      updateReplayUI();
-    }
-
-    function replayStepPrev() {
-      if (replayCurrentIndex > 0) {
-        replayCurrentIndex--;
-        updateReplayUI();
-      }
-    }
-
-    function replayStepNext() {
-      if (replayCurrentIndex < replayMoves.length) {
-        replayCurrentIndex++;
-        updateReplayUI();
-      }
-    }
-
-    function replayStepLast() {
-      replayCurrentIndex = replayMoves.length;
-      updateReplayUI();
-    }
+    function replayStepFirst() { replayCurrentIndex = 0; updateReplayUI(); }
+    function replayStepPrev() { if (replayCurrentIndex > 0) { replayCurrentIndex--; updateReplayUI(); } }
+    function replayStepNext() { if (replayCurrentIndex < replayMoves.length) { replayCurrentIndex++; updateReplayUI(); } }
+    function replayStepLast() { replayCurrentIndex = replayMoves.length; updateReplayUI(); }
 
     function toggleReplayAuto() {
       const playBtn = document.getElementById('replayPlayBtn');

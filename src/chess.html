@@ -185,7 +185,7 @@
     .btn-success { background: var(--accent-green); color: white; }
     .btn-blue { background: var(--accent-blue); color: white; }
 
-    .status-box, .stats-box, .lang-select-group, .history-box, .mode-box {
+    .status-box, .lang-select-group, .history-box {
       background: var(--bg-primary);
       border: 1px solid var(--border-subtle);
       padding: 0.9rem;
@@ -205,7 +205,6 @@
       margin-top: 0.3rem;
     }
     .lang-select:focus { outline: none; border-color: var(--accent-purple); }
-    .highlight { box-shadow: inset 0 0 4px 4px var(--accent-purple) !important; }
     
     .history-log {
       max-height: 100px;
@@ -475,6 +474,7 @@
   </footer>
 
   <script>
+    // Initialize Supabase Client
     if (!window.mySupabaseInstance && window.supabase) {
       window.mySupabaseInstance = window.supabase.createClient(
         'https://iifhzdioridrmbcflswa.supabase.co',
@@ -484,7 +484,7 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    // Audio Engine
+    // Audio Synthesizer
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playTone(freq, type, duration) {
       try {
@@ -589,21 +589,22 @@
       document.getElementById('opt-adaptive').textContent = t.adaptive;
     }
 
+    // Fetch Logged-In User from Supabase
     async function checkUserSession() {
       try {
         if (!window.mySupabaseInstance) throw new Error("No Supabase instance");
-        const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+        const { data: { user } } = await window.mySupabaseInstance.auth.getUser();
         const authContainer = document.getElementById('auth-action-container');
         const navAdminLink = document.getElementById('nav-admin-link');
         const lang = localStorage.getItem('site_lang') || 'en';
         const t = translations[lang] || translations.en;
 
-        if (session && session.user) {
-          const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
-          currentUsername = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (session.user.user_metadata?.username || session.user.email.split('@')[0]);
-          currentUserId = session.user.id || currentUsername;
+        if (user) {
+          const userEmail = user.email ? user.email.toLowerCase() : '';
+          currentUsername = userEmail === ADMIN_EMAIL ? "Justin's Skillz" : (user.user_metadata?.username || user.email.split('@')[0]);
+          currentUserId = user.id;
 
-          document.getElementById('session-info').textContent = `User: ${currentUsername}`;
+          document.getElementById('session-info').textContent = `Logged in: ${currentUsername}`;
           authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; width: auto;">${t.signOut}</button>`;
           if (userEmail === ADMIN_EMAIL && navAdminLink) navAdminLink.style.display = 'block';
         } else {
@@ -614,14 +615,14 @@
           }
           currentUsername = cachedGuest;
           currentUserId = cachedGuest;
-          document.getElementById('session-info').textContent = `Player: ${currentUsername}`;
+          document.getElementById('session-info').textContent = `Playing as: ${currentUsername}`;
           authContainer.innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">${t.signIn}</a>`;
         }
         setupPresenceChannel();
       } catch (err) {
         currentUsername = sessionStorage.getItem('justin_guest_id') || `Guest_${Math.floor(1000 + Math.random() * 9000)}`;
         currentUserId = currentUsername;
-        document.getElementById('session-info').textContent = `Player: ${currentUsername}`;
+        document.getElementById('session-info').textContent = `Playing as: ${currentUsername}`;
         setupPresenceChannel();
       }
     }
@@ -807,17 +808,6 @@
         [ 5, 10, 10,-20,-20, 10, 10,  5],
         [ 0,  0,  0,  0,  0,  0,  0,  0]
       ];
-      
-      const pstKnight = [
-        [-50,-40,-30,-30,-30,-30,-40,-50],
-        [-40,-20,  0,  0,  0,  0,-20,-40],
-        [-30,  0, 10, 15, 15, 10,  0,-30],
-        [-30,  5, 15, 20, 20, 15,  5,-30],
-        [-30,  0, 15, 20, 20, 15,  0,-30],
-        [-30,  5, 10, 15, 15, 10,  5,-30],
-        [-40,-20,  0,  5,  5,  0,-20,-40],
-        [-50,-40,-30,-30,-30,-30,-40,-50]
-      ];
 
       function evaluateBoard(b) {
         let totalEval = 0;
@@ -828,7 +818,6 @@
             if (piece) {
               let val = weights[piece.type] || 0;
               if (piece.type === 'p') val += pstPawn[r][c];
-              if (piece.type === 'n') val += pstKnight[r][c];
               totalEval += piece.color === 'w' ? val : -val;
             }
           }
@@ -1004,20 +993,32 @@
         document.getElementById('moveHistoryLog').textContent = pgnHistory || 'No moves yet.';
       }
 
+      // Save Game Results to Supabase
       async function saveMatchToDatabase() {
         if (!window.mySupabaseInstance) return;
         try {
-          await window.mySupabaseInstance.from('chess_games').insert([
+          // Re-fetch current user info dynamically
+          const { data: { user } } = await window.mySupabaseInstance.auth.getUser();
+          const activeUserId = user ? user.id : currentUserId;
+          const activeUserName = user ? (user.user_metadata?.username || user.email?.split('@')[0] || currentUsername) : currentUsername;
+
+          const { error } = await window.mySupabaseInstance.from('chess_games').insert([
             {
-              player_id: currentUserId,
-              player_name: currentUsername,
+              player_id: activeUserId,
+              player_name: activeUserName,
               pgn: game.pgn(),
               fen: game.fen(),
-              mode: isMultiplayer ? 'multiplayer' : `AI (${currentDifficulty})`,
+              mode: isMultiplayer ? 'Multiplayer' : `AI (${currentDifficulty})`,
               created_at: new Date().toISOString()
             }
           ]);
-          showToast("Match result saved to database!");
+
+          if (error) {
+            console.error("Supabase Save Error:", error);
+            showToast("Failed to save match. Ensure chess_games table exists.");
+          } else {
+            showToast("Match saved to database!");
+          }
         } catch (err) {
           console.error("Failed to save match:", err);
         }
@@ -1095,6 +1096,7 @@
       showToast(translations[lang]?.copiedFen || "FEN copied!");
     };
 
+    // Load Saved Matches from Supabase
     async function openSavedGamesModal() {
       openModal('savedGamesModal');
       const container = document.getElementById('savedGamesList');
@@ -1112,7 +1114,16 @@
           .order('created_at', { ascending: false })
           .limit(15);
 
-        if (error || !data || data.length === 0) {
+        if (error) {
+          console.error("Supabase Query Error:", error);
+          container.innerHTML = `<div style="color: var(--accent-rose); text-align: center; padding: 1rem;">
+            Failed to load games (${error.message || '400 Bad Request'}).<br>
+            Please make sure the <code>chess_games</code> table exists in your Supabase SQL editor.
+          </div>`;
+          return;
+        }
+
+        if (!data || data.length === 0) {
           container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 1rem;">No saved matches found in database.</div>`;
           return;
         }

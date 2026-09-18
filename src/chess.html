@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chess AI & Multiplayer Training Lab - Justin's Skillz</title>
+  <title>Chess AI & Online Multiplayer Lab - Justin's Skillz</title>
   
   <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -221,7 +221,6 @@
       gap: 0.3rem;
     }
 
-    /* Modal Styles */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -555,7 +554,22 @@
     }
 
     function openModal(id) { document.getElementById(id).classList.add('active'); }
-    function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    
+    function stopReplayAuto() {
+      if (replayInterval) {
+        clearInterval(replayInterval);
+        replayInterval = null;
+      }
+      const playBtn = document.getElementById('replayPlayBtn');
+      if (playBtn) playBtn.textContent = 'Play';
+    }
+
+    function closeModal(id) { 
+      if (id === 'replayModal') {
+        stopReplayAuto();
+      }
+      document.getElementById(id).classList.remove('active'); 
+    }
 
     const translations = {
       en: { title: "Chess AI & Online Multiplayer Lab", statusGame: "Game Status:", newGame: "New Game vs AI", undoBtn: "Undo", redoBtn: "Redo", navHome: "Home", navDashboard: "Dashboard", navMath: "Math Lab", signIn: "Sign In", signOut: "Sign Out", langLabel: "Language / Langue / Idioma", difficultyLabel: "AI Engine Level", historyLabel: "Move History (PGN)", casual: "Casual Justin", intermediate: "Intermediate Justin", advanced: "Advanced Justin", elite: "ELITE Grandmaster", adaptive: "Adaptive Justin ⚡", copiedPgn: "PGN copied to clipboard!", copiedFen: "FEN copied to clipboard!" },
@@ -690,8 +704,8 @@
         } else {
           sidebarContainer.innerHTML = keys.map(uid => `
             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; background: var(--bg-card); padding: 0.35rem 0.6rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
-              <span><span class="badge-online"></span><strong>${onlineUsersMap[uid]}</strong></span>
-              <button class="btn btn-primary btn-sm" style="width: auto; padding: 0.15rem 0.4rem; font-size: 0.7rem;" onclick="sendChallenge('${uid}', '${onlineUsersMap[uid]}')">⚔️ Challenge</button>
+              <span><span class="badge-online"></span><strong>${escapeHtml(onlineUsersMap[uid])}</strong></span>
+              <button class="btn btn-primary btn-sm" style="width: auto; padding: 0.15rem 0.4rem; font-size: 0.7rem;" onclick="sendChallenge('${uid}')">⚔️ Challenge</button>
             </div>
           `).join('');
         }
@@ -705,9 +719,9 @@
             <div class="player-item">
               <div>
                 <span class="badge-online"></span>
-                <strong>${onlineUsersMap[uid]}</strong>
+                <strong>${escapeHtml(onlineUsersMap[uid])}</strong>
               </div>
-              <button class="btn btn-primary btn-sm" style="width: auto;" onclick="sendChallenge('${uid}', '${onlineUsersMap[uid]}')">⚔️ Challenge Duel</button>
+              <button class="btn btn-primary btn-sm" style="width: auto;" onclick="sendChallenge('${uid}')">⚔️ Challenge Duel</button>
             </div>
           `).join('');
         }
@@ -780,8 +794,10 @@
       openModal('onlineLobbyModal');
     }
 
-    function sendChallenge(targetUserId, targetUsername) {
+    function sendChallenge(targetUserId) {
+      const targetUsername = onlineUsersMap[targetUserId] || 'Player';
       const roomId = `room_${Math.random().toString(36).substring(2, 9)}`;
+      
       globalPresenceChannel.send({
         type: 'broadcast',
         event: 'chess_challenge',
@@ -828,7 +844,7 @@
       const keys = Object.keys(onlineUsersMap);
       if (keys.length > 0) {
         const randomTargetId = keys[Math.floor(Math.random() * keys.length)];
-        sendChallenge(randomTargetId, onlineUsersMap[randomTargetId]);
+        sendChallenge(randomTargetId);
         setTimeout(() => {
           matchmakeBtn.textContent = "⚡ Play Random Opponent";
           matchmakeBtn.disabled = false;
@@ -863,7 +879,7 @@
         roomRealtimeChannel.unsubscribe();
       }
 
-      roomRealtimeChannel = window.mySupabaseInstance.channel(`room_${roomId}`);
+      roomRealtimeChannel = window.mySupabaseInstance.channel(roomId);
       roomRealtimeChannel
         .on('broadcast', { event: 'chess_move' }, payload => {
           if (payload.senderId !== currentUserId && currentGameInstance) {
@@ -915,13 +931,14 @@
       const div = document.createElement('div');
       div.style.fontSize = '0.82rem';
       div.style.wordBreak = 'break-word';
-      div.innerHTML = `<strong style="color: ${sender === currentUsername ? 'var(--accent-purple)' : 'var(--accent-blue)'};">${sender}:</strong> ${escapeHtml(message)}`;
+      div.innerHTML = `<strong style="color: ${sender === currentUsername ? 'var(--accent-purple)' : 'var(--accent-blue)'};">${escapeHtml(sender)}:</strong> ${escapeHtml(message)}`;
       chatLog.appendChild(div);
       chatLog.scrollTop = chatLog.scrollHeight;
     }
 
     function escapeHtml(text) {
-      return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      if (!text) return '';
+      return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
     /* ♟️ CHESS ENGINE & BOARD */
@@ -1281,7 +1298,7 @@
           <div class="game-item">
             <div>
               <strong>${escapeHtml(g.player_name || 'Anonymous')}</strong> 
-              <span style="font-size: 0.75rem; color: var(--text-muted);">(${g.mode || 'VS AI'})</span><br>
+              <span style="font-size: 0.75rem; color: var(--text-muted);">(${escapeHtml(g.mode) || 'VS AI'})</span><br>
               <span style="font-size: 0.7rem; color: var(--accent-blue);">${new Date(g.created_at).toLocaleString()}</span>
             </div>
             <button type="button" class="btn btn-secondary btn-sm" style="width: auto;" onclick="startReplay('${encodeURIComponent(g.pgn)}', '${escapeHtml(g.player_name || 'Player')}')">▶ Watch Replay</button>
@@ -1333,9 +1350,7 @@
     function toggleReplayAuto() {
       const playBtn = document.getElementById('replayPlayBtn');
       if (replayInterval) {
-        clearInterval(replayInterval);
-        replayInterval = null;
-        playBtn.textContent = 'Play';
+        stopReplayAuto();
       } else {
         playBtn.textContent = 'Pause';
         replayInterval = setInterval(() => {
@@ -1343,9 +1358,7 @@
             replayCurrentIndex++;
             updateReplayUI();
           } else {
-            clearInterval(replayInterval);
-            replayInterval = null;
-            playBtn.textContent = 'Play';
+            stopReplayAuto();
           }
         }, 1000);
       }

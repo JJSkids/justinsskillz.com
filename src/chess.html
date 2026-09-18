@@ -581,6 +581,8 @@
     let chessBoardObj = null;
     let currentUserId = null;
     let currentUsername = 'Player';
+    // Unique session ID generated per browser tab for dynamic presence tracking
+    const currentSessionId = 'sess_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
     let currentDifficulty = 'casual';
 
     let currentRoomId = null;
@@ -702,12 +704,15 @@
         if (keys.length === 0) {
           sidebarContainer.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-muted); padding: 0.2rem 0;">No other players online right now.</div>`;
         } else {
-          sidebarContainer.innerHTML = keys.map(uid => `
-            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; background: var(--bg-card); padding: 0.35rem 0.6rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
-              <span><span class="badge-online"></span><strong>${escapeHtml(onlineUsersMap[uid])}</strong></span>
-              <button class="btn btn-primary btn-sm" style="width: auto; padding: 0.15rem 0.4rem; font-size: 0.7rem;" onclick="sendChallenge('${uid}')">⚔️ Challenge</button>
-            </div>
-          `).join('');
+          sidebarContainer.innerHTML = keys.map(sId => {
+            const userObj = onlineUsersMap[sId];
+            return `
+              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem; background: var(--bg-card); padding: 0.35rem 0.6rem; border-radius: 6px; border: 1px solid var(--border-subtle);">
+                <span><span class="badge-online"></span><strong>${escapeHtml(userObj.username)}</strong></span>
+                <button class="btn btn-primary btn-sm" style="width: auto; padding: 0.15rem 0.4rem; font-size: 0.7rem;" onclick="sendChallenge('${sId}')">⚔️ Challenge</button>
+              </div>
+            `;
+          }).join('');
         }
       }
 
@@ -715,15 +720,18 @@
         if (keys.length === 0) {
           modalContainer.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 0.5rem;">No other players online right now.</div>`;
         } else {
-          modalContainer.innerHTML = keys.map(uid => `
-            <div class="player-item">
-              <div>
-                <span class="badge-online"></span>
-                <strong>${escapeHtml(onlineUsersMap[uid])}</strong>
+          modalContainer.innerHTML = keys.map(sId => {
+            const userObj = onlineUsersMap[sId];
+            return `
+              <div class="player-item">
+                <div>
+                  <span class="badge-online"></span>
+                  <strong>${escapeHtml(userObj.username)}</strong>
+                </div>
+                <button class="btn btn-primary btn-sm" style="width: auto;" onclick="sendChallenge('${sId}')">⚔️ Challenge Duel</button>
               </div>
-              <button class="btn btn-primary btn-sm" style="width: auto;" onclick="sendChallenge('${uid}')">⚔️ Challenge Duel</button>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         }
       }
     }
@@ -732,7 +740,7 @@
       if (!window.mySupabaseInstance) return;
 
       globalPresenceChannel = window.mySupabaseInstance.channel('online_chess_lobby', {
-        config: { presence: { key: currentUserId } }
+        config: { presence: { key: currentSessionId } }
       });
 
       const updatePresenceMap = () => {
@@ -740,11 +748,12 @@
         onlineUsersMap = {};
         Object.keys(state).forEach(key => {
           const presences = state[key];
-          if (presences && presences.length > 0) {
-            const userObj = presences[0];
-            if (userObj.user_id !== currentUserId) {
-              onlineUsersMap[userObj.user_id] = userObj.username;
-            }
+          if (presences && Array.isArray(presences)) {
+            presences.forEach(userObj => {
+              if (userObj.session_id && userObj.session_id !== currentSessionId) {
+                onlineUsersMap[userObj.session_id] = userObj;
+              }
+            });
           }
         });
         renderOnlinePlayers();
@@ -755,23 +764,23 @@
         .on('presence', { event: 'join' }, updatePresenceMap)
         .on('presence', { event: 'leave' }, updatePresenceMap)
         .on('broadcast', { event: 'chess_challenge' }, ({ payload }) => {
-          if (payload && payload.toUserId === currentUserId) {
+          if (payload && payload.toSessionId === currentSessionId) {
             playTone(880, 'sine', 0.2);
             document.getElementById('challengeText').textContent = `${payload.fromUsername} challenged you to a Chess Duel!`;
-            document.getElementById('acceptChallengeBtn').onclick = () => acceptChallenge(payload.fromUserId, payload.roomId, payload.fromUsername);
-            document.getElementById('declineChallengeBtn').onclick = () => declineChallenge(payload.fromUserId);
+            document.getElementById('acceptChallengeBtn').onclick = () => acceptChallenge(payload.fromSessionId, payload.roomId, payload.fromUsername);
+            document.getElementById('declineChallengeBtn').onclick = () => declineChallenge(payload.fromSessionId);
             openModal('challengeModal');
           }
         })
         .on('broadcast', { event: 'challenge_accepted' }, ({ payload }) => {
-          if (payload && payload.toUserId === currentUserId) {
+          if (payload && payload.toSessionId === currentSessionId) {
             closeModal('onlineLobbyModal');
             showToast(`Challenge accepted by ${payload.fromUsername}!`);
             startMultiplayerMatch(payload.roomId, 'w', payload.fromUsername);
           }
         })
         .on('broadcast', { event: 'challenge_declined' }, ({ payload }) => {
-          if (payload && payload.toUserId === currentUserId) {
+          if (payload && payload.toSessionId === currentSessionId) {
             showToast(`${payload.fromUsername} declined your duel challenge.`);
           }
         })
@@ -781,6 +790,7 @@
         .subscribe(async (status) => {
           if (status === 'SUBSCRIBED') {
             await globalPresenceChannel.track({
+              session_id: currentSessionId,
               user_id: currentUserId,
               username: currentUsername,
               online_at: new Date().toISOString()
@@ -794,15 +804,17 @@
       openModal('onlineLobbyModal');
     }
 
-    function sendChallenge(targetUserId) {
-      const targetUsername = onlineUsersMap[targetUserId] || 'Player';
+    function sendChallenge(targetSessionId) {
+      const targetObj = onlineUsersMap[targetSessionId];
+      const targetUsername = targetObj ? targetObj.username : 'Player';
       const roomId = `room_${Math.random().toString(36).substring(2, 9)}`;
       
       globalPresenceChannel.send({
         type: 'broadcast',
         event: 'chess_challenge',
         payload: {
-          toUserId: targetUserId,
+          toSessionId: targetSessionId,
+          fromSessionId: currentSessionId,
           fromUserId: currentUserId,
           fromUsername: currentUsername,
           roomId: roomId
@@ -811,7 +823,7 @@
       showToast(`Challenge sent to ${targetUsername}! Waiting...`);
     }
 
-    function acceptChallenge(opponentUserId, roomId, opponentName) {
+    function acceptChallenge(opponentSessionId, roomId, opponentName) {
       closeModal('challengeModal');
       closeModal('onlineLobbyModal');
 
@@ -819,7 +831,8 @@
         type: 'broadcast',
         event: 'challenge_accepted',
         payload: {
-          toUserId: opponentUserId,
+          toSessionId: opponentSessionId,
+          fromSessionId: currentSessionId,
           fromUserId: currentUserId,
           fromUsername: currentUsername,
           roomId: roomId
@@ -829,13 +842,14 @@
       startMultiplayerMatch(roomId, 'b', opponentName);
     }
 
-    function declineChallenge(opponentUserId) {
+    function declineChallenge(opponentSessionId) {
       closeModal('challengeModal');
       globalPresenceChannel.send({
         type: 'broadcast',
         event: 'challenge_declined',
         payload: {
-          toUserId: opponentUserId,
+          toSessionId: opponentSessionId,
+          fromSessionId: currentSessionId,
           fromUserId: currentUserId,
           fromUsername: currentUsername
         }
@@ -888,7 +902,7 @@
       roomRealtimeChannel = window.mySupabaseInstance.channel(roomId);
       roomRealtimeChannel
         .on('broadcast', { event: 'chess_move' }, ({ payload }) => {
-          if (payload && payload.senderId !== currentUserId && currentGameInstance) {
+          if (payload && payload.senderId !== currentSessionId && currentGameInstance) {
             currentGameInstance.makeRemoteMove(payload.move);
           }
         })
@@ -1075,7 +1089,7 @@
             event: 'chess_move',
             payload: {
               move: { from: source, to: target, promotion: 'q' },
-              senderId: currentUserId
+              senderId: currentSessionId
             }
           });
         } else if (!game.game_over() && game.turn() === 'b') {

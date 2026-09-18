@@ -520,7 +520,7 @@
     if (!window.mySupabaseInstance && window.supabase) {
       window.mySupabaseInstance = window.supabase.createClient(
         'https://iifhzdioridrmbcflswa.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY4MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
       );
     }
 
@@ -665,23 +665,18 @@
         } else {
           let cachedGuest = sessionStorage.getItem('justin_guest_id');
           if (!cachedGuest) {
-            cachedGuest = `Guest_${Math.floor(1000 + Math.random() * 9000)}_${Math.random().toString(36).substring(2, 5)}`;
+            cachedGuest = `Guest_${Math.floor(1000 + Math.random() * 9000)}`;
             sessionStorage.setItem('justin_guest_id', cachedGuest);
           }
-          currentUsername = cachedGuest.split('_').slice(0, 2).join('_');
+          currentUsername = cachedGuest;
           currentUserId = cachedGuest;
           document.getElementById('session-info').textContent = `Playing as: ${currentUsername}`;
           authContainer.innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none; width: auto;">${t.signIn}</a>`;
         }
         setupPresenceChannel();
       } catch (err) {
-        let cachedGuest = sessionStorage.getItem('justin_guest_id');
-        if (!cachedGuest) {
-          cachedGuest = `Guest_${Math.floor(1000 + Math.random() * 9000)}_${Math.random().toString(36).substring(2, 5)}`;
-          sessionStorage.setItem('justin_guest_id', cachedGuest);
-        }
-        currentUsername = cachedGuest.split('_').slice(0, 2).join('_');
-        currentUserId = cachedGuest;
+        currentUsername = sessionStorage.getItem('justin_guest_id') || `Guest_${Math.floor(1000 + Math.random() * 9000)}`;
+        currentUserId = currentUsername;
         document.getElementById('session-info').textContent = `Playing as: ${currentUsername}`;
         setupPresenceChannel();
       }
@@ -737,10 +732,7 @@
       if (!window.mySupabaseInstance) return;
 
       globalPresenceChannel = window.mySupabaseInstance.channel('online_chess_lobby', {
-        config: { 
-          presence: { key: currentUserId },
-          broadcast: { self: true, ack: true }
-        }
+        config: { presence: { key: currentUserId } }
       });
 
       const updatePresenceMap = () => {
@@ -893,10 +885,7 @@
         roomRealtimeChannel.unsubscribe();
       }
 
-      roomRealtimeChannel = window.mySupabaseInstance.channel(roomId, {
-        config: { broadcast: { self: true, ack: true } }
-      });
-
+      roomRealtimeChannel = window.mySupabaseInstance.channel(roomId);
       roomRealtimeChannel
         .on('broadcast', { event: 'chess_move' }, ({ payload }) => {
           if (payload && payload.senderId !== currentUserId && currentGameInstance) {

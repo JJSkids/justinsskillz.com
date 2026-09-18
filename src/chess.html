@@ -150,6 +150,14 @@
       width: 440px;
       max-width: 100%;
     }
+
+    /* Highlight style for mobile tap-to-select */
+    .highlight-square {
+      box-shadow: inset 0 0 0 4px var(--accent-purple) !important;
+      background-color: rgba(168, 85, 247, 0.35) !important;
+      cursor: pointer;
+    }
+
     .chess-sidebar {
       flex: 1;
       min-width: 300px;
@@ -581,7 +589,6 @@
     let chessBoardObj = null;
     let currentUserId = null;
     let currentUsername = 'Player';
-    // Unique session ID generated per browser tab for dynamic presence tracking
     const currentSessionId = 'sess_' + Math.random().toString(36).substring(2, 9) + '_' + Date.now().toString(36);
     let currentDifficulty = 'casual';
 
@@ -696,7 +703,7 @@
       const countBadge = document.getElementById('online-count-badge');
       
       const keys = Object.keys(onlineUsersMap);
-      const totalCount = keys.length + 1; // Including self
+      const totalCount = keys.length + 1;
 
       if (countBadge) countBadge.textContent = `${totalCount} Online`;
 
@@ -959,10 +966,11 @@
       return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
     }
 
-    /* ♟️ CHESS ENGINE & BOARD */
+    /* ♟️ CHESS ENGINE & BOARD (TAP/CLICK TO MOVE INTERACTION) */
     function initChessGame() {
       const game = new Chess();
       let redoStack = [];
+      let selectedSquare = null;
 
       const weights = { p: 100, n: 320, b: 330, r: 500, q: 900, k: 20000 };
       const pstPawn = [
@@ -975,6 +983,14 @@
         [ 5, 10, 10,-20,-20, 10, 10,  5],
         [ 0,  0,  0,  0,  0,  0,  0,  0]
       ];
+
+      function removeHighlights() {
+        $('#myBoard .square-55a96').removeClass('highlight-square');
+      }
+
+      function addHighlight(square) {
+        $(`#myBoard .square-${square}`).addClass('highlight-square');
+      }
 
       function evaluateBoard(b) {
         let totalEval = 0;
@@ -1055,47 +1071,82 @@
         return bestMove || moves[Math.floor(Math.random() * moves.length)];
       }
 
-      function onDragStart(source, piece, position, orientation) {
-        if (game.game_over()) return false;
+      function isPlayerPiece(piece) {
+        if (!piece) return false;
         if (isMultiplayer) {
-          if ((playerColor === 'w' && piece.search(/^b/) !== -1) ||
-              (playerColor === 'b' && piece.search(/^w/) !== -1)) return false;
-          if ((game.turn() === 'w' && playerColor !== 'w') ||
-              (game.turn() === 'b' && playerColor !== 'b')) return false;
-        } else {
-          if ((game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-              (game.turn() === 'b' && piece.search(/^w/) !== -1)) return false;
+          return (playerColor === 'w' && piece.color === 'w' && game.turn() === 'w') ||
+                 (playerColor === 'b' && piece.color === 'b' && game.turn() === 'b');
         }
+        return piece.color === game.turn();
       }
 
-      function onDrop(source, target) {
+      /* Tap / Click Event Listener for Board Squares */
+      $('#myBoard').on('click', '.square-55a96', function() {
+        if (game.game_over()) return;
+
+        const square = $(this).attr('data-square');
+        const piece = game.get(square);
+
+        // First selection click
+        if (selectedSquare === null) {
+          if (isPlayerPiece(piece)) {
+            selectedSquare = square;
+            removeHighlights();
+            addHighlight(square);
+          }
+          return;
+        }
+
+        // Deselect if clicking the same square
+        if (selectedSquare === square) {
+          selectedSquare = null;
+          removeHighlights();
+          return;
+        }
+
+        // Attempt move to target square
         const move = game.move({
-          from: source,
-          to: target,
+          from: selectedSquare,
+          to: square,
           promotion: 'q'
         });
 
-        if (move === null) return 'snapback';
+        if (move === null) {
+          // If move is invalid but target is player's own piece, switch selection
+          if (isPlayerPiece(piece)) {
+            selectedSquare = square;
+            removeHighlights();
+            addHighlight(square);
+          } else {
+            selectedSquare = null;
+            removeHighlights();
+          }
+        } else {
+          // Valid move executed
+          selectedSquare = null;
+          removeHighlights();
 
-        if (move.captured) playCaptureSound();
-        else playMoveSound();
+          if (move.captured) playCaptureSound();
+          else playMoveSound();
 
-        redoStack = [];
-        updateStatus();
+          chessBoardObj.position(game.fen());
+          redoStack = [];
+          updateStatus();
 
-        if (isMultiplayer && roomRealtimeChannel) {
-          roomRealtimeChannel.send({
-            type: 'broadcast',
-            event: 'chess_move',
-            payload: {
-              move: { from: source, to: target, promotion: 'q' },
-              senderId: currentSessionId
-            }
-          });
-        } else if (!game.game_over() && game.turn() === 'b') {
-          window.setTimeout(makeAIMove, 300);
+          if (isMultiplayer && roomRealtimeChannel) {
+            roomRealtimeChannel.send({
+              type: 'broadcast',
+              event: 'chess_move',
+              payload: {
+                move: { from: move.from, to: move.to, promotion: 'q' },
+                senderId: currentSessionId
+              }
+            });
+          } else if (!game.game_over() && game.turn() === 'b') {
+            window.setTimeout(makeAIMove, 300);
+          }
         }
-      }
+      });
 
       function makeAIMove() {
         const aiMove = getBestMove(game, currentDifficulty);
@@ -1117,10 +1168,6 @@
           chessBoardObj.position(game.fen());
           updateStatus();
         }
-      }
-
-      function onSnapEnd() {
-        chessBoardObj.position(game.fen());
       }
 
       function updateStatus() {
@@ -1179,11 +1226,8 @@
       }
 
       const boardConfig = {
-        draggable: true,
+        draggable: false, // Disabled drag for smooth touch/click interaction
         position: 'start',
-        onDragStart: onDragStart,
-        onDrop: onDrop,
-        onSnapEnd: onSnapEnd,
         pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
       };
 
@@ -1192,6 +1236,8 @@
 
       document.getElementById('startBtn').onclick = () => {
         isMultiplayer = false;
+        selectedSquare = null;
+        removeHighlights();
         document.getElementById('game-mode-tag').textContent = "VS AI";
         document.getElementById('game-mode-tag').style.background = "var(--accent-purple)";
         document.getElementById('session-info').textContent = `Player: ${currentUsername}`;
@@ -1204,6 +1250,9 @@
 
       document.getElementById('undoBtn').onclick = () => {
         if (isMultiplayer) return showToast("Undo disabled in live multiplayer.");
+        selectedSquare = null;
+        removeHighlights();
+        
         const move1 = game.undo();
         if (move1) redoStack.push(move1);
         const move2 = game.undo();
@@ -1215,6 +1264,9 @@
 
       document.getElementById('redoBtn').onclick = () => {
         if (isMultiplayer) return;
+        selectedSquare = null;
+        removeHighlights();
+        
         if (redoStack.length > 0) {
           const m1 = redoStack.pop();
           if (m1) game.move(m1);

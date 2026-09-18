@@ -754,8 +754,8 @@
         .on('presence', { event: 'sync' }, updatePresenceMap)
         .on('presence', { event: 'join' }, updatePresenceMap)
         .on('presence', { event: 'leave' }, updatePresenceMap)
-        .on('broadcast', { event: 'chess_challenge' }, payload => {
-          if (payload.toUserId === currentUserId) {
+        .on('broadcast', { event: 'chess_challenge' }, ({ payload }) => {
+          if (payload && payload.toUserId === currentUserId) {
             playTone(880, 'sine', 0.2);
             document.getElementById('challengeText').textContent = `${payload.fromUsername} challenged you to a Chess Duel!`;
             document.getElementById('acceptChallengeBtn').onclick = () => acceptChallenge(payload.fromUserId, payload.roomId, payload.fromUsername);
@@ -763,20 +763,20 @@
             openModal('challengeModal');
           }
         })
-        .on('broadcast', { event: 'challenge_accepted' }, payload => {
-          if (payload.toUserId === currentUserId) {
+        .on('broadcast', { event: 'challenge_accepted' }, ({ payload }) => {
+          if (payload && payload.toUserId === currentUserId) {
             closeModal('onlineLobbyModal');
             showToast(`Challenge accepted by ${payload.fromUsername}!`);
             startMultiplayerMatch(payload.roomId, 'w', payload.fromUsername);
           }
         })
-        .on('broadcast', { event: 'challenge_declined' }, payload => {
-          if (payload.toUserId === currentUserId) {
+        .on('broadcast', { event: 'challenge_declined' }, ({ payload }) => {
+          if (payload && payload.toUserId === currentUserId) {
             showToast(`${payload.fromUsername} declined your duel challenge.`);
           }
         })
-        .on('broadcast', { event: 'global_chat' }, payload => {
-          if (!isMultiplayer) appendChatMessage(payload.sender, payload.message);
+        .on('broadcast', { event: 'global_chat' }, ({ payload }) => {
+          if (payload && !isMultiplayer) appendChatMessage(payload.sender, payload.message);
         })
         .subscribe(async (status) => {
           if (status === 'SUBSCRIBED') {
@@ -801,10 +801,12 @@
       globalPresenceChannel.send({
         type: 'broadcast',
         event: 'chess_challenge',
-        toUserId: targetUserId,
-        fromUserId: currentUserId,
-        fromUsername: currentUsername,
-        roomId: roomId
+        payload: {
+          toUserId: targetUserId,
+          fromUserId: currentUserId,
+          fromUsername: currentUsername,
+          roomId: roomId
+        }
       });
       showToast(`Challenge sent to ${targetUsername}! Waiting...`);
     }
@@ -816,10 +818,12 @@
       globalPresenceChannel.send({
         type: 'broadcast',
         event: 'challenge_accepted',
-        toUserId: opponentUserId,
-        fromUserId: currentUserId,
-        fromUsername: currentUsername,
-        roomId: roomId
+        payload: {
+          toUserId: opponentUserId,
+          fromUserId: currentUserId,
+          fromUsername: currentUsername,
+          roomId: roomId
+        }
       });
 
       startMultiplayerMatch(roomId, 'b', opponentName);
@@ -830,9 +834,11 @@
       globalPresenceChannel.send({
         type: 'broadcast',
         event: 'challenge_declined',
-        toUserId: opponentUserId,
-        fromUserId: currentUserId,
-        fromUsername: currentUsername
+        payload: {
+          toUserId: opponentUserId,
+          fromUserId: currentUserId,
+          fromUsername: currentUsername
+        }
       });
     }
 
@@ -881,13 +887,13 @@
 
       roomRealtimeChannel = window.mySupabaseInstance.channel(roomId);
       roomRealtimeChannel
-        .on('broadcast', { event: 'chess_move' }, payload => {
-          if (payload.senderId !== currentUserId && currentGameInstance) {
+        .on('broadcast', { event: 'chess_move' }, ({ payload }) => {
+          if (payload && payload.senderId !== currentUserId && currentGameInstance) {
             currentGameInstance.makeRemoteMove(payload.move);
           }
         })
-        .on('broadcast', { event: 'chess_chat' }, payload => {
-          appendChatMessage(payload.sender, payload.message);
+        .on('broadcast', { event: 'chess_chat' }, ({ payload }) => {
+          if (payload) appendChatMessage(payload.sender, payload.message);
         })
         .subscribe();
 
@@ -907,15 +913,13 @@
         roomRealtimeChannel.send({
           type: 'broadcast',
           event: 'chess_chat',
-          sender: currentUsername,
-          message: msg
+          payload: { sender: currentUsername, message: msg }
         });
       } else if (globalPresenceChannel) {
         globalPresenceChannel.send({
           type: 'broadcast',
           event: 'global_chat',
-          sender: currentUsername,
-          message: msg
+          payload: { sender: currentUsername, message: msg }
         });
       }
 
@@ -1069,8 +1073,10 @@
           roomRealtimeChannel.send({
             type: 'broadcast',
             event: 'chess_move',
-            move: { from: source, to: target, promotion: 'q' },
-            senderId: currentUserId
+            payload: {
+              move: { from: source, to: target, promotion: 'q' },
+              senderId: currentUserId
+            }
           });
         } else if (!game.game_over() && game.turn() === 'b') {
           window.setTimeout(makeAIMove, 300);

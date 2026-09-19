@@ -1,104 +1,363 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Robotics Logic | Justin's Skillz</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robotics Systems Engineering Course | Agent Alpha</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: #1e293b;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --code-bg: #090d16;
+            --success: #22c55e;
+        }
 
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    .logic-box { background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 2rem; max-width: 650px; margin: 2rem auto; text-align: center; }
-    .toggle-btn { padding: 0.75rem 1.5rem; background: var(--bg-pill); border: 2px solid var(--border-subtle); color: var(--text-main); border-radius: 8px; font-weight: bold; cursor: pointer; }
-    .toggle-btn.on { border-color: var(--accent-green); color: var(--accent-green); }
-    .gate-select { padding: 0.5rem 1rem; background: var(--bg-pill); border: 1px solid var(--border-subtle); color: var(--accent-cyan); font-size: 1.1rem; border-radius: 6px; }
-    .led { width: 40px; height: 40px; border-radius: 50%; background: #334155; display: inline-block; margin-top: 1rem; box-shadow: 0 0 5px #000; }
-    .led.active { background: var(--accent-green); box-shadow: 0 0 20px var(--accent-green); }
-  </style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            width: 300px;
+            background-color: var(--panel-bg);
+            border-right: 1px solid var(--border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        aside h2 {
+            font-size: 1.25rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        aside p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .module-list {
+            list-style: none;
+        }
+
+        .module-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .module-list a {
+            color: var(--text-muted);
+            text-decoration: none;
+            display: block;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .module-list a:hover, .module-list a.active {
+            background-color: rgba(56, 189, 248, 0.1);
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Main Content Container */
+        main {
+            margin-left: 300px;
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1000px;
+        }
+
+        .course-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .course-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: rgba(56, 189, 248, 0.2);
+            color: var(--accent);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        /* Section Modules */
+        .module-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2.5rem;
+            scroll-margin-top: 2rem;
+        }
+
+        .module-card h2 {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .module-card p {
+            color: #cbd5e1;
+            margin-bottom: 1.25rem;
+        }
+
+        ul.takeaways {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        ul.takeaways li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        ul.takeaways li::before {
+            content: "➔";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        /* Code Blocks */
+        pre {
+            background-color: var(--code-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            overflow-x: auto;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #e2e8f0;
+            margin-bottom: 1.5rem;
+        }
+
+        code .keyword { color: #f43f5e; }
+        code .function { color: #38bdf8; }
+        code .comment { color: #64748b; font-style: italic; }
+        code .number { color: #fbbf24; }
+
+        /* Interactive Quiz Section */
+        .quiz-container {
+            background-color: rgba(30, 41, 59, 0.5);
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .quiz-container h4 {
+            margin-bottom: 0.75rem;
+            color: var(--text-main);
+        }
+
+        .quiz-option {
+            display: block;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .quiz-option:hover {
+            border-color: var(--accent);
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            aside { width: 100%; height: auto; position: relative; }
+            main { margin-left: 0; padding: 2rem; }
+        }
+    </style>
 </head>
 <body>
-  <header class="app-header">
-    <div class="header-container">
-      <a href="dashboard.html" class="btn btn-secondary">← Back to Dashboard</a>
-      <h1>🤖 Robotics Logic Gate Simulator</h1>
-      <div></div>
-    </div>
-  </header>
 
-  <main class="container">
-    <div class="logic-box">
-      <h3>Digital Logic Gate Tester</h3>
-      <p style="margin-bottom: 1.5rem; color: var(--text-muted);">Toggle inputs A and B to evaluate logical output states.</p>
+    <!-- Sidebar Navigation -->
+    <aside>
+        <h2>Robotics Engineering</h2>
+        <p>Advanced Systems & Optimization</p>
+        <ul class="module-list">
+            <li><a href="#mod1" class="active">01. PID Motion Control</a></li>
+            <li><a href="#mod2">02. Non-Blocking Event Loops</a></li>
+            <li><a href="#mod3">03. Power Architecture & Isolation</a></li>
+            <li><a href="#mod4">04. Sensor Fusion Filtering</a></li>
+            <li><a href="#mod5">05. Hardware Rigidity & Wiring</a></li>
+            <li><a href="#mod6">06. Edge AI & Computer Vision</a></li>
+            <li><a href="#quiz">07. Knowledge Assessment</a></li>
+        </ul>
+    </aside>
 
-      <div style="display: flex; justify-content: space-around; align-items: center; margin-bottom: 2rem;">
-        <div>
-          <p>Input A</p>
-          <button id="in-a" class="toggle-btn" onclick="toggleInput('a')">0 (OFF)</button>
-        </div>
+    <!-- Main Course Content -->
+    <main>
+        <header class="course-header">
+            <span class="badge">Course Module #04</span>
+            <h1>Building Resilient Robotic Systems</h1>
+            <p>Learn how to optimize hardware, control loops, power distribution, and real-time execution to transition from simple prototypes to production-grade robotics.</p>
+        </header>
 
-        <select id="gate-type" class="gate-select" onchange="evaluateGate()">
-          <option value="AND">AND</option>
-          <option value="OR">OR</option>
-          <option value="XOR">XOR</option>
-          <option value="NAND">NAND</option>
-          <option value="NOR">NOR</option>
-        </select>
+        <!-- Module 1 -->
+        <section id="mod1" class="module-card">
+            <h2>01. Smooth Motion Control (PID Loops)</h2>
+            <p>Basic on/off motor commands cause jerky motion, overshoot, and mechanical strain. Proportional-Integral-Derivative (PID) control allows smooth acceleration and precise position tracking.</p>
+            <ul class="takeaways">
+                <li><strong>Proportional (P):</strong> Corrects errors based on current offset magnitude.</li>
+                <li><strong>Integral (I):</strong> Eliminates steady-state error accumulation over time.</li>
+                <li><strong>Derivative (D):</strong> Dampens sudden changes to prevent overshooting targets.</li>
+            </ul>
+            <pre><code><span class="comment">// Basic PID Computation Example</span>
+<span class="keyword">double</span> computePID(<span class="keyword">double</span> target, <span class="keyword">double</span> current) {
+    <span class="keyword">double</span> error = target - current;
+    integral += error * dt;
+    <span class="keyword">double</span> derivative = (error - previousError) / dt;
+    previousError = error;
+    <span class="keyword">return</span> (Kp * error) + (Ki * integral) + (Kd * derivative);
+}</code></pre>
+        </section>
 
-        <div>
-          <p>Input B</p>
-          <button id="in-b" class="toggle-btn" onclick="toggleInput('b')">0 (OFF)</button>
-        </div>
-      </div>
+        <!-- Module 2 -->
+        <section id="mod2" class="module-card">
+            <h2>02. Non-Blocking Event Loops</h2>
+            <p>Using hard delays stops execution entirely, making hardware unresponsive to wireless signals or sensor triggers. Replacing delays with state-machine timer loops maintains high system throughput.</p>
+            <ul class="takeaways">
+                <li>Never halt execution with static block calls like <code>delay()</code>.</li>
+                <li>Store timestamps using <code>millis()</code> or system ticks to evaluate schedules.</li>
+                <li>Implement finite state machines (FSM) to switch operating modes cleanly.</li>
+            </ul>
+            <pre><code><span class="comment">// Non-blocking periodic timer pattern</span>
+<span class="keyword">unsigned long</span> previousMillis = <span class="number">0</span>;
+<span class="keyword">const long</span> interval = <span class="number">50</span>; <span class="comment">// Run every 50ms</span>
 
-      <hr style="border-color: var(--border-subtle);" />
-
-      <div style="margin-top: 1.5rem;">
-        <h4>Output Signal</h4>
-        <div id="led-indicator" class="led"></div>
-        <p id="output-text" style="margin-top: 0.5rem; font-weight: bold; color: var(--text-muted);">OUTPUT: 0</p>
-      </div>
-    </div>
-  </main>
-
-  <script>
-    let stateA = false;
-    let stateB = false;
-
-    function toggleInput(which) {
-      if (which === 'a') {
-        stateA = !stateA;
-        const btnA = document.getElementById('in-a');
-        btnA.textContent = stateA ? "1 (ON)" : "0 (OFF)";
-        btnA.classList.toggle('on', stateA);
-      } else {
-        stateB = !stateB;
-        const btnB = document.getElementById('in-b');
-        btnB.textContent = stateB ? "1 (ON)" : "0 (OFF)";
-        btnB.classList.toggle('on', stateB);
-      }
-      evaluateGate();
+<span class="keyword">void</span> loop() {
+    <span class="keyword">unsigned long</span> currentMillis = millis();
+    <span class="keyword">if</span> (currentMillis - previousMillis >= interval) {
+        previousMillis = currentMillis;
+        readSensors(); <span class="comment">// Non-blocking sensor update</span>
     }
+    checkWirelessCommands(); <span class="comment">// Runs continuously</span>
+}</code></pre>
+        </section>
 
-    function evaluateGate() {
-      const gate = document.getElementById('gate-type').value;
-      let out = false;
+        <!-- Module 3 -->
+        <section id="mod3" class="module-card">
+            <h2>03. Power Architecture & Electrical Isolation</h2>
+            <p>Motors, servos, and relays generate electrical noise and current spikes that cause microcontrollers to brown out or reset unpredictably. Proper power routing guarantees operational stability.</p>
+            <ul class="takeaways">
+                <li>Separate logic power lines from motor high-current power buses.</li>
+                <li>Install flyback diodes across inductive loads to suppress voltage spikes.</li>
+                <li>Use optocouplers and decoupling capacitors (0.1µF & 100µF) to filter power lines.</li>
+            </ul>
+        </section>
 
-      switch(gate) {
-        case 'AND': out = stateA && stateB; break;
-        case 'OR': out = stateA || stateB; break;
-        case 'XOR': out = stateA !== stateB; break;
-        case 'NAND': out = !(stateA && stateB); break;
-        case 'NOR': out = !(stateA || stateB); break;
-      }
+        <!-- Module 4 -->
+        <section id="mod4" class="module-card">
+            <h2>04. Sensor Fusion & Data Filtering</h2>
+            <p>Single sensors are prone to noise and physical limitations. Sensor fusion combines data from multiple sensors (e.g., Ultrasonic + IR + IMU) to construct an accurate view of the robot's surroundings.</p>
+            <ul class="takeaways">
+                <li>Apply Moving Average or Complementary Filters to smooth raw sensor noise.</li>
+                <li>Combine IMU gyroscopes (fast response) with accelerometers (absolute reference) to prevent drift.</li>
+            </ul>
+            <pre><code><span class="comment">// Moving Average Filter implementation</span>
+<span class="keyword">int</span> filterReadings(<span class="keyword">int</span> newReading) {
+    total = total - readings[readIndex];
+    readings[readIndex] = newReading;
+    total = total + readings[readIndex];
+    readIndex = (readIndex + <span class="number">1</span>) % NUM_READINGS;
+    <span class="keyword">return</span> total / NUM_READINGS;
+}</code></pre>
+        </section>
 
-      const led = document.getElementById('led-indicator');
-      const text = document.getElementById('output-text');
-      
-      led.classList.toggle('active', out);
-      text.textContent = out ? "OUTPUT: 1 (HIGH)" : "OUTPUT: 0 (LOW)";
-      text.style.color = out ? "var(--accent-green)" : "var(--text-muted)";
-    }
-  </script>
-  <script src="cookie-banner.js" defer></script>
+        <!-- Module 5 -->
+        <section id="mod5" class="module-card">
+            <h2>05. Structural Rigidity & Wire Management</h2>
+            <p>Vibration from motor movement will loosen breadboard jumper wires and weaken unstable frames over time. Long-term reliability requires solid physical construction and modular connections.</p>
+            <ul class="takeaways">
+                <li>Replace temporary breadboards with custom perfboards or soldered PCB shields.</li>
+                <li>Use heat-shrink tubing and cable looms to organize wiring harnesses.</li>
+                <li>Secure heavy mechanical components close to the center of gravity.</li>
+            </ul>
+        </section>
+
+        <!-- Module 6 -->
+        <section id="mod6" class="module-card">
+            <h2>06. Edge AI & Computer Vision Integration</h2>
+            <p>Level up from simple distance thresholds by integrating visual recognition directly on the robot using edge vision hardware (ESP32-CAM, Raspberry Pi, or OpenCV modules).</p>
+            <ul class="takeaways">
+                <li>Offload color blob tracking or object detection to dedicated camera modules.</li>
+                <li>Send lightweight serial commands (UART/SPI) back to the main motor controller.</li>
+            </ul>
+        </section>
+
+        <!-- Knowledge Check Section -->
+        <section id="quiz" class="module-card">
+            <h2>07. Knowledge Assessment</h2>
+            <p>Test your understanding of advanced robotics architecture concepts before deploying code to hardware.</p>
+            
+            <div class="quiz-container">
+                <h4>Question 1: Why should you avoid using static delay functions in microcontroller code?</h4>
+                <label class="quiz-option">
+                    <input type="radio" name="q1"> They increase overall motor power consumption.
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1"> They freeze execution, stopping sensor updates and communication loops.
+                </label>
+                <label class="quiz-option">
+                    <input type="radio" name="q1"> They corrupt memory allocated for global variables.
+                </label>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Optional interactive highlighting for navigation links
+        const navLinks = document.querySelectorAll('.module-list a');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
 </body>
 </html>

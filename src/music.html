@@ -3,126 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Music Studio - Justin's Skillz</title>
-  
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
+  <title>Music Academy & Studio Lab - Justin's Skillz</title>
+
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <link rel="stylesheet" href="styles.css">
-  
   <script src="theme.js" defer></script>
-  <script src="config.js" defer></script>
-  <script src="auth-index.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
-    /* Studio Dashboard Grid */
-    .studio-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 1.5rem;
-      margin-top: 1.5rem;
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-pink: #ec4899;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
     }
 
-    /* Virtual Piano Styling */
-    .piano-container {
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-pink: #db2777;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+
+    .main-container {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .hero-section {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(236, 72, 153, 0.15);
+      border: 1px solid var(--accent-pink);
+      color: var(--accent-pink);
+      padding: 0.35rem 0.9rem;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.6;
+    }
+
+    .studio-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .module-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .module-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .score-badge {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      padding: 0.4rem 0.8rem;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent-green);
+    }
+
+    /* Piano Styles */
+    .piano-keys {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      position: relative;
-      background: #111;
-      padding: 1.5rem 1rem 1rem;
-      border-radius: var(--radius-sm, 12px);
-      user-select: none;
+      gap: 0.4rem;
+      margin: 1.5rem 0;
       overflow-x: auto;
+      padding: 0.5rem 0;
     }
+
     .piano-key {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      width: 55px;
+      height: 140px;
+      border-radius: 0 0 8px 8px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       align-items: center;
-      padding-bottom: 0.5rem;
-      font-size: 0.75rem;
+      padding-bottom: 0.8rem;
       font-weight: 700;
-      border-radius: 0 0 4px 4px;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: background 0.1s ease, transform 0.05s ease;
-    }
-    .piano-key.white {
-      width: 44px;
-      height: 160px;
-      background: #f0f0f0;
-      color: #222;
-      border: 1px solid #ccc;
-      z-index: 1;
-    }
-    .piano-key.white:active, .piano-key.white.active {
-      background: #ddd;
-      transform: translateY(2px);
-    }
-    .piano-key.black {
-      width: 28px;
-      height: 100px;
-      background: #222;
-      color: #fff;
-      margin-left: -14px;
-      margin-right: -14px;
-      z-index: 2;
-      border: 1px solid #000;
-    }
-    .piano-key.black:active, .piano-key.black.active {
-      background: var(--accent-color, #4f46e5);
-      transform: translateY(2px);
+      user-select: none;
+      transition: transform 0.1s, background-color 0.2s, border-color 0.2s;
     }
 
-    /* Beat Sequencer Grid */
-    .sequencer-grid {
-      display: grid;
-      grid-template-columns: 80px repeat(8, 1fr);
-      gap: 6px;
-      align-items: center;
-      margin-top: 1rem;
+    .piano-key:active, .piano-key.active {
+      transform: translateY(4px);
+      background: var(--accent-purple);
+      color: white;
+      border-color: var(--accent-purple);
     }
-    .seq-pad {
-      aspect-ratio: 1;
-      background: var(--bg-pill, rgba(255,255,255,0.05));
-      border: 1px solid var(--border-subtle, rgba(255,255,255,0.1));
+
+    /* Ear Gym Controls */
+    .pitch-btn-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      margin: 1.5rem 0;
+    }
+
+    .pitch-btn {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      min-width: 60px;
+    }
+
+    .pitch-btn:hover {
+      border-color: var(--accent-pink);
+      color: var(--accent-pink);
+    }
+
+    .feedback-banner {
+      text-align: center;
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 1rem;
+      min-height: 24px;
+    }
+
+    /* Sequencer Grid */
+    .sequencer-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .seq-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .seq-label {
+      width: 80px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .seq-steps {
+      display: flex;
+      gap: 0.5rem;
+      flex-grow: 1;
+    }
+
+    .seq-step {
+      flex: 1;
+      height: 45px;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
       border-radius: 6px;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.2s;
     }
-    .seq-pad.active {
-      background: var(--accent-color, #6366f1);
-      box-shadow: 0 0 10px var(--accent-color, #6366f1);
+
+    .seq-step.active {
+      background: var(--accent-blue);
+      border-color: var(--accent-blue);
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
     }
-    .seq-pad.playing {
-      border-color: #fff;
+
+    .seq-step.playing {
+      border-color: #ffffff;
       transform: scale(1.05);
     }
 
-    /* Controls & Toolbars */
-    .control-bar {
-      display: flex;
-      gap: 1rem;
+    .btn {
+      display: inline-flex;
       align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
+      justify-content: center;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.2s;
+      text-decoration: none;
     }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--accent-pink);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .lang-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
     .control-group {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
+      gap: 1rem;
+      background: var(--bg-primary);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      flex-wrap: wrap;
     }
-    select, input[type="range"] {
-      background: var(--bg-pill, #1e1e2d);
-      color: inherit;
-      border: 1px solid var(--border-subtle, #333);
-      padding: 0.4rem 0.6rem;
-      border-radius: 6px;
+
+    .app-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4rem;
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+      }
+      .logo {
+        justify-content: center;
+      }
+      .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem 1rem;
+      }
+      .piano-key {
+        width: 42px;
+        height: 120px;
+        font-size: 0.8rem;
+      }
+      .seq-label {
+        width: 60px;
+        font-size: 0.8rem;
+      }
     }
   </style>
 </head>
@@ -131,391 +410,515 @@
   <header class="app-header">
     <div class="header-container">
       <a href="../index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <img src="../Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
         <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
       </a>
 
       <nav class="nav-menu">
-        <a href="../index.html" class="nav-link">Home</a>
-        <a href="dashboard.html" class="nav-link">Dashboard</a>
-        <a href="music.html" class="nav-link active">Music</a>
+        <a href="../index.html" class="nav-link" id="nav-home">Home</a>
+        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+        <a href="math.html" class="nav-link" id="nav-math">Math</a>
+        <a href="chess.html" class="nav-link" id="nav-chess">Chess</a>
+        <a href="music.html" class="nav-link active" id="nav-music">Music Studio</a>
+        <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
       </nav>
 
-      <div class="nav-actions">
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme">
-          <span class="theme-icon">🌙</span> Dark Mode
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+        </select>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
+          🌙
         </button>
+        <div id="auth-action-container">
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        </div>
       </div>
     </div>
   </header>
 
-  <main class="main-content">
-    <div class="container" style="padding-top: 2rem; padding-bottom: 3rem;">
-      
-      <!-- Top Title Bar -->
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
-        <div>
-          <h2>🎵 Music Studio & Academy</h2>
-          <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 0.25rem;">
-            Master ear training, experiment with sound synthesis, and produce beats in real-time.
-          </p>
-        </div>
-        <a href="dashboard.html" class="btn btn-secondary">&larr; Back to Dashboard</a>
-      </div>
+  <main class="main-container">
 
-      <!-- Module 1: Interactive Virtual Synthesizer -->
-      <div class="card" style="padding: 1.5rem; margin-bottom: 1.5rem;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
-          <h3 style="color: var(--accent-color); margin: 0;">🎹 Virtual Synthesizer</h3>
-          
-          <div class="control-bar" style="margin: 0;">
-            <div class="control-group">
-              <label for="synth-wave">Waveform:</label>
-              <select id="synth-wave">
-                <option value="sine">Sine (Smooth)</option>
-                <option value="triangle" selected>Triangle (Soft)</option>
-                <option value="sawtooth">Sawtooth (Bright)</option>
-                <option value="square">Square (Retro)</option>
-              </select>
-            </div>
-            <div class="control-group">
-              <label for="synth-octave">Octave:</label>
-              <select id="synth-octave">
-                <option value="3">Low (C3)</option>
-                <option value="4" selected>Mid (C4)</option>
-                <option value="5">High (C5)</option>
-              </select>
-            </div>
-          </div>
-        </div>
+    <!-- Hero Header -->
+    <section class="hero-section">
+      <div class="hero-badge" id="hero-badge">🎧 Learn Music By Playing</div>
+      <h1 class="hero-title" id="hero-title">Train Your Ear, Rhythm & Sound Design</h1>
+      <p class="hero-subtitle" id="hero-subtitle">
+        Just like playing chess makes you better at chess, practice makes you a better musician! Train your ear to recognize pitch, experiment with waveform synthesis, and build rhythm on the 8-step sequencer.
+      </p>
+    </section>
 
-        <div class="piano-container" id="piano-keyboard">
-          <!-- Dynamically populated piano keys -->
+    <div class="studio-grid">
+
+      <!-- MODULE 1: EAR GYM PITCH TRAINER -->
+      <section class="module-card">
+        <div class="module-header">
+          <h2 class="module-title" id="ear-title">🎯 Ear Gym: Pitch Trainer</h2>
+          <div class="score-badge" id="ear-score">Score: 0 | Streak: 0 🔥</div>
         </div>
-        <p style="text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 0.75rem;">
-          💡 Tip: Click keys or press matching keys on your computer keyboard (A, S, D, F, G, H, J, K).
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: -0.5rem;" id="ear-desc">
+          Click "Play Mystery Note", listen carefully, and select the correct note name below to build perfect musical pitch recognition.
         </p>
-      </div>
 
-      <!-- Studio Grid: DAW Sequencer + Ear Trainer -->
-      <div class="studio-grid">
-        
-        <!-- Module 2: 8-Step Beat Maker (DAW Lite) -->
-        <div class="card" style="padding: 1.5rem;">
-          <h3 style="color: var(--accent-color); margin-bottom: 0.5rem;">🥁 8-Step Beat Sequencer</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Build custom drum loops with real-time synthesized percussion.</p>
-
-          <div class="control-bar" style="margin-top: 1rem;">
-            <button id="seq-play-btn" class="btn btn-primary" style="padding: 0.4rem 1rem;">▶ Play Loop</button>
-            <div class="control-group">
-              <label for="bpm-slider">Tempo:</label>
-              <input type="range" id="bpm-slider" min="60" max="180" value="110">
-              <span id="bpm-val">110 BPM</span>
-            </div>
-          </div>
-
-          <div class="sequencer-grid" id="sequencer-grid">
-            <!-- Row labels & pads injected via JavaScript -->
-          </div>
+        <div style="display: flex; justify-content: center; gap: 1rem; margin: 1.5rem 0;">
+          <button type="button" class="btn btn-primary" onclick="playMysteryNote()" id="btn-play-note">🔊 Play Mystery Note</button>
+          <button type="button" class="btn btn-secondary" onclick="repeatMysteryNote()" id="btn-repeat-note">🔄 Repeat Note</button>
         </div>
 
-        <!-- Module 3: Brilliant-Style Theory & Ear Trainer -->
-        <div class="card" style="padding: 1.5rem;">
-          <h3 style="color: var(--accent-color); margin-bottom: 0.5rem;">🎯 Ear Training Gym</h3>
-          <p style="color: var(--text-muted); font-size: 0.85rem;">Listen to the target pitch and test your musical ear.</p>
-
-          <div style="background: var(--bg-pill, rgba(0,0,0,0.2)); padding: 1.5rem; border-radius: 8px; text-align: center; margin: 1rem 0;">
-            <button id="play-target-note" class="btn btn-secondary" style="font-size: 1.1rem; padding: 0.6rem 1.2rem;">
-              🔊 Play Secret Pitch
-            </button>
-            <div id="trainer-feedback" style="margin-top: 0.75rem; font-weight: 600; min-height: 1.2rem;"></div>
-          </div>
-
-          <div id="note-options" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.5rem;">
-            <!-- Multiple choice note buttons -->
-          </div>
-          
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; font-size: 0.85rem;">
-            <span>Score: <strong id="trainer-score">0</strong></span>
-            <button id="next-note-btn" class="btn btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;">Skip Note</button>
-          </div>
+        <div class="pitch-btn-grid" id="pitch-options">
+          <button class="pitch-btn" onclick="guessPitch('C4')">C4</button>
+          <button class="pitch-btn" onclick="guessPitch('D4')">D4</button>
+          <button class="pitch-btn" onclick="guessPitch('E4')">E4</button>
+          <button class="pitch-btn" onclick="guessPitch('F4')">F4</button>
+          <button class="pitch-btn" onclick="guessPitch('G4')">G4</button>
+          <button class="pitch-btn" onclick="guessPitch('A4')">A4</button>
+          <button class="pitch-btn" onclick="guessPitch('B4')">B4</button>
+          <button class="pitch-btn" onclick="guessPitch('C5')">C5</button>
         </div>
 
-      </div>
+        <div class="feedback-banner" id="ear-feedback">Press "Play Mystery Note" to start!</div>
+      </section>
+
+      <!-- MODULE 2: INTERACTIVE SYNTHESIZER -->
+      <section class="module-card">
+        <div class="module-header">
+          <h2 class="module-title" id="synth-title">🎹 Waveform Synthesizer & Piano</h2>
+          <div class="control-group">
+            <label for="waveType" style="font-weight: 700; font-size: 0.85rem;" id="lbl-wave">Waveform:</label>
+            <select id="waveType" class="lang-select" onchange="setWaveform(this.value)">
+              <option value="sine">Sine (Smooth)</option>
+              <option value="square">Square (8-Bit/Retro)</option>
+              <option value="sawtooth">Sawtooth (Bright/Buzzy)</option>
+              <option value="triangle">Triangle (Warm)</option>
+            </select>
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: -0.5rem;" id="synth-desc">
+          Click or press keys on your keyboard to play notes. Experiment with different sound waves to understand timbre and sound design.
+        </p>
+
+        <div class="piano-keys" id="piano-container">
+          <div class="piano-key" onclick="playPianoNote('C4')" id="key-C4">C4</div>
+          <div class="piano-key" onclick="playPianoNote('D4')" id="key-D4">D4</div>
+          <div class="piano-key" onclick="playPianoNote('E4')" id="key-E4">E4</div>
+          <div class="piano-key" onclick="playPianoNote('F4')" id="key-F4">F4</div>
+          <div class="piano-key" onclick="playPianoNote('G4')" id="key-G4">G4</div>
+          <div class="piano-key" onclick="playPianoNote('A4')" id="key-A4">A4</div>
+          <div class="piano-key" onclick="playPianoNote('B4')" id="key-B4">B4</div>
+          <div class="piano-key" onclick="playPianoNote('C5')" id="key-C5">C5</div>
+        </div>
+      </section>
+
+      <!-- MODULE 3: 8-STEP BEAT SEQUENCER -->
+      <section class="module-card">
+        <div class="module-header">
+          <h2 class="module-title" id="seq-title">🥁 8-Step Rhythm Sequencer</h2>
+          <div class="control-group">
+            <button type="button" class="btn btn-primary" id="btn-seq-toggle" onclick="toggleSequencer()">▶️ Play Beat</button>
+            <label for="bpmRange" style="font-weight: 700; font-size: 0.85rem;" id="lbl-bpm">BPM: <span id="bpm-val">120</span></label>
+            <input type="range" id="bpmRange" min="60" max="180" value="120" oninput="updateBPM(this.value)">
+          </div>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: -0.5rem;" id="seq-desc">
+          Click the step boxes to turn drum instruments on or off and create your own rhythmic patterns.
+        </p>
+
+        <div class="sequencer-container">
+          <div class="seq-row">
+            <span class="seq-label">Kick Drum</span>
+            <div class="seq-steps" id="seq-kick"></div>
+          </div>
+          <div class="seq-row">
+            <span class="seq-label">Snare Drum</span>
+            <div class="seq-steps" id="seq-snare"></div>
+          </div>
+          <div class="seq-row">
+            <span class="seq-label">Hi-Hat</span>
+            <div class="seq-steps" id="seq-hihat"></div>
+          </div>
+        </div>
+      </section>
 
     </div>
+
   </main>
 
   <footer class="app-footer">
-    <div class="container footer-content">
-      <p class="footer-text">&copy; 2026 Justin's Skillz.</p>
-    </div>
+    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
   </footer>
-  <script src="cookie-banner.js" defer></script>
 
-  <!-- Interactive Music Engines (Web Audio API) -->
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Audio Context Initialization
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      let audioCtx = null;
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
+    }
 
-      function getAudioContext() {
-        if (!audioCtx) {
-          audioCtx = new AudioContext();
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
+
+    /* Audio Context Initialization */
+    let audioCtx = null;
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    const NOTES = {
+      'C4': 261.63,
+      'D4': 293.66,
+      'E4': 329.63,
+      'F4': 349.23,
+      'G4': 392.00,
+      'A4': 440.00,
+      'B4': 493.88,
+      'C5': 523.25
+    };
+
+    let currentWaveform = 'sine';
+
+    function setWaveform(wave) {
+      currentWaveform = wave;
+    }
+
+    function playTone(freq, duration = 0.5, type = currentWaveform) {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    }
+
+    function playPianoNote(noteKey) {
+      if (NOTES[noteKey]) {
+        playTone(NOTES[noteKey], 0.6);
+        const el = document.getElementById('key-' + noteKey);
+        if (el) {
+          el.classList.add('active');
+          setTimeout(() => el.classList.remove('active'), 200);
         }
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        return audioCtx;
+      }
+    }
+
+    /* Ear Gym Logic */
+    let mysteryNoteKey = null;
+    let score = 0;
+    let streak = 0;
+
+    function playMysteryNote() {
+      const keys = Object.keys(NOTES);
+      mysteryNoteKey = keys[Math.floor(Math.random() * keys.length)];
+      playTone(NOTES[mysteryNoteKey], 0.8, 'sine');
+      
+      const banner = document.getElementById('ear-feedback');
+      banner.style.color = 'var(--text-main)';
+      banner.textContent = 'Listen carefully... Which note is playing?';
+    }
+
+    function repeatMysteryNote() {
+      if (mysteryNoteKey) {
+        playTone(NOTES[mysteryNoteKey], 0.8, 'sine');
+      } else {
+        playMysteryNote();
+      }
+    }
+
+    function guessPitch(guessedKey) {
+      const banner = document.getElementById('ear-feedback');
+      if (!mysteryNoteKey) {
+        banner.textContent = 'Click "Play Mystery Note" first!';
+        return;
       }
 
-      // --- MODULE 1: VIRTUAL SYNTHESIZER ---
-      const notes = [
-        { note: 'C', freq: 261.63, isBlack: false, keyBind: 'a' },
-        { note: 'C#', freq: 277.18, isBlack: true, keyBind: 'w' },
-        { note: 'D', freq: 293.66, isBlack: false, keyBind: 's' },
-        { note: 'D#', freq: 311.13, isBlack: true, keyBind: 'e' },
-        { note: 'E', freq: 329.63, isBlack: false, keyBind: 'd' },
-        { note: 'F', freq: 349.23, isBlack: false, keyBind: 'f' },
-        { note: 'F#', freq: 369.99, isBlack: true, keyBind: 't' },
-        { note: 'G', freq: 392.00, isBlack: false, keyBind: 'g' },
-        { note: 'G#', freq: 415.30, isBlack: true, keyBind: 'y' },
-        { note: 'A', freq: 440.00, isBlack: false, keyBind: 'h' },
-        { note: 'A#', freq: 466.16, isBlack: true, keyBind: 'u' },
-        { note: 'B', freq: 493.88, isBlack: false, keyBind: 'j' },
-        { note: 'C5', freq: 523.25, isBlack: false, keyBind: 'k' }
-      ];
+      if (guessedKey === mysteryNoteKey) {
+        score += 10;
+        streak += 1;
+        banner.style.color = 'var(--accent-green)';
+        banner.textContent = `✨ Correct! That was ${mysteryNoteKey}. Keep it up!`;
+        mysteryNoteKey = null;
+      } else {
+        streak = 0;
+        banner.style.color = 'var(--accent-pink)';
+        banner.textContent = `❌ Not quite! The note was ${mysteryNoteKey}. Try another one!`;
+        mysteryNoteKey = null;
+      }
 
-      const pianoContainer = document.getElementById('piano-keyboard');
-      const waveSelect = document.getElementById('synth-wave');
-      const octaveSelect = document.getElementById('synth-octave');
+      document.getElementById('ear-score').textContent = `Score: ${score} | Streak: ${streak} 🔥`;
+    }
 
-      function playTone(freq, duration = 0.5) {
-        const ctx = getAudioContext();
-        const octaveMult = Math.pow(2, parseInt(octaveSelect.value) - 4);
-        
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
+    /* Sequencer Logic */
+    const totalSteps = 8;
+    let isPlayingSeq = false;
+    let currentStep = 0;
+    let bpm = 120;
+    let seqInterval = null;
 
-        osc.type = waveSelect.value;
-        osc.frequency.setValueAtTime(freq * octaveMult, ctx.currentTime);
+    const seqGrid = {
+      kick: [true, false, false, false, true, false, false, false],
+      snare: [false, false, true, false, false, false, true, false],
+      hihat: [true, true, true, true, true, true, true, true]
+    };
 
-        gain.gain.setValueAtTime(0.3, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+    function initSequencerUI() {
+      ['kick', 'snare', 'hihat'].forEach(inst => {
+        const row = document.getElementById(`seq-${inst}`);
+        row.innerHTML = '';
+        for (let i = 0; i < totalSteps; i++) {
+          const stepBtn = document.createElement('div');
+          stepBtn.className = `seq-step ${seqGrid[inst][i] ? 'active' : ''}`;
+          stepBtn.id = `step-${inst}-${i}`;
+          stepBtn.onclick = () => {
+            seqGrid[inst][i] = !seqGrid[inst][i];
+            stepBtn.classList.toggle('active');
+          };
+          row.appendChild(stepBtn);
+        }
+      });
+    }
 
+    function updateBPM(val) {
+      bpm = val;
+      document.getElementById('bpm-val').textContent = val;
+      if (isPlayingSeq) {
+        stopSequencer();
+        startSequencer();
+      }
+    }
+
+    function triggerDrum(inst) {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      if (inst === 'kick') {
+        osc.frequency.setValueAtTime(120, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.8, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
         osc.connect(gain);
         gain.connect(ctx.destination);
-
         osc.start();
-        osc.stop(ctx.currentTime + duration);
+        osc.stop(ctx.currentTime + 0.15);
+      } else if (inst === 'snare') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(180, ctx.currentTime);
+        gain.gain.setValueAtTime(0.5, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.1);
+      } else if (inst === 'hihat') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(800, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.05);
       }
+    }
 
-      // Render Piano Keys
-      notes.forEach(n => {
-        const keyEl = document.createElement('div');
-        keyEl.className = `piano-key ${n.isBlack ? 'black' : 'white'}`;
-        keyEl.innerHTML = `<span>${n.note}</span>`;
-        keyEl.dataset.note = n.note;
-
-        keyEl.addEventListener('mousedown', () => {
-          playTone(n.freq);
-          keyEl.classList.add('active');
-        });
-        keyEl.addEventListener('mouseup', () => keyEl.classList.remove('active'));
-        keyEl.addEventListener('mouseleave', () => keyEl.classList.remove('active'));
-
-        pianoContainer.appendChild(keyEl);
-      });
-
-      // Keyboard Controls
-      window.addEventListener('keydown', (e) => {
-        if (e.repeat) return;
-        const noteData = notes.find(n => n.keyBind === e.key.toLowerCase());
-        if (noteData) {
-          playTone(noteData.freq);
-          const keyEl = pianoContainer.querySelector(`[data-note="${noteData.note}"]`);
-          if (keyEl) keyEl.classList.add('active');
-        }
-      });
-
-      window.addEventListener('keyup', (e) => {
-        const noteData = notes.find(n => n.keyBind === e.key.toLowerCase());
-        if (noteData) {
-          const keyEl = pianoContainer.querySelector(`[data-note="${noteData.note}"]`);
-          if (keyEl) keyEl.classList.remove('active');
-        }
-      });
-
-      // --- MODULE 2: BEAT SEQUENCER ---
-      const seqGrid = document.getElementById('sequencer-grid');
-      const playBtn = document.getElementById('seq-play-btn');
-      const bpmSlider = document.getElementById('bpm-slider');
-      const bpmVal = document.getElementById('bpm-val');
-
-      const tracks = ['Kick', 'Snare', 'Hi-Hat'];
-      const gridState = Array(3).fill(null).map(() => Array(8).fill(false));
-      let isPlaying = false;
-      let currentStep = 0;
-      let seqInterval = null;
-
-      // Render Sequencer Grid
-      tracks.forEach((track, rowIdx) => {
-        const label = document.createElement('div');
-        label.style.fontSize = '0.8rem';
-        label.style.fontWeight = '600';
-        label.textContent = track;
-        seqGrid.appendChild(label);
-
-        for (let colIdx = 0; colIdx < 8; colIdx++) {
-          const pad = document.createElement('div');
-          pad.className = 'seq-pad';
-          pad.dataset.row = rowIdx;
-          pad.dataset.col = colIdx;
-          pad.addEventListener('click', () => {
-            gridState[rowIdx][colIdx] = !gridState[rowIdx][colIdx];
-            pad.classList.toggle('active', gridState[rowIdx][colIdx]);
-          });
-          seqGrid.appendChild(pad);
-        }
-      });
-
-      function triggerDrumSound(type) {
-        const ctx = getAudioContext();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        if (type === 0) { // Kick
-          osc.frequency.setValueAtTime(150, ctx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-          gain.gain.setValueAtTime(0.8, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.15);
-        } else if (type === 1) { // Snare
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(180, ctx.currentTime);
-          gain.gain.setValueAtTime(0.4, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.1);
-        } else if (type === 2) { // Hi-Hat
-          osc.type = 'square';
-          osc.frequency.setValueAtTime(800, ctx.currentTime);
-          gain.gain.setValueAtTime(0.15, ctx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.05);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start();
-          osc.stop(ctx.currentTime + 0.05);
-        }
+    function toggleSequencer() {
+      if (isPlayingSeq) {
+        stopSequencer();
+      } else {
+        startSequencer();
       }
+    }
 
-      function step() {
-        const pads = seqGrid.querySelectorAll('.seq-pad');
-        pads.forEach(p => p.classList.remove('playing'));
+    function startSequencer() {
+      isPlayingSeq = true;
+      document.getElementById('btn-seq-toggle').textContent = '⏹️ Stop Beat';
+      const intervalMs = (60 / bpm / 2) * 1000;
+      
+      seqInterval = setInterval(() => {
+        document.querySelectorAll('.seq-step').forEach(s => s.classList.remove('playing'));
 
-        tracks.forEach((_, rowIdx) => {
-          if (gridState[rowIdx][currentStep]) {
-            triggerDrumSound(rowIdx);
+        ['kick', 'snare', 'hihat'].forEach(inst => {
+          const stepEl = document.getElementById(`step-${inst}-${currentStep}`);
+          if (stepEl) stepEl.classList.add('playing');
+          if (seqGrid[inst][currentStep]) {
+            triggerDrum(inst);
           }
-          const activePad = seqGrid.querySelector(`[data-row="${rowIdx}"][data-col="${currentStep}"]`);
-          if (activePad) activePad.classList.add('playing');
         });
 
-        currentStep = (currentStep + 1) % 8;
+        currentStep = (currentStep + 1) % totalSteps;
+      }, intervalMs);
+    }
+
+    function stopSequencer() {
+      isPlayingSeq = false;
+      document.getElementById('btn-seq-toggle').textContent = '▶️ Play Beat';
+      clearInterval(seqInterval);
+      document.querySelectorAll('.seq-step').forEach(s => s.classList.remove('playing'));
+      currentStep = 0;
+    }
+
+    /* Translations */
+    const translations = {
+      en: {
+        navHome: "Home",
+        navDashboard: "Dashboard",
+        navMath: "Math",
+        navChess: "Chess",
+        navMusic: "Music Studio",
+        navAI: "AI Assistant",
+        signIn: "Sign In",
+        signOut: "Sign Out",
+        heroBadge: "🎧 Learn Music By Playing",
+        heroTitle: "Train Your Ear, Rhythm & Sound Design",
+        heroSubtitle: "Just like playing chess makes you better at chess, practice makes you a better musician! Train your ear to recognize pitch, experiment with waveform synthesis, and build rhythm on the 8-step sequencer.",
+        earTitle: "🎯 Ear Gym: Pitch Trainer",
+        earDesc: "Click 'Play Mystery Note', listen carefully, and select the correct note name below to build perfect musical pitch recognition.",
+        btnPlayNote: "🔊 Play Mystery Note",
+        btnRepeatNote: "🔄 Repeat Note",
+        synthTitle: "🎹 Waveform Synthesizer & Piano",
+        synthDesc: "Click or press keys on your keyboard to play notes. Experiment with different sound waves to understand timbre and sound design.",
+        lblWave: "Waveform:",
+        seqTitle: "🥁 8-Step Rhythm Sequencer",
+        seqDesc: "Click the step boxes to turn drum instruments on or off and create your own rhythmic patterns."
+      },
+      fr: {
+        navHome: "Accueil",
+        navDashboard: "Tableau de bord",
+        navMath: "Maths",
+        navChess: "Échecs",
+        navMusic: "Studio Musique",
+        navAI: "Assistant IA",
+        signIn: "Se connecter",
+        signOut: "Se déconnecter",
+        heroBadge: "🎧 Apprenez la Musique en Jouant",
+        heroTitle: "Entraînez votre Oreille, Rythme et Synthèse",
+        heroSubtitle: "Tout comme jouer aux échecs améliore votre niveau, la pratique fait de vous un meilleur musicien ! Développez votre oreille relative et votre sens du rythme.",
+        earTitle: "🎯 Gymnastique de l'Oreille",
+        earDesc: "Cliquez sur 'Écouter la Note', écoutez attentivement et devinez la note pour développer votre oreille musicale.",
+        btnPlayNote: "🔊 Écouter la Note Mystère",
+        btnRepeatNote: "🔄 Répéter la Note",
+        synthTitle: "🎹 Synthétiseur & Clavier",
+        synthDesc: "Jouez des notes sur le clavier et explorez les formes d'ondes pour comprendre le timbre sonore.",
+        lblWave: "Forme d'onde :",
+        seqTitle: "🥁 Séquenceur de Rythme à 8 Pas",
+        seqDesc: "Activez les cases pour composer vos propres rythmes."
+      },
+      es: {
+        navHome: "Inicio",
+        navDashboard: "Panel",
+        navMath: "Matemáticas",
+        navChess: "Ajedrez",
+        navMusic: "Estudio de Música",
+        navAI: "Asistente IA",
+        signIn: "Iniciar Sesión",
+        signOut: "Cerrar Sesión",
+        heroBadge: "🎧 Aprende Música Jugando",
+        heroTitle: "Entrena tu Oído, Ritmo y Diseño de Sonido",
+        heroSubtitle: "¡Al igual que jugar al ajedrez te hace mejor en el ajedrez, la práctica te convierte en un mejor músico! Entrena tu oído y crea ritmos interactivos.",
+        earTitle: "🎯 Gimnasio de Oído: Pitch Trainer",
+        earDesc: "Haz clic en 'Tocar Nota Misteriosa' y selecciona la nota correcta para desarrollar tu oído musical.",
+        btnPlayNote: "🔊 Tocar Nota Misteriosa",
+        btnRepeatNote: "🔄 Repetir Nota",
+        synthTitle: "🎹 Sintetizador y Teclado",
+        synthDesc: "Toca notas en el teclado y experimenta con diferentes ondas de sonido.",
+        lblWave: "Onda de sonido:",
+        seqTitle: "🥁 Secuenciador de Ritmo de 8 Pasos",
+        seqDesc: "Haz clic en las casillas para crear tus propios patrones rítmicos."
       }
+    };
 
-      playBtn.addEventListener('click', () => {
-        isPlaying = !isPlaying;
-        if (isPlaying) {
-          playBtn.textContent = '⏹ Stop';
-          const intervalMs = (60 / parseInt(bpmSlider.value) / 2) * 1000;
-          seqInterval = setInterval(step, intervalMs);
-        } else {
-          playBtn.textContent = '▶ Play Loop';
-          clearInterval(seqInterval);
-          currentStep = 0;
-          seqGrid.querySelectorAll('.seq-pad').forEach(p => p.classList.remove('playing'));
-        }
-      });
-
-      bpmSlider.addEventListener('input', (e) => {
-        bpmVal.textContent = `${e.target.value} BPM`;
-        if (isPlaying) {
-          clearInterval(seqInterval);
-          const intervalMs = (60 / parseInt(e.target.value) / 2) * 1000;
-          seqInterval = setInterval(step, intervalMs);
-        }
-      });
-
-      // --- MODULE 3: EAR TRAINING GYM ---
-      const trainerNotes = [
-        { name: 'C', freq: 261.63 },
-        { name: 'D', freq: 293.66 },
-        { name: 'E', freq: 329.63 },
-        { name: 'F', freq: 349.23 },
-        { name: 'G', freq: 392.00 },
-        { name: 'A', freq: 440.00 },
-        { name: 'B', freq: 493.88 }
-      ];
-
-      let targetNote = null;
-      let score = 0;
-
-      const playTargetBtn = document.getElementById('play-target-note');
-      const feedbackEl = document.getElementById('trainer-feedback');
-      const optionsContainer = document.getElementById('note-options');
-      const scoreEl = document.getElementById('trainer-score');
-      const skipBtn = document.getElementById('next-note-btn');
-
-      function pickNewTarget() {
-        targetNote = trainerNotes[Math.floor(Math.random() * trainerNotes.length)];
-        feedbackEl.textContent = '';
-        feedbackEl.style.color = 'inherit';
-      }
-
-      function renderTrainerOptions() {
-        optionsContainer.innerHTML = '';
-        trainerNotes.forEach(n => {
-          const btn = document.createElement('button');
-          btn.className = 'btn btn-secondary';
-          btn.style.padding = '0.5rem';
-          btn.textContent = n.name;
-          btn.addEventListener('click', () => checkGuess(n.name));
-          optionsContainer.appendChild(btn);
-        });
-      }
-
-      function checkGuess(guess) {
-        if (!targetNote) return;
-        if (guess === targetNote.name) {
-          score += 10;
-          scoreEl.textContent = score;
-          feedbackEl.textContent = '🎉 Correct!';
-          feedbackEl.style.color = '#10b981';
-          setTimeout(pickNewTarget, 1000);
-        } else {
-          feedbackEl.textContent = '❌ Try Again!';
-          feedbackEl.style.color = '#ef4444';
-        }
-      }
-
-      playTargetBtn.addEventListener('click', () => {
-        if (!targetNote) pickNewTarget();
-        playTone(targetNote.freq, 0.8);
-      });
-
-      skipBtn.addEventListener('click', pickNewTarget);
-
-      // Initialize Ear Trainer Options
-      renderTrainerOptions();
-      pickNewTarget();
+    window.addEventListener('DOMContentLoaded', () => {
+      initSequencerUI();
+      checkUserSession();
+      const savedLang = localStorage.getItem('site_lang') || 'en';
+      document.getElementById('langSelect').value = savedLang;
+      applyLanguage(savedLang);
     });
+
+    function changeLanguage(lang) {
+      localStorage.setItem('site_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      const t = translations[lang];
+      document.getElementById('nav-home').textContent = t.navHome;
+      document.getElementById('nav-dashboard').textContent = t.navDashboard;
+      document.getElementById('nav-math').textContent = t.navMath;
+      document.getElementById('nav-chess').textContent = t.navChess;
+      document.getElementById('nav-music').textContent = t.navMusic;
+      document.getElementById('nav-ai').textContent = t.navAI;
+
+      document.getElementById('hero-badge').textContent = t.heroBadge;
+      document.getElementById('hero-title').textContent = t.heroTitle;
+      document.getElementById('hero-subtitle').textContent = t.heroSubtitle;
+
+      document.getElementById('ear-title').textContent = t.earTitle;
+      document.getElementById('ear-desc').textContent = t.earDesc;
+      document.getElementById('btn-play-note').textContent = t.btnPlayNote;
+      document.getElementById('btn-repeat-note').textContent = t.btnRepeatNote;
+
+      document.getElementById('synth-title').textContent = t.synthTitle;
+      document.getElementById('synth-desc').textContent = t.synthDesc;
+      document.getElementById('lbl-wave').textContent = t.lblWave;
+
+      document.getElementById('seq-title').textContent = t.seqTitle;
+      document.getElementById('seq-desc').textContent = t.seqDesc;
+
+      const authContainer = document.getElementById('auth-action-container');
+      window.mySupabaseInstance.auth.getSession().then(({ data: { session } }) => {
+        if (!session) {
+          authContainer.innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>`;
+        } else {
+          authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">${t.signOut}</button>`;
+        }
+      });
+    }
+
+    async function checkUserSession() {
+      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+      const authContainer = document.getElementById('auth-action-container');
+      const navAdminLink = document.getElementById('nav-admin-link');
+      const lang = localStorage.getItem('site_lang') || 'en';
+      const t = translations[lang];
+
+      if (session && session.user) {
+        authContainer.innerHTML = `
+          <button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">${t.signOut}</button>
+        `;
+        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+        if (userEmail === ADMIN_EMAIL && navAdminLink) {
+          navAdminLink.style.display = 'block';
+        }
+      } else {
+        authContainer.innerHTML = `
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>
+        `;
+      }
+    }
+
+    async function handleSignOut() {
+      await window.mySupabaseInstance.auth.signOut();
+      window.location.reload();
+    }
   </script>
+  <script src="cookie-banner.js" defer></script>
 </body>
 </html>

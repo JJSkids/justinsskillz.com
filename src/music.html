@@ -249,20 +249,28 @@
       display: block;
     }
 
-    /* Piano Styles */
-    .piano-container {
+    /* Piano Styles with Chromatic Support */
+    .piano-wrapper {
       display: flex;
       justify-content: center;
-      gap: 0.3rem;
       margin: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .piano-container {
+      position: relative;
+      display: flex;
       user-select: none;
+      padding: 10px;
+      background: #090a0f;
+      border-radius: 10px;
     }
 
     .piano-key {
       background: #ffffff;
       color: #1e293b;
       border: 1px solid #cbd5e1;
-      width: 48px;
+      width: 44px;
       height: 130px;
       border-radius: 0 0 6px 6px;
       display: flex;
@@ -271,20 +279,35 @@
       align-items: center;
       padding-bottom: 0.5rem;
       font-weight: 700;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       cursor: pointer;
       transition: all 0.1s;
+      box-sizing: border-box;
+      z-index: 1;
+    }
+
+    .piano-key.black-key {
+      background: #1e293b;
+      color: #f8fafc;
+      width: 28px;
+      height: 80px;
+      margin-left: -14px;
+      margin-right: -14px;
+      z-index: 2;
+      border-radius: 0 0 4px 4px;
+      border: 1px solid #0f172a;
+      font-size: 0.65rem;
     }
 
     .piano-key.highlight {
-      background: var(--accent-blue);
-      color: #ffffff;
-      border-color: var(--accent-blue);
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+      background: var(--accent-blue) !important;
+      color: #ffffff !important;
+      border-color: var(--accent-blue) !important;
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.7);
     }
 
     .piano-key:active {
-      transform: translateY(3px);
+      transform: translateY(2px);
       background: var(--accent-purple);
       color: #ffffff;
     }
@@ -370,7 +393,6 @@
       margin-top: 4rem;
     }
 
-    /* Rhythm Cards */
     .rhythm-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -407,9 +429,15 @@
         gap: 0.5rem 1rem;
       }
       .piano-key {
-        width: 36px;
+        width: 32px;
         height: 100px;
-        font-size: 0.75rem;
+        font-size: 0.7rem;
+      }
+      .piano-key.black-key {
+        width: 20px;
+        height: 65px;
+        margin-left: -10px;
+        margin-right: -10px;
       }
     }
   </style>
@@ -451,7 +479,6 @@
 
   <main class="main-container">
 
-    <!-- Hero Section -->
     <section class="hero-section">
       <div class="hero-badge" id="hero-badge">🎼 Structured Music Academy</div>
       <h1 class="hero-title" id="hero-title">Master Music Theory, Pitch & Rhythm</h1>
@@ -460,7 +487,6 @@
       </p>
     </section>
 
-    <!-- Navigation Tabs -->
     <div class="tab-nav">
       <button class="tab-btn active" onclick="switchTab('notes')" id="tab-notes">1. Reading Sheet Music</button>
       <button class="tab-btn" onclick="switchTab('chords')" id="tab-chords">2. Chords & Harmony</button>
@@ -488,22 +514,17 @@
         <h3 style="margin-top:0;" id="m1-practice-title">Interactive Sight Reading Practice</h3>
         <p style="color:var(--text-muted); font-size:0.9rem;" id="m1-practice-desc">Identify the pitch placed on the treble staff below:</p>
 
-        <!-- Treble Clef SVG Canvas -->
         <svg class="staff-svg" viewBox="0 0 400 140">
-          <!-- Staff Lines -->
           <line x1="30" y1="30" x2="370" y2="30" stroke="#334155" stroke-width="2"/>
           <line x1="30" y1="50" x2="370" y2="50" stroke="#334155" stroke-width="2"/>
           <line x1="30" y1="70" x2="370" y2="70" stroke="#334155" stroke-width="2"/>
           <line x1="30" y1="90" x2="370" y2="90" stroke="#334155" stroke-width="2"/>
           <line x1="30" y1="110" x2="370" y2="110" stroke="#334155" stroke-width="2"/>
 
-          <!-- Treble Clef Symbol -->
           <text x="45" y="105" font-size="70" fill="#0f172a" font-family="serif">𝄔</text>
 
-          <!-- Ledger line for C4 if needed -->
           <line id="ledger-line" x1="180" y1="130" x2="220" y2="130" stroke="#334155" stroke-width="2" style="display:none;"/>
 
-          <!-- Dynamic Notehead -->
           <ellipse id="note-head" cx="200" cy="70" rx="10" ry="7" fill="#a855f7" transform="rotate(-20, 200, 70)" />
           <line id="note-stem" x1="209" y1="70" x2="209" y2="25" stroke="#a855f7" stroke-width="2.5" />
         </svg>
@@ -569,20 +590,26 @@
           <button class="btn btn-primary" onclick="playCurrentChord()" id="btn-play-chord">▶️ Play Chord Triad</button>
         </div>
 
-        <!-- Keyboard Visualizer -->
-        <div class="piano-container" id="chord-keyboard">
-          <div class="piano-key" id="k-C4">C4</div>
-          <div class="piano-key" id="k-D4">D4</div>
-          <div class="piano-key" id="k-E4">E4</div>
-          <div class="piano-key" id="k-F4">F4</div>
-          <div class="piano-key" id="k-G4">G4</div>
-          <div class="piano-key" id="k-A4">A4</div>
-          <div class="piano-key" id="k-B4">B4</div>
-          <div class="piano-key" id="k-C5">C5</div>
+        <div class="piano-wrapper">
+          <div class="piano-container" id="chord-keyboard">
+            <div class="piano-key" id="k-C4" onclick="playAudioTone(NOTES_FREQ['C4'])">C4</div>
+            <div class="piano-key black-key" id="k-Cs4" onclick="playAudioTone(NOTES_FREQ['Cs4'])">C#</div>
+            <div class="piano-key" id="k-D4" onclick="playAudioTone(NOTES_FREQ['D4'])">D4</div>
+            <div class="piano-key black-key" id="k-Eb4" onclick="playAudioTone(NOTES_FREQ['Eb4'])">Eb</div>
+            <div class="piano-key" id="k-E4" onclick="playAudioTone(NOTES_FREQ['E4'])">E4</div>
+            <div class="piano-key" id="k-F4" onclick="playAudioTone(NOTES_FREQ['F4'])">F4</div>
+            <div class="piano-key black-key" id="k-Fs4" onclick="playAudioTone(NOTES_FREQ['Fs4'])">F#</div>
+            <div class="piano-key" id="k-G4" onclick="playAudioTone(NOTES_FREQ['G4'])">G4</div>
+            <div class="piano-key black-key" id="k-Ab4" onclick="playAudioTone(NOTES_FREQ['Ab4'])">Ab</div>
+            <div class="piano-key" id="k-A4" onclick="playAudioTone(NOTES_FREQ['A4'])">A4</div>
+            <div class="piano-key black-key" id="k-Bb4" onclick="playAudioTone(NOTES_FREQ['Bb4'])">Bb</div>
+            <div class="piano-key" id="k-B4" onclick="playAudioTone(NOTES_FREQ['B4'])">B4</div>
+            <div class="piano-key" id="k-C5" onclick="playAudioTone(NOTES_FREQ['C5'])">C5</div>
+          </div>
         </div>
 
         <div class="feedback-banner" id="chord-formula-display" style="color: var(--accent-purple);">
-          Formula: Root (C4) + Major 3rd (E4) + Minor 3rd (G4)
+          Formula: Root (C4) + Major 3rd (E4) + Perfect 5th (G4)
         </div>
       </div>
     </section>
@@ -641,7 +668,7 @@
 
     <!-- MODULE 4: PHYSICS OF SOUND -->
     <section id="module-physics" class="lesson-card" style="display: none;">
-      <h2 class="lesson-title" id="m4-title">🌊 Lesson 4: Sound Waves & Frequency physics</h2>
+      <h2 class="lesson-title" id="m4-title">🌊 Lesson 4: Sound Waves & Frequency Physics</h2>
 
       <div class="theory-box">
         <h4 id="m4-t1-title">Frequencies and Pitch</h4>
@@ -679,7 +706,6 @@
           <p id="exam-q-text" style="font-size:1.1rem; font-weight:700;">What note sits on the bottom line of the Treble Clef staff?</p>
           
           <div class="quiz-options" id="exam-choices" style="max-width:500px; margin:1.5rem auto 0 auto;">
-            <!-- Quiz choices inject here -->
           </div>
         </div>
 
@@ -703,7 +729,7 @@
 
     const ADMIN_EMAIL = 'hellojjskids@gmail.com';
 
-    /* Audio Context */
+    /* Audio Context Setup */
     let audioCtx = null;
     function getAudioCtx() {
       if (!audioCtx) {
@@ -715,12 +741,20 @@
       return audioCtx;
     }
 
+    /* Chromatic Scale Frequencies (Hz) */
     const NOTES_FREQ = {
-      'C4': 261.63, 'D4': 293.66, 'E4': 329.63, 'F4': 349.23,
-      'G4': 392.00, 'A4': 440.00, 'B4': 493.88, 'C5': 523.25
+      'C4': 261.63,  'Cs4': 277.18, 
+      'D4': 293.66,  'Eb4': 311.13, 
+      'E4': 329.63,  
+      'F4': 349.23,  'Fs4': 369.99, 
+      'G4': 392.00,  'Ab4': 415.30, 
+      'A4': 440.00,  'Bb4': 466.16, 
+      'B4': 493.88,  
+      'C5': 523.25
     };
 
     function playAudioTone(freq, duration = 0.5, type = 'sine') {
+      if (!freq) return;
       const ctx = getAudioCtx();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
@@ -738,7 +772,7 @@
       osc.stop(ctx.currentTime + duration);
     }
 
-    /* Tab Switching */
+    /* Tab Navigation */
     function switchTab(tabId) {
       const tabs = ['notes', 'chords', 'rhythm', 'physics', 'exam'];
       tabs.forEach(t => {
@@ -755,7 +789,7 @@
       if (tabId === 'chords') renderChord();
     }
 
-    /* Module 1: Sheet Music Logic */
+    /* Module 1: Sight Reading Logic */
     const STAFF_POSITIONS = {
       'C4': { y: 130, ledger: true },
       'D4': { y: 120, ledger: false },
@@ -784,11 +818,7 @@
       noteStem.setAttribute('y1', pos.y);
       noteStem.setAttribute('y2', pos.y - 45);
 
-      if (pos.ledger) {
-        ledger.style.display = 'block';
-      } else {
-        ledger.style.display = 'none';
-      }
+      ledger.style.display = pos.ledger ? 'block' : 'none';
 
       const feedback = document.getElementById('staff-feedback');
       feedback.style.color = 'var(--text-main)';
@@ -813,19 +843,19 @@
       }
     }
 
-    /* Module 2: Chord Logic */
+    /* Module 2: Accurate Harmonic Triads Mappings */
     const CHORD_MAPPINGS = {
       'C4-major': ['C4', 'E4', 'G4'],
-      'C4-minor': ['C4', 'D4', 'G4'], // Simplified triad visualization
-      'D4-major': ['D4', 'F4', 'A4'],
+      'C4-minor': ['C4', 'Eb4', 'G4'],
+      'D4-major': ['D4', 'Fs4', 'A4'],
       'D4-minor': ['D4', 'F4', 'A4'],
-      'E4-major': ['E4', 'G4', 'B4'],
+      'E4-major': ['E4', 'Ab4', 'B4'], // G#4 / Ab4 enharmonic
       'E4-minor': ['E4', 'G4', 'B4'],
       'F4-major': ['F4', 'A4', 'C5'],
-      'F4-minor': ['F4', 'A4', 'C5'],
+      'F4-minor': ['F4', 'Ab4', 'C5'],
       'G4-major': ['G4', 'B4', 'D4'],
-      'G4-minor': ['G4', 'B4', 'D4'],
-      'A4-major': ['A4', 'C5', 'E4'],
+      'G4-minor': ['G4', 'Bb4', 'D4'],
+      'A4-major': ['A4', 'Cs4', 'E4'], // C#5 represented in octave
       'A4-minor': ['A4', 'C5', 'E4']
     };
 
@@ -870,9 +900,16 @@
       bpm = val;
       document.getElementById('bpm-readout').textContent = val;
       if (isMetronomeOn) {
-        toggleMetronome();
-        toggleMetronome();
+        clearInterval(metronomeInterval);
+        startMetronomeTimer();
       }
+    }
+
+    function startMetronomeTimer() {
+      const intervalMs = (60 / bpm) * 1000;
+      metronomeInterval = setInterval(() => {
+        playAudioTone(880, 0.05, 'square');
+      }, intervalMs);
     }
 
     function toggleMetronome() {
@@ -884,10 +921,7 @@
       } else {
         isMetronomeOn = true;
         btn.textContent = '⏹️ Stop Metronome';
-        const intervalMs = (60 / bpm) * 1000;
-        metronomeInterval = setInterval(() => {
-          playAudioTone(880, 0.05, 'square');
-        }, intervalMs);
+        startMetronomeTimer();
       }
     }
 

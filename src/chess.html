@@ -149,12 +149,20 @@
     #myBoard {
       width: 440px;
       max-width: 100%;
+      touch-action: manipulation;
     }
 
     /* Highlight style for mobile tap-to-select */
     .highlight-square {
       box-shadow: inset 0 0 0 4px var(--accent-purple) !important;
       background-color: rgba(168, 85, 247, 0.35) !important;
+      cursor: pointer;
+    }
+
+    /* Highlight style for valid target destination squares */
+    .highlight-hint {
+      box-shadow: inset 0 0 0 3px var(--accent-green) !important;
+      background-color: rgba(16, 185, 129, 0.25) !important;
       cursor: pointer;
     }
 
@@ -985,11 +993,30 @@
       ];
 
       function removeHighlights() {
-        $('#myBoard .square-55a96').removeClass('highlight-square');
+        $('#myBoard [class*="square-"]').removeClass('highlight-square highlight-hint');
       }
 
       function addHighlight(square) {
         $(`#myBoard .square-${square}`).addClass('highlight-square');
+      }
+
+      function highlightPossibleMoves(fromSquare) {
+        const moves = game.moves({ square: fromSquare, verbose: true });
+        for (let i = 0; i < moves.length; i++) {
+          $(`#myBoard .square-${moves[i].to}`).addClass('highlight-hint');
+        }
+      }
+
+      function getSquareFromElement(target) {
+        const $square =$(target).closest('[class*="square-"]');
+        if (!$square.length) return null;
+        const classes = ($square.attr('class') || '').split(/\s+/);
+        for (let i = 0; i < classes.length; i++) {
+          if (/^square-[a-h][1-8]$/.test(classes[i])) {
+            return classes[i].replace('square-', '');
+          }
+        }
+        return null;
       }
 
       function evaluateBoard(b) {
@@ -1080,31 +1107,40 @@
         return piece.color === game.turn();
       }
 
-      /* Tap / Click Event Listener for Board Squares */
-      $('#myBoard').on('click', '.square-55a96', function() {
+      /* Reliable Tap / Click Event Listener for Board Squares & Pieces */
+      $('#myBoard').on('click touchstart', '[class*="square-"]', function(e) {
+        if (e.type === 'touchstart') {
+          $(this).data('touched', true);
+        } else if (e.type === 'click' && $(this).data('touched')) {$(this).removeData('touched');
+          return;
+        }
+
         if (game.game_over()) return;
 
-        const square = $(this).attr('data-square');
+        const square = getSquareFromElement(this);
+        if (!square) return;
+
         const piece = game.get(square);
 
-        // First selection click
+        // First click/tap selection
         if (selectedSquare === null) {
           if (isPlayerPiece(piece)) {
             selectedSquare = square;
             removeHighlights();
             addHighlight(square);
+            highlightPossibleMoves(square);
           }
           return;
         }
 
-        // Deselect if clicking the same square
+        // Deselect if clicking/tapping the exact same square
         if (selectedSquare === square) {
           selectedSquare = null;
           removeHighlights();
           return;
         }
 
-        // Attempt move to target square
+        // Attempt move from selectedSquare to target square
         const move = game.move({
           from: selectedSquare,
           to: square,
@@ -1112,17 +1148,18 @@
         });
 
         if (move === null) {
-          // If move is invalid but target is player's own piece, switch selection
+          // Invalid move. If clicking another piece belonging to player, switch selection
           if (isPlayerPiece(piece)) {
             selectedSquare = square;
             removeHighlights();
             addHighlight(square);
+            highlightPossibleMoves(square);
           } else {
             selectedSquare = null;
             removeHighlights();
           }
         } else {
-          // Valid move executed
+          // Valid move executed!
           selectedSquare = null;
           removeHighlights();
 
@@ -1226,7 +1263,7 @@
       }
 
       const boardConfig = {
-        draggable: false, // Disabled drag for smooth touch/click interaction
+        draggable: false, // Pure tap/click to move interaction
         position: 'start',
         pieceTheme: 'https://chessboardjs.com/img/chesspieces/wikipedia/{piece}.png'
       };

@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>French Language Academy - Justin's Skillz</title>
+
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+  <script src="theme.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root, [data-theme="dark"] {
+      --bg-primary: #0f1117;
+      --bg-card: #181b25;
+      --border-subtle: #2d3242;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --accent-purple: #a855f7;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-pink: #ec4899;
+      --accent-amber: #f59e0b;
+      --header-bg: rgba(15, 17, 23, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f8fafc;
+      --bg-card: #ffffff;
+      --border-subtle: #e2e8f0;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-pink: #db2777;
+      --accent-amber: #d97706;
+      --header-bg: rgba(248, 250, 252, 0.85);
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.75rem 1.5rem;
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .nav-logo-img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-menu {
+      display: flex;
+      gap: 1.25rem;
+      align-items: center;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .nav-link:hover, .nav-link.active {
+      color: var(--text-main);
+    }
+
+    .main-container {
+      max-width: 1100px;
+      margin: 2.5rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .hero-section {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      margin-bottom: 2.5rem;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid var(--accent-blue);
+      color: var(--accent-blue);
+      padding: 0.35rem 0.9rem;
+      border-radius: 99px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-muted);
+      max-width: 780px;
+      margin: 0 auto 1.5rem auto;
+      line-height: 1.6;
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .tab-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+      border-color: var(--accent-blue);
+    }
+
+    .tab-btn.active {
+      background: var(--accent-blue);
+      color: #ffffff;
+      border-color: var(--accent-blue);
+    }
+
+    .lesson-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .lesson-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-top: 0;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .theory-box {
+      background: var(--bg-primary);
+      border-left: 4px solid var(--accent-blue);
+      padding: 1.25rem;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .theory-box h4 {
+      margin-top: 0;
+      color: var(--accent-blue);
+    }
+
+    .interactive-stage {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+
+    /* Conjugation Table */
+    .conj-table {
+      width: 100%;
+      max-width: 550px;
+      margin: 1.5rem auto;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .conj-table th, .conj-table td {
+      padding: 0.85rem 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .conj-table th {
+      background: rgba(59, 130, 246, 0.15);
+      color: var(--accent-blue);
+      font-weight: 700;
+    }
+
+    .conj-table td:last-child {
+      color: var(--accent-purple);
+      font-weight: 700;
+    }
+
+    /* Flashcard Style */
+    .flashcard-wrapper {
+      perspective: 1000px;
+      width: 100%;
+      max-width: 380px;
+      height: 200px;
+      margin: 1.5rem auto;
+      cursor: pointer;
+    }
+
+    .flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s;
+      transform-style: preserve-3d;
+    }
+
+    .flashcard-wrapper.flipped .flashcard-inner {
+      transform: rotateY(180deg);
+    }
+
+    .flashcard-front, .flashcard-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
+
+    .flashcard-back {
+      transform: rotateY(180deg);
+      background: rgba(168, 85, 247, 0.1);
+      border-color: var(--accent-purple);
+    }
+
+    /* Quiz Grid */
+    .quiz-options {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .quiz-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.85rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-btn:hover {
+      border-color: var(--accent-blue);
+      color: var(--accent-blue);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.2s, transform 0.2s;
+      text-decoration: none;
+      gap: 0.4rem;
+    }
+
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--accent-blue);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+    }
+
+    .feedback-banner {
+      margin-top: 1rem;
+      font-weight: 700;
+      font-size: 1rem;
+      min-height: 24px;
+    }
+
+    .lang-select {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.4rem 0.6rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .app-footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 2rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 4rem;
+    }
+
+    .phonetics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .phonetic-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1.2rem;
+      text-align: center;
+    }
+
+    @media (max-width: 768px) {
+      .header-container {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: stretch;
+      }
+      .logo {
+        justify-content: center;
+      }
+      .nav-menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.5rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="../Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
+        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
+      </a>
+
+      <nav class="nav-menu">
+        <a href="../index.html" class="nav-link" id="nav-home">Home</a>
+        <a href="dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
+        <a href="math.html" class="nav-link" id="nav-math">Math</a>
+        <a href="french.html" class="nav-link active" id="nav-french">French Academy</a>
+        <a href="chess.html" class="nav-link" id="nav-chess">Chess</a>
+        <a href="music.html" class="nav-link" id="nav-music">Music Academy</a>
+        <a href="../AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
+        <a id="nav-admin-link" href="admin.html" class="nav-link" style="display: none;">Admin</a>
+      </nav>
+
+      <div class="nav-actions" style="display: flex; gap: 0.75rem; align-items: center;">
+        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+          <option value="es">Español</option>
+        </select>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
+          🌙
+        </button>
+        <div id="auth-action-container">
+          <a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <section class="hero-section">
+      <div class="hero-badge" id="hero-badge">🇫🇷 Interactive French Academy</div>
+      <h1 class="hero-title" id="hero-title">Master French Grammar, Conjugation & Speech</h1>
+      <p class="hero-subtitle" id="hero-subtitle">
+        Understand sentence structure, practice verb tenses across moods, drill vocabulary with audio flashcards, and test your fluency with interactive exercises.
+      </p>
+    </section>
+
+    <div class="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('grammar')" id="tab-grammar">1. Sentence Structure</button>
+      <button class="tab-btn" onclick="switchTab('verbs')" id="tab-verbs">2. Verb Conjugation Lab</button>
+      <button class="tab-btn" onclick="switchTab('vocab')" id="tab-vocab">3. Vocab & Flashcards</button>
+      <button class="tab-btn" onclick="switchTab('phonetics')" id="tab-phonetics">4. Accents & Phonetics</button>
+      <button class="tab-btn" onclick="switchTab('exam')" id="tab-exam">5. French Mastery Exam</button>
+    </div>
+
+    <!-- MODULE 1: SENTENCE STRUCTURE & ARTICLES -->
+    <section id="module-grammar" class="lesson-card">
+      <h2 class="lesson-title" id="m1-title">📖 Lesson 1: Articles & Noun Gender Rules</h2>
+      
+      <div class="theory-box">
+        <h4 id="m1-t1-title">Gender & Definite/Indefinite Articles</h4>
+        <p id="m1-t1-body">
+          Every noun in French possesses a grammatical gender (masculine or feminine). Articles must always match the gender and number of the noun:
+        </p>
+        <ul>
+          <li id="m1-l1"><strong>Definite ("The"):</strong> <em>le</em> (masculine), <em>la</em> (feminine), <em>l'</em> (before vowels/silent h), <em>les</em> (plural).</li>
+          <li id="m1-l2"><strong>Indefinite ("A / Some"):</strong> <em>un</em> (masculine), <em>une</em> (feminine), <em>des</em> (plural).</li>
+        </ul>
+      </div>
+
+      <div class="interactive-stage">
+        <h3 style="margin-top:0;" id="m1-practice-title">Interactive Article Selector</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;" id="m1-practice-desc">Choose the correct article for the noun displayed below:</p>
+
+        <div style="font-size:2rem; font-weight:800; margin:1.5rem 0; color:var(--accent-blue);" id="grammar-target-word">
+          ... pomme
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:1rem; margin-bottom: 1rem;">
+          <button class="btn btn-secondary" onclick="generateGrammarQuestion()" id="btn-next-grammar">🎲 Next Noun</button>
+          <button class="btn btn-primary" onclick="speakCurrentNoun()" id="btn-speak-noun">🔊 Listen Pronunciation</button>
+        </div>
+
+        <div class="quiz-options" id="grammar-options">
+          <button class="quiz-btn" onclick="checkGrammarAnswer('un')">un</button>
+          <button class="quiz-btn" onclick="checkGrammarAnswer('une')">une</button>
+          <button class="quiz-btn" onclick="checkGrammarAnswer('le')">le</button>
+          <button class="quiz-btn" onclick="checkGrammarAnswer('la')">la</button>
+        </div>
+
+        <div class="feedback-banner" id="grammar-feedback">Select an article above!</div>
+      </div>
+    </section>
+
+    <!-- MODULE 2: VERB CONJUGATION LAB -->
+    <section id="module-verbs" class="lesson-card" style="display: none;">
+      <h2 class="lesson-title" id="m2-title">⚡ Lesson 2: Dynamic Verb Conjugation Engine</h2>
+
+      <div class="theory-box">
+        <h4 id="m2-t1-title">Essential French Verbs & Tenses</h4>
+        <p id="m2-t1-body">
+          French verbs are grouped by ending (<em>-er</em>, <em>-ir</em>, <em>-re</em>) and irregular roots (e.g., <em>être</em>, <em>avoir</em>, <em>aller</em>, <em>faire</em>).
+        </p>
+      </div>
+
+      <div class="interactive-stage">
+        <h3 style="margin-top:0;" id="m2-lab-title">Interactive Conjugation Lab</h3>
+        <p style="color:var(--text-muted); font-size:0.9rem;" id="m2-lab-desc">Select a core verb and tense to build complete conjugation charts:</p>
+
+        <div style="display:flex; justify-content:center; gap:1rem; flex-wrap:wrap; margin-bottom: 1.5rem;">
+          <div>
+            <label for="verbSelect" style="font-weight:700; font-size:0.85rem;">Verb:</label>
+            <select id="verbSelect" class="lang-select" onchange="renderConjugation()">
+              <option value="être">être (to be)</option>
+              <option value="avoir">avoir (to have)</option>
+              <option value="aller">aller (to go)</option>
+              <option value="faire">faire (to do/make)</option>
+              <option value="parler">parler (to speak)</option>
+              <option value="finir">finir (to finish)</option>
+            </select>
+          </div>
+          <div>
+            <label for="tenseSelect" style="font-weight:700; font-size:0.85rem;">Tense:</label>
+            <select id="tenseSelect" class="lang-select" onchange="renderConjugation()">
+              <option value="present">Présent</option>
+              <option value="passe_compose">Passé Composé</option>
+              <option value="futur_simple">Futur Simple</option>
+            </select>
+          </div>
+        </div>
+
+        <table class="conj-table">
+          <thead>
+            <tr>
+              <th>Subject Subject</th>
+              <th>Conjugated Verb</th>
+              <th>Audio</th>
+            </tr>
+          </thead>
+          <tbody id="conj-table-body">
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MODULE 3: VOCABULARY & FLASHCARDS -->
+    <section id="module-vocab" class="lesson-card" style="display: none;">
+      <h2 class="lesson-title" id="m3-title">🗂️ Lesson 3: Themed Vocabulary Flashcards</h2>
+
+      <div class="theory-box">
+        <h4 id="m3-t1-title">Active Recall Training</h4>
+        <p id="m3-t1-body">
+          Flip cards to reveal English translations and tap the audio button to practice authentic French pronunciation.
+        </p>
+      </div>
+
+      <div class="interactive-stage">
+        <div style="margin-bottom:1rem;">
+          <label for="vocabCategory" style="font-weight:700; font-size:0.85rem;">Category:</label>
+          <select id="vocabCategory" class="lang-select" onchange="loadCategoryCards()">
+            <option value="greetings">Greetings & Polite Phrases</option>
+            <option value="school">School & Learning</option>
+            <option value="food">Food & Dining</option>
+            <option value="travel">Travel & Directions</option>
+          </select>
+        </div>
+
+        <div class="flashcard-wrapper" id="flashcard" onclick="flipCard()">
+          <div class="flashcard-inner">
+            <div class="flashcard-front">
+              <span style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">French</span>
+              <h2 id="card-fr-text" style="margin:0.5rem 0; color:var(--accent-blue);">Bonjour</h2>
+              <span style="font-size:0.8rem; color:var(--accent-purple);">💡 Click to Flip</span>
+            </div>
+            <div class="flashcard-back">
+              <span style="font-size:0.8rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:1px;">English</span>
+              <h2 id="card-en-text" style="margin:0.5rem 0; color:var(--accent-purple);">Hello / Good day</h2>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; justify-content:center; gap:1rem; margin-top:1.5rem;">
+          <button class="btn btn-secondary" onclick="prevFlashcard()">← Previous</button>
+          <button class="btn btn-primary" onclick="speakCurrentFlashcard()">🔊 Listen</button>
+          <button class="btn btn-secondary" onclick="nextFlashcard()">Next →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 4: ACCENTS & PHONETICS -->
+    <section id="module-phonetics" class="lesson-card" style="display: none;">
+      <h2 class="lesson-title" id="m4-title">🔤 Lesson 4: French Accents & Phonetics Guide</h2>
+
+      <div class="theory-box">
+        <h4 id="m4-t1-title">The 5 French Diacritical Marks</h4>
+        <p id="m4-t1-body">
+          Accents modify vowel sounds or distinguish homonyms.
+        </p>
+      </div>
+
+      <div class="phonetics-grid">
+        <div class="phonetic-card">
+          <div style="font-size:2rem; font-weight:800; color:var(--accent-blue);">é</div>
+          <h4>Accent Aigu</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Makes an "ay" sound. Example: <em>café</em>, <em>école</em></p>
+          <button class="btn btn-secondary" onclick="speakFrench('école')" style="padding:0.3rem 0.6rem; font-size:0.8rem;">🔊 Listen "école"</button>
+        </div>
+        <div class="phonetic-card">
+          <div style="font-size:2rem; font-weight:800; color:var(--accent-purple);">è / à / ù</div>
+          <h4>Accent Grave</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Open "eh" sound or distinguishes meaning (<em>à</em> vs <em>a</em>).</p>
+          <button class="btn btn-secondary" onclick="speakFrench('père')" style="padding:0.3rem 0.6rem; font-size:0.8rem;">🔊 Listen "père"</button>
+        </div>
+        <div class="phonetic-card">
+          <div style="font-size:2rem; font-weight:800; color:var(--accent-pink);">ê / î / ô</div>
+          <h4>Circonflexe</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Lengthens vowels, historically replaced an 's'.</p>
+          <button class="btn btn-secondary" onclick="speakFrench('forêt')" style="padding:0.3rem 0.6rem; font-size:0.8rem;">🔊 Listen "forêt"</button>
+        </div>
+        <div class="phonetic-card">
+          <div style="font-size:2rem; font-weight:800; color:var(--accent-green);">ç</div>
+          <h4>Cédille</h4>
+          <p style="color:var(--text-muted); font-size:0.85rem;">Turns 'c' into a soft "s" sound before a, o, u.</p>
+          <button class="btn btn-secondary" onclick="speakFrench('français')" style="padding:0.3rem 0.6rem; font-size:0.8rem;">🔊 Listen "français"</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- MODULE 5: FRENCH MASTERY EXAM -->
+    <section id="module-exam" class="lesson-card" style="display: none;">
+      <h2 class="lesson-title" id="m5-title">🏆 French Language Mastery Exam</h2>
+      <p style="color:var(--text-muted); margin-bottom:1.5rem;" id="m5-subtitle">Test your grasp on articles, verb conjugations, vocabulary, and grammar rules:</p>
+
+      <div class="interactive-stage" id="exam-container">
+        <div id="exam-card">
+          <h4 id="exam-q-num" style="color:var(--accent-blue); margin-top:0;">Question 1 of 4</h4>
+          <p id="exam-q-text" style="font-size:1.1rem; font-weight:700;">What is the correct plural indefinite article in French ("some")?</p>
+          
+          <div class="quiz-options" id="exam-choices" style="max-width:500px; margin:1.5rem auto 0 auto;">
+          </div>
+        </div>
+
+        <div class="feedback-banner" id="exam-feedback"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>&copy; 2026 Justin's Skillz. Created and owned by Justin Emuekhare. All rights reserved.</p>
+  </footer>
+
+  <script>
+    if (!window.mySupabaseInstance) {
+      window.mySupabaseInstance = window.supabase.createClient(
+        'https://iifhzdioridrmbcflswa.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
+      );
+    }
+
+    const ADMIN_EMAIL = 'hellojjskids@gmail.com';
+
+    /* Web Speech API Audio Synthesis */
+    function speakFrench(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'fr-FR';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert('Text-to-speech is not supported in this browser.');
+      }
+    }
+
+    /* Tab Navigation Logic */
+    function switchTab(tabId) {
+      const tabs = ['grammar', 'verbs', 'vocab', 'phonetics', 'exam'];
+      tabs.forEach(t => {
+        const mod = document.getElementById(`module-${t}`);
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tabId) {
+          if(mod) mod.style.display = 'block';
+          if(btn) btn.classList.add('active');
+        } else {
+          if(mod) mod.style.display = 'none';
+          if(btn) btn.classList.remove('active');
+        }
+      });
+      if (tabId === 'verbs') renderConjugation();
+      if (tabId === 'vocab') updateCardDisplay();
+    }
+
+    /* Module 1: Nouns & Articles Dataset */
+    const NOUN_DATABASE = [
+      { noun: 'pomme', gender: 'fem', correctDef: 'la', correctIndef: 'une' },
+      { noun: 'livre', gender: 'masc', correctDef: 'le', correctIndef: 'un' },
+      { noun: 'école', gender: 'fem', correctDef: 'la', correctIndef: 'une' },
+      { noun: 'stylo', gender: 'masc', correctDef: 'le', correctIndef: 'un' },
+      { noun: 'maison', gender: 'fem', correctDef: 'la', correctIndef: 'une' },
+      { noun: 'voiture', gender: 'fem', correctDef: 'la', correctIndef: 'une' },
+      { noun: 'chien', gender: 'masc', correctDef: 'le', correctIndef: 'un' }
+    ];
+
+    let currentGrammarItem = NOUN_DATABASE[0];
+
+    function generateGrammarQuestion() {
+      currentGrammarItem = NOUN_DATABASE[Math.floor(Math.random() * NOUN_DATABASE.length)];
+      document.getElementById('grammar-target-word').textContent = `... ${currentGrammarItem.noun}`;
+      const feedback = document.getElementById('grammar-feedback');
+      feedback.style.color = 'var(--text-main)';
+      feedback.textContent = 'Select an article above!';
+    }
+
+    function speakCurrentNoun() {
+      speakFrench(`${currentGrammarItem.correctDef} ${currentGrammarItem.noun}`);
+    }
+
+    function checkGrammarAnswer(ans) {
+      const feedback = document.getElementById('grammar-feedback');
+      if (ans === currentGrammarItem.correctIndef || ans === currentGrammarItem.correctDef) {
+        feedback.style.color = 'var(--accent-green)';
+        feedback.textContent = `✨ Correct! "${ans} ${currentGrammarItem.noun}" is valid.`;
+        speakFrench(`${ans} ${currentGrammarItem.noun}`);
+      } else {
+        feedback.style.color = 'var(--accent-pink)';
+        feedback.textContent = `❌ Incorrect. "${currentGrammarItem.noun}" uses "${currentGrammarItem.correctIndef}" or "${currentGrammarItem.correctDef}".`;
+      }
+    }
+
+    /* Module 2: Verb Conjugation Data */
+    const CONJUGATIONS = {
+      'être': {
+        present: [
+          { sub: 'Je', conj: 'suis' },
+          { sub: 'Tu', conj: 'es' },
+          { sub: 'Il / Elle', conj: 'est' },
+          { sub: 'Nous', conj: 'sommes' },
+          { sub: 'Vous', conj: 'êtes' },
+          { sub: 'Ils / Elles', conj: 'sont' }
+        ],
+        passe_compose: [
+          { sub: 'J\'', conj: 'ai été' },
+          { sub: 'Tu', conj: 'as été' },
+          { sub: 'Il / Elle', conj: 'a été' },
+          { sub: 'Nous', conj: 'avons été' },
+          { sub: 'Vous', conj: 'avez été' },
+          { sub: 'Ils / Elles', conj: 'ont été' }
+        ],
+        futur_simple: [
+          { sub: 'Je', conj: 'serai' },
+          { sub: 'Tu', conj: 'seras' },
+          { sub: 'Il / Elle', conj: 'sera' },
+          { sub: 'Nous', conj: 'serons' },
+          { sub: 'Vous', conj: 'serez' },
+          { sub: 'Ils / Elles', conj: 'seront' }
+        ]
+      },
+      'avoir': {
+        present: [
+          { sub: 'J\'', conj: 'ai' },
+          { sub: 'Tu', conj: 'as' },
+          { sub: 'Il / Elle', conj: 'a' },
+          { sub: 'Nous', conj: 'avons' },
+          { sub: 'Vous', conj: 'avez' },
+          { sub: 'Ils / Elles', conj: 'ont' }
+        ],
+        passe_compose: [
+          { sub: 'J\'', conj: 'ai eu' },
+          { sub: 'Tu', conj: 'as eu' },
+          { sub: 'Il / Elle', conj: 'a eu' },
+          { sub: 'Nous', conj: 'avons eu' },
+          { sub: 'Vous', conj: 'avez eu' },
+          { sub: 'Ils / Elles', conj: 'ont eu' }
+        ],
+        futur_simple: [
+          { sub: 'J\'', conj: 'aurai' },
+          { sub: 'Tu', conj: 'auras' },
+          { sub: 'Il / Elle', conj: 'aura' },
+          { sub: 'Nous', conj: 'aurons' },
+          { sub: 'Vous', conj: 'aurez' },
+          { sub: 'Ils / Elles', conj: 'auront' }
+        ]
+      },
+      'aller': {
+        present: [
+          { sub: 'Je', conj: 'vais' },
+          { sub: 'Tu', conj: 'vas' },
+          { sub: 'Il / Elle', conj: 'va' },
+          { sub: 'Nous', conj: 'allons' },
+          { sub: 'Vous', conj: 'allez' },
+          { sub: 'Ils / Elles', conj: 'vont' }
+        ],
+        passe_compose: [
+          { sub: 'Je', conj: 'suis allé(e)' },
+          { sub: 'Tu', conj: 'es allé(e)' },
+          { sub: 'Il / Elle', conj: 'est allé(e)' },
+          { sub: 'Nous', conj: 'sommes allé(e)s' },
+          { sub: 'Vous', conj: 'êtes allé(e)s' },
+          { sub: 'Ils / Elles', conj: 'sont allé(e)s' }
+        ],
+        futur_simple: [
+          { sub: 'Je', conj: 'irai' },
+          { sub: 'Tu', conj: 'iras' },
+          { sub: 'Il / Elle', conj: 'ira' },
+          { sub: 'Nous', conj: 'irons' },
+          { sub: 'Vous', conj: 'irez' },
+          { sub: 'Ils / Elles', conj: 'iront' }
+        ]
+      },
+      'faire': {
+        present: [
+          { sub: 'Je', conj: 'fais' },
+          { sub: 'Tu', conj: 'fais' },
+          { sub: 'Il / Elle', conj: 'fait' },
+          { sub: 'Nous', conj: 'faisons' },
+          { sub: 'Vous', conj: 'faites' },
+          { sub: 'Ils / Elles', conj: 'font' }
+        ],
+        passe_compose: [
+          { sub: 'J\'', conj: 'ai fait' },
+          { sub: 'Tu', conj: 'as fait' },
+          { sub: 'Il / Elle', conj: 'a fait' },
+          { sub: 'Nous', conj: 'avons fait' },
+          { sub: 'Vous', conj: 'avez fait' },
+          { sub: 'Ils / Elles', conj: 'ont fait' }
+        ],
+        futur_simple: [
+          { sub: 'Je', conj: 'ferai' },
+          { sub: 'Tu', conj: 'feras' },
+          { sub: 'Il / Elle', conj: 'fera' },
+          { sub: 'Nous', conj: 'ferons' },
+          { sub: 'Vous', conj: 'ferez' },
+          { sub: 'Ils / Elles', conj: 'feront' }
+        ]
+      },
+      'parler': {
+        present: [
+          { sub: 'Je', conj: 'parle' },
+          { sub: 'Tu', conj: 'parles' },
+          { sub: 'Il / Elle', conj: 'parle' },
+          { sub: 'Nous', conj: 'parlons' },
+          { sub: 'Vous', conj: 'parlez' },
+          { sub: 'Ils / Elles', conj: 'parlent' }
+        ],
+        passe_compose: [
+          { sub: 'J\'', conj: 'ai parlé' },
+          { sub: 'Tu', conj: 'as parlé' },
+          { sub: 'Il / Elle', conj: 'a parlé' },
+          { sub: 'Nous', conj: 'avons parlé' },
+          { sub: 'Vous', conj: 'avez parlé' },
+          { sub: 'Ils / Elles', conj: 'ont parlé' }
+        ],
+        futur_simple: [
+          { sub: 'Je', conj: 'parlerai' },
+          { sub: 'Tu', conj: 'parleras' },
+          { sub: 'Il / Elle', conj: 'parlera' },
+          { sub: 'Nous', conj: 'parlerons' },
+          { sub: 'Vous', conj: 'parlerez' },
+          { sub: 'Ils / Elles', conj: 'parleront' }
+        ]
+      },
+      'finir': {
+        present: [
+          { sub: 'Je', conj: 'finis' },
+          { sub: 'Tu', conj: 'finis' },
+          { sub: 'Il / Elle', conj: 'finit' },
+          { sub: 'Nous', conj: 'finissons' },
+          { sub: 'Vous', conj: 'finissez' },
+          { sub: 'Ils / Elles', conj: 'finissent' }
+        ],
+        passe_compose: [
+          { sub: 'J\'', conj: 'ai fini' },
+          { sub: 'Tu', conj: 'as fini' },
+          { sub: 'Il / Elle', conj: 'a fini' },
+          { sub: 'Nous', conj: 'avons fini' },
+          { sub: 'Vous', conj: 'avez fini' },
+          { sub: 'Ils / Elles', conj: 'ont fini' }
+        ],
+        futur_simple: [
+          { sub: 'Je', conj: 'finirai' },
+          { sub: 'Tu', conj: 'finiras' },
+          { sub: 'Il / Elle', conj: 'finira' },
+          { sub: 'Nous', conj: 'finirons' },
+          { sub: 'Vous', conj: 'finirez' },
+          { sub: 'Ils / Elles', conj: 'finiront' }
+        ]
+      }
+    };
+
+    function renderConjugation() {
+      const verb = document.getElementById('verbSelect').value;
+      const tense = document.getElementById('tenseSelect').value;
+      const body = document.getElementById('conj-table-body');
+      body.innerHTML = '';
+
+      const list = (CONJUGATIONS[verb] && CONJUGATIONS[verb][tense]) ? CONJUGATIONS[verb][tense] : [];
+
+      list.forEach(item => {
+        const tr = document.createElement('tr');
+        const fullPhrase = `${item.sub} ${item.conj}`.replace("J' ", "J'");
+        tr.innerHTML = `
+          <td><strong>${item.sub}</strong></td>
+          <td>${item.conj}</td>
+          <td>
+            <button class="btn btn-secondary" style="padding:0.25rem 0.6rem; font-size:0.8rem;" onclick="speakFrench('${fullPhrase}')">🔊 Listen</button>
+          </td>
+        `;
+        body.appendChild(tr);
+      });
+    }
+
+    /* Module 3: Flashcards Logic */
+    const FLASHCARD_DECKS = {
+      greetings: [
+        { fr: 'Bonjour', en: 'Hello / Good day' },
+        { fr: 'Bonsoir', en: 'Good evening' },
+        { fr: 'S\'il vous plaît', en: 'Please (formal)' },
+        { fr: 'Merci beaucoup', en: 'Thank you very much' },
+        { fr: 'Au revoir', en: 'Goodbye' }
+      ],
+      school: [
+        { fr: 'L\'école', en: 'The school' },
+        { fr: 'Le devoir', en: 'The homework' },
+        { fr: 'L\'étudiant', en: 'The student' },
+        { fr: 'Le professeur', en: 'The teacher' },
+        { fr: 'La bibliothèque', en: 'The library' }
+      ],
+      food: [
+        { fr: 'Le pain', en: 'The bread' },
+        { fr: 'L\'eau', en: 'The water' },
+        { fr: 'Le fromage', en: 'The cheese' },
+        { fr: 'La pomme', en: 'The apple' },
+        { fr: 'Le petit-déjeuner', en: 'The breakfast' }
+      ],
+      travel: [
+        { fr: 'Où est... ?', en: 'Where is...?' },
+        { fr: 'L\'aéroport', en: 'The airport' },
+        { fr: 'La gare', en: 'The train station' },
+        { fr: 'Le billet', en: 'The ticket' },
+        { fr: 'L\'hôtel', en: 'The hotel' }
+      ]
+    };
+
+    let currentCardIndex = 0;
+    let currentDeck = FLASHCARD_DECKS.greetings;
+
+    function loadCategoryCards() {
+      const cat = document.getElementById('vocabCategory').value;
+      currentDeck = FLASHCARD_DECKS[cat] || FLASHCARD_DECKS.greetings;
+      currentCardIndex = 0;
+      updateCardDisplay();
+    }
+
+    function updateCardDisplay() {
+      const cardWrap = document.getElementById('flashcard');
+      cardWrap.classList.remove('flipped');
+
+      const card = currentDeck[currentCardIndex];
+      document.getElementById('card-fr-text').textContent = card.fr;
+      document.getElementById('card-en-text').textContent = card.en;
+    }
+
+    function flipCard() {
+      document.getElementById('flashcard').classList.toggle('flipped');
+    }
+
+    function nextFlashcard() {
+      currentCardIndex = (currentCardIndex + 1) % currentDeck.length;
+      updateCardDisplay();
+    }
+
+    function prevFlashcard() {
+      currentCardIndex = (currentCardIndex - 1 + currentDeck.length) % currentDeck.length;
+      updateCardDisplay();
+    }
+
+    function speakCurrentFlashcard() {
+      const card = currentDeck[currentCardIndex];
+      speakFrench(card.fr);
+    }
+
+    /* Module 5: Exam Logic */
+    const EXAM_QUESTIONS = [
+      {
+        q: "What is the correct plural indefinite article in French ('some')?",
+        options: ["les", "des", "un", "une"],
+        correct: 1
+      },
+      {
+        q: "What is the 1st person plural ('Nous') present tense conjugation of 'être'?",
+        options: ["sommes", "êtes", "avons", "sont"],
+        correct: 0
+      },
+      {
+        q: "Which accent mark turns a hard 'c' into a soft 's' sound (e.g., 'français')?",
+        options: ["Accent Aigu (é)", "Accent Grave (è)", "Cédille (ç)", "Circonflexe (ê)"],
+        correct: 2
+      },
+      {
+        q: "What is the English translation of 'Le devoir'?",
+        options: ["The school", "The homework", "The book", "The teacher"],
+        correct: 1
+      }
+    ];
+
+    let examIndex = 0;
+    let examScore = 0;
+
+    function loadExamQuestion() {
+      if (examIndex >= EXAM_QUESTIONS.length) {
+        document.getElementById('exam-card').innerHTML = `
+          <h3 style="color:var(--accent-green);">🎉 Exam Complete!</h3>
+          <p style="font-size:1.2rem;">Your Score: <strong>${examScore} / ${EXAM_QUESTIONS.length}</strong></p>
+          <button class="btn btn-primary" onclick="resetExam()">Restart Exam</button>
+        `;
+        document.getElementById('exam-feedback').textContent = '';
+        return;
+      }
+
+      const qData = EXAM_QUESTIONS[examIndex];
+      document.getElementById('exam-q-num').textContent = `Question ${examIndex + 1} of ${EXAM_QUESTIONS.length}`;
+      document.getElementById('exam-q-text').textContent = qData.q;
+
+      const choicesBox = document.getElementById('exam-choices');
+      choicesBox.innerHTML = '';
+      qData.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'quiz-btn';
+        btn.textContent = opt;
+        btn.onclick = () => answerExamQuestion(idx);
+        choicesBox.appendChild(btn);
+      });
+      document.getElementById('exam-feedback').textContent = '';
+    }
+
+    function answerExamQuestion(idx) {
+      const qData = EXAM_QUESTIONS[examIndex];
+      const feedback = document.getElementById('exam-feedback');
+      if (idx === qData.correct) {
+        examScore++;
+        feedback.style.color = 'var(--accent-green)';
+        feedback.textContent = '✨ Excellent!';
+      } else {
+        feedback.style.color = 'var(--accent-pink)';
+        feedback.textContent = `❌ Incorrect. Correct answer: ${qData.options[qData.correct]}`;
+      }
+      setTimeout(() => {
+        examIndex++;
+        loadExamQuestion();
+      }, 1200);
+    }
+
+    function resetExam() {
+      examIndex = 0;
+      examScore = 0;
+      document.getElementById('exam-container').innerHTML = `
+        <div id="exam-card">
+          <h4 id="exam-q-num" style="color:var(--accent-blue); margin-top:0;"></h4>
+          <p id="exam-q-text" style="font-size:1.1rem; font-weight:700;"></p>
+          <div class="quiz-options" id="exam-choices" style="max-width:500px; margin:1.5rem auto 0 auto;"></div>
+        </div>
+        <div class="feedback-banner" id="exam-feedback"></div>
+      `;
+      loadExamQuestion();
+    }
+
+    /* Multi-language Support */
+    const translations = {
+      en: {
+        navHome: "Home", navDashboard: "Dashboard", navMath: "Math", navFrench: "French Academy", navChess: "Chess", navMusic: "Music Academy", navAI: "AI Assistant",
+        signIn: "Sign In", signOut: "Sign Out",
+        heroBadge: "🇫🇷 Interactive French Academy",
+        heroTitle: "Master French Grammar, Conjugation & Speech",
+        heroSubtitle: "Understand sentence structure, practice verb tenses across moods, drill vocabulary with audio flashcards, and test your fluency with interactive exercises."
+      },
+      fr: {
+        navHome: "Accueil", navDashboard: "Tableau de bord", navMath: "Maths", navFrench: "Académie de Français", navChess: "Échecs", navMusic: "Académie de Musique", navAI: "Assistant IA",
+        signIn: "Se connecter", signOut: "Se déconnecter",
+        heroBadge: "🇫🇷 Académie Interactive de Français",
+        heroTitle: "Maîtrisez la Grammaire, la Conjugaison et le Parler",
+        heroSubtitle: "Comprenez la structure des phrases, pratiquez les temps verbaux et entraînez votre vocabulaire avec l'audio."
+      },
+      es: {
+        navHome: "Inicio", navDashboard: "Panel", navMath: "Matemáticas", navFrench: "Academia de Francés", navChess: "Ajedrez", navMusic: "Academia de Música", navAI: "Asistente IA",
+        signIn: "Iniciar Sesión", signOut: "Cerrar Sesión",
+        heroBadge: "🇫🇷 Academia Interactiva de Francés",
+        heroTitle: "Domina la Gramática, Conjugación y Pronunciación",
+        heroSubtitle: "Aprende la estructura de oraciones, practica los tiempos verbales y ejercita vocabulario con audio interactivo."
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      generateGrammarQuestion();
+      loadExamQuestion();
+      checkUserSession();
+      const savedLang = localStorage.getItem('site_lang') || 'en';
+      document.getElementById('langSelect').value = savedLang;
+      applyLanguage(savedLang);
+    });
+
+    function changeLanguage(lang) {
+      localStorage.setItem('site_lang', lang);
+      applyLanguage(lang);
+    }
+
+    function applyLanguage(lang) {
+      const t = translations[lang] || translations.en;
+      document.getElementById('nav-home').textContent = t.navHome;
+      document.getElementById('nav-dashboard').textContent = t.navDashboard;
+      document.getElementById('nav-math').textContent = t.navMath;
+      document.getElementById('nav-french').textContent = t.navFrench;
+      document.getElementById('nav-chess').textContent = t.navChess;
+      document.getElementById('nav-music').textContent = t.navMusic;
+      document.getElementById('nav-ai').textContent = t.navAI;
+      document.getElementById('hero-badge').textContent = t.heroBadge;
+      document.getElementById('hero-title').textContent = t.heroTitle;
+      document.getElementById('hero-subtitle').textContent = t.heroSubtitle;
+    }
+
+    async function checkUserSession() {
+      const { data: { session } } = await window.mySupabaseInstance.auth.getSession();
+      const authContainer = document.getElementById('auth-action-container');
+      const navAdminLink = document.getElementById('nav-admin-link');
+      const lang = localStorage.getItem('site_lang') || 'en';
+      const t = translations[lang] || translations.en;
+
+      if (session && session.user) {
+        authContainer.innerHTML = `<button type="button" onclick="handleSignOut()" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">${t.signOut}</button>`;
+        const userEmail = session.user.email ? session.user.email.toLowerCase() : '';
+        if (userEmail === ADMIN_EMAIL && navAdminLink) {
+          navAdminLink.style.display = 'block';
+        }
+      } else {
+        authContainer.innerHTML = `<a href="login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">${t.signIn}</a>`;
+      }
+    }
+
+    async function handleSignOut() {
+      await window.mySupabaseInstance.auth.signOut();
+      window.location.reload();
+    }
+  </script>
+  <script src="cookie-banner.js" defer></script>
+</body>
+</html>

@@ -3,588 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Digital Ecosystem & Interactive Hub</title>
+  <title>Justin's Skillz - Digital Ecosystem & Hub</title>
 
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="src/styles.css">
   <script src="src/theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <style>
-    :root, [data-theme="dark"] {
-      --bg-primary: #0a0c10;
-      --bg-card: #121621;
-      --bg-card-hover: #1a202e;
-      --border-subtle: #252d3d;
-      --border-glow: #3b82f6;
-      --text-main: #f3f4f6;
-      --text-muted: #94a3b8;
-      --accent-purple: #a855f7;
-      --accent-blue: #3b82f6;
-      --accent-cyan: #06b6d4;
-      --accent-green: #10b981;
-      --accent-red: #ef4444;
-      --header-bg: rgba(10, 12, 16, 0.85);
-      --radius-lg: 18px;
-      --radius-md: 12px;
-      --font-mono: 'Fira Code', monospace;
-    }
-
-    [data-theme="light"] {
-      --bg-primary: #f1f5f9;
-      --bg-card: #ffffff;
-      --bg-card-hover: #f8fafc;
-      --border-subtle: #cbd5e1;
-      --border-glow: #2563eb;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --accent-purple: #9333ea;
-      --accent-blue: #2563eb;
-      --accent-cyan: #0891b2;
-      --accent-green: #059669;
-      --accent-red: #dc2626;
-      --header-bg: rgba(241, 245, 249, 0.85);
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      background-color: var(--bg-primary);
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      transition: background-color 0.3s ease, color 0.3s ease;
-      overflow-x: hidden;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    /* NAVIGATION HEADER */
-    .app-header {
-      background: var(--header-bg);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border-subtle);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 0.75rem 1.5rem;
-    }
-
-    .header-container {
-      max-width: 1200px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      text-decoration: none;
-      color: var(--text-main);
-      font-weight: 800;
-      font-size: 1.1rem;
-      flex-shrink: 0;
-    }
-
-    .nav-logo-img {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-purple);
-    }
-
-    .gradient-text {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue), var(--accent-purple));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .nav-menu {
-      display: flex;
-      gap: 1.1rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-
-    .nav-link {
-      color: var(--text-muted);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.88rem;
-      transition: color 0.2s;
-    }
-
-    .nav-link:hover, .nav-link.active { color: var(--text-main); }
-
-    .nav-actions {
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    .lang-select {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-      padding: 0.4rem 0.6rem;
-      border-radius: var(--radius-md);
-      font-size: 0.85rem;
-      font-family: inherit;
-      cursor: pointer;
-    }
-
-    .lang-select:focus {
-      outline: none;
-      border-color: var(--accent-purple);
-    }
-
-    /* MAIN CONTAINER */
-    .main-container {
-      max-width: 1200px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-      flex: 1;
-    }
-
-    /* HERO SECTION */
-    .hero-banner {
-      background: linear-gradient(180deg, rgba(18,22,33,0.95) 0%, rgba(10,12,16,0.98) 100%);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 3.5rem 2rem;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-      margin-bottom: 2.5rem;
-    }
-
-    .hero-banner::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: rgba(168, 85, 247, 0.15);
-      border: 1px solid rgba(168, 85, 247, 0.3);
-      color: var(--accent-purple);
-      padding: 0.4rem 1rem;
-      border-radius: 99px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      margin-bottom: 1.25rem;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .hero-title {
-      font-size: 2.8rem;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 1rem;
-    }
-
-    .hero-sub {
-      max-width: 720px;
-      margin: 0 auto 2rem auto;
-      color: var(--text-muted);
-      font-size: 1.1rem;
-      line-height: 1.6;
-    }
-
-    .hero-actions {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.8rem 1.5rem;
-      border-radius: var(--radius-md);
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      border: none;
-      transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s, border-color 0.2s;
-      text-decoration: none;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
-      color: white;
-      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
-    }
-
-    .btn-secondary {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-card-hover);
-      border-color: var(--accent-cyan);
-    }
-
-    /* ABOUT THE CREATOR CARD */
-    .about-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 2.25rem;
-      margin-bottom: 3rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-
-    .about-header {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .about-avatar {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      border: 2px solid var(--accent-purple);
-      object-fit: cover;
-    }
-
-    .about-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin: 0;
-    }
-
-    .about-text {
-      font-size: 1rem;
-      color: var(--text-muted);
-      line-height: 1.6;
-      margin: 0;
-    }
-
-    .about-tags {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
-
-    .tag-pill {
-      background: var(--bg-primary);
-      border: 1px solid var(--border-subtle);
-      color: var(--text-main);
-      padding: 0.4rem 0.85rem;
-      border-radius: 99px;
-      font-size: 0.82rem;
-      font-weight: 700;
-    }
-
-    /* SECTION HEADERS */
-    .section-title {
-      font-size: 1.5rem;
-      font-weight: 800;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    /* MODULES GRID */
-    .modules-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 3.5rem;
-    }
-
-    .hub-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-lg);
-      padding: 1.75rem;
-      text-decoration: none;
-      color: var(--text-main);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .hub-card:hover {
-      transform: translateY(-4px);
-      border-color: var(--border-glow);
-      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-    }
-
-    .card-icon {
-      font-size: 2.2rem;
-      margin-bottom: 1rem;
-    }
-
-    .card-title {
-      font-size: 1.25rem;
-      font-weight: 800;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-desc {
-      color: var(--text-muted);
-      font-size: 0.92rem;
-      line-height: 1.5;
-      margin-bottom: 1.5rem;
-    }
-
-    .card-footer-link {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--accent-cyan);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    /* SOCIAL & COMMUNITY SECTION */
-    .social-links-section {
-      margin: 3rem 0;
-    }
-
-    .links-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 1.25rem;
-    }
-
-    .social-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-md);
-      padding: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      text-decoration: none;
-      color: var(--text-main);
-      font-weight: 700;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .social-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--border-glow);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-    }
-
-    .social-card.discord:hover {
-      border-color: #5865F2;
-      box-shadow: 0 0 15px rgba(88, 101, 242, 0.35);
-    }
-
-    .social-card.github:hover {
-      border-color: #f0f6fc;
-      box-shadow: 0 0 15px rgba(240, 246, 252, 0.25);
-    }
-
-    .social-card.youtube:hover {
-      border-color: #FF0000;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.35);
-    }
-
-    .social-icon {
-      font-size: 1.8rem;
-    }
-
-    /* FOOTER */
-    .app-footer {
-      border-top: 1px solid var(--border-subtle);
-      padding: 2.5rem 1.5rem;
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-top: auto;
-    }
-
-    /* MOBILE RESPONSIVE */
-    @media (max-width: 768px) {
-      .header-container {
-        flex-direction: column;
-        gap: 0.75rem;
-        align-items: stretch;
-      }
-      .logo { justify-content: center; }
-      .nav-menu {
-        justify-content: center;
-        gap: 0.5rem 1rem;
-      }
-      .nav-actions {
-        justify-content: center;
-        flex-wrap: wrap;
-      }
-      .hero-title { font-size: 2rem; }
-      .hero-banner { padding: 2.5rem 1rem; }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- HEADER -->
-  <header class="app-header">
-    <div class="header-container">
-      <a href="index.html" class="logo">
-        <img src="Justin's Skillz.jpg" alt="Justin's Skillz Logo" class="nav-logo-img">
-        <span class="logo-text">JUSTIN'S <span class="gradient-text">SKILLZ</span></span>
-      </a>
-
-      <nav class="nav-menu">
-        <a href="index.html" class="nav-link active" id="nav-home">Home</a>
-        <a href="src/dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
-        <a href="src/robotics.html" class="nav-link" id="nav-robotics">Robotics Hub</a>
-        <a href="src/chess.html" class="nav-link" id="nav-chess">Chess AI</a>
-        <a href="src/math.html" class="nav-link" id="nav-math">Math Lab</a>
-        <a href="src/music.html" class="nav-link" id="nav-music">Music Studio</a>
-        <a href="AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
-        <a href="src/admin.html" id="nav-admin-link" class="nav-link" style="display: none;">Admin</a>
-      </nav>
-
-      <div class="nav-actions">
-        <select id="langSelect" class="lang-select" onchange="changeLanguage(this.value)">
-          <option value="en">English</option>
-          <option value="fr">Français</option>
-          <option value="es">Español</option>
-        </select>
-        <button type="button" class="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: none; cursor: pointer; font-size: 1.1rem;">
-          🌙
-        </button>
-        <div id="auth-action-container">
-          <a href="src/login.html" class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem; text-decoration: none;">Sign In</a>
-        </div>
-      </div>
-    </div>
-  </header>
-
-  <!-- MAIN CONTAINER -->
-  <main class="main-container">
-
-    <!-- HERO SECTION -->
-    <section class="hero-banner">
-      <div class="hero-badge" id="hero-badge">🚀 All-in-One Digital Hub</div>
-      <h1 class="hero-title" id="hero-title">Welcome to <span class="gradient-text">Justin's Skillz</span></h1>
-      <p class="hero-sub" id="hero-subtitle">
-        An all-in-one digital ecosystem combining interactive learning modules, web development tools, AI assistants, hardware robotics projects, and creative software suites.
-      </p>
-      <div class="hero-actions">
-        <a href="src/robotics.html" class="btn btn-primary" id="btn-explore-robotics">🤖 Hardware & Robotics</a>
-        <a href="src/math.html" class="btn btn-secondary" id="btn-explore-math">📐 Math Lab</a>
-        <a href="src/chess.html" class="btn btn-secondary" id="btn-play-chess">♟️ Chess AI</a>
-        <a href="src/music.html" class="btn btn-secondary" id="btn-make-music">🎵 Music Studio</a>
-      </div>
-    </section>
-
-    <!-- ABOUT THE CREATOR SECTION -->
-    <section class="about-card">
-      <div class="about-header">
-        <img src="Justin's Skillz.jpg" alt="Justin Emuekhare" class="about-avatar">
-        <div>
-          <h2 class="about-title" id="about-title">👋 About the Creator</h2>
-        </div>
-      </div>
-      <p class="about-text" id="about-text">
-        Hi, I'm Justin! I'm a passionate developer and student dedicated to building interactive software, robotics projects, and web applications. Justin's Skillz brings multiple platforms into one—interactive math learning, chess strategies, Web Audio music production, hardware engineering, and AI utilities.
-      </p>
-      <div class="about-tags">
-        <span class="tag-pill" id="about-tag-1">💻 Web Development</span>
-        <span class="tag-pill" id="about-tag-2">📐 Competition & Higher Math</span>
-        <span class="tag-pill" id="about-tag-3">♟️ Chess.com-style Arena</span>
-        <span class="tag-pill" id="about-tag-4">🎵 Web Audio DAW & Synth</span>
-        <span class="tag-pill" id="about-tag-5">🤖 Hardware & Arduino Robotics</span>
-      </div>
-    </section>
-
-    <!-- ACADEMY & PLATFORM MODULES GRID -->
-    <h2 class="section-title" id="sec-modules-title">✨ Platform Features & Modules</h2>
-    <div class="modules-grid">
-
-      <!-- Robotics Hub Card -->
-      <a href="src/robotics.html" class="hub-card">
-        <div>
-          <div class="card-icon">🤖</div>
-          <h3 class="card-title" id="card-robotics-title">Hardware & Robotics Hub</h3>
-          <p class="card-desc" id="card-robotics-desc">Explore custom hardware engineering, Arduino microcontrollers, sensor integration, circuit schematics, and autonomous builds like Snacky.</p>
-        </div>
-        <div class="card-footer-link" id="card-robotics-link">View Robotics Hub &rarr;</div>
-      </a>
-
-      <!-- Math Lab Card -->
-      <a href="src/math.html" class="hub-card">
-        <div>
-          <div class="card-icon">📐</div>
-          <h3 class="card-title" id="card-math-title">Math Lab</h3>
-          <p class="card-desc" id="card-math-desc">Interactive problem-solving and theory trainer for algebra, complex numbers, modular arithmetic, and competition preparation.</p>
-        </div>
-        <div class="card-footer-link" id="card-math-link">Open Math Lab &rarr;</div>
-      </a>
-
-      <!-- Chess AI Card -->
-      <a href="src/chess.html" class="hub-card">
-        <div>
-          <div class="card-icon">♟️</div>
-          <h3 class="card-title" id="card-chess-title">Chess AI Training Lab</h3>
-          <p class="card-desc" id="card-chess-desc">Interactive chessboard with custom game mechanics, real-time move tracking, board orientation, and AI training controls.</p>
-        </div>
-        <div class="card-footer-link" id="card-chess-link">Play Chess AI &rarr;</div>
-      </a>
-
-      <!-- Music Studio Card -->
-      <a href="src/music.html" class="hub-card">
-        <div>
-          <div class="card-icon">🎵</div>
-          <h3 class="card-title" id="card-music-title">Music Studio & Academy</h3>
-          <p class="card-desc" id="card-music-desc">Interactive```html
-<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Digital Ecosystem & Hub</title>
-
-  <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
-  <link rel="preconnect" href="[https://fonts.googleapis.com](https://fonts.googleapis.com)">
-  <link rel="preconnect" href="[https://fonts.gstatic.com](https://fonts.gstatic.com)" crossorigin>
-  <link href="[https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap](https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap)" rel="stylesheet">
-
-  <link rel="stylesheet" href="src/styles.css">
-  <script src="src/theme.js" defer></script>
-  <script src="[https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2](https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2)"></script>
 
   <style>
     :root, [data-theme="dark"] {
@@ -894,6 +322,7 @@
         <a href="index.html" class="nav-link active" id="nav-home">Home</a>
         <a href="src/dashboard.html" class="nav-link" id="nav-dashboard">Dashboard</a>
         <a href="src/math.html" class="nav-link" id="nav-math">Math</a>
+        <a href="src/robotics.html" class="nav-link" id="nav-robotics">Robotics</a>
         <a href="src/chess.html" class="nav-link" id="nav-chess">Chess</a>
         <a href="src/music.html" class="nav-link" id="nav-music">Music</a>
         <a href="AI.html" class="nav-link" id="nav-ai">AI Assistant</a>
@@ -924,6 +353,7 @@
       <p class="hero-subtitle" id="hero-subtitle">An all-in-one digital ecosystem combining interactive learning modules, web development tools, AI assistants, and creative software suites.</p>
       <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
         <a href="src/math.html" class="btn btn-primary" id="btn-explore-math">📐 Math Lab</a>
+        <a href="src/robotics.html" class="btn btn-secondary" id="btn-explore-robotics">🤖 Robotics Hub</a>
         <a href="src/chess.html" class="btn btn-secondary" id="btn-play-chess">♟️ Chess AI</a>
         <a href="src/music.html" class="btn btn-secondary" id="btn-make-music">🎵 Music Studio</a>
       </div>
@@ -938,7 +368,7 @@
         </div>
       </div>
       <p class="about-text" id="about-text">
-        Hi, I'm Justin! I'm a passionate developer and student dedicated to building interactive software, robotics projects, and web applications. Justin's Skillz brings multiple platforms into one—interactive math learning, chess strategies, Web Audio music production, and AI utilities.
+        Hi, I'm Justin! I'm a passionate developer and student dedicated to building interactive software, robotics projects, and web applications. Justin's Skillz brings multiple platforms into one—interactive math learning, robotics hardware, chess strategies, Web Audio music production, and AI utilities.
       </p>
       <div class="about-tags">
         <span class="tag-pill" id="about-tag-1">💻 Web Development</span>
@@ -954,6 +384,11 @@
       <a href="src/math.html" class="feature-card">
         <h3 class="feature-title" id="card-math-title">📐 Math Lab</h3>
         <p class="feature-desc" id="card-math-desc">Interactive problem solving and theory trainer for algebra, polynomials, and competition preparation.</p>
+      </a>
+
+      <a href="src/robotics.html" class="feature-card">
+        <h3 class="feature-title" id="card-robotics-title">🤖 Robotics & Hardware Hub</h3>
+        <p class="feature-desc" id="card-robotics-desc">Master Arduino Uno foundational architecture to unlock 32-bit platforms, Raspberry Pi, Pico, Teensy, and BeagleBone.</p>
       </a>
 
       <a href="src/chess.html" class="feature-card">
@@ -991,7 +426,7 @@
   <script>
     if (!window.mySupabaseInstance) {
       window.mySupabaseInstance = window.supabase.createClient(
-        '[https://iifhzdioridrmbcflswa.supabase.co](https://iifhzdioridrmbcflswa.supabase.co)',
+        'https://iifhzdioridrmbcflswa.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088'
       );
     }
@@ -1003,6 +438,7 @@
         navHome: "Home",
         navDashboard: "Dashboard",
         navMath: "Math",
+        navRobotics: "Robotics",
         navChess: "Chess",
         navMusic: "Music",
         navAI: "AI Assistant",
@@ -1011,10 +447,11 @@
         heroTitle: "Welcome to Justin's Skillz",
         heroSubtitle: "An all-in-one digital ecosystem combining interactive learning modules, web development tools, AI assistants, and creative software suites.",
         btnExploreMath: "📐 Math Lab",
+        btnExploreRobotics: "🤖 Robotics Hub",
         btnPlayChess: "♟️ Chess AI",
         btnMakeMusic: "🎵 Music Studio",
         aboutTitle: "👋 About the Creator",
-        aboutText: "Hi, I'm Justin! I'm a passionate developer and student dedicated to building interactive software, robotics projects, and web applications. Justin's Skillz brings multiple platforms into one—interactive math learning, chess strategies, Web Audio music production, and AI utilities.",
+        aboutText: "Hi, I'm Justin! I'm a passionate developer and student dedicated to building interactive software, robotics projects, and web applications. Justin's Skillz brings multiple platforms into one—interactive math learning, robotics hardware, chess strategies, Web Audio music production, and AI utilities.",
         aboutTag1: "💻 Web Development",
         aboutTag2: "📐 Brilliant-style Math",
         aboutTag3: "♟️ Chess.com-style Arena",
@@ -1022,6 +459,8 @@
         aboutTag5: "🤖 Hardware & Robotics",
         cardMathTitle: "📐 Math Lab",
         cardMathDesc: "Interactive problem solving and theory trainer for algebra, polynomials, and competition preparation.",
+        cardRoboticsTitle: "🤖 Robotics & Hardware Hub",
+        cardRoboticsDesc: "Master Arduino Uno foundational architecture to unlock 32-bit platforms, Raspberry Pi, Pico, Teensy, and BeagleBone.",
         cardChessTitle: "♟️ Chess AI Training Lab",
         cardChessDesc: "Interactive chessboard with custom game mechanics, move tracking, and AI training controls.",
         cardMusicTitle: "🎵 Music Studio & Academy",
@@ -1037,6 +476,7 @@
         navHome: "Accueil",
         navDashboard: "Tableau de bord",
         navMath: "Maths",
+        navRobotics: "Robotique",
         navChess: "Échecs",
         navMusic: "Musique",
         navAI: "Assistant IA",
@@ -1045,10 +485,11 @@
         heroTitle: "Bienvenue sur Justin's Skillz",
         heroSubtitle: "Un écosystème numérique tout-en-un combinant modules d'apprentissage interactifs, outils web, assistants IA et suites logicielles créatives.",
         btnExploreMath: "📐 Labo de Math",
+        btnExploreRobotics: "🤖 Hub Robotique",
         btnPlayChess: "♟️ IA d'Échecs",
         btnMakeMusic: "🎵 Studio Musique",
         aboutTitle: "👋 À propos du Créateur",
-        aboutText: "Bonjour, je m'appelle Justin ! Je suis un développeur et étudiant passionné par la création de logiciels interactifs, de projets de robotique et d'applications web. Justin's Skillz réunit plusieurs plateformes en une seule : maths, échecs, musique Web Audio et IA.",
+        aboutText: "Bonjour, je m'appelle Justin ! Je suis un développeur et étudiant passionné par la création de logiciels interactifs, de projets de robotique et d'applications web. Justin's Skillz réunit plusieurs plateformes en une seule : maths, robotique, échecs, musique Web Audio et IA.",
         aboutTag1: "💻 Développement Web",
         aboutTag2: "📐 Maths style Brilliant",
         aboutTag3: "♟️ Échecs style Chess.com",
@@ -1056,6 +497,8 @@
         aboutTag5: "🤖 Matériel & Robotique",
         cardMathTitle: "📐 Labo de Math",
         cardMathDesc: "Plateforme de pratique mathématique avancée pour l'algèbre, les polynômes et les problèmes de compétition.",
+        cardRoboticsTitle: "🤖 Hub Robotique & Matériel",
+        cardRoboticsDesc: "Maîtrisez l'architecture de base Arduino Uno pour débloquer les plateformes 32 bits, Raspberry Pi, Pico, Teensy et BeagleBone.",
         cardChessTitle: "♟️ Labo d'Entraînement IA d'Échecs",
         cardChessDesc: "Échiquier interactif avec des mécaniques de jeu personnalisées et des contrôles d'entraînement IA.",
         cardMusicTitle: "🎵 Studio Musique & Académie",
@@ -1071,6 +514,7 @@
         navHome: "Inicio",
         navDashboard: "Panel",
         navMath: "Matemáticas",
+        navRobotics: "Robótica",
         navChess: "Ajedrez",
         navMusic: "Música",
         navAI: "Asistente IA",
@@ -1079,10 +523,11 @@
         heroTitle: "Bienvenido a Justin's Skillz",
         heroSubtitle: "Un ecosistema digital todo en uno que combina módulos de aprendizaje interactivo, herramientas de desarrollo web, asistentes de IA y suites de software creativo.",
         btnExploreMath: "📐 Lab Matemáticas",
+        btnExploreRobotics: "🤖 Hub Robótica",
         btnPlayChess: "♟️ IA Ajedrez",
         btnMakeMusic: "🎵 Estudio Música",
         aboutTitle: "👋 Sobre el Creador",
-        aboutText: "¡Hola, soy Justin! Soy un desarrollador y estudiante apasionado por la creación de software interactivo, proyectos de robótica y aplicaciones web. Justin's Skillz une varias plataformas en una: matemáticas, ajedrez, producción musical Web Audio y herramientas de IA.",
+        aboutText: "¡Hola, soy Justin! Soy un desarrollador y estudiante apasionado por la creación de software interactivo, proyectos de robótica y aplicaciones web. Justin's Skillz une varias plataformas en una: matemáticas, robótica, ajedrez, producción musical Web Audio y herramientas de IA.",
         aboutTag1: "💻 Desarrollo Web",
         aboutTag2: "📐 Matemáticas estilo Brilliant",
         aboutTag3: "♟️ Ajedrez estilo Chess.com",
@@ -1090,6 +535,8 @@
         aboutTag5: "🤖 Hardware y Robótica",
         cardMathTitle: "📐 Lab de Matemáticas",
         cardMathDesc: "Plataforma avanzada de práctica matemática para álgebra, polinomios y problemas de competencia.",
+        cardRoboticsTitle: "🤖 Hub de Robótica y Hardware",
+        cardRoboticsDesc: "Domine la arquitectura base de Arduino Uno para desbloquear plataformas de 32 bits, Raspberry Pi, Pico, Teensy y BeagleBone.",
         cardChessTitle: "♟️ Laboratorio de IA de Ajedrez",
         cardChessDesc: "Tablero de ajedrez interactivo con mecánicas de juego personalizadas y controles de entrenamiento de IA.",
         cardMusicTitle: "🎵 Estudio de Música y Academia",
@@ -1120,6 +567,7 @@
       document.getElementById('nav-home').textContent = t.navHome;
       document.getElementById('nav-dashboard').textContent = t.navDashboard;
       document.getElementById('nav-math').textContent = t.navMath;
+      if (document.getElementById('nav-robotics')) document.getElementById('nav-robotics').textContent = t.navRobotics;
       document.getElementById('nav-chess').textContent = t.navChess;
       document.getElementById('nav-music').textContent = t.navMusic;
       document.getElementById('nav-ai').textContent = t.navAI;
@@ -1127,6 +575,7 @@
       document.getElementById('hero-title').textContent = t.heroTitle;
       document.getElementById('hero-subtitle').textContent = t.heroSubtitle;
       document.getElementById('btn-explore-math').textContent = t.btnExploreMath;
+      if (document.getElementById('btn-explore-robotics')) document.getElementById('btn-explore-robotics').textContent = t.btnExploreRobotics;
       document.getElementById('btn-play-chess').textContent = t.btnPlayChess;
       document.getElementById('btn-make-music').textContent = t.btnMakeMusic;
       
@@ -1140,6 +589,8 @@
 
       document.getElementById('card-math-title').textContent = t.cardMathTitle;
       document.getElementById('card-math-desc').textContent = t.cardMathDesc;
+      if (document.getElementById('card-robotics-title')) document.getElementById('card-robotics-title').textContent = t.cardRoboticsTitle;
+      if (document.getElementById('card-robotics-desc')) document.getElementById('card-robotics-desc').textContent = t.cardRoboticsDesc;
       document.getElementById('card-chess-title').textContent = t.cardChessTitle;
       document.getElementById('card-chess-desc').textContent = t.cardChessDesc;
       document.getElementById('card-music-title').textContent = t.cardMusicTitle;

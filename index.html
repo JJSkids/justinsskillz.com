@@ -307,6 +307,95 @@
         flex-wrap: wrap;
       }
     }
+
+    /* Community & Links Section */
+.social-links-section {
+  margin: 3rem auto;
+  max-width: 1200px;
+  padding: 0 1.5rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.social-card {
+  background: var(--bg-card, #121621);
+  border: 1px solid var(--border-subtle, #252d3d);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-decoration: none;
+  color: var(--text-main, #f3f4f6);
+  font-weight: 700;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.social-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-glow, #3b82f6);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Specific Accent Colors */
+.social-card.discord:hover {
+  border-color: #5865F2;
+  box-shadow: 0 0 15px rgba(88, 101, 242, 0.3);
+}
+
+.social-card.github:hover {
+  border-color: #f0f6fc;
+  box-shadow: 0 0 15px rgba(240, 246, 252, 0.2);
+}
+
+.social-card.youtube:hover {
+  border-color: #ff0000;
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+}
+
+.social-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.discord .social-icon { color: #5865F2; }
+.github .social-icon { color: #f0f6fc; }
+.youtube .social-icon { color: #ff0000; }
+.custom .social-icon { color: #06b6d4; }
+
+.link-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.link-title {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.link-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted, #94a3b8);
+}
   </style>
 </head>
 <body>
@@ -417,6 +506,48 @@
       </a>
     </div>
 
+    <!-- Social & Community Links -->
+<section class="social-links-section">
+  <h2 class="section-title">🌐 Connect & Community</h2>
+  
+  <div class="links-grid">
+    <!-- Discord Placeholder Link -->
+    <a href="https://discord.gg/YOUR_DISCORD_INVITE_HERE" target="_blank" rel="noopener noreferrer" class="social-card discord">
+      <div class="social-icon">💬</div>
+      <div class="link-details">
+        <span class="link-title">Discord Server</span>
+        <span class="link-sub">Join the community</span>
+      </div>
+    </a>
+
+    <!-- GitHub Placeholder Link -->
+    <a href="https://github.com/YOUR_GITHUB_USERNAME" target="_blank" rel="noopener noreferrer" class="social-card github">
+      <div class="social-icon">💻</div>
+      <div class="link-details">
+        <span class="link-title">GitHub</span>
+        <span class="link-sub">View open source projects</span>
+      </div>
+    </a>
+
+    <!-- YouTube Placeholder Link -->
+    <a href="https://youtube.com/@YOUR_CHANNEL" target="_blank" rel="noopener noreferrer" class="social-card youtube">
+      <div class="social-icon">▶</div>
+      <div class="link-details">
+        <span class="link-title">YouTube</span>
+        <span class="link-sub">Watch tutorials & robotics</span>
+      </div>
+    </a>
+
+    <!-- Additional Custom Link Placeholder -->
+    <a href="#" class="social-card custom">
+      <div class="social-icon">🔗</div>
+      <div class="link-details">
+        <span class="link-title">Custom Link</span>
+        <span class="link-sub">Add any link here</span>
+      </div>
+    </a>
+  </div>
+</section>
   </main>
 
   <footer class="app-footer">

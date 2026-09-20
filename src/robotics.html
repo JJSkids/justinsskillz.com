@@ -1,364 +1,465 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Robotics Systems Engineering Course | Agent Alpha</title>
-    <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #0f172a;
-            --panel-bg: #1e293b;
-            --accent: #38bdf8;
-            --accent-hover: #0284c7;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --code-bg: #090d16;
-            --success: #22c55e;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robotics & Hardware Systems | Justin's Skillz</title>
+  <style>
+    :root {
+      --bg-dark: #080c14;
+      --panel-bg: #101828;
+      --accent-cyan: #00f3ff;
+      --cyan-glow: rgba(0, 243, 255, 0.25);
+      --accent-green: #00ff88;
+      --accent-red: #ff3366;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --font-code: 'Courier New', Courier, monospace;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            line-height: 1.6;
-            display: flex;
-            min-height: 100vh;
-        }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
 
-        /* Sidebar Navigation */
-        aside {
-            width: 300px;
-            background-color: var(--panel-bg);
-            border-right: 1px solid var(--border);
-            padding: 2rem 1.5rem;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-        }
+    /* Robotic Boot HUD Screen */
+    #boot-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #04060a;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: opacity 0.6s ease, visibility 0.6s ease;
+    }
 
-        aside h2 {
-            font-size: 1.25rem;
-            color: var(--accent);
-            margin-bottom: 0.5rem;
-        }
+    #boot-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
 
-        aside p {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            margin-bottom: 1.5rem;
-        }
+    .hud-terminal {
+      background: rgba(16, 24, 40, 0.95);
+      border: 2px solid var(--accent-cyan);
+      border-radius: 8px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 520px;
+      box-shadow: 0 0 25px var(--cyan-glow);
+      position: relative;
+      overflow: hidden;
+    }
 
-        .module-list {
-            list-style: none;
-        }
+    .hud-scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-cyan);
+      animation: scanAnim 1.6s linear infinite alternate;
+    }
 
-        .module-list li {
-            margin-bottom: 0.5rem;
-        }
+    @keyframes scanAnim {
+      0% { top: 0%; }
+      100% { top: 100%; }
+    }
 
-        .module-list a {
-            color: var(--text-muted);
-            text-decoration: none;
-            display: block;
-            padding: 0.6rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-        }
+    .hud-title {
+      font-family: var(--font-code);
+      color: var(--accent-cyan);
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
-        .module-list a:hover, .module-list a.active {
-            background-color: rgba(56, 189, 248, 0.1);
-            color: var(--accent);
-            font-weight: 600;
-        }
+    .boot-log p {
+      font-family: var(--font-code);
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      line-height: 1.4;
+    }
 
-        /* Main Content Container */
-        main {
-            margin-left: 300px;
-            flex: 1;
-            padding: 3rem 4rem;
-            max-width: 1000px;
-        }
+    .boot-log .success {
+      color: var(--accent-green);
+      font-weight: bold;
+    }
 
-        .course-header {
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 2rem;
-            margin-bottom: 3rem;
-        }
+    /* Container Layout */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
 
-        .course-header h1 {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
-        }
+    .header-section {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
 
-        .badge {
-            display: inline-block;
-            background-color: rgba(56, 189, 248, 0.2);
-            color: var(--accent);
-            padding: 0.2rem 0.6rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 1rem;
-            text-transform: uppercase;
-        }
+    .status-badge {
+      display: inline-block;
+      font-family: var(--font-code);
+      font-size: 0.8rem;
+      color: var(--accent-cyan);
+      background: rgba(0, 243, 255, 0.1);
+      border: 1px solid var(--accent-cyan);
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-        /* Section Modules */
-        .module-card {
-            background-color: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            margin-bottom: 2.5rem;
-            scroll-margin-top: 2rem;
-        }
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      color: #ffffff;
+    }
 
-        .module-card h2 {
-            font-size: 1.5rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
 
-        .module-card p {
-            color: #cbd5e1;
-            margin-bottom: 1.25rem;
-        }
+    /* Module Sections */
+    .module-section {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
 
-        ul.takeaways {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
+    .card {
+      background-color: var(--panel-bg);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 1.75rem;
+    }
 
-        ul.takeaways li {
-            position: relative;
-            padding-left: 1.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
-            font-size: 0.95rem;
-        }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
 
-        ul.takeaways li::before {
-            content: "➔";
-            position: absolute;
-            left: 0;
-            color: var(--accent);
-        }
+    .card h2 {
+      color: var(--accent-cyan);
+      font-size: 1.4rem;
+    }
 
-        /* Code Blocks */
-        pre {
-            background-color: var(--code-bg);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1.25rem;
-            overflow-x: auto;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: #e2e8f0;
-            margin-bottom: 1.5rem;
-        }
+    .badge-unlocked {
+      background-color: var(--accent-green);
+      color: #04060a;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-family: var(--font-code);
+      font-weight: bold;
+    }
 
-        code .keyword { color: #f43f5e; }
-        code .function { color: #38bdf8; }
-        code .comment { color: #64748b; font-style: italic; }
-        code .number { color: #fbbf24; }
+    .badge-locked {
+      background-color: var(--accent-red);
+      color: #ffffff;
+      font-size: 0.75rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      font-family: var(--font-code);
+      font-weight: bold;
+    }
 
-        /* Interactive Quiz Section */
-        .quiz-container {
-            background-color: rgba(30, 41, 59, 0.5);
-            border: 1px dashed var(--accent);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-        }
+    pre {
+      background: #05080e;
+      color: var(--accent-cyan);
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-family: var(--font-code);
+      font-size: 0.85rem;
+      line-height: 1.5;
+      margin: 1rem 0;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
 
-        .quiz-container h4 {
-            margin-bottom: 0.75rem;
-            color: var(--text-main);
-        }
+    .btn-action {
+      background-color: var(--accent-cyan);
+      color: #04060a;
+      font-weight: bold;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      margin-top: 1rem;
+    }
 
-        .quiz-option {
-            display: block;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border);
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            margin-bottom: 0.5rem;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
+    .btn-action:hover {
+      background-color: #38bdf8;
+      transform: translateY(-2px);
+    }
 
-        .quiz-option:hover {
-            border-color: var(--accent);
-        }
+    /* Microcontrollers Grid */
+    .hardware-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
 
-        /* Responsive Layout */
-        @media (max-width: 900px) {
-            body { flex-direction: column; }
-            aside { width: 100%; height: auto; position: relative; }
-            main { margin-left: 0; padding: 2rem; }
-        }
-    </style>
+    .hw-card {
+      background-color: #090e17;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 6px;
+      padding: 1.25rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .hw-card.unlocked-hw {
+      border-color: var(--accent-cyan);
+    }
+
+    .hw-card h3 {
+      color: #ffffff;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hw-card p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      line-height: 1.4;
+    }
+
+    /* Lock System Overlay */
+    .locked-wrapper {
+      position: relative;
+    }
+
+    .blur-target {
+      filter: blur(5px);
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.5s ease;
+    }
+
+    .blur-target.unlocked-view {
+      filter: blur(0);
+      pointer-events: auto;
+      user-select: auto;
+    }
+
+    .overlay-lock {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(8, 12, 20, 0.92);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      border: 2px dashed var(--accent-red);
+      border-radius: 8px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .overlay-lock.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .lock-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Sidebar Navigation -->
-    <aside>
-        <h2>Robotics Engineering</h2>
-        <p>Advanced Systems & Optimization</p>
-        <ul class="module-list">
-            <li><a href="#mod1" class="active">01. PID Motion Control</a></li>
-            <li><a href="#mod2">02. Non-Blocking Event Loops</a></li>
-            <li><a href="#mod3">03. Power Architecture & Isolation</a></li>
-            <li><a href="#mod4">04. Sensor Fusion Filtering</a></li>
-            <li><a href="#mod5">05. Hardware Rigidity & Wiring</a></li>
-            <li><a href="#mod6">06. Edge AI & Computer Vision</a></li>
-            <li><a href="#quiz">07. Knowledge Assessment</a></li>
-        </ul>
-    </aside>
+  <!-- ROBOTIC HUD BOOT SCREEN ANIMATION -->
+  <div id="boot-screen">
+    <div class="hud-terminal">
+      <div class="hud-scanline"></div>
+      <div class="hud-title">[ SYSTEM DIAGNOSTICS BOOT ]</div>
+      <div class="boot-log">
+        <p>&gt; Checking Core Hardware Controllers... <span class="success">[ OK ]</span></p>
+        <p>&gt; Initializing I/O Pin Registers...</p>
+        <p>&gt; Loading Microcontroller Curriculum Matrix...</p>
+        <p style="color: var(--accent-cyan); margin-top: 0.8rem; font-weight: bold;">&gt; ALL SYSTEMS READY. ENGAGING CORE...</p>
+      </div>
+    </div>
+  </div>
 
-    <!-- Main Course Content -->
-    <main>
-        <header class="course-header">
-            <span class="badge">Course Module #04</span>
-            <h1>Building Resilient Robotic Systems</h1>
-            <p>Learn how to optimize hardware, control loops, power distribution, and real-time execution to transition from simple prototypes to production-grade robotics.</p>
-        </header>
+  <!-- MAIN HARDWARE CONTENT HUB -->
+  <main class="container">
+    <header class="header-section">
+      <div class="status-badge" id="system-status">LEVEL 1: FOUNDATION PROTOCOL</div>
+      <h1>Hardware & Microcontroller Hub</h1>
+      <p class="subtitle">Master Arduino Uno basics to unlock advanced microcontrollers and SBC systems.</p>
+    </header>
 
-        <!-- Module 1 -->
-        <section id="mod1" class="module-card">
-            <h2>01. Smooth Motion Control (PID Loops)</h2>
-            <p>Basic on/off motor commands cause jerky motion, overshoot, and mechanical strain. Proportional-Integral-Derivative (PID) control allows smooth acceleration and precise position tracking.</p>
-            <ul class="takeaways">
-                <li><strong>Proportional (P):</strong> Corrects errors based on current offset magnitude.</li>
-                <li><strong>Integral (I):</strong> Eliminates steady-state error accumulation over time.</li>
-                <li><strong>Derivative (D):</strong> Dampens sudden changes to prevent overshooting targets.</li>
-            </ul>
-            <pre><code><span class="comment">// Basic PID Computation Example</span>
-<span class="keyword">double</span> computePID(<span class="keyword">double</span> target, <span class="keyword">double</span> current) {
-    <span class="keyword">double</span> error = target - current;
-    integral += error * dt;
-    <span class="keyword">double</span> derivative = (error - previousError) / dt;
-    previousError = error;
-    <span class="keyword">return</span> (Kp * error) + (Ki * integral) + (Kd * derivative);
+    <div class="module-section">
+
+      <!-- LESSON 1: ARDUINO UNO -->
+      <article class="card">
+        <div class="card-header">
+          <h2>Lesson 1: Universal Arduino Uno Architecture</h2>
+          <span class="badge-unlocked">UNLOCKED</span>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Learn core execution models: Digital Output, Digital Input, Analog Input, and PWM Output.
+        </p>
+
+        <pre><code>// Fundamental Arduino Control Pattern
+void setup() {
+  pinMode(13, OUTPUT);      // Set Pin 13 as Output
+  pinMode(2, INPUT_PULLUP); // Set Pin 2 as Input with Internal Pullup
+}
+
+void loop() {
+  int buttonState = digitalRead(2);
+  if (buttonState == LOW) {
+    digitalWrite(13, HIGH); // Turn ON LED
+  } else {
+    digitalWrite(13, LOW);  // Turn OFF LED
+  }
 }</code></pre>
-        </section>
 
-        <!-- Module 2 -->
-        <section id="mod2" class="module-card">
-            <h2>02. Non-Blocking Event Loops</h2>
-            <p>Using hard delays stops execution entirely, making hardware unresponsive to wireless signals or sensor triggers. Replacing delays with state-machine timer loops maintains high system throughput.</p>
-            <ul class="takeaways">
-                <li>Never halt execution with static block calls like <code>delay()</code>.</li>
-                <li>Store timestamps using <code>millis()</code> or system ticks to evaluate schedules.</li>
-                <li>Implement finite state machines (FSM) to switch operating modes cleanly.</li>
-            </ul>
-            <pre><code><span class="comment">// Non-blocking periodic timer pattern</span>
-<span class="keyword">unsigned long</span> previousMillis = <span class="number">0</span>;
-<span class="keyword">const long</span> interval = <span class="number">50</span>; <span class="comment">// Run every 50ms</span>
+        <button type="button" class="btn-action" id="complete-uno-btn" onclick="unlockNextLevel()">
+          ✓ Complete Lesson 1 &amp; Unlock Controllers
+        </button>
+      </article>
 
-<span class="keyword">void</span> loop() {
-    <span class="keyword">unsigned long</span> currentMillis = millis();
-    <span class="keyword">if</span> (currentMillis - previousMillis >= interval) {
-        previousMillis = currentMillis;
-        readSensors(); <span class="comment">// Non-blocking sensor update</span>
-    }
-    checkWirelessCommands(); <span class="comment">// Runs continuously</span>
-}</code></pre>
-        </section>
+      <!-- LESSON 2: ADVANCED MICROCONTROLLERS (LOCKED INITIALLY) -->
+      <div class="locked-wrapper">
+        
+        <!-- LOCK OVERLAY -->
+        <div class="overlay-lock" id="lock-screen">
+          <div class="lock-icon">🔒</div>
+          <h2 style="color: #ffffff; margin-bottom: 0.5rem;">Advanced Controllers Locked</h2>
+          <p style="color: var(--text-muted); max-width: 420px; font-size: 0.9rem;">
+            Complete <strong>Lesson 1: Universal Arduino Uno Architecture</strong> above to unlock Raspberry Pi, Pi Pico, Teensy, and BeagleBone.
+          </p>
+        </div>
 
-        <!-- Module 3 -->
-        <section id="mod3" class="module-card">
-            <h2>03. Power Architecture & Electrical Isolation</h2>
-            <p>Motors, servos, and relays generate electrical noise and current spikes that cause microcontrollers to brown out or reset unpredictably. Proper power routing guarantees operational stability.</p>
-            <ul class="takeaways">
-                <li>Separate logic power lines from motor high-current power buses.</li>
-                <li>Install flyback diodes across inductive loads to suppress voltage spikes.</li>
-                <li>Use optocouplers and decoupling capacitors (0.1µF & 100µF) to filter power lines.</li>
-            </ul>
-        </section>
+        <!-- LOCKED HARDWARE GRID -->
+        <article class="card blur-target" id="advanced-card">
+          <div class="card-header">
+            <h2>Lesson 2: Microcontroller Matrix</h2>
+            <span class="badge-locked" id="adv-badge">LOCKED</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Explore high-speed ARM chips, MicroPython engines, and Linux single-board computers.
+          </p>
 
-        <!-- Module 4 -->
-        <section id="mod4" class="module-card">
-            <h2>04. Sensor Fusion & Data Filtering</h2>
-            <p>Single sensors are prone to noise and physical limitations. Sensor fusion combines data from multiple sensors (e.g., Ultrasonic + IR + IMU) to construct an accurate view of the robot's surroundings.</p>
-            <ul class="takeaways">
-                <li>Apply Moving Average or Complementary Filters to smooth raw sensor noise.</li>
-                <li>Combine IMU gyroscopes (fast response) with accelerometers (absolute reference) to prevent drift.</li>
-            </ul>
-            <pre><code><span class="comment">// Moving Average Filter implementation</span>
-<span class="keyword">int</span> filterReadings(<span class="keyword">int</span> newReading) {
-    total = total - readings[readIndex];
-    readings[readIndex] = newReading;
-    total = total + readings[readIndex];
-    readIndex = (readIndex + <span class="number">1</span>) % NUM_READINGS;
-    <span class="keyword">return</span> total / NUM_READINGS;
-}</code></pre>
-        </section>
-
-        <!-- Module 5 -->
-        <section id="mod5" class="module-card">
-            <h2>05. Structural Rigidity & Wire Management</h2>
-            <p>Vibration from motor movement will loosen breadboard jumper wires and weaken unstable frames over time. Long-term reliability requires solid physical construction and modular connections.</p>
-            <ul class="takeaways">
-                <li>Replace temporary breadboards with custom perfboards or soldered PCB shields.</li>
-                <li>Use heat-shrink tubing and cable looms to organize wiring harnesses.</li>
-                <li>Secure heavy mechanical components close to the center of gravity.</li>
-            </ul>
-        </section>
-
-        <!-- Module 6 -->
-        <section id="mod6" class="module-card">
-            <h2>06. Edge AI & Computer Vision Integration</h2>
-            <p>Level up from simple distance thresholds by integrating visual recognition directly on the robot using edge vision hardware (ESP32-CAM, Raspberry Pi, or OpenCV modules).</p>
-            <ul class="takeaways">
-                <li>Offload color blob tracking or object detection to dedicated camera modules.</li>
-                <li>Send lightweight serial commands (UART/SPI) back to the main motor controller.</li>
-            </ul>
-        </section>
-
-        <!-- Knowledge Check Section -->
-        <section id="quiz" class="module-card">
-            <h2>07. Knowledge Assessment</h2>
-            <p>Test your understanding of advanced robotics architecture concepts before deploying code to hardware.</p>
+          <div class="hardware-grid">
             
-            <div class="quiz-container">
-                <h4>Question 1: Why should you avoid using static delay functions in microcontroller code?</h4>
-                <label class="quiz-option">
-                    <input type="radio" name="q1"> They increase overall motor power consumption.
-                </label>
-                <label class="quiz-option">
-                    <input type="radio" name="q1"> They freeze execution, stopping sensor updates and communication loops.
-                </label>
-                <label class="quiz-option">
-                    <input type="radio" name="q1"> They corrupt memory allocated for global variables.
-                </label>
+            <div class="hw-card" id="hw-pico">
+              <h3>Raspberry Pi Pico</h3>
+              <p>Dual ARM Cortex-M0+ @ 133MHz. Programmable I/O (PIO) state machines and MicroPython support.</p>
             </div>
-        </section>
-    </main>
 
-    <script>
-        // Optional interactive highlighting for navigation links
-        const navLinks = document.querySelectorAll('.module-list a');
-        navLinks.forEach(link => {
-            link.addEventListener('click', function() {
-                navLinks.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-    </script>
+            <div class="hw-card" id="hw-raspi">
+              <h3>Raspberry Pi 4 / 5</h3>
+              <p>64-bit Quad-Core Linux Single Board Computer (SBC). Runs OpenCV computer vision and ROS 2.</p>
+            </div>
+
+            <div class="hw-card" id="hw-teensy">
+              <h3>Teensy 4.1</h3>
+              <p>ARM Cortex-M7 running at 600 MHz. Ultra-fast floating-point math for robotics and real-time DSP.</p>
+            </div>
+
+            <div class="hw-card" id="hw-beagle">
+              <h3>BeagleBone Black</h3>
+              <p>Sitara AM335x processor with dual 200MHz PRUs for sub-microsecond industrial timing.</p>
+            </div>
+
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+  </main>
+
+  <!-- JAVASCRIPT CONTROL LOGIC -->
+  <script>
+    // 1. BOOT SCREEN ANIMATION CONTROLLER
+    window.addEventListener('DOMContentLoaded', () => {
+      const bootScreen = document.getElementById('boot-screen');
+      setTimeout(() => {
+        if (bootScreen) {
+          bootScreen.classList.add('hidden');
+        }
+      }, 1800);
+    });
+
+    // 2. UNLOCK MODULE FUNCTION
+    function unlockNextLevel() {
+      // Hide Lock Overlay
+      const lockOverlay = document.getElementById('lock-screen');
+      if (lockOverlay) {
+        lockOverlay.classList.add('hidden');
+      }
+
+      // Unblur Advanced Content
+      const advancedCard = document.getElementById('advanced-card');
+      if (advancedCard) {
+        advancedCard.classList.add('unlocked-view');
+      }
+
+      // Update Badge
+      const advBadge = document.getElementById('adv-badge');
+      if (advBadge) {
+        advBadge.className = 'badge-unlocked';
+        advBadge.textContent = 'UNLOCKED';
+      }
+
+      // Update System Status
+      const systemStatus = document.getElementById('system-status');
+      if (systemStatus) {
+        systemStatus.textContent = 'LEVEL 2: UNRESTRICTED ACCESS';
+        systemStatus.style.borderColor = 'var(--accent-green)';
+        systemStatus.style.color = 'var(--accent-green)';
+        systemStatus.style.backgroundColor = 'rgba(0, 255, 136, 0.1)';
+      }
+
+      // Highlight Hardware Cards
+      const hwCards = document.querySelectorAll('.hw-card');
+      hwCards.forEach((card) => {
+        card.classList.add('unlocked-hw');
+      });
+
+      // Update Button State
+      const btn = document.getElementById('complete-uno-btn');
+      if (btn) {
+        btn.textContent = '✓ Lesson 1 Mastered';
+        btn.style.backgroundColor = 'var(--accent-green)';
+        btn.style.cursor = 'default';
+        btn.onclick = null;
+      }
+    }
+  </script>
 </body>
 </html>

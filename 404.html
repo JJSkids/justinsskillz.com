@@ -12,14 +12,15 @@
 
   <style>
     :root {
-      --bg-color: #0f1117;
-      --card-bg: rgba(24, 27, 37, 0.75);
-      --border-subtle: #2d3242;
+      --bg-color: #08090f;
+      --card-bg: rgba(18, 21, 31, 0.75);
+      --border-subtle: rgba(168, 85, 247, 0.25);
       --text-main: #f3f4f6;
       --text-muted: #9ca3af;
       --accent-purple: #a855f7;
       --accent-blue: #3b82f6;
       --accent-pink: #ec4899;
+      --neon-glow: rgba(168, 85, 247, 0.4);
     }
 
     * {
@@ -37,62 +38,104 @@
       justify-content: center;
       min-height: 100vh;
       overflow: hidden;
-      position: relative;
+      perspective: 1000px;
     }
 
-    /* Animated Starfield Background */
-    .stars {
+    /* Interactive Space Canvas */
+    #space-canvas {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
       z-index: 1;
-      background: 
-        radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-        radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-        radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
-      background-size: 550px 550px, 350px 350px, 250px 250px;
-      background-position: 0 0, 40px 60px, 130px 270px;
-      animation: starMove 90s linear infinite;
+      pointer-events: none;
     }
 
-    @keyframes starMove {
-      from { background-position: 0 0, 40px 60px, 130px 270px; }
-      to { background-position: 550px 1100px, 440px 760px, 1130px 1270px; }
+    /* Ambient Cosmic Nebula Glow */
+    .nebula {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, rgba(59, 130, 246, 0.1) 40%, transparent 70%);
+      filter: blur(80px);
+      z-index: 1;
+      pointer-events: none;
+      animation: pulseNebula 10s ease-in-out infinite alternate;
     }
 
-    /* Content Container */
+    @keyframes pulseNebula {
+      0% { transform: scale(0.9) translate(-10%, -10%); opacity: 0.7; }
+      100% { transform: scale(1.2) translate(10%, 10%); opacity: 1; }
+    }
+
+    /* Content Glass Container with 3D Tilt */
     .container {
       text-align: center;
       z-index: 2;
-      padding: 2.5rem 2rem;
+      padding: 2.75rem 2.25rem;
       max-width: 580px;
       background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid var(--border-subtle);
-      border-radius: 20px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px var(--neon-glow);
       margin: 1rem;
+      transform-style: preserve-3d;
+      transition: transform 0.15s ease-out, box-shadow 0.3s ease;
     }
 
+    .container:hover {
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.7), 0 0 50px rgba(236, 72, 153, 0.3);
+    }
+
+    /* Holographic Glitch Text */
     .error-code {
-      font-size: 7.5rem;
+      font-size: 8rem;
       font-weight: 900;
       line-height: 1;
+      position: relative;
+      display: inline-block;
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue), var(--accent-pink));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      letter-spacing: -3px;
       animation: float 4s ease-in-out infinite;
-      letter-spacing: -2px;
+    }
+
+    .error-code::before,
+    .error-code::after {
+      content: '404';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      opacity: 0.7;
+      clip: rect(0, 0, 0, 0);
+    }
+
+    .error-code:hover::before {
+      animation: glitch-anim 0.4s infinite linear alternate-reverse;
+    }
+
+    .error-code:hover::after {
+      animation: glitch-anim2 0.3s infinite linear alternate-reverse;
     }
 
     h1 {
-      font-size: 1.8rem;
+      font-size: 1.85rem;
       font-weight: 800;
       margin: 1rem 0 0.5rem 0;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      background: linear-gradient(90deg, #fff, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     p {
@@ -106,8 +149,8 @@
       font-size: 0.88rem;
       color: var(--text-muted);
       margin-bottom: 1.75rem;
-      background: rgba(255, 255, 255, 0.03);
-      padding: 0.6rem 1.25rem;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 0.65rem 1.25rem;
       border-radius: 99px;
       border: 1px solid var(--border-subtle);
       display: inline-flex;
@@ -134,20 +177,21 @@
       background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
       color: white;
       text-decoration: none;
-      padding: 0.75rem 1.75rem;
+      padding: 0.8rem 1.8rem;
       border-radius: 99px;
       font-weight: 700;
       font-size: 0.95rem;
       transition: all 0.25s ease;
-      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35);
+      box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
       border: none;
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 22px rgba(168, 85, 247, 0.5);
-      opacity: 0.95;
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 0 8px 25px rgba(168, 85, 247, 0.6);
     }
 
     .btn-secondary {
@@ -158,62 +202,251 @@
     }
 
     .btn-secondary:hover {
-      background: rgba(255, 255, 255, 0.1);
-      box-shadow: none;
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 4px 15px rgba(255, 255, 255, 0.08);
     }
 
+    /* Sound Control Toggle */
+    .audio-toggle {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      background: var(--card-bg);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.5rem 0.9rem;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      transition: all 0.2s ease;
+    }
+
+    .audio-toggle:hover {
+      border-color: var(--accent-purple);
+    }
+
+    /* Animations */
     @keyframes float {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-12px); }
     }
 
+    @keyframes glitch-anim {
+      0% { clip: rect(10px, 9999px, 30px, 0); transform: skew(0.3deg); }
+      50% { clip: rect(40px, 9999px, 15px, 0); transform: skew(-0.5deg) translateX(-2px); }
+      100% { clip: rect(25px, 9999px, 50px, 0); transform: skew(0.2deg); }
+    }
+
+    @keyframes glitch-anim2 {
+      0% { clip: rect(50px, 9999px, 20px, 0); transform: skew(-0.2deg) translateX(2px); }
+      50% { clip: rect(10px, 9999px, 60px, 0); transform: skew(0.4deg); }
+      100% { clip: rect(30px, 9999px, 10px, 0); transform: skew(-0.3deg); }
+    }
+
     @media (prefers-reduced-motion: reduce) {
-      .stars, .error-code {
-        animation: none;
-      }
+      .error-code, .nebula { animation: none; }
     }
   </style>
 </head>
 <body>
 
-  <div class="stars"></div>
+  <button class="audio-toggle" id="sound-btn" onclick="toggleAudio()">🔊 SFX: ON</button>
+  <div class="nebula"></div>
+  <canvas id="space-canvas"></canvas>
 
-  <main class="container">
+  <main class="container" id="glass-card">
     <div class="error-code">404</div>
-    <h1>LOST IN SPACE</h1>
-    <p>The page you are looking for has drifted out into the deep void or never existed in this dimension.</p>
+    <h1>Lost in Deep Space</h1>
+    <p>The system parameters you are looking for have drifted into the deep cosmic void or ceased to exist.</p>
     
     <div class="timer-msg">
-      🚀 Hyper-jump home in <span id="countdown">10</span>s
+      ⚡ Hyper-jump protocol in <span id="countdown">10</span>s
     </div>
 
     <div class="actions">
-      <!-- Using index.html ensures compatibility with GitHub Pages repo subpaths -->
-      <a href="index.html" class="btn">Take Me Home</a>
+      <button class="btn" onclick="initiateHyperjump()">Engage Hyper-Jump</button>
       <button id="pause-btn" class="btn btn-secondary" onclick="toggleTimer()">Pause Jump</button>
     </div>
   </main>
 
   <script>
+    /* ===================================================
+       1. SYNTHESIZED WEB AUDIO API (No external files)
+       =================================================== */
+    let audioCtx = null;
+    let sfxEnabled = true;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleAudio() {
+      sfxEnabled = !sfxEnabled;
+      document.getElementById('sound-btn').textContent = sfxEnabled ? "🔊 SFX: ON" : "🔇 SFX: OFF";
+    }
+
+    function playBeep(freq = 600, duration = 0.05, type = 'sine') {
+      if (!sfxEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playWarpSound() {
+      if (!sfxEnabled) return;
+      initAudio();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(80, audioCtx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 1.2);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 1.2);
+      } catch (e) {}
+    }
+
+    // Attach hover SFX to buttons
+    document.querySelectorAll('.btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => playBeep(800, 0.04, 'triangle'));
+    });
+
+    /* ===================================================
+       2. INTERACTIVE CANVAS SPACE & WARP SPEED ANIMATION
+       =================================================== */
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
+    
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const numStars = 250;
+    const stars = [];
+    let isWarping = false;
+
+    class Star {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = (Math.random() - 0.5) * width * 2;
+        this.y = (Math.random() - 0.5) * height * 2;
+        this.z = Math.random() * width;
+        this.pz = this.z;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.color = ['#a855f7', '#3b82f6', '#ec4899', '#ffffff'][Math.floor(Math.random() * 4)];
+      }
+
+      update(speed) {
+        this.pz = this.z;
+        this.z -= speed;
+        if (this.z <= 0) {
+          this.reset();
+          this.z = width;
+          this.pz = this.z;
+        }
+      }
+
+      draw() {
+        const sx = (this.x / this.z) * (width / 2) + width / 2;
+        const sy = (this.y / this.z) * (height / 2) + height / 2;
+
+        const px = (this.x / this.pz) * (width / 2) + width / 2;
+        const py = (this.y / this.pz) * (height / 2) + height / 2;
+
+        if (sx < 0 || sx > width || sy < 0 || sy > height) return;
+
+        ctx.strokeStyle = this.color;
+        ctx.lineWidth = isWarping ? (1 - this.z / width) * 4 + 1 : this.size;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(sx, sy);
+        ctx.stroke();
+      }
+    }
+
+    for (let i = 0; i < numStars; i++) {
+      stars.push(new Star());
+    }
+
+    let starSpeed = 1.5;
+
+    function renderSpace() {
+      ctx.fillStyle = isWarping ? 'rgba(8, 9, 15, 0.25)' : 'rgba(8, 9, 15, 0.9)';
+      ctx.fillRect(0, 0, width, height);
+
+      if (isWarping) {
+        starSpeed = Math.min(starSpeed * 1.08, 45);
+      }
+
+      stars.forEach(star => {
+        star.update(starSpeed);
+        star.draw();
+      });
+
+      requestAnimationFrame(renderSpace);
+    }
+    renderSpace();
+
+    /* ===================================================
+       3. 3D TILT EFFECT ON MOUSE MOVE
+       =================================================== */
+    const card = document.getElementById('glass-card');
+    document.addEventListener('mousemove', (e) => {
+      if (isWarping) return;
+      const xAxis = (window.innerWidth / 2 - e.clientX) / 30;
+      const yAxis = (window.innerHeight / 2 - e.clientY) / 30;
+      card.style.transform = `rotateY(${xAxis}deg) rotateX(${-yAxis}deg)`;
+    });
+
+    /* ===================================================
+       4. COUNTDOWN & HYPER-JUMP LOGIC
+       =================================================== */
     let timeLeft = 10;
     let isPaused = false;
     const countdownElement = document.getElementById('countdown');
     const pauseBtn = document.getElementById('pause-btn');
 
     const interval = setInterval(() => {
-      if (isPaused) return;
+      if (isPaused || isWarping) return;
       
       timeLeft--;
       countdownElement.textContent = timeLeft;
+      playBeep(450, 0.03, 'sine');
       
       if (timeLeft <= 0) {
         clearInterval(interval);
-        window.location.href = "index.html";
+        initiateHyperjump();
       }
     }, 1000);
 
     function toggleTimer() {
       isPaused = !isPaused;
+      playBeep(350, 0.06, 'square');
       if (isPaused) {
         pauseBtn.textContent = "Resume Jump";
         pauseBtn.style.borderColor = "var(--accent-purple)";
@@ -221,6 +454,21 @@
         pauseBtn.textContent = "Pause Jump";
         pauseBtn.style.borderColor = "var(--border-subtle)";
       }
+    }
+
+    function initiateHyperjump() {
+      if (isWarping) return;
+      isWarping = true;
+      playWarpSound();
+
+      // Zoom card away during jump
+      card.style.transition = 'transform 1s cubic-bezier(0.7, 0, 0.84, 0), opacity 0.8s ease';
+      card.style.transform = 'scale(0.05) translateZ(-500px) rotateX(20deg)';
+      card.style.opacity = '0';
+
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1100);
     }
   </script>
 </body>

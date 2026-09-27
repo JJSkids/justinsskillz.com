@@ -3,13 +3,80 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Justin's Skillz - Digital Ecosystem & Hub</title>
 
+  <!-- Search Engine & Core Metadata -->
+  <title>Justin's Skillz | Digital Ecosystem & Developer Hub</title>
+  <meta name="title" content="Justin's Skillz | Digital Ecosystem & Developer Hub">
+  <meta name="description" content="Explore Justin's Skillz — an interactive platform featuring K-12 math modules, robotics projects, chess AI, web applications, and music studio tools.">
+  <meta name="author" content="Justin Emuekhare">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://justinsskillz.com/">
+
+  <!-- Open Graph / Facebook / Discord Previews -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://justinsskillz.com/">
+  <meta property="og:title" content="Justin's Skillz | Digital Ecosystem & Developer Hub">
+  <meta property="og:description" content="Explore interactive K-12 math modules, robotics projects, chess AI, web apps, and music studio tools.">
+  <meta property="og:image" content="https://justinsskillz.com/Justin's Skillz.jpg">
+
+  <!-- Twitter / X Previews -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://justinsskillz.com/">
+  <meta name="twitter:title" content="Justin's Skillz | Digital Ecosystem & Developer Hub">
+  <meta name="twitter:description" content="Explore interactive K-12 math modules, robotics projects, chess AI, web apps, and music studio tools.">
+  <meta name="twitter:image" content="https://justinsskillz.com/Justin's Skillz.jpg">
+
+  <!-- Structured Data (JSON-LD) for Google Search & Sitelinks -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Justin's Skillz",
+    "alternateName": ["jjskids", "Justin Emuekhare"],
+    "url": "https://justinsskillz.com/",
+    "description": "Digital ecosystem featuring math modules, robotics, chess AI, and developer tools.",
+    "hasPart": [
+      {
+        "@type": "WebPage",
+        "name": "Mathematics Lab",
+        "description": "Interactive problem solving and competition preparation",
+        "url": "https://justinsskillz.com/src/math.html"
+      },
+      {
+        "@type": "WebPage",
+        "name": "Robotics Hub",
+        "description": "Arduino architecture, microcontrollers, and hardware projects",
+        "url": "https://justinsskillz.com/src/robotics.html"
+      },
+      {
+        "@type": "WebPage",
+        "name": "Chess AI Training Lab",
+        "description": "Interactive chessboard with custom mechanics and AI",
+        "url": "https://justinsskillz.com/src/chess.html"
+      },
+      {
+        "@type": "WebPage",
+        "name": "Music Studio",
+        "description": "Web Audio synthesizer and beat maker sequencer",
+        "url": "https://justinsskillz.com/src/music.html"
+      },
+      {
+        "@type": "WebPage",
+        "name": "User Dashboard",
+        "description": "Account management and project stats tracker",
+        "url": "https://justinsskillz.com/src/dashboard.html"
+      }
+    ]
+  }
+  </script>
+
+  <!-- Favicons and Fonts -->
   <link rel="icon" type="image/jpeg" href="Justin's Skillz.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+  <!-- Stylesheets & Core Scripts -->
   <link rel="stylesheet" href="src/styles.css">
   <script src="src/theme.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -309,93 +376,92 @@
     }
 
     /* Community & Links Section */
-.social-links-section {
-  margin: 3rem auto;
-  max-width: 1200px;
-  padding: 0 1.5rem;
-}
+    .social-links-section {
+      margin: 3rem auto;
+      max-width: 1200px;
+      padding: 0 1.5rem;
+    }
 
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 800;
-  margin-bottom: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
 
-.links-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-}
+    .links-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
 
-.social-card {
-  background: var(--bg-card, #121621);
-  border: 1px solid var(--border-subtle, #252d3d);
-  border-radius: 14px;
-  padding: 1.25rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  text-decoration: none;
-  color: var(--text-main, #f3f4f6);
-  font-weight: 700;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
+    .social-card {
+      background: var(--bg-card, #121621);
+      border: 1px solid var(--border-subtle, #252d3d);
+      border-radius: 14px;
+      padding: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      text-decoration: none;
+      color: var(--text-main, #f3f4f6);
+      font-weight: 700;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
 
-.social-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--border-glow, #3b82f6);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
+    .social-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--border-glow, #3b82f6);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
 
-/* Specific Accent Colors */
-.social-card.discord:hover {
-  border-color: #5865F2;
-  box-shadow: 0 0 15px rgba(88, 101, 242, 0.3);
-}
+    .social-card.discord:hover {
+      border-color: #5865F2;
+      box-shadow: 0 0 15px rgba(88, 101, 242, 0.3);
+    }
 
-.social-card.github:hover {
-  border-color: #f0f6fc;
-  box-shadow: 0 0 15px rgba(240, 246, 252, 0.2);
-}
+    .social-card.github:hover {
+      border-color: #f0f6fc;
+      box-shadow: 0 0 15px rgba(240, 246, 252, 0.2);
+    }
 
-.social-card.youtube:hover {
-  border-color: #ff0000;
-  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
-}
+    .social-card.youtube:hover {
+      border-color: #ff0000;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+    }
 
-.social-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.4rem;
-  background: rgba(255, 255, 255, 0.05);
-}
+    .social-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      background: rgba(255, 255, 255, 0.05);
+    }
 
-.discord .social-icon { color: #5865F2; }
-.github .social-icon { color: #f0f6fc; }
-.youtube .social-icon { color: #ff0000; }
-.custom .social-icon { color: #06b6d4; }
+    .discord .social-icon { color: #5865F2; }
+    .github .social-icon { color: #f0f6fc; }
+    .youtube .social-icon { color: #ff0000; }
+    .custom .social-icon { color: #06b6d4; }
 
-.link-details {
-  display: flex;
-  flex-direction: column;
-}
+    .link-details {
+      display: flex;
+      flex-direction: column;
+    }
 
-.link-title {
-  font-size: 1rem;
-  font-weight: 700;
-}
+    .link-title {
+      font-size: 1rem;
+      font-weight: 700;
+    }
 
-.link-sub {
-  font-size: 0.78rem;
-  color: var(--text-muted, #94a3b8);
-}
+    .link-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted, #94a3b8);
+    }
   </style>
 </head>
 <body>
@@ -505,47 +571,43 @@
     </div>
 
     <!-- Social & Community Links -->
-<section class="social-links-section">
-  <h2 class="section-title">🌐 Connect & Community</h2>
-  
-  <div class="links-grid">
-    <!-- Discord Placeholder Link -->
-    <a href="https://discord.gg/JsBNFCTYfT" target="_blank" rel="noopener noreferrer" class="social-card discord">
-      <div class="social-icon">💬</div>
-      <div class="link-details">
-        <span class="link-title">Discord Server</span>
-        <span class="link-sub">Join the community</span>
-      </div>
-    </a>
+    <section class="social-links-section">
+      <h2 class="section-title">🌐 Connect & Community</h2>
+      
+      <div class="links-grid">
+        <a href="https://discord.gg/JsBNFCTYfT" target="_blank" rel="noopener noreferrer" class="social-card discord">
+          <div class="social-icon">💬</div>
+          <div class="link-details">
+            <span class="link-title">Discord Server</span>
+            <span class="link-sub">Join the community</span>
+          </div>
+        </a>
 
-    <!-- GitHub Placeholder Link -->
-    <a href="https://github.com/JJSkids" target="_blank" rel="noopener noreferrer" class="social-card github">
-      <div class="social-icon">💻</div>
-      <div class="link-details">
-        <span class="link-title">GitHub</span>
-        <span class="link-sub">View open source projects</span>
-      </div>
-    </a>
+        <a href="https://github.com/JJSkids" target="_blank" rel="noopener noreferrer" class="social-card github">
+          <div class="social-icon">💻</div>
+          <div class="link-details">
+            <span class="link-title">GitHub</span>
+            <span class="link-sub">View open source projects</span>
+          </div>
+        </a>
 
-    <!-- YouTube Placeholder Link -->
-    <a href="https://www.youtube.com/channel/UCfi7pHR9K_q0XpD48SWVYwg" target="_blank" rel="noopener noreferrer" class="social-card youtube">
-      <div class="social-icon">▶</div>
-      <div class="link-details">
-        <span class="link-title">YouTube</span>
-        <span class="link-sub">Watch tutorials & robotics</span>
-      </div>
-    </a>
+        <a href="https://www.youtube.com/channel/UCfi7pHR9K_q0XpD48SWVYwg" target="_blank" rel="noopener noreferrer" class="social-card youtube">
+          <div class="social-icon">▶</div>
+          <div class="link-details">
+            <span class="link-title">YouTube</span>
+            <span class="link-sub">Watch tutorials & robotics</span>
+          </div>
+        </a>
 
-    <!-- Additional Custom Link Placeholder -->
-    <a href="#" class="social-card custom">
-      <div class="social-icon">🔗</div>
-      <div class="link-details">
-        <span class="link-title">Custom Link</span>
-        <span class="link-sub">Add any link here</span>
+        <a href="#" class="social-card custom">
+          <div class="social-icon">🔗</div>
+          <div class="link-details">
+            <span class="link-title">Custom Link</span>
+            <span class="link-sub">Add any link here</span>
+          </div>
+        </a>
       </div>
-    </a>
-  </div>
-</section>
+    </section>
   </main>
 
   <footer class="app-footer">

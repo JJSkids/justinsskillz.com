@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Classroom Hub Pro | Justin's Skillz</title>
+  <meta name="description" content="Ultimate interactive teacher dashboard with attendance, points, timers, name picker, soundboard, dynamic teams, and PDF report cards.">
+
+  <!-- Favicons and Fonts -->
+  <link rel="icon" type="image/jpeg" href="../Justin's Skillz.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+
+  <!-- html2pdf Library for Report Cards -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    :root, [data-theme="dark"] {
+      --bg-primary: #0b0f19;
+      --bg-card: #151b28;
+      --bg-card-hover: #1c2436;
+      --border-subtle: #273046;
+      --border-active: #a855f7;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-purple: #a855f7;
+      --accent-purple-glow: rgba(168, 85, 247, 0.3);
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-yellow: #f59e0b;
+      --header-bg: rgba(11, 15, 25, 0.85);
+      --radius-lg: 16px;
+      --radius-md: 10px;
+    }
+
+    [data-theme="light"] {
+      --bg-primary: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-card-hover: #f8fafc;
+      --border-subtle: #cbd5e1;
+      --border-active: #9333ea;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --accent-purple: #9333ea;
+      --accent-purple-glow: rgba(147, 51, 234, 0.2);
+      --accent-blue: #2563eb;
+      --accent-green: #059669;
+      --accent-red: #dc2626;
+      --accent-yellow: #d97706;
+      --header-bg: rgba(241, 245, 249, 0.85);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* Header Styling */
+    .app-header {
+      background: var(--header-bg);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 0.8rem 1.5rem;
+    }
+
+    .header-container {
+      max-width: 1300px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.2rem;
+    }
+
+    .nav-logo-img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-purple);
+      box-shadow: 0 0 12px var(--accent-purple-glow);
+    }
+
+    /* Layout Containers */
+    .main-container {
+      max-width: 1300px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 1024px) {
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    /* Card Component */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--border-active);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Form Controls & Buttons */
+    .form-group {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    input, select, textarea {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius-md);
+      font-family: inherit;
+      font-size: 0.95rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent-purple);
+      box-shadow: 0 0 0 3px var(--accent-purple-glow);
+    }
+
+    button {
+      background: var(--accent-purple);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    button:hover { opacity: 0.92; transform: translateY(-2px); }
+    button:active { transform: translateY(0); }
+    button.btn-secondary { background: var(--bg-primary); border: 1px solid var(--border-subtle); color: var(--text-main); }
+    button.btn-secondary:hover { border-color: var(--accent-purple); }
+    button.btn-danger { background: var(--accent-red); }
+    button.btn-success { background: var(--accent-green); }
+    button.btn-warning { background: var(--accent-yellow); color: #000; }
+
+    /* Timer Widget */
+    .timer-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 3.5rem;
+      font-weight: 800;
+      text-align: center;
+      margin: 0.5rem 0 1rem;
+      color: var(--accent-purple);
+      text-shadow: 0 0 20px var(--accent-purple-glow);
+      letter-spacing: -1px;
+    }
+
+    .preset-pills {
+      display: flex;
+      gap: 0.4rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .preset-pills button {
+      padding: 0.3rem 0.7rem;
+      font-size: 0.8rem;
+    }
+
+    /* Name Picker Animated Box */
+    .picker-box {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: var(--bg-primary);
+      border-radius: var(--radius-md);
+      border: 2px dashed var(--accent-purple);
+      margin-bottom: 1rem;
+      min-height: 110px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .picked-name {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--accent-green);
+      transition: transform 0.1s;
+    }
+
+    .picked-name.rolling {
+      color: var(--text-muted);
+      filter: blur(0.5px);
+    }
+
+    /* Soundboard Grid */
+    .sfx-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .sfx-btn {
+      padding: 0.8rem;
+      font-size: 0.9rem;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      border-radius: var(--radius-md);
+    }
+
+    /* Roster & Table Styles */
+    .roster-toolbar {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-card);
+      text-align: left;
+    }
+
+    th, td {
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    th {
+      background: var(--bg-primary);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--bg-card-hover); }
+
+    .badge {
+      padding: 0.3rem 0.7rem;
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .badge-present { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid var(--accent-green); }
+    .badge-absent { background: rgba(239, 68, 68, 0.15); color: var(--accent-red); border: 1px solid var(--accent-red); }
+
+    .points-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--bg-primary);
+      padding: 0.2rem 0.6rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+      font-weight: 800;
+    }
+
+    /* Group Generator Output */
+    .groups-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .group-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 1rem;
+    }
+
+    .group-card h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--accent-purple);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 0.3rem;
+    }
+
+    .group-card ul {
+      margin: 0;
+      padding-left: 1.2rem;
+      font-size: 0.9rem;
+    }
+
+    /* Canvas Confetti Layer */
+    #confetti-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(6px);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 2rem;
+      max-width: 650px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="confetti-canvas"></canvas>
+
+  <header class="app-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo">
+        <img src="../Justin's Skillz.jpg" alt="Logo" class="nav-logo-img">
+        <span>CLASSROOM <span style="color:var(--accent-purple);">HUB PRO</span></span>
+      </a>
+      <div style="display: flex; gap: 0.8rem; align-items: center;">
+        <button class="btn-secondary" onclick="exportData()" title="Backup student data">💾 Export</button>
+        <button class="btn-secondary" onclick="importData()" title="Restore student data">📂 Import</button>
+        <a href="../index.html" style="color: var(--text-muted); text-decoration: none; font-weight: 600; font-size: 0.9rem;">← Exit Hub</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- Top Tools Row -->
+    <div class="grid-3">
+      
+      <!-- 1. Multi-Mode Timer & Stopwatch -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">⏱️ Smart Timer</h2>
+          <span id="timerStatus" style="font-size:0.75rem; background:var(--bg-primary); padding:2px 8px; border-radius:99px; color:var(--text-muted);">READY</span>
+        </div>
+        <div class="timer-display" id="timerDisplay">05:00</div>
+        
+        <div class="preset-pills">
+          <button class="btn-secondary" onclick="setPreset(1)">1m</button>
+          <button class="btn-secondary" onclick="setPreset(3)">3m</button>
+          <button class="btn-secondary" onclick="setPreset(5)">5m</button>
+          <button class="btn-secondary" onclick="setPreset(10)">10m</button>
+          <button class="btn-secondary" onclick="setPreset(15)">15m</button>
+        </div>
+
+        <div class="form-group">
+          <button onclick="toggleTimer()" id="startBtn" class="btn-success" style="flex:1;">▶ Start</button>
+          <button onclick="resetTimer()" class="btn-danger">↻ Reset</button>
+        </div>
+      </div>
+
+      <!-- 2. Animated Name Picker -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🎲 Random Picker</h2>
+          <label style="font-size: 0.8rem; color: var(--text-muted); cursor: pointer;">
+            <input type="checkbox" id="excludePicked"> Exclude picked
+          </label>
+        </div>
+        <div class="picker-box">
+          <div class="picked-name" id="pickedName">Ready to Spin!</div>
+        </div>
+        <button onclick="spinNamePicker()" class="btn-success" style="width: 100%; font-size: 1rem;">🎯 Pick Present Student</button>
+      </div>
+
+      <!-- 3. Classroom Soundboard SFX -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🔊 Soundboard</h2>
+          <span style="font-size:0.75rem; color:var(--text-muted);">Web Audio API</span>
+        </div>
+        <div class="sfx-grid">
+          <button class="sfx-btn" onclick="playSFX('applause')">👏 Applause</button>
+          <button class="sfx-btn" onclick="playSFX('bell')">🔔 Bell Ring</button>
+          <button class="sfx-btn" onclick="playSFX('buzzer')">❌ Buzzer</button>
+          <button class="sfx-btn" onclick="playSFX('tada')">🎉 Ta-Da!</button>
+          <button class="sfx-btn" onclick="playSFX('chime')">✨ Quick Chime</button>
+          <button class="sfx-btn" onclick="playSFX('tick')">⏱️ Countdown</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Main Section: Roster & Team Generator Grid -->
+    <div class="grid-2">
+      
+      <!-- Student Roster Table -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">📋 Student Roster & Points</h2>
+          <span id="rosterStats" style="font-weight: 700; color: var(--accent-purple); font-size: 0.9rem;">0 Present / 0 Total</span>
+        </div>
+
+        <div class="roster-toolbar">
+          <div class="form-group" style="margin:0; flex:1; max-width: 320px;">
+            <input type="text" id="newStudentName" placeholder="Add new student name..." onkeypress="if(event.key==='Enter') addStudent()">
+            <button onclick="addStudent()">+ Add</button>
+          </div>
+          
+          <div style="display:flex; gap:0.5rem; flex:1; justify-content:flex-end;">
+            <input type="text" id="searchStudent" placeholder="🔍 Search..." style="max-width:180px;" oninput="renderStudents()">
+            <button class="btn-secondary" onclick="markAllPresent()">All Present</button>
+            <button class="btn-secondary" onclick="resetAllPoints()">Reset Points</button>
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Status</th>
+                <th>Points</th>
+                <th>Actions</th>
+                <th>Report Card</th>
+              </tr>
+            </thead>
+            <tbody id="studentTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Quick Group & Team Generator -->
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">👥 Team Generator</h2>
+        </div>
+        
+        <p style="font-size:0.85rem; color:var(--text-muted); margin-top:0;">Automatically shuffle present students into random balanced groups.</p>
+
+        <div class="form-group">
+          <select id="groupCount">
+            <option value="2">2 Groups</option>
+            <option value="3" selected>3 Groups</option>
+            <option value="4">4 Groups</option>
+            <option value="5">5 Groups</option>
+          </select>
+          <button onclick="generateGroups()" class="btn-warning">🔀 Create Teams</button>
+        </div>
+
+        <div id="groupsOutput" class="groups-container">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Report Card PDF Modal -->
+  <div id="reportCardModal" class="modal-overlay">
+    <div class="modal-content">
+      <div id="pdfContent" style="padding: 1.5rem; background: #ffffff; color: #0f172a; border-radius: 8px; font-family: sans-serif;">
+        <div style="display:flex; justify-size:space-between; align-items:center; border-bottom: 2px solid #a855f7; padding-bottom: 0.8rem; margin-bottom: 1rem;">
+          <div>
+            <h1 style="margin:0; color:#6b21a8; font-size:1.6rem; font-weight:800;">JUSTIN'S SKILLZ</h1>
+            <p style="margin:2px 0 0 0; color:#64748b; font-size:0.85rem; font-weight:600;">ACADEMIC & PARTICIPATION REPORT CARD</p>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-size:0.8rem; color:#64748b;" id="pdfDate">Date: 2026</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem; background:#f8fafc; padding:1rem; border-radius:6px; margin-bottom:1rem;">
+          <div><strong>Student Name:</strong> <span id="pdfStudentName" style="color:#0f172a;"></span></div>
+          <div><strong>Attendance Status:</strong> <span id="pdfAttendance"></span></div>
+          <div><strong>Participation Points:</strong> <span id="pdfPoints" style="color:#16a34a; font-weight:bold;"></span></div>
+          <div><strong>Overall Grade:</strong> <span id="pdfGrade" style="font-weight:bold; color:#2563eb;">A+ (Outstanding)</span></div>
+        </div>
+
+        <div style="margin-bottom:1rem;">
+          <h3 style="margin:0 0 0.5rem 0; font-size:1rem; color:#1e293b;">Subject Performance Rubric</h3>
+          <table style="width:100%; font-size:0.85rem; border-collapse:collapse; color:#1e293b;">
+            <thead>
+              <tr style="background:#e2e8f0; text-align:left;">
+                <th style="padding:6px;">Category</th>
+                <th style="padding:6px;">Rating</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td style="padding:6px; border-bottom:1px solid #e2e8f0;">Mathematics & Problem Solving</td><td style="padding:6px; border-bottom:1px solid #e2e8f0;">Excellent (95%)</td></tr>
+              <tr><td style="padding:6px; border-bottom:1px solid #e2e8f0;">French Language Skills</td><td style="padding:6px; border-bottom:1px solid #e2e8f0;">Proficient (88%)</td></tr>
+              <tr><td style="padding:6px; border-bottom:1px solid #e2e8f0;">Coding & Algorithmic Logic</td><td style="padding:6px; border-bottom:1px solid #e2e8f0;">Mastery (98%)</td></tr>
+              <tr><td style="padding:6px; border-bottom:1px solid #e2e8f0;">Classroom Conduct & Collaboration</td><td style="padding:6px; border-bottom:1px solid #e2e8f0;">Exemplary</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-bottom:1.5rem;">
+          <h3 style="margin:0 0 0.4rem 0; font-size:1rem; color:#1e293b;">Instructor Feedback & Notes</h3>
+          <textarea id="pdfNotes" style="width:100%; border:1px solid #cbd5e1; padding:8px; border-radius:4px; font-family:sans-serif; font-size:0.85rem; height:70px; resize:none; background:#fff; color:#0f172a;"></textarea>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-top:2rem; padding-top:1rem; border-top:1px dashed #cbd5e1; font-size:0.8rem; color:#64748b;">
+          <div>Instructor Signature: ______________________</div>
+          <div>Verified via Agent Alpha Engine</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 1rem; display:flex; gap:0.5rem; justify-content:flex-end;">
+        <button onclick="downloadPDF()" class="btn-success">📥 Download PDF</button>
+        <button onclick="closeReportCard()" class="btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* Global Application State */
+    let students = JSON.parse(localStorage.getItem('classroom_pro_students')) || [
+      { id: 1, name: "Justin Emuekhare", present: true, points: 24 },
+      { id: 2, name: "Alex Smith", present: true, points: 12 },
+      { id: 3, name: "Sophie Martin", present: true, points: 18 },
+      { id: 4, name: "Lucas Tremblay", present: false, points: 5 }
+    ];
+
+    let timerInterval = null;
+    let timerSeconds = 300;
+    let isTimerRunning = false;
+    let selectedStudentForPDF = null;
+
+    // Web Audio Synthesizer for SFX
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+    function playSFX(type) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'bell') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        osc.frequency.exponentialRampToValueAtTime(440, now + 0.8);
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.8);
+        osc.start(now);
+        osc.stop(now + 0.8);
+      } else if (type === 'buzzer') {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(150, now);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.4);
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } else if (type === 'tada' || type === 'applause') {
+        triggerConfetti();
+        const notes = [523.25, 659.25, 783.99, 1046.50];
+        notes.forEach((freq, idx) => {
+          const subOsc = audioCtx.createOscillator();
+          const subGain = audioCtx.createGain();
+          subOsc.type = 'triangle';
+          subOsc.frequency.setValueAtTime(freq, now + idx * 0.08);
+          subGain.gain.setValueAtTime(0.3, now + idx * 0.08);
+          subGain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.4);
+          subOsc.connect(subGain);
+          subGain.connect(audioCtx.destination);
+          subOsc.start(now + idx * 0.08);
+          subOsc.stop(now + idx * 0.08 + 0.4);
+        });
+      } else if (type === 'tick') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(600, now);
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+        osc.start(now);
+        osc.stop(now + 0.05);
+      } else if (type === 'chime') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(587.33, now);
+        osc.frequency.setValueAtTime(880, now + 0.1);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+        osc.start(now);
+        osc.stop(now + 0.5);
+      }
+    }
+
+    /* Initialize Application */
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStudents();
+      updateTimerDisplay();
+      document.getElementById('pdfDate').textContent = "Date: " + new Date().toLocaleDateString();
+    });
+
+    /* Render Roster Table */
+    function renderStudents() {
+      const tbody = document.getElementById('studentTableBody');
+      const searchQuery = document.getElementById('searchStudent').value.toLowerCase();
+      tbody.innerHTML = '';
+
+      const filtered = students.filter(s => s.name.toLowerCase().includes(searchQuery));
+      const presentCount = students.filter(s => s.present).length;
+
+      document.getElementById('rosterStats').textContent = `${presentCount} Present / ${students.length} Total`;
+
+      filtered.forEach(s => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><strong>${s.name}</strong></td>
+          <td>
+            <span class="badge ${s.present ? 'badge-present' : 'badge-absent'}" onclick="toggleAttendance(${s.id})">
+              ${s.present ? '✓ Present' : '✗ Absent'}
+            </span>
+          </td>
+          <td>
+            <div class="points-pill">
+              <button class="btn-secondary" style="padding:1px 6px; font-size:0.75rem;" onclick="updatePoints(${s.id}, -1)">-</button>
+              <span>${s.points}</span>
+              <button class="btn-secondary" style="padding:1px 6px; font-size:0.75rem;" onclick="updatePoints(${s.id}, 1)">+</button>
+            </div>
+          </td>
+          <td>
+            <button class="btn-danger" style="padding:4px 8px; font-size:0.75rem;" onclick="deleteStudent(${s.id})">Remove</button>
+          </td>
+          <td>
+            <button onclick="openReportCard(${s.id})" style="padding:4px 10px; font-size:0.75rem;">📄 Report</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      localStorage.setItem('classroom_pro_students', JSON.stringify(students));
+    }
+
+    function addStudent() {
+      const input = document.getElementById('newStudentName');
+      if (!input.value.trim()) return;
+      
+      students.push({
+        id: Date.now(),
+        name: input.value.trim(),
+        present: true,
+        points: 0
+      });
+
+      input.value = '';
+      renderStudents();
+      playSFX('chime');
+    }
+
+    function toggleAttendance(id) {
+      students = students.map(s => s.id === id ? { ...s, present: !s.present } : s);
+      renderStudents();
+    }
+
+    function updatePoints(id, delta) {
+      students = students.map(s => {
+        if (s.id === id) {
+          const newPts = Math.max(0, s.points + delta);
+          if (delta > 0) playSFX('tick');
+          return { ...s, points: newPts };
+        }
+        return s;
+      });
+      renderStudents();
+    }
+
+    function deleteStudent(id) {
+      students = students.filter(s => s.id !== id);
+      renderStudents();
+    }
+
+    function markAllPresent() {
+      students = students.map(s => ({ ...s, present: true }));
+      renderStudents();
+    }
+
+    function resetAllPoints() {
+      if (confirm("Reset points for all students to 0?")) {
+        students = students.map(s => ({ ...s, points: 0 }));
+        renderStudents();
+      }
+    }
+
+    /* Smart Timer Logic */
+    function updateTimerDisplay() {
+      const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+      const secs = (timerSeconds % 60).toString().padStart(2, '0');
+      document.getElementById('timerDisplay').textContent = `${mins}:${secs}`;
+    }
+
+    function setPreset(mins) {
+      pauseTimer();
+      timerSeconds = mins * 60;
+      updateTimerDisplay();
+      document.getElementById('timerStatus').textContent = "READY";
+    }
+
+    function toggleTimer() {
+      if (isTimerRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) return;
+      isTimerRunning = true;
+      document.getElementById('startBtn').textContent = "⏸ Pause";
+      document.getElementById('startBtn').className = "btn-warning";
+      document.getElementById('timerStatus').textContent = "RUNNING";
+
+      timerInterval = setInterval(() => {
+        if (timerSeconds > 0) {
+          timerSeconds--;
+          updateTimerDisplay();
+        } else {
+          pauseTimer();
+          playSFX('bell');
+          document.getElementById('timerStatus').textContent = "TIME UP";
+          triggerConfetti();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      isTimerRunning = false;
+      document.getElementById('startBtn').textContent = "▶ Start";
+      document.getElementById('startBtn').className = "btn-success";
+      if (timerSeconds > 0) document.getElementById('timerStatus').textContent = "PAUSED";
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      timerSeconds = 300;
+      updateTimerDisplay();
+      document.getElementById('timerStatus').textContent = "READY";
+    }
+
+    /* Slot-Machine Animated Name Picker */
+    function spinNamePicker() {
+      const presentStudents = students.filter(s => s.present);
+      const display = document.getElementById('pickedName');
+
+      if (presentStudents.length === 0) {
+        display.textContent = "No Present Students!";
+        display.style.color = "var(--accent-red)";
+        return;
+      }
+
+      display.classList.add('rolling');
+      let counter = 0;
+      const speed = 60;
+      const totalRolls = 20;
+
+      const interval = setInterval(() => {
+        const randomStudent = presentStudents[Math.floor(Math.random() * presentStudents.length)];
+        display.textContent = randomStudent.name;
+        playSFX('tick');
+        counter++;
+
+        if (counter >= totalRolls) {
+          clearInterval(interval);
+          display.classList.remove('rolling');
+          const winner = presentStudents[Math.floor(Math.random() * presentStudents.length)];
+          display.textContent = "🎉 " + winner.name + "!";
+          display.style.color = "var(--accent-green)";
+          playSFX('tada');
+
+          if (document.getElementById('excludePicked').checked) {
+            toggleAttendance(winner.id);
+          }
+        }
+      }, speed);
+    }
+
+    /* Team Generator */
+    function generateGroups() {
+      const presentStudents = students.filter(s => s.present).map(s => s.name);
+      const groupCount = parseInt(document.getElementById('groupCount').value);
+      const container = document.getElementById('groupsOutput');
+      container.innerHTML = '';
+
+      if (presentStudents.length === 0) {
+        container.innerHTML = `<p style="color:var(--accent-red); font-size:0.85rem;">No present students available!</p>`;
+        return;
+      }
+
+      // Shuffle Array
+      const shuffled = [...presentStudents].sort(() => Math.random() - 0.5);
+      const groups = Array.from({ length: groupCount }, () => []);
+
+      shuffled.forEach((student, index) => {
+        groups[index % groupCount].push(student);
+      });
+
+      groups.forEach((group, idx) => {
+        const card = document.createElement('div');
+        card.className = 'group-card';
+        card.innerHTML = `
+          <h4>Team ${idx + 1} (${group.length})</h4>
+          <ul>
+            ${group.map(name => `<li>${name}</li>`).join('')}
+          </ul>
+        `;
+        container.appendChild(card);
+      });
+
+      playSFX('chime');
+    }
+
+    /* PDF Report Card Generation */
+    function openReportCard(id) {
+      selectedStudentForPDF = students.find(s => s.id === id);
+      if (!selectedStudentForPDF) return;
+
+      document.getElementById('pdfStudentName').textContent = selectedStudentForPDF.name;
+      document.getElementById('pdfAttendance').textContent = selectedStudentForPDF.present ? 'Present (Active)' : 'Absent';
+      document.getElementById('pdfPoints').textContent = selectedStudentForPDF.points + ' Points';
+      document.getElementById('pdfNotes').value = `${selectedStudentForPDF.name} has demonstrated excellent participation and core mastery. Earned ${selectedStudentForPDF.points} active engagement points during classroom sessions.`;
+
+      document.getElementById('reportCardModal').style.display = 'flex';
+    }
+
+    function closeReportCard() {
+      document.getElementById('reportCardModal').style.display = 'none';
+    }
+
+    function downloadPDF() {
+      const element = document.getElementById('pdfContent');
+      const opt = {
+        margin:       0.4,
+        filename:     `${selectedStudentForPDF.name.replace(/\s+/g, '_')}_ReportCard.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+
+      html2pdf().set(opt).from(element).save();
+    }
+
+    /* Data Backup & Restore */
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(students, null, 2));
+      const anchor = document.createElement('a');
+      anchor.setAttribute("href", dataStr);
+      anchor.setAttribute("download", "classroom_roster_backup.json");
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    }
+
+    function importData() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'application/json';
+      input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = event => {
+          try {
+            students = JSON.parse(event.target.result);
+            renderStudents();
+            alert("Roster imported successfully!");
+          } catch(err) {
+            alert("Invalid JSON file format!");
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    /* Canvas Confetti Animation Engine */
+    function triggerConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = Array.from({ length: 70 }, () => ({
+        x: canvas.width / 2,
+        y: canvas.height / 2,
+        vx: (Math.random() - 0.5) * 12,
+        vy: (Math.random() - 0.7) * 12,
+        color: ['#a855f7', '#3b82f6', '#10b981', '#f59e0b', '#ef4444'][Math.floor(Math.random() * 5)],
+        size: Math.random() * 8 + 4,
+        alpha: 1
+      }));
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        let active = false;
+
+        particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.2; // Gravity
+          p.alpha -= 0.015;
+
+          if (p.alpha > 0) {
+            active = true;
+            ctx.fillStyle = p.color;
+            ctx.globalAlpha = p.alpha;
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          }
+        });
+
+        if (active) requestAnimationFrame(animate);
+      }
+      animate();
+    }
+  </script>
+</body>
+</html>

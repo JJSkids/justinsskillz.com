@@ -1,183 +1,256 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Classroom Portal Login | Justin's Skillz</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <!-- Supabase JS Client -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Central Security Guard Script -->
-  <script src="./guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassDojo - Sign In</title>
+    <script src="guard.js"></script>
+    <style>
+        :root {
+            --dojo-green: #00c853;
+            --dojo-blue: #0288d1;
+            --dojo-purple: #7c4dff;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f8fafc;
+        }
 
-  <style>
-    body {
-      background: #0b0f19;
-      background-image: radial-gradient(at 50% 0%, rgba(168, 85, 247, 0.25) 0px, transparent 70%);
-      color: #f8fafc;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 1rem;
-    }
-    .login-box {
-      background: rgba(21, 27, 40, 0.85);
-      border: 1px solid rgba(168, 85, 247, 0.4);
-      backdrop-filter: blur(16px);
-      border-radius: 20px;
-      padding: 2.5rem;
-      width: 100%;
-      max-width: 440px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 25px rgba(168, 85, 247, 0.15);
-    }
-    .header { text-align: center; margin-bottom: 2rem; }
-    .header h2 { font-size: 1.6rem; font-weight: 800; margin: 0; }
-    .header h2 span { color: #a855f7; }
-    .header p { color: #94a3b8; font-size: 0.85rem; margin-top: 6px; }
-    
-    .tab-group { display: flex; background: #0b0f19; border-radius: 10px; padding: 4px; margin-bottom: 1.5rem; border: 1px solid #273046; }
-    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #94a3b8; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-    .tab-btn.active { background: #a855f7; color: white; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
-    .input-field { margin-bottom: 1.2rem; }
-    .input-field label { display: block; font-size: 0.8rem; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
-    .input-field input {
-      width: 100%; padding: 0.8rem 1rem; background: #0b0f19; border: 1px solid #273046; border-radius: 10px; color: white; font-family: inherit; box-sizing: border-box; font-size: 0.95rem;
-    }
-    .input-field input:focus { border-color: #a855f7; outline: none; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3); }
+        body {
+            background: linear-gradient(135deg, #09203f 0%, #537895 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
 
-    .btn-submit {
-      width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
-    }
-    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 0 25px rgba(168, 85, 247, 0.6); }
-    .error-msg { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-top: 1rem; display: none; text-align: center; }
-  </style>
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            border: 2px solid rgba(255,255,255,0.1);
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .logo-box svg { width: 48px; height: 48px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
+        .logo-title { font-size: 1.8rem; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+        .logo-title span { color: var(--dojo-green); }
+
+        .role-tabs {
+            display: flex;
+            background: rgba(0,0,0,0.25);
+            border-radius: 14px;
+            padding: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            color: #94a3b8;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--dojo-blue);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(2, 136, 209, 0.4);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #cbd5e1;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .form-control:focus { border-color: var(--dojo-green); }
+
+        .btn-submit {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 14px;
+            background: var(--dojo-green);
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 200, 83, 0.4);
+            transition: transform 0.15s, background 0.2s;
+        }
+
+        .btn-submit:hover { transform: translateY(-2px); background: #00e676; }
+        .btn-submit:active { transform: translateY(0); }
+
+        .student-select-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1.25rem;
+            padding-right: 4px;
+        }
+
+        .student-avatar-card {
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .student-avatar-card:hover, .student-avatar-card.selected {
+            border-color: var(--dojo-purple);
+            background: rgba(124, 77, 255, 0.15);
+        }
+
+        .student-avatar-card svg { width: 40px; height: 40px; }
+        .student-avatar-card span { display: block; font-size: 0.75rem; font-weight: 600; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+        .hidden { display: none !important; }
+    </style>
 </head>
 <body>
 
-  <div class="login-box">
-    <div class="header">
-      <h2>CLASSROOM <span>DOJO</span></h2>
-      <p>Supabase-Powered Authentication Portal</p>
+<div class="login-card">
+    <div class="logo-box">
+        <svg viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="45" fill="#00c853" />
+            <circle cx="35" cy="40" r="12" fill="#fff" />
+            <circle cx="65" cy="40" r="12" fill="#fff" />
+            <circle cx="35" cy="40" r="5" fill="#0f172a" />
+            <circle cx="65" cy="40" r="5" fill="#0f172a" />
+            <path d="M 30 65 Q 50 80 70 65" stroke="#fff" stroke-width="6" stroke-linecap="round" fill="none" />
+        </svg>
+        <div class="logo-title">Class<span>Dojo</span></div>
     </div>
 
-    <div class="tab-group">
-      <button class="tab-btn active" id="btnStudentTab" onclick="setRole('student')">Student</button>
-      <button class="tab-btn" id="btnTeacherTab" onclick="setRole('teacher')">Class Owner / Teacher</button>
+    <div class="role-tabs">
+        <button class="tab-btn active" id="tab-teacher" onclick="switchRole('teacher')">Teacher</button>
+        <button class="tab-btn" id="tab-student" onclick="switchRole('student')">Student</button>
     </div>
 
-    <form id="loginForm" onsubmit="executeLogin(event)">
-      <div class="input-field">
-        <label>Classroom ID</label>
-        <input type="text" id="classId" placeholder="e.g. CLASS101" required>
-      </div>
-
-      <div class="input-field" id="studentIdWrapper">
-        <label>Student ID / Code</label>
-        <input type="text" id="studentId" placeholder="e.g. 0000000001">
-      </div>
-
-      <div class="input-field">
-        <label id="emailLabel">Authorized Email</label>
-        <input type="email" id="email" placeholder="registered email address..." required>
-      </div>
-
-      <button type="submit" class="btn-submit" id="btnSubmit">Authenticate & Enter</button>
+    <!-- Teacher Form -->
+    <form id="teacher-form" onsubmit="handleLogin(event, 'teacher')">
+        <div class="form-group">
+            <label>Teacher Name / Class Code</label>
+            <input type="text" id="teacher-name" class="form-control" value="Mr. Jeffrey" required>
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" value="••••••••" required>
+        </div>
+        <button type="submit" class="btn-submit">Enter Classroom 🚀</button>
     </form>
 
-    <div class="error-msg" id="errorBox">Invalid login credentials for this classroom.</div>
-  </div>
+    <!-- Student Form -->
+    <div id="student-form" class="hidden">
+        <div class="form-group">
+            <label>Choose Your Monster Avatar</label>
+            <div class="student-select-grid" id="student-grid"></div>
+        </div>
+        <button type="button" class="btn-submit" style="background: var(--dojo-purple);" onclick="handleStudentLogin()">Join Class Island 🏝️</button>
+    </div>
+</div>
 
-  <script>
-    // Supabase Initialization
-    const SUPABASE_URL = 'iifhzdioridrmbcflswa.supabase.co';
-    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
-    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<script>
+    let activeRole = 'teacher';
+    let selectedStudentId = null;
 
-    let currentRole = 'student';
+    const mockStudents = [
+        { id: 's1', name: 'Justin', color: '#00c853' },
+        { id: 's2', name: 'Sophia', color: '#7c4dff' },
+        { id: 's3', name: 'Alex', color: '#0288d1' },
+        { id: 's4', name: 'Emma', color: '#f59e0b' },
+        { id: 's5', name: 'Lucas', color: '#ec4899' },
+        { id: 's6', name: 'Maya', color: '#06b6d4' }
+    ];
 
-    // Auto-fill query parameters if returning via invite links
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('classId')) document.getElementById('classId').value = params.get('classId');
-    if (params.get('studentId')) document.getElementById('studentId').value = params.get('studentId');
-
-    function setRole(role) {
-      currentRole = role;
-      document.getElementById('btnStudentTab').classList.toggle('active', role === 'student');
-      document.getElementById('btnTeacherTab').classList.toggle('active', role === 'teacher');
-      document.getElementById('studentIdWrapper').style.display = role === 'student' ? 'block' : 'none';
-      document.getElementById('emailLabel').textContent = role === 'student' ? 'Student Registered Email' : 'Classroom Owner Email';
+    function renderStudentGrid() {
+        const grid = document.getElementById('student-grid');
+        grid.innerHTML = mockStudents.map(s => `
+            <div class="student-avatar-card ${selectedStudentId === s.id ? 'selected' : ''}" onclick="selectStudent('${s.id}')">
+                <svg viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="${s.color}" />
+                    <circle cx="38" cy="42" r="8" fill="#fff" /><circle cx="62" cy="42" r="8" fill="#fff" />
+                    <circle cx="38" cy="42" r="3" fill="#000" /><circle cx="62" cy="42" r="3" fill="#000" />
+                    <path d="M 35 65 Q 50 75 65 65" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" />
+                </svg>
+                <span>${s.name}</span>
+            </div>
+        `).join('');
     }
 
-    async function executeLogin(e) {
-      e.preventDefault();
-      hideError();
+    function selectStudent(id) {
+        selectedStudentId = id;
+        renderStudentGrid();
+    }
 
-      const classId = document.getElementById('classId').value.trim();
-      const studentId = document.getElementById('studentId').value.trim();
-      const email = document.getElementById('email').value.trim().toLowerCase();
-      const btn = document.getElementById('btnSubmit');
+    function switchRole(role) {
+        activeRole = role;
+        document.getElementById('tab-teacher').classList.toggle('active', role === 'teacher');
+        document.getElementById('tab-student').classList.toggle('active', role === 'student');
+        document.getElementById('teacher-form').classList.toggle('hidden', role !== 'teacher');
+        document.getElementById('student-form').classList.toggle('hidden', role !== 'student');
+        if (role === 'student') renderStudentGrid();
+    }
 
-      btn.disabled = true;
-      btn.textContent = "Verifying Credentials...";
+    function handleLogin(e, role) {
+        e.preventDefault();
+        const username = document.getElementById('teacher-name').value;
+        setDojoSession({ username: username, role: 'teacher' });
+        window.location.href = 'index.html';
+    }
 
-      try {
-        if (currentRole === 'teacher') {
-          // Verify Teacher/Owner in Supabase
-          const { data, error } = await db
-            .from('classes')
-            .select('*')
-            .eq('id', classId)
-            .eq('owner_email', email)
-            .single();
-
-          if (error || !data) throw new Error("Invalid Class ID or Teacher Owner Email.");
-        } else {
-          // Verify Student in Supabase
-          const { data, error } = await db
-            .from('students')
-            .select('*')
-            .eq('class_id', classId)
-            .eq('id', studentId)
-            .eq('email', email)
-            .single();
-
-          if (error || !data) throw new Error("Invalid Class ID, Student ID, or Registered Email.");
+    function handleStudentLogin() {
+        if (!selectedStudentId) {
+            alert('Please select your monster avatar!');
+            return;
         }
-
-        // Store active session through Central Security Guard
-        DojoAuth.setSession({
-          role: currentRole,
-          classId: classId,
-          studentId: currentRole === 'student' ? studentId : null,
-          email: email
-        });
-
-        // Programmatic redirect to Class Hub
-        let target = `/classrooms/classes/?classId=${encodeURIComponent(classId)}`;
-        if (currentRole === 'student') target += `&studentId=${encodeURIComponent(studentId)}`;
-        window.location.href = target;
-
-      } catch (err) {
-        showError(err.message);
-        btn.disabled = false;
-        btn.textContent = "Authenticate & Enter";
-      }
+        const student = mockStudents.find(s => s.id === selectedStudentId);
+        setDojoSession({ username: student.name, role: 'student', studentId: student.id });
+        window.location.href = 'island.html';
     }
-
-    function showError(msg) {
-      const box = document.getElementById('errorBox');
-      box.textContent = msg;
-      box.style.display = 'block';
-    }
-
-    function hideError() {
-      document.getElementById('errorBox').style.display = 'none';
-    }
-  </script>
+</script>
 </body>
 </html>

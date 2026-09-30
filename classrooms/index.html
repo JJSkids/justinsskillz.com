@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassDojo - Classroom Dashboard</title>
+    <script src="guard.js"></script>
+    <style>
+        :root {
+            --dojo-green: #00c853;
+            --dojo-blue: #0288d1;
+            --dojo-purple: #7c4dff;
+            --dojo-red: #ff1744;
+            --bg-main: #0f172a;
+            --panel-bg: #1e293b;
+            --border-line: #334155;
+            --text-main: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: var(--panel-bg);
+            border-bottom: 1px solid var(--border-line);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .class-title { display: flex; align-items: center; gap: 12px; }
+        .class-title h1 { font-size: 1.4rem; font-weight: 800; }
+        .badge-points { background: var(--dojo-green); color: #fff; padding: 4px 12px; border-radius: 999px; font-weight: 800; font-size: 0.9rem; }
+
+        .nav-actions { display: flex; gap: 12px; align-items: center; }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn-green { background: var(--dojo-green); color: #fff; }
+        .btn-blue { background: var(--dojo-blue); color: #fff; }
+        .btn-purple { background: var(--dojo-purple); color: #fff; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-line); color: var(--text-main); }
+        .btn:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        main { flex: 1; padding: 2rem; display: grid; grid-template-columns: 1fr 320px; gap: 2rem; }
+
+        .classroom-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 1.5rem;
+            align-content: start;
+        }
+
+        .student-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--border-line);
+            border-radius: 18px;
+            padding: 1.25rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .student-card:hover { border-color: var(--dojo-blue); transform: scale(1.04); }
+
+        .monster-svg { width: 80px; height: 80px; margin: 0 auto 10px auto; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.3)); }
+
+        .student-name { font-weight: 700; font-size: 1rem; }
+
+        .point-bubble {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--dojo-green);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            box-shadow: 0 4px 10px rgba(0,200,83,0.4);
+        }
+
+        .sidebar-feed {
+            background: var(--panel-bg);
+            border: 1px solid var(--border-line);
+            border-radius: 18px;
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .feed-header { font-weight: 800; font-size: 1.1rem; border-bottom: 1px solid var(--border-line); padding-bottom: 0.75rem; }
+
+        .feed-list { list-style: none; display: flex; flex-direction: column; gap: 10px; overflow-y: auto; max-height: 500px; }
+
+        .feed-item {
+            background: #0f172a;
+            padding: 10px 12px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-left: 4px solid var(--dojo-green);
+        }
+
+        .feed-item.negative { border-left-color: var(--dojo-red); }
+
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-overlay.hidden { display: none; }
+
+        .modal-box {
+            background: var(--panel-bg);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 520px;
+            padding: 2rem;
+            border: 1px solid var(--border-line);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .modal-title { font-size: 1.3rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem; }
+
+        .behavior-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+
+        .behavior-btn {
+            background: #0f172a;
+            border: 1px solid var(--border-line);
+            border-radius: 14px;
+            padding: 14px;
+            color: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .behavior-btn:hover { border-color: var(--dojo-green); background: rgba(0, 200, 83, 0.1); }
+        .behavior-btn.neg:hover { border-color: var(--dojo-red); background: rgba(255, 23, 68, 0.1); }
+
+        .behavior-icon { font-size: 1.5rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="class-title">
+        <h1>Grade 5 Pioneers</h1>
+        <span class="badge-points" id="total-class-points">0 PTS</span>
+    </div>
+
+    <div class="nav-actions">
+        <button class="btn btn-green" onclick="awardWholeClass()">✨ Whole Class +1</button>
+        <button class="btn btn-blue" onclick="pickRandomStudent()">🎲 Random Picker</button>
+        <a href="island.html" class="btn btn-purple">🏝️ Monster Island</a>
+        <button class="btn btn-outline" onclick="logoutDojo()">Logout</button>
+    </div>
+</header>
+
+<main>
+    <section class="classroom-grid" id="students-container"></section>
+
+    <aside class="sidebar-feed">
+        <div class="feed-header">📋 Activity Stream</div>
+        <ul class="feed-list" id="activity-feed"></ul>
+    </aside>
+</main>
+
+<!-- Feedback Modal -->
+<div id="feedback-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <div class="modal-title" id="modal-student-header">Give Feedback</div>
+        
+        <h4 style="color: var(--dojo-green); margin-bottom: 8px;">Positive Behaviors</h4>
+        <div class="behavior-grid">
+            <button class="behavior-btn" onclick="applyPoint(1, 'Working Hard', '💪')">
+                <span class="behavior-icon">💪</span> Working Hard (+1)
+            </button>
+            <button class="behavior-btn" onclick="applyPoint(1, 'Teamwork', '🤝')">
+                <span class="behavior-icon">🤝</span> Teamwork (+1)
+            </button>
+            <button class="behavior-btn" onclick="applyPoint(1, 'Helping Others', '🌟')">
+                <span class="behavior-icon">🌟</span> Helping Others (+1)
+            </button>
+            <button class="behavior-btn" onclick="applyPoint(1, 'On Task', '🎯')">
+                <span class="behavior-icon">🎯</span> On Task (+1)
+            </button>
+        </div>
+
+        <h4 style="color: var(--dojo-red); margin-bottom: 8px;">Needs Work</h4>
+        <div class="behavior-grid">
+            <button class="behavior-btn neg" onclick="applyPoint(-1, 'Off Task', '⚠️')">
+                <span class="behavior-icon">⚠️</span> Off Task (-1)
+            </button>
+            <button class="behavior-btn neg" onclick="applyPoint(-1, 'Unprepared', '📚')">
+                <span class="behavior-icon">📚</span> Unprepared (-1)
+            </button>
+        </div>
+
+        <button class="btn btn-outline" style="width: 100%; margin-top: 10px;" onclick="closeModal()">Cancel</button>
+    </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

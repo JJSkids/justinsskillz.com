@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClassDojo - Monster Island</title>
+    <script src="guard.js"></script>
+    <style>
+        :root {
+            --island-bg: #0c1021;
+            --panel-bg: #1e293b;
+            --text-light: #f8fafc;
+            --dojo-purple: #7c4dff;
+            --dojo-green: #00c853;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+        body {
+            background-color: var(--island-bg);
+            color: var(--text-light);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #334155;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .island-viewport {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at center, #1e1b4b 0%, #090d16 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        canvas {
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(124, 77, 255, 0.2);
+        }
+
+        .island-overlay-ui {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 12px 24px;
+            border-radius: 999px;
+            border: 1px solid #334155;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            color: #fff;
+            background: var(--dojo-purple);
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h2>🏝️ ClassDojo Monster Island</h2>
+    <div style="display: flex; gap: 12px;">
+        <a href="index.html" class="btn">🏫 Back to Class</a>
+        <button class="btn" style="background: #334155;" onclick="logoutDojo()">Logout</button>
+    </div>
+</header>
+
+<div class="island-viewport">
+    <canvas id="island-canvas" width="900" height="550"></canvas>
+    <div class="island-overlay-ui">
+        <span>Click monsters on the island to hear their Dojo sound!</span>
+    </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+    // Initialize Island Loop on DOM load
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.initIslandEngine) {
+            window.initIslandEngine();
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classroom Portal Login | Justin's Skillz</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    body {
+      background: #0b0f19;
+      background-image: radial-gradient(at 50% 0%, rgba(168, 85, 247, 0.25) 0px, transparent 70%);
+      color: #f8fafc;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 1rem;
+    }
+    .login-box {
+      background: rgba(21, 27, 40, 0.85);
+      border: 1px solid rgba(168, 85, 247, 0.4);
+      backdrop-filter: blur(16px);
+      border-radius: 20px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 25px rgba(168, 85, 247, 0.15);
+    }
+    .header { text-align: center; margin-bottom: 2rem; }
+    .header h2 { font-size: 1.6rem; font-weight: 800; margin: 0; }
+    .header h2 span { color: #a855f7; }
+    .header p { color: #94a3b8; font-size: 0.85rem; margin-top: 6px; }
+    
+    .tab-group { display: flex; background: #0b0f19; border-radius: 10px; padding: 4px; margin-bottom: 1.5rem; border: 1px solid #273046; }
+    .tab-btn { flex: 1; padding: 10px; border: none; background: transparent; color: #94a3b8; font-weight: 700; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+    .tab-btn.active { background: #a855f7; color: white; box-shadow: 0 0 10px rgba(168, 85, 247, 0.4); }
+
+    .input-field { margin-bottom: 1.2rem; }
+    .input-field label { display: block; font-size: 0.8rem; font-weight: 700; color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .input-field input {
+      width: 100%; padding: 0.8rem 1rem; background: #0b0f19; border: 1px solid #273046; border-radius: 10px; color: white; font-family: inherit; box-sizing: border-box; font-size: 0.95rem;
+    }
+    .input-field input:focus { border-color: #a855f7; outline: none; box-shadow: 0 0 10px rgba(168, 85, 247, 0.3); }
+
+    .btn-submit {
+      width: 100%; padding: 0.9rem; background: linear-gradient(135deg, #a855f7, #7e22ce); color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+    }
+    .btn-submit:hover { transform: translateY(-1px); box-shadow: 0 0 25px rgba(168, 85, 247, 0.6); }
+    .error-msg { background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 10px; border-radius: 8px; font-size: 0.85rem; margin-top: 1rem; display: none; text-align: center; }
+  </style>
+</head>
+<body>
+
+  <div class="login-box">
+    <div class="header">
+      <h2>CLASSROOM <span>DOJO</span></h2>
+      <p>Supabase-Powered Authentication Portal</p>
+    </div>
+
+    <div class="tab-group">
+      <button class="tab-btn active" id="btnStudentTab" onclick="setRole('student')">Student</button>
+      <button class="tab-btn" id="btnTeacherTab" onclick="setRole('teacher')">Class Owner / Teacher</button>
+    </div>
+
+    <form id="loginForm" onsubmit="executeLogin(event)">
+      <div class="input-field">
+        <label>Classroom ID</label>
+        <input type="text" id="classId" placeholder="e.g. CLASS101" required>
+      </div>
+
+      <div class="input-field" id="studentIdWrapper">
+        <label>Student ID / Code</label>
+        <input type="text" id="studentId" placeholder="e.g. 0000000001">
+      </div>
+
+      <div class="input-field">
+        <label id="emailLabel">Authorized Email</label>
+        <input type="email" id="email" placeholder="registered email address..." required>
+      </div>
+
+      <button type="submit" class="btn-submit" id="btnSubmit">Authenticate & Enter</button>
+    </form>
+
+    <div class="error-msg" id="errorBox">Invalid login credentials for this classroom.</div>
+  </div>
+
+  <script>
+    // Supabase Client Initialization (Replace with your actual keys)
+    const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let currentRole = 'student';
+
+    // Auto-fill query params from invite links
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('classId')) document.getElementById('classId').value = params.get('classId');
+    if (params.get('studentId')) document.getElementById('studentId').value = params.get('studentId');
+
+    function setRole(role) {
+      currentRole = role;
+      document.getElementById('btnStudentTab').classList.toggle('active', role === 'student');
+      document.getElementById('btnTeacherTab').classList.toggle('active', role === 'teacher');
+      document.getElementById('studentIdWrapper').style.display = role === 'student' ? 'block' : 'none';
+      document.getElementById('emailLabel').textContent = role === 'student' ? 'Student Registered Email' : 'Classroom Owner Email';
+    }
+
+    async function executeLogin(e) {
+      e.preventDefault();
+      hideError();
+
+      const classId = document.getElementById('classId').value.trim();
+      const studentId = document.getElementById('studentId').value.trim();
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const btn = document.getElementById('btnSubmit');
+
+      btn.disabled = true;
+      btn.textContent = "Verifying with Supabase...";
+
+      try {
+        if (currentRole === 'teacher') {
+          // Verify Teacher against Supabase `classes` table
+          const { data, error } = await db
+            .from('classes')
+            .select('*')
+            .eq('id', classId)
+            .eq('owner_email', email)
+            .single();
+
+          if (error || !data) throw new Error("Invalid Class ID or Teacher Owner Email.");
+
+        } else {
+          // Verify Student against Supabase `students` table
+          const { data, error } = await db
+            .from('students')
+            .select('*')
+            .eq('class_id', classId)
+            .eq('id', studentId)
+            .eq('email', email)
+            .single();
+
+          if (error || !data) throw new Error("Invalid Class ID, Student ID, or Registered Email.");
+        }
+
+        // Save active session locally in localStorage
+        const session = {
+          role: currentRole,
+          classId: classId,
+          studentId: currentRole === 'student' ? studentId : null,
+          email: email,
+          authenticatedAt: Date.now()
+        };
+        localStorage.setItem('dojo_session', JSON.stringify(session));
+
+        // Redirect to Class Hub
+        let target = `/classrooms/classes/?classId=${encodeURIComponent(classId)}`;
+        if (currentRole === 'student') target += `&studentId=${encodeURIComponent(studentId)}`;
+        window.location.href = target;
+
+      } catch (err) {
+        showError(err.message);
+        btn.disabled = false;
+        btn.textContent = "Authenticate & Enter";
+      }
+    }
+
+    function showError(msg) {
+      const box = document.getElementById('errorBox');
+      box.textContent = msg;
+      box.style.display = 'block';
+    }
+
+    function hideError() {
+      document.getElementById('errorBox').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

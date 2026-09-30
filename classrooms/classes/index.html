@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classroom Hub & Subject Counters</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #151b28;
+      --border: #273046;
+      --purple: #a855f7;
+      --green: #10b981;
+      --red: #ef4444;
+    }
+
+    body { background: var(--bg); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 0; }
+    
+    header { background: var(--card-bg); border-bottom: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 1.2rem; font-weight: 800; color: white; text-decoration: none; display: flex; align-items: center; }
+    .badge-beta { font-size: 0.65rem; font-weight: 800; background: rgba(168, 85, 247, 0.18); color: #c084fc; border: 1px solid rgba(168, 85, 247, 0.5); backdrop-filter: blur(4px); padding: 3px 8px; border-radius: 999px; margin-left: 8px; }
+
+    .main-layout { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+    .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; }
+    .student-card {
+      background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 1.5rem; transition: transform 0.2s, border-color 0.2s; position: relative; cursor: pointer;
+    }
+    .student-card:hover { transform: translateY(-3px); border-color: var(--purple); }
+    
+    .card-top { display: flex; align-items: center; justify-content: space-between; }
+    .avatar { width: 56px; height: 56px; border-radius: 50%; border: 2px solid var(--purple); background: #0b0f19; }
+    .pts-badge { font-size: 1.5rem; font-weight: 800; color: var(--green); background: rgba(16, 185, 129, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+    /* Modal Styling */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000; }
+    .modal { background: var(--card-bg); border: 1px solid var(--border); width: 100%; max-width: 500px; border-radius: 20px; padding: 2rem; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+    
+    .tab-bar { display: flex; gap: 1rem; border-bottom: 1px solid var(--border); margin-bottom: 1.5rem; }
+    .tab-item { padding: 0.5rem 1rem; font-weight: 700; cursor: pointer; color: #94a3b8; border-bottom: 2px solid transparent; }
+    .tab-item.active-pos { color: var(--green); border-color: var(--green); }
+    .tab-item.active-neg { color: var(--red); border-color: var(--red); }
+
+    .skill-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .skill-card { background: #0b0f19; border: 1px solid var(--border); padding: 1rem; border-radius: 12px; text-align: center; cursor: pointer; transition: 0.2s; }
+    .skill-card:hover { border-color: var(--purple); transform: scale(1.03); }
+    .skill-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+    .skill-name { font-size: 0.85rem; font-weight: 700; display: block; }
+    .skill-pts { font-size: 0.75rem; color: var(--green); font-weight: 800; }
+
+    .btn { padding: 0.7rem 1.2rem; border-radius: 10px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; }
+    .btn-purple { background: var(--purple); color: white; box-shadow: 0 0 12px rgba(168, 85, 247, 0.4); }
+    .btn-island { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 0 12px rgba(16, 185, 129, 0.4); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" class="logo">
+      CLASSROOM <span style="color:var(--purple); margin-left:4px;">HUB PRO</span>
+      <span class="badge-beta">BETA</span>
+    </a>
+    <div style="display:flex; gap:1rem;">
+      <button class="btn btn-island" onclick="launchIsland()">🏝 Enter Dojo Island</button>
+      <button class="btn" style="background:#ef4444; color:white;" onclick="logout()">Logout</button>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <div class="action-bar">
+      <div>
+        <h1 id="classTitle" style="margin:0;">Classroom Dashboard</h1>
+        <p style="color:#94a3b8; margin:4px 0 0;" id="userRoleTag">Authenticating with Supabase...</p>
+      </div>
+      <button class="btn btn-purple" id="btnAddStudent" onclick="promptAddStudent()">+ Add Student</button>
+    </div>
+
+    <div id="studentGrid" class="grid"></div>
+  </main>
+
+  <!-- Point Counter Modal -->
+  <div class="modal-overlay" id="pointModal">
+    <div class="modal">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 1rem;">
+        <h2 id="modalStudentName" style="margin:0;">Award Feedback</h2>
+        <button onclick="closeModal()" style="background:none; border:none; color:white; font-size:1.5rem; cursor:pointer;">✕</button>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active-pos" id="tabPos" onclick="switchSkillTab('pos')">Positive (+)</div>
+        <div class="tab-item" id="tabNeg" onclick="switchSkillTab('neg')">Needs Work (-)</div>
+      </div>
+
+      <div class="skill-grid" id="skillGrid"></div>
+    </div>
+  </div>
+
+  <script>
+    // Supabase Configuration
+    const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
+    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Session State & Security Guard
+    const urlParams = new URLSearchParams(window.location.search);
+    const classIdParam = urlParams.get('classId') || 'CLASS101';
+    const studentIdParam = urlParams.get('studentId');
+    const session = JSON.parse(localStorage.getItem('dojo_session') || 'null');
+
+    (function enforceGuard() {
+      if (!session || session.classId !== classIdParam) {
+        window.location.href = `/classrooms/login.html?classId=${classIdParam}${studentIdParam ? '&studentId='+studentIdParam : ''}`;
+        return;
+      }
+      // Redirect unauthorized students to 404 security guard page
+      if (studentIdParam && session.role === 'student' && session.studentId !== studentIdParam) {
+        window.location.href = '/404.html';
+      }
+    })();
+
+    // Web Audio Sound Effects Synthesizer
+    function playSFX(type) {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if (type === 'pos') {
+        [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.frequency.value = freq;
+          gain.gain.setValueAtTime(0.08, ctx.currentTime + idx * 0.06);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.06 + 0.25);
+          osc.connect(gain); gain.connect(ctx.destination);
+          osc.start(ctx.currentTime + idx * 0.06);
+          osc.stop(ctx.currentTime + idx * 0.06 + 0.25);
+        });
+      } else {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(160, ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(90, ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + 0.3);
+      }
+    }
+
+    const positiveSkills = [
+      { name: "Math Problem Solving", pts: 1, icon: "📐" },
+      { name: "French Speaking", pts: 1, icon: "💬" },
+      { name: "Algorithmic Logic", pts: 2, icon: "💻" },
+      { name: "Working Hard", pts: 1, icon: "🤝" }
+    ];
+
+    const needsWorkSkills = [
+      { name: "Off Task", pts: -1, icon: "⚠️" },
+      { name: "Incomplete Work", pts: -1, icon: "📝" },
+      { name: "Disruption", pts: -1, icon: "🔊" }
+    ];
+
+    let students = [];
+    let selectedStudentId = null;
+
+    document.getElementById('classTitle').textContent = `Classroom: ${classIdParam}`;
+    document.getElementById('userRoleTag').textContent = `Logged in: ${session.role.toUpperCase()} (${session.studentId || session.email})`;
+    if (session.role === 'student') document.getElementById('btnAddStudent').style.display = 'none';
+
+    fetchStudents();
+
+    async function fetchStudents() {
+      const { data, error } = await db
+        .from('students')
+        .select('*')
+        .eq('class_id', classIdParam);
+
+      if (!error && data) {
+        students = data;
+        renderGrid();
+      }
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById('studentGrid');
+      grid.innerHTML = '';
+
+      const visible = session.role === 'student' ? students.filter(s => s.id === session.studentId) : students;
+
+      visible.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'student-card';
+        card.onclick = () => openModal(s.id);
+        card.innerHTML = `
+          <div class="card-top">
+            <div style="display:flex; align-items:center; gap:0.8rem;">
+              <img src="https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(s.name)}" class="avatar">
+              <div>
+                <h3 style="margin:0; font-size:1.05rem;">${s.name}</h3>
+                <span style="font-size:0.75rem; color:#94a3b8;">ID: ${s.id}</span>
+              </div>
+            </div>
+            <div class="pts-badge">${s.points}</div>
+          </div>
+          ${session.role === 'teacher' ? `
+            <button onclick="event.stopPropagation(); printInvitePDF('${s.id}')" style="width:100%; margin-top:1rem; background:#0b0f19; border:1px solid #273046; color:#a855f7; padding:8px; border-radius:8px; font-weight:700; cursor:pointer;">
+              📄 Generate PDF Card
+            </button>
+          ` : ''}
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openModal(id) {
+      if (session.role === 'student') return;
+      selectedStudentId = id;
+      const s = students.find(x => x.id === id);
+      document.getElementById('modalStudentName').textContent = s.name;
+      document.getElementById('pointModal').style.display = 'flex';
+      switchSkillTab('pos');
+    }
+
+    function closeModal() { document.getElementById('pointModal').style.display = 'none'; }
+
+    function switchSkillTab(tab) {
+      document.getElementById('tabPos').className = `tab-item ${tab === 'pos' ? 'active-pos' : ''}`;
+      document.getElementById('tabNeg').className = `tab-item ${tab === 'neg' ? 'active-neg' : ''}`;
+      
+      const grid = document.getElementById('skillGrid');
+      grid.innerHTML = '';
+      const list = tab === 'pos' ? positiveSkills : needsWorkSkills;
+
+      list.forEach(skill => {
+        const item = document.createElement('div');
+        item.className = 'skill-card';
+        item.onclick = () => awardSkill(skill.pts);
+        item.innerHTML = `
+          <span class="skill-icon">${skill.icon}</span>
+          <span class="skill-name">${skill.name}</span>
+          <span class="skill-pts" style="color: ${skill.pts > 0 ? '#10b981' : '#ef4444'}">${skill.pts > 0 ? '+' : ''}${skill.pts}</span>
+        `;
+        grid.appendChild(item);
+      });
+    }
+
+    async function awardSkill(deltaPts) {
+      const target = students.find(s => s.id === selectedStudentId);
+      if (!target) return;
+
+      const updatedPts = Math.max(0, target.points + deltaPts);
+
+      // Persist live updates directly into Supabase
+      const { error } = await db
+        .from('students')
+        .update({ points: updatedPts })
+        .eq('id', selectedStudentId);
+
+      if (!error) {
+        target.points = updatedPts;
+        playSFX(deltaPts > 0 ? 'pos' : 'neg');
+        renderGrid();
+        closeModal();
+      }
+    }
+
+    async function promptAddStudent() {
+      const name = prompt("Enter Student Name:");
+      const email = prompt("Enter Student Email:");
+      if (!name || !email) return;
+
+      const id = Math.floor(1000000000 + Math.random() * 9000000000).toString();
+
+      const { data, error } = await db
+        .from('students')
+        .insert([{ id, class_id: classIdParam, name, email, points: 0 }])
+        .select();
+
+      if (!error && data) {
+        students.push(data[0]);
+        renderGrid();
+      }
+    }
+
+    function printInvitePDF(studentId) {
+      const s = students.find(x => x.id === studentId);
+      const uniqueLink = `https://jjskids.github.io/justinsskillz.com/classrooms/classes/?classId=${classIdParam}&studentId=${s.id}`;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(uniqueLink)}`;
+
+      const tpl = `
+        <div style="padding:2rem; font-family:sans-serif; border:3px dashed #a855f7; border-radius:16px; background:#ffffff; color:#0f172a; max-width:500px; margin:0 auto;">
+          <h1 style="color:#9333ea; margin-top:0; text-align:center;">CLASSROOM DOJO CARD</h1>
+          <p><strong>Student Name:</strong> ${s.name}</p>
+          <p><strong>Assigned Student ID:</strong> ${s.id}</p>
+          <div style="text-align:center; margin:1.5rem 0;">
+            <img src="${qrUrl}" style="border:2px solid #cbd5e1; padding:6px; border-radius:8px;">
+          </div>
+          <p style="font-size:0.8rem; word-break:break-all; background:#f1f5f9; padding:10px; border-radius:8px;">
+            <strong>Your Personal Unique Link:</strong><br>
+            <a href="${uniqueLink}">${uniqueLink}</a>
+          </p>
+        </div>
+      `;
+
+      html2pdf().set({ margin: 0.5, filename: `${s.name}_Dojo_Card.pdf`, html2canvas: { scale: 2 } }).from(tpl).save();
+    }
+
+    function launchIsland() {
+      window.location.href = `/classrooms/classes/rooms/island.html?classId=${classIdParam}`;
+    }
+
+    function logout() {
+      localStorage.removeItem('dojo_session');
+      window.location.href = '/classrooms/login.html';
+    }
+  </script>
+</body>
+</html>

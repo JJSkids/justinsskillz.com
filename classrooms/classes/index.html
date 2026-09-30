@@ -6,8 +6,17 @@
   <title>Classroom Hub & Subject Counters</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- PDF Generator Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <!-- Central Security Guard Script -->
+  <script src="../guard.js"></script>
+
+  <script>
+    // Enforce Guard Enforcement immediately before rendering page content
+    const session = DojoAuth.protect();
+  </script>
 
   <style>
     :root {
@@ -68,7 +77,7 @@
     </a>
     <div style="display:flex; gap:1rem;">
       <button class="btn btn-island" onclick="launchIsland()">🏝 Enter Dojo Island</button>
-      <button class="btn" style="background:#ef4444; color:white;" onclick="logout()">Logout</button>
+      <button class="btn" style="background:#ef4444; color:white;" onclick="DojoAuth.logout()">Logout</button>
     </div>
   </header>
 
@@ -103,26 +112,12 @@
 
   <script>
     // Supabase Configuration
-    const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    const SUPABASE_URL = 'iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Session State & Security Guard
     const urlParams = new URLSearchParams(window.location.search);
     const classIdParam = urlParams.get('classId') || 'CLASS101';
-    const studentIdParam = urlParams.get('studentId');
-    const session = JSON.parse(localStorage.getItem('dojo_session') || 'null');
-
-    (function enforceGuard() {
-      if (!session || session.classId !== classIdParam) {
-        window.location.href = `/classrooms/login.html?classId=${classIdParam}${studentIdParam ? '&studentId='+studentIdParam : ''}`;
-        return;
-      }
-      // Redirect unauthorized students to 404 security guard page
-      if (studentIdParam && session.role === 'student' && session.studentId !== studentIdParam) {
-        window.location.href = '/404.html';
-      }
-    })();
 
     // Web Audio Sound Effects Synthesizer
     function playSFX(type) {
@@ -254,7 +249,6 @@
 
       const updatedPts = Math.max(0, target.points + deltaPts);
 
-      // Persist live updates directly into Supabase
       const { error } = await db
         .from('students')
         .update({ points: updatedPts })
@@ -311,11 +305,6 @@
 
     function launchIsland() {
       window.location.href = `/classrooms/classes/rooms/island.html?classId=${classIdParam}`;
-    }
-
-    function logout() {
-      localStorage.removeItem('dojo_session');
-      window.location.href = '/classrooms/login.html';
     }
   </script>
 </body>

@@ -6,7 +6,10 @@
   <title>Classroom Portal Login | Justin's Skillz</title>
   
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Central Security Guard Script -->
+  <script src="./guard.js"></script>
 
   <style>
     body {
@@ -90,14 +93,14 @@
   </div>
 
   <script>
-    // Supabase Client Initialization (Replace with your actual keys)
-    const SUPABASE_URL = 'https://YOUR_SUPABASE_PROJECT_ID.supabase.co';
-    const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+    // Supabase Initialization
+    const SUPABASE_URL = 'iifhzdioridrmbcflswa.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlpZmh6ZGlvcmlkcm1iY2Zsc3dhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwNjQ5MDUsImV4cCI6MjA5OTY0MDkwNX0.Pq5n0mIl-3lBli16OVrl-6fHZStv_V_y19izQJZT088';
     const db = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     let currentRole = 'student';
 
-    // Auto-fill query params from invite links
+    // Auto-fill query parameters if returning via invite links
     const params = new URLSearchParams(window.location.search);
     if (params.get('classId')) document.getElementById('classId').value = params.get('classId');
     if (params.get('studentId')) document.getElementById('studentId').value = params.get('studentId');
@@ -120,11 +123,11 @@
       const btn = document.getElementById('btnSubmit');
 
       btn.disabled = true;
-      btn.textContent = "Verifying with Supabase...";
+      btn.textContent = "Verifying Credentials...";
 
       try {
         if (currentRole === 'teacher') {
-          // Verify Teacher against Supabase `classes` table
+          // Verify Teacher/Owner in Supabase
           const { data, error } = await db
             .from('classes')
             .select('*')
@@ -133,9 +136,8 @@
             .single();
 
           if (error || !data) throw new Error("Invalid Class ID or Teacher Owner Email.");
-
         } else {
-          // Verify Student against Supabase `students` table
+          // Verify Student in Supabase
           const { data, error } = await db
             .from('students')
             .select('*')
@@ -147,17 +149,15 @@
           if (error || !data) throw new Error("Invalid Class ID, Student ID, or Registered Email.");
         }
 
-        // Save active session locally in localStorage
-        const session = {
+        // Store active session through Central Security Guard
+        DojoAuth.setSession({
           role: currentRole,
           classId: classId,
           studentId: currentRole === 'student' ? studentId : null,
-          email: email,
-          authenticatedAt: Date.now()
-        };
-        localStorage.setItem('dojo_session', JSON.stringify(session));
+          email: email
+        });
 
-        // Redirect to Class Hub
+        // Programmatic redirect to Class Hub
         let target = `/classrooms/classes/?classId=${encodeURIComponent(classId)}`;
         if (currentRole === 'student') target += `&studentId=${encodeURIComponent(studentId)}`;
         window.location.href = target;

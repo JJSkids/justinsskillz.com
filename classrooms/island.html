@@ -1,107 +1,71 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ClassDojo - Monster Island</title>
-    <script src="guard.js"></script>
+    <title>Under Development</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --island-bg: #0c1021;
-            --panel-bg: #1e293b;
-            --text-light: #f8fafc;
-            --dojo-purple: #7c4dff;
-            --dojo-green: #00c853;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
         body {
-            background-color: var(--island-bg);
-            color: var(--text-light);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #090d16;
         }
-
-        header {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid #334155;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
+        .glass-card {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
-
-        .island-viewport {
-            flex: 1;
-            position: relative;
-            background: radial-gradient(circle at center, #1e1b4b 0%, #090d16 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        canvas {
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(124, 77, 255, 0.2);
-        }
-
-        .island-overlay-ui {
-            position: absolute;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(8px);
-            padding: 12px 24px;
-            border-radius: 999px;
-            border: 1px solid #334155;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .btn {
-            padding: 8px 16px;
-            border-radius: 10px;
-            border: none;
-            font-weight: 700;
-            cursor: pointer;
-            text-decoration: none;
-            color: #fff;
-            background: var(--dojo-purple);
+        .glow {
+            box-shadow: 0 0 40px rgba(139, 92, 246, 0.25);
         }
     </style>
 </head>
-<body>
+<body class="text-slate-100 min-h-screen flex items-center justify-center p-6 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/20 via-slate-950 to-slate-950">
 
-<header>
-    <h2>🏝️ ClassDojo Monster Island</h2>
-    <div style="display: flex; gap: 12px;">
-        <a href="index.html" class="btn">🏫 Back to Class</a>
-        <button class="btn" style="background: #334155;" onclick="logoutDojo()">Logout</button>
+    <div class="glass-card glow max-w-md w-full rounded-3xl p-8 text-center space-y-6 relative overflow-hidden">
+        <!-- Animated Background Accent -->
+        <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-600/20 rounded-full blur-2xl pointer-events-none"></div>
+        <div class="absolute -bottom-10 -left-10 w-32 h-32 bg-cyan-600/20 rounded-full blur-2xl pointer-events-none"></div>
+
+        <!-- Construction Icon -->
+        <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-purple-600 to-cyan-500 flex items-center justify-center text-3xl shadow-lg animate-bounce">
+            🛠️
+        </div>
+
+        <!-- Heading & Message -->
+        <div class="space-y-2">
+            <h1 class="text-2xl font-extrabold tracking-tight text-white">Under Development</h1>
+            <p class="text-slate-400 text-sm leading-relaxed">
+                This section of the website is currently being built. Please go back to the main site.
+            </p>
+        </div>
+
+        <!-- Back Button -->
+        <a href="../index.html" class="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-sm hover:brightness-110 active:scale-[0.98] transition-all shadow-lg shadow-purple-600/25">
+            <span>←</span> Go Back
+        </a>
+
+        <!-- Auto-redirect countdown indicator -->
+        <p class="text-xs text-slate-500 font-medium">
+            Redirecting automatically in <span id="countdown" class="text-purple-400 font-bold">10</span>s...
+        </p>
     </div>
-</header>
 
-<div class="island-viewport">
-    <canvas id="island-canvas" width="900" height="550"></canvas>
-    <div class="island-overlay-ui">
-        <span>Click monsters on the island to hear their Dojo sound!</span>
-    </div>
-</div>
+    <script>
+        // Automatic redirect after 10 seconds
+        let seconds = 10;
+        const countdownEl = document.getElementById('countdown');
 
-<script src="app.js"></script>
-<script>
-    // Initialize Island Loop on DOM load
-    document.addEventListener('DOMContentLoaded', () => {
-        if (window.initIslandEngine) {
-            window.initIslandEngine();
-        }
-    });
-</script>
+        const timer = setInterval(() => {
+            seconds--;
+            if (countdownEl) countdownEl.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(timer);
+                window.location.href = '../index.html';
+            }
+        }, 1000);
+    </script>
 </body>
 </html>

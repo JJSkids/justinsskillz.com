@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://justinsskillz.com/sitemap.xml
+Sitemap: https://justinsskillz.web.app/sitemap.xml
